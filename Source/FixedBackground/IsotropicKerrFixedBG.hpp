@@ -16,6 +16,7 @@
 #include "UserVariables.hpp" //This files needs NUM_VARS - total number of components
 #include "simd.hpp"
 
+
 //! Class which computes the initial conditions per arXiv 1401.1548
 //! For a highly spinning BH in quasi isotropic coords
 class IsotropicKerrFixedBG
@@ -26,7 +27,7 @@ class IsotropicKerrFixedBG
     {
         double mass = 1.0;                      //!<< The mass of the BH
         std::array<double, CH_SPACEDIM> center; //!< The center of the BH
-        double spin = 0.0; //!< The spin 'a' in the z direction
+        double spin = 0.0; //!< The dimensionless spin 'a/M' in the z direction
     };
 
     template <class data_t> using Vars = ADMFixedBGVars::Vars<data_t>;
@@ -40,7 +41,7 @@ class IsotropicKerrFixedBG
         : m_params(a_params), m_dx(a_dx)
     {
         // check this spin param is sensible
-        if ((m_params.spin > m_params.mass) || (m_params.spin < -m_params.mass))
+        if ((m_params.spin > 1.0) || (m_params.spin < -1.0))
         {
             MayDay::Error(
                 "The dimensionless spin parameter a/M must be in the range "
@@ -60,8 +61,9 @@ class IsotropicKerrFixedBG
         // calculate and save chi
         data_t chi = TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
         chi = pow(chi, -1.0 / 3.0);
-
+	
         current_cell.store_vars(chi, c_chi);
+
     }
 
     /// Refer to Witek et al 1401.1548 for reference for
@@ -72,7 +74,7 @@ class IsotropicKerrFixedBG
     {
         // black hole params - mass M and spin a
         const double M = m_params.mass;
-        const double a = m_params.spin;
+        const double a = M*m_params.spin;
         const double a2 = a * a;
 
         // work out where we are on the grid
