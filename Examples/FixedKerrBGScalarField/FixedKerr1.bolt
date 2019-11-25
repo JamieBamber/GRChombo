@@ -1,0 +1,22 @@
+#!/bin/bash --login
+#
+# Parallel script produced by bolt
+#        Resource: ARCHER (Cray XC30 (24-core per node))
+#    Batch system: PBSPro_select
+#
+# bolt is written by EPCC (http://www.epcc.ed.ac.uk)
+#
+#PBS -l select=6
+#PBS -N FixedKerr1
+#PBS -A e644-jbamber
+#PBS -l walltime=2:0:0
+
+
+# Switch to current working directory
+cd $PBS_O_WORKDIR
+
+# Run the parallel program
+aprun -n 144 -N 24 -S 12 -d 1  Main_ScalarField3d.Linux.64.CC.ftn.DEBUG.MPI.ex params.txt
+
+
+

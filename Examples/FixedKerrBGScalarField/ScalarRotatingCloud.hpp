@@ -13,13 +13,12 @@
 #include "ADMFixedBGVars.hpp"
 #include "IsotropicKerrFixedBG.hpp"
 
-#include <boost/math/special_functions/legendre.hpp> // I want this for the derivatives of legendre polynomials
+#include <boost_legendre.hpp> // I want this for the derivatives of legendre polynomials
 
 #include "Tensor.hpp"
 #include "UserVariables.hpp" //This files needs NUM_VARS - total no. components
 #include "VarsTools.hpp"
 #include "simd.hpp"
-#include <cmath.h>
 
 //! Class which creates a rotating cloud of scalar field given params for initial
 //! matter config
@@ -41,7 +40,7 @@ class ScalarRotatingCloud
 
     //! The constructor for the class
     ScalarRotatingCloud(params_t a_params, const IsotropicKerrFixedBG::params_t a_bg_params, const double a_dx)
-        : m_params(a_params), m_dx(a_dx), m_bg_params (a_bg_params)
+        : m_params(a_params), m_dx(a_dx), m_bg_params(a_bg_params)
     {
     }
 
@@ -56,8 +55,8 @@ class ScalarRotatingCloud
         double y = coords.y;
         double z = coords.z;	
 	// perform rotation about x axis by the alignment angle
-	double cos_alignment = cos(alignment*M_PI);
-	double sin_alignment = sin(alignment*M_PI);
+	double cos_alignment = cos(m_params.alignment*M_PI);
+	double sin_alignment = sin(m_params.alignment*M_PI);
 	double y_prime = y * cos_alignment + z * sin_alignment;
 	double z_prime = z * cos_alignment - y * sin_alignment; 
 	data_t r = coords.get_radius();
@@ -65,7 +64,7 @@ class ScalarRotatingCloud
         data_t rho_prime2 = simd_max(x * x + y_prime * y_prime, 1e-8);
         data_t rho_prime = sqrt(rho_prime2);
 	data_t cos_theta_prime = z_prime / r;
-	data_t sin_theta_prime = rho_prime / r
+	data_t sin_theta_prime = rho_prime / r;
 	data_t azimuth_prime = acos(x / rho_prime);
 	// radius in the xy plane, subject to a floor
 	data_t rho2 = simd_max(x * x + y * y, 1e-8);
@@ -74,27 +73,35 @@ class ScalarRotatingCloud
 	// get the metric vars
         IsotropicKerrFixedBG kerr_bh(m_bg_params, m_dx);
         MetricVars<data_t> metric_vars;
-        kerr_bh.compute_metric_background(metric_vars, current_cell);
+        kerr_bh.compute_metric_background(metric_vars, coords);
+
+	//data_t g_func = boost::math::legendre_p(m_params.l, cos_theta_prime);
+	//data_t g_func_prime = boost::math::legendre_p_prime(m_params.l, cos_theta_prime);
+
+	data_t g_func = 1;
+	data_t g_func_prime = 0;
 
 	// r dependence of phi
 	data_t r_func = m_params.amplitude * exp(-r * r / (m_params.width * m_params.width)); 
 	//angular dependence of phi
-	data_t ang_func = sin(m * azimuth_prime) * boost::math::legendre_p(m_params.l, cos_theta_prime);
+	data_t ang_func = sin(m_params.m * azimuth_prime) * g_func;
         // set the field vars 
 	// phi
         vars.phi = r_func * ang_func;
 	
 	// dphi
-	dphidt = r_func * boost::math::legendre_p(m_params.l, cos_theta_prime)*omega*cos(m*azimuth_prime);
+	data_t dphidt = r_func * g_func *m_params.omega*cos(m_params.m*azimuth_prime);
 	//!< derivative of phi w.r.t the cloud azimuthal angle
-	dphid_azimuth_prime = r_func * boost::math::legendre_p(m_params.l, cos_theta_prime)*m*cos(m*azimuth_prime);
+	data_t dphid_azimuth_prime = r_func * g_func *m_params.m*cos(m_params.m*azimuth_prime);
 	//!< derivative of phi w.r.t the cloud theta angle
- 	dphid_theta_prime = r_func * (-sin_theta_prime) * boost::math::legendre_p_prime(m_params.l, cos_theta_prime)*sin(m*azimuth_prime);
+ 	data_t dphid_theta_prime = r_func * (-sin_theta_prime) * 
+g_func_prime *sin(m_params.m*azimuth_prime);
 
-	dphid_azimuth = - sin_alignment * (x / rho_prime) * dphid_theta_prime + (rho2 * cos_alignment - y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
+	data_t dphid_azimuth = - sin_alignment * (x / rho_prime) * dphid_theta_prime + (rho2 * cos_alignment - 
+y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
 	
 	//beta^azimuth
-	beta_azimuth = sqrt( (pow(metric_vars.shift[0],2) + pow(metric_vars.shift[1],2))/rho2 )
+	data_t beta_azimuth = sqrt( (pow(metric_vars.shift[0],2) + pow(metric_vars.shift[1],2))/rho2 );
 	// ---> its kind of annoying to have to recompute this, it would be better to get it directly from
 	// beta_phi in IsotropicKerrFixedBG.hpp
 
@@ -108,6 +115,11 @@ class ScalarRotatingCloud
   protected:
     double m_dx;
     const params_t m_params; //!< The matter initial condition params
+    const IsotropicKerrFixedBG::params_t m_bg_params; //!< the background metric parameters
+
+    // Now the non grid ADM vars
+    template <class data_t> using MetricVars = ADMFixedBGVars::Vars<data_t>;
+
 };
 
 #endif /* ScalarRotatingCloud_HPP_ */

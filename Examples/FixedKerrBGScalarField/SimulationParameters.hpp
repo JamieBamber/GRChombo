@@ -31,8 +31,12 @@ class SimulationParameters : public ChomboParameters
 
         // Initial and SF data
         pp.load("scalar_mass", potential_params.scalar_mass);
-        pp.load("scalar_amplitude", initial_params.amplitude);
-        pp.load("scalar_width", initial_params.width);
+	double field_amplitude =				// Set the field amplitude such that for an input amplitude of 1
+        initial_params.amplitude *				// 1/2 * mu^2 * phi^2 = e^-10
+        sqrt(1e-10 / (0.5 * potential_params.scalar_mass *	//
+                      potential_params.scalar_mass));		//
+        pp.load("scalar_amplitude", field_amplitude);       	//
+        pp.load("scalar_width", initial_params.width);		
         pp.load("scalar_center", initial_params.center, center);
 	pp.load("scalar_omega", initial_params.omega);
 	pp.load("scalar_l", initial_params.l);

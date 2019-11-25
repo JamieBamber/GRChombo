@@ -45,7 +45,7 @@ void ScalarFieldLevel::initialData()
     // First set everything to zero ... we don't want undefined values in
     // constraints etc, then initial conditions for scalar field
     IsotropicKerrFixedBG kerr_bg(m_p.bg_params, m_dx);
-    ScalarRotatingCloud initial_sf(m_p.initial_params, m_dx);
+    ScalarRotatingCloud initial_sf(m_p.initial_params, m_p.bg_params, m_dx);
     BoxLoops::loop(make_compute_pack(SetValue(0.0), kerr_bg, initial_sf),
                    m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
 }
@@ -68,7 +68,7 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                                        const double a_time)
 {
     // Calculate right hand side with matter_t = ScalarField
-    // and background_t = BoostedBH
+    // and background_t = IsotropicKerrBH
     // RHS for non evolution vars is zero, to prevent undefined values
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
@@ -81,7 +81,7 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
 
     // Do excision within horizon
     BoxLoops::loop(Excision<ScalarFieldWithPotential, IsotropicKerrFixedBG>(
-                       m_dx, m_p.center, boosted_bh),
+                       m_dx, m_p.center, kerr_bg),
                    a_soln, a_rhs, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
