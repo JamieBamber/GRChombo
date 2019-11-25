@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include "../../Source/utils/boost_legendre.hpp"
+#include "../../Source/simd/simd.hpp"
+#include <math.h>
+// #include <boost/math/special_functions/legendre.hpp>
+
+// using namespace std;
+
+int main() {
+    printf("Hello, world!\n");
+    simd<double> x;
+    double L;
+    x = 0.2;
+   //L = boost::math::legendre_p_prime(2, x);    
+   L = x * x + 3.0;
+   printf("L = %f\n", L);
+
+    return 0;
+}
