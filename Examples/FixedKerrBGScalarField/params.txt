@@ -1,8 +1,8 @@
 #Params for runtime inputs
 
 verbosity = 0
-chk_prefix = /work/e644/e644/jbamber/GRChombo_data/FixedKerrBGScalarField/KerrSF_
-plot_prefix = /work/e644/e644/jbamber/GRChombo_data/FixedKerrBGScalarField/KerrSFp_
+chk_prefix = /work/e644/e644/jbamber/GRChombo_data/KerrSF/KerrSF_
+plot_prefix = /work/e644/e644/jbamber/GRChombo_data/KerrSF/KerrSFp_
 #restart_file = ScalarField_000000.3d.hdf5
 
 # Set up grid spacings and regrid params
@@ -64,7 +64,7 @@ sigma = 0.5
 
 # SF Initial data
 scalar_mass = 1.0
-scalar_amplitude = 0.01
+scalar_amplitude = 1
 scalar_width = 4.0
 scalar_center = 512.0 512.0 0.0
 scalar_omega = 1.0
