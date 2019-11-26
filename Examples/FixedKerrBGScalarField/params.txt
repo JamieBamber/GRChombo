@@ -66,6 +66,7 @@ sigma = 0.5
 scalar_mass = 1.0
 scalar_amplitude = 0.01
 scalar_width = 4.0
+scalar_center = 512.0 512.0 0.0
 scalar_omega = 1.0
 scalar_l = 0
 scalar_m = 1
@@ -73,4 +74,5 @@ scalar_alignment = 0.0
 
 # BH initial data
 bh_mass = 1.0
+bh_center = 512.0 512.0 0.0
 bh_spin = 0.0
