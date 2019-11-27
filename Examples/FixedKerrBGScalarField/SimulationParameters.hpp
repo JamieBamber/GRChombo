@@ -47,7 +47,7 @@ class SimulationParameters : public ChomboParameters
         // Background boosted bh data
         pp.load("bh_mass", bg_params.mass);
 	pp.load("bh_spin", bg_params.spin);
-        //pp.load("bh_center", bg_params.center, center);
+        bg_params.center = initial_params.center;
     }
 
     // Problem specific parameters
