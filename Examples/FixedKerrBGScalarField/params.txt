@@ -74,5 +74,5 @@ scalar_alignment = 0.0
 
 # BH initial data
 bh_mass = 1.0
-bh_center = 512.0 512.0 0.0
 bh_spin = 0.0
+# bh_center = 512.0 512.0 0.0
