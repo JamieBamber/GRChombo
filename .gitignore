@@ -4,7 +4,9 @@ pout.*
 *.pbs
 *.sh
 *.s
+*.bolt
 jobscript*
+core
 d
 o
 p
