@@ -14,7 +14,7 @@ N3 = 64
 # Length of longest box side, dx_coarsest = L/N(max)
 # NB if non cubic, this determines dx for all sides
 L =  1024
-center = 512.0 512.0 0.0
+center = 512.0 512.0 256.0
 
 # Level data
 # Maximum number of times you can regrid above coarsest level
@@ -64,9 +64,9 @@ sigma = 0.5
 
 # SF Initial data
 scalar_mass = 1.0
-scalar_amplitude = 1
-scalar_width = 4.0
-scalar_center = 512.0 512.0 0.0
+scalar_amplitude = 1.0
+scalar_width = 64.0
+scalar_center = 512.0 512.0 256.0
 scalar_omega = 1.0
 scalar_l = 0
 scalar_m = 1
