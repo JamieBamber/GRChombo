@@ -65,7 +65,7 @@ class ScalarRotatingCloud
         data_t rho_prime = sqrt(rho_prime2);
 	data_t cos_theta_prime = z_prime / r;
 	data_t sin_theta_prime = rho_prime / r;
-	data_t azimuth_prime = acos(x / rho_prime);
+	data_t azimuth_prime = atan2(y_prime, x);	// need to use atan2 to obtain full 0 to 2pi range
 	// radius in the xy plane, subject to a floor
 	data_t rho2 = simd_max(x * x + y * y, 1e-8);
         data_t rho = sqrt(rho2);
