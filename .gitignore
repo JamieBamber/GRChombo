@@ -1,10 +1,15 @@
 jobscript*
 pout.*
+slurm_submit
 .bashrc
 *.pbs
 *.sh
 *.s
 *.bolt
+*.e*
+*.o*
+*.btr
+machine.file.*
 jobscript*
 core
 d
