@@ -17,7 +17,7 @@
 #include "FixedBGDensity.hpp"
 
 // For tag cells
-#include "FixedGridsTaggingCriterion.hpp"
+#include "debug_criterion_FixedGridsTaggingCriterion.hpp"
 
 // Problem specific includes
 #include "ComputePack.hpp"
@@ -89,7 +89,7 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
 void ScalarFieldLevel::specificWritePlotHeader(
     std::vector<int> &plot_states) const
 {
-    plot_states = {c_phi, c_Pi};
+    plot_states = {c_phi, c_Pi, c_criterion};
 }
 
 // Note that for the fixed grids this only happens on the initial timestep
