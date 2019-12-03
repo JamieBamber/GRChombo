@@ -52,6 +52,9 @@ class FixedGridsTaggingCriterion
 
         // Write back into the flattened Chombo box
         current_cell.store_vars(criterion, 0);
+
+	// Store as output variable
+	current_cell.store_vars(criterion, c_rho);
     }
 };
 

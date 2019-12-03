@@ -13,7 +13,7 @@
 #include "ADMFixedBGVars.hpp"
 #include "IsotropicKerrFixedBG.hpp"
 
-#include "legendre.hpp" // I want this for the derivatives of legendre polynomials
+#include <boost_legendre.hpp> // I want this for the derivatives of legendre polynomials
 
 #include "Tensor.hpp"
 #include "UserVariables.hpp" //This files needs NUM_VARS - total no. components
@@ -78,11 +78,8 @@ class ScalarRotatingCloud
 	//data_t g_func = boost::math::legendre_p(m_params.l, cos_theta_prime);
 	//data_t g_func_prime = boost::math::legendre_p_prime(m_params.l, cos_theta_prime);
 
-	data_t g_func = my_legendre_p(m_params.l, cos_theta_prime);
-        data_t g_func_prime = my_legendre_p_prime(m_params.l, cos_theta_prime);
-
-	//data_t g_func = 1;
-	//data_t g_func_prime = 0;
+	data_t g_func = 1;
+	data_t g_func_prime = 0;
 
 	// r dependence of phi
 	data_t r_func = m_params.amplitude * exp(-r * r / (m_params.width * m_params.width)); 

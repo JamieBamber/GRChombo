@@ -1,8 +1,8 @@
 #Params for runtime inputs
 
 verbosity = 0
-chk_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/KerrSF_
-plot_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/KerrSFp_
+chk_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/run2_l0_m1_a0.99_Al0/KerrSF_
+plot_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/run2_l0_m1_a0.99_Al0/KerrSFp_
 #restart_file = ScalarField_000000.3d.hdf5
 
 # Set up grid spacings and regrid params
@@ -44,7 +44,7 @@ lo_boundary = 3 3 2
 # 0 = even
 # 1,2,3 = odd x, y, z
 # 4,5,6 = odd xy, yz, xz
-vars_parity = 0 0 0 0            #phi, Pi, chi and rho
+vars_parity = 0 0 0 0 0            #phi, Pi, chi and rho and criterion
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
