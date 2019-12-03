@@ -1,8 +1,8 @@
 #Params for runtime inputs
 
 verbosity = 0
-chk_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/run2_l0_m1_a0.99_Al0/KerrSF_
-plot_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/run2_l0_m1_a0.99_Al0/KerrSFp_
+chk_prefix = /work/e644/e644/jbamber/GRChombo_data/KerrSF/run3_l0_m0_a0.99_Al0/KerrSF_
+plot_prefix = /work/e644/e644/jbamber/GRChombo_data/KerrSF/run3_l0_m0_a0.99_Al0/KerrSFp_
 #restart_file = ScalarField_000000.3d.hdf5
 
 # Set up grid spacings and regrid params
@@ -69,7 +69,7 @@ scalar_width = 100.0
 scalar_center = 512.0 512.0 0.0
 scalar_omega = 1.0
 scalar_l = 0
-scalar_m = 1
+scalar_m = 0
 scalar_alignment = 0.0
 
 # BH initial data
