@@ -1,0 +1,3 @@
+#! Run options for the application:
+options="PARAMSDIR/params.txt"
+
