@@ -3,7 +3,7 @@
 #ifndef LEGENDRE_
 #define LEGENDRE_
 #include "math.h"
-#include "simd.h" 
+#include "simd.hpp" 
 
 // define / set my version of the function to calculate the legendre polynomials
 template <class data_t> data_t my_legendre_p  (int l, data_t x) {
@@ -21,6 +21,7 @@ template <class data_t> data_t my_legendre_p  (int l, data_t x) {
 		return (63*pow(x,5) - 70*pow(x,3) + 15*x)/8.0;
 	if (l == 6)
 		return (231*pow(x,6) - 315*pow(x,4) + 105*x*x - 5)/16.0;
+	return 1;
 }
 
 // define function for the derivatives of the legendre polynomials
@@ -39,6 +40,7 @@ template <class data_t> data_t my_legendre_p_prime (int l, data_t x) {
                 return (325*pow(x,4) - 210*pow(x,2) + 15)/8.0;
         if (l == 6)
                 return (6*231*pow(x,5) - 4*315*pow(x,3) + 2*105*x)/16.0;
+	return 0;
 }
 
-	
+#endif // ** LEGENDRE_ ** //	
