@@ -17,7 +17,7 @@
 #include "FixedBGDensity.hpp"
 
 // For tag cells
-#include "debug_criterion_FixedGridsTaggingCriterion.hpp"
+#include "FixedGridsTaggingCriterion.hpp"
 
 // Problem specific includes
 #include "ComputePack.hpp"
