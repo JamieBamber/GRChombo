@@ -22,7 +22,7 @@
 class IsotropicKerrFixedBG
 {
   public:
-    //! Struct for the params of the  BH
+    //! Struct for the params of the BH
     struct params_t
     {
         double mass = 1.0;                      //!<< The mass of the BH

@@ -1,0 +1,19 @@
+--------------------------------------------------------------------------------
+*** jbamber   Job: 6707210.sdb   started: 28/11/19 11:46:23   host: mom2 ***
+*** jbamber   Job: 6707210.sdb   started: 28/11/19 11:46:23   host: mom2 ***
+*** jbamber   Job: 6707210.sdb   started: 28/11/19 11:46:23   host: mom2 ***
+*** jbamber   Job: 6707210.sdb   started: 28/11/19 11:46:23   host: mom2 ***
+
+--------------------------------------------------------------------------------
+Application 38074000 exit codes: 143
+Application 38074000 resources: utime ~18232s, stime ~62s, Rss ~97580, inblocks ~269614, outblocks ~1813590
+--------------------------------------------------------------------------------
+
+Resources requested: ncpus=144,place=free,walltime=02:00:00
+Resources allocated: cpupercent=16,cput=00:00:02,mem=6824kb,ncpus=144,vmem=91516kb,walltime=02:00:06
+
+*** jbamber   Job: 6707210.sdb   ended: 28/11/19 13:46:38   queue: standard ***
+*** jbamber   Job: 6707210.sdb   ended: 28/11/19 13:46:38   queue: standard ***
+*** jbamber   Job: 6707210.sdb   ended: 28/11/19 13:46:38   queue: standard ***
+*** jbamber   Job: 6707210.sdb   ended: 28/11/19 13:46:38   queue: standard ***
+--------------------------------------------------------------------------------

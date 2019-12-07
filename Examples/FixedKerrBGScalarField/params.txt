@@ -1,8 +1,8 @@
 #Params for runtime inputs
 
 verbosity = 0
-chk_prefix = ScalarField_
-plot_prefix = ScalarFieldp_
+chk_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/SUBDIR/KerrSF_
+plot_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/SUBDIR/KerrSFp_
 #restart_file = ScalarField_000000.3d.hdf5
 
 # Set up grid spacings and regrid params
@@ -34,6 +34,7 @@ write_plot_ghosts = 0
 isPeriodic = 0 0 0
 # if not periodic, then specify the boundary type
 # 0 = static, 1 = sommerfeld, 2 = reflective
+# 3 = extrapolating
 # (see BoundaryConditions.hpp for details)
 hi_boundary = 3 3 3
 lo_boundary = 3 3 2
@@ -63,13 +64,15 @@ sigma = 0.5
 
 # SF Initial data
 scalar_mass = 1.0
-scalar_amplitude = 0.01
-scalar_width = 4.0
+scalar_amplitude = 1.0
+scalar_width = 100.0
+scalar_center = 512.0 512.0 0.0
 scalar_omega = 1.0
 scalar_l = 0
-scalar_m = 1
+scalar_m = 0
 scalar_alignment = 0.0
 
 # BH initial data
 bh_mass = 1.0
-bh_spin = 0.0
+bh_spin = 0.99
+# bh_center = 512.0 512.0 0.0
