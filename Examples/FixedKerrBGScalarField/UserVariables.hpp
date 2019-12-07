@@ -13,7 +13,6 @@ enum
     c_Pi,  //(minus) conjugate momentum
     c_chi,
     c_rho,
-
     NUM_VARS
 };
 
