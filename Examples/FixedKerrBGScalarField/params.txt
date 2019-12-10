@@ -1,8 +1,8 @@
 #Params for runtime inputs
 
 verbosity = 0
-chk_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/SUBDIR/KerrSF_
-plot_prefix = /home/dc-bamb1/GRChombo_data/KerrSF/SUBDIR/KerrSFp_
+chk_prefix = DATADIR/KerrSF_
+plot_prefix = DATADIR/KerrSFp_
 #restart_file = ScalarField_000000.3d.hdf5
 
 # Set up grid spacings and regrid params
@@ -44,7 +44,7 @@ lo_boundary = 3 3 2
 # 0 = even
 # 1,2,3 = odd x, y, z
 # 4,5,6 = odd xy, yz, xz
-vars_parity = 0 0 0 0            #phi, Pi, chi and rho
+vars_parity = 0 0 0 0		#phi, Pi, chi and rho
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
@@ -62,6 +62,10 @@ stop_time = 500.0
 # NB must be less than 0.5 for stability
 sigma = 0.5
 
+# note that omega_crit = m * s / (2 r_+)
+# where r_+ = M + sqrt(M^2 - a^2) = = M(1 + sqrt(1-s^2)) = 1 + sqrt(1-s^2)
+# for s = 0.99 omega_crit = m * 0.4338
+#
 # SF Initial data
 scalar_mass = 1.0
 scalar_amplitude = 1.0
@@ -69,7 +73,7 @@ scalar_width = 100.0
 scalar_center = 512.0 512.0 0.0
 scalar_omega = 1.0
 scalar_l = 0
-scalar_m = 0
+scalar_m = 2
 scalar_alignment = 0.0
 
 # BH initial data

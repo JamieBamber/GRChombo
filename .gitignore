@@ -11,6 +11,7 @@ slurm_submit
 *.btr
 machine.file.*
 jobscript*
+*env
 core
 d
 o
