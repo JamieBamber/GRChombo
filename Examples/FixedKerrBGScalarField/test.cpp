@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "../../Source/utils/boost_legendre.hpp"
-#include "../../Source/simd/simd.hpp"
+// #include "../../Source/simd/simd.hpp"
 #include <math.h>
 #include "../../Source/utils/legendre.hpp"
 
@@ -8,7 +8,7 @@
 
 int main() {
     printf("Hello, world!\n");
-    simd<double> x;
+    double x;
     double L;
     x = 0.2;
    L = my_legendre_p_prime(2, x);    
