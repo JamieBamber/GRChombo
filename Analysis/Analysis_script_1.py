@@ -36,30 +36,32 @@ has attributes  <KeysViewHDF5 ['dt', 'dx', 'is_periodic_0', 'is_periodic_1', 'is
 <HDF5 group "/level_0/data_attributes" (0 members)>  contains  <KeysViewHDF5 []> 
 has attributes  <KeysViewHDF5 ['comps', 'ghost', 'objectType', 'outputGhost']>
 
-2097152 = 8192 * 256 = 2^21
+2097152 = 2^21
 
-so each box contains 8192 data points? 
-
+number of boxes = 128^2 * 64 = 2^20
+number of output variables = 2 (phi and Pi)
+ 
 8192 = 2^13 """
-
 # 
-for member in f.keys():
+""" for member in f.keys():
 	m = f[member]
 	try:
 		print(m," contains ", m.keys())
 		print("has attributes ", m.attrs.keys())
 	except: 
-		print("Not a group, is type ", type(m)) 
+		print("Not a group, is type ", type(m)) """
 
 level_0 = f['level_0']
-print(level_0['data:datatype=0'])
 
-for member in level_0.keys():
+""" for member in level_0.keys():
 	m = level_0[member]
 	try:
 		print(m," contains ", m.keys())
 		print("has attributes ", m.attrs.keys())
 	except:
-		print(member, " is ", m[0:])
+		print(member, " is ", m[0:]) """
+
+print(level_0['data:datatype=0'][0:8])
+
 
 

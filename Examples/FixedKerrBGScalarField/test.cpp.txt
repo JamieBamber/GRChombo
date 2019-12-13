@@ -1,17 +1,14 @@
-#include <stdio.h>
-#include "../../Source/utils/boost_legendre.hpp"
+#include <iostream>
 #include "../../Source/simd/simd.hpp"
 #include <math.h>
 #include "../../Source/utils/legendre.hpp"
 
-// using namespace std;
+using namespace std;
 
 int main() {
-    printf("Hello, world!\n");
-    simd<double> x;
-    double L;
-    x = 0.2;
-   L = my_legendre_p_prime(2, x);    
-   printf("L = %f\n", L);
+    cout << "Hello, world!\n";
+    simd<double> x = 0.2;
+    cout << x;
+    // cout << simd_compare_lt(x, y);
     return 0;
 }

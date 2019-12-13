@@ -8,18 +8,20 @@
 
 GRCHOMBO_SOURCE = ../../Source
 
-include_dirs := -I$(GRCHOMBO_SOURCE)/utils \
-            -I$(GRCHOMBO_SOURCE)/simd  \
-            -I$(GRCHOMBO_SOURCE)/CCZ4  \
-            -I$(GRCHOMBO_SOURCE)/Matter  \
-            -I$(GRCHOMBO_SOURCE)/BoxUtils  \
-            -I$(GRCHOMBO_SOURCE)/GRChomboCore  \
-            -I$(GRCHOMBO_SOURCE)/TaggingCriteria  \
-            -I$(GRCHOMBO_SOURCE)/AMRInterpolator  \
-            -I$(GRCHOMBO_SOURCE)/InitialConditions/ScalarFields  \
-            -I$(GRCHOMBO_SOURCE)/FixedBackground
+ebase := Main_ScalarField
+#ebase := test
+
+LibNames := AMRTimeDependent AMRTools BoxTools
+
+src_dirs := $(GRCHOMBO_SOURCE)/utils \
+            $(GRCHOMBO_SOURCE)/simd  \
+            $(GRCHOMBO_SOURCE)/CCZ4  \
+            $(GRCHOMBO_SOURCE)/Matter  \
+            $(GRCHOMBO_SOURCE)/BoxUtils  \
+            $(GRCHOMBO_SOURCE)/GRChomboCore  \
+            $(GRCHOMBO_SOURCE)/TaggingCriteria  \
+            $(GRCHOMBO_SOURCE)/AMRInterpolator  \
+            $(GRCHOMBO_SOURCE)/InitialConditions/ScalarFields  \
+            $(GRCHOMBO_SOURCE)/FixedBackground
 
 include $(CHOMBO_HOME)/mk/Make.test
-
-test : test.cpp
-	icpc -c test.cpp -o test.o $(include_dirs) -I$(CHOMBO_HOME)/include 

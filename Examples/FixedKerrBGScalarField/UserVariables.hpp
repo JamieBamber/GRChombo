@@ -13,14 +13,15 @@ enum
     c_Pi,  //(minus) conjugate momentum
     c_chi,
     c_rho,
-
+    c_S_azimuth, 
+    c_S_azimuth_prime,
     NUM_VARS
 };
 
 namespace UserVariables
 {
 static constexpr char const *variable_names[NUM_VARS] = {"phi", "Pi", "chi",
-                                                         "rho"};
+                                                         "rho", "S_azimuth", "S_azimuth_prime"};
 }
 
 #endif /* USERVARIABLES_HPP */

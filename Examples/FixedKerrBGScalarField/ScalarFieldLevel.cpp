@@ -14,7 +14,7 @@
 #include "FixedBGEvolution.hpp"
 
 // For density calculation
-#include "FixedBGDensity.hpp"
+#include "FixedBGDensityAndAngMom.hpp"
 
 // For tag cells
 #include "FixedGridsTaggingCriterion.hpp"
@@ -50,6 +50,7 @@ void ScalarFieldLevel::initialData()
                    m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
 }
 
+
 // Things to do before outputting a checkpoint file
 void ScalarFieldLevel::preCheckpointLevel()
 {
@@ -58,9 +59,9 @@ void ScalarFieldLevel::preCheckpointLevel()
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     IsotropicKerrFixedBG kerr_bg(m_p.bg_params, m_dx);
-    BoxLoops::loop(FixedBGDensity<ScalarFieldWithPotential, IsotropicKerrFixedBG>(
-                       scalar_field, kerr_bg, m_dx, m_p.center),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
+    BoxLoops::loop(FixedBGDensityAndAngMom<ScalarFieldWithPotential, IsotropicKerrFixedBG>(
+                       scalar_field, kerr_bg, m_dx, m_p.center, m_p.L, m_p.initial_params.alignment),
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
 // Things to do in RHS update, at each RK4 step
@@ -89,7 +90,7 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
 void ScalarFieldLevel::specificWritePlotHeader(
     std::vector<int> &plot_states) const
 {
-    plot_states = {c_phi, c_Pi};
+    plot_states = {c_phi, c_Pi, c_chi, c_rho, c_S_azimuth, c_S_azimuth_prime};
 }
 
 // Note that for the fixed grids this only happens on the initial timestep

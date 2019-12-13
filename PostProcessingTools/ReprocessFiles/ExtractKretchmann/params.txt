@@ -1,0 +1,48 @@
+#Params for runtime inputs
+N1 = 128
+N2 = 128
+N3 = 128
+L = 512
+max_level = 7 # There are (max_level+1) grids, so min is zero
+#scalar_mass = 1.0
+scalar_mass = 2.0
+#scalar_mass = 4.0
+
+# For read in of files
+chk_prefix = /mnt/extraspace/kclough/AxionBinary/NRBHAF_muM1.0_plt
+restart_file = /mnt/extraspace/kclough/AxionBinary/NRBHAF_muM1.0_plt000000.3d.hdf5
+checkpoint_interval = 2
+start_file = 3600
+num_files = 6500
+
+# For desired outputs, set plot interval to zero to turn off plot outputs
+plot_interval = 0
+plot_prefix = PlotFile
+
+# From here it is mostly dummy params
+verbosity = 0
+regrid_interval = 0 0 0 0 0 0 0 0 0 0
+max_grid_size = 16
+block_factor = 8
+isPeriodic = 0 0 0
+
+# if not periodic, then specify the boundary type
+# 0 = static, 1 = sommerfeld, 2 = reflective, 3 = extrapolating
+# (see BoundaryConditions.hpp for details)
+hi_boundary = 4 4 4
+#hi_boundary = 3 3 3
+lo_boundary = 2 2 2
+center = 0.0 0.0 0.0
+
+# if sommerfeld boundaries selected, must select 
+# asymptotic values (in order given by UserVariables.hpp)
+# 0 = even
+# 1,2,3 = odd x, y, z
+# 4,5,6 = odd xy, yz, xz
+vars_parity            = 0 0    #phi and Pi
+                         0 0    #chi and rho
+ 
+# if reflective boundaries selected, must set
+# parity of all vars (in order given by UserVariables.hpp)
+vars_asymptotic_values = 1.0 0.0     #phi and Pi
+                         0.0 0.0     #chi and rho
