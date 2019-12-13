@@ -3,8 +3,8 @@
  * Please refer to LICENSE in GRChombo's root directory.
  */
 
-#ifndef SCALARROTATINGCLOUD_HPP_
-#define SCALARROTATINGCLOUD_HPP_
+#ifndef GAUSSIANSCALARROTATINGCLOUD_HPP_
+#define GAUSSIANSCALARROTATINGCLOUD_HPP_
 
 #include "Cell.hpp"
 #include "Coordinates.hpp"
@@ -22,13 +22,14 @@
 
 //! Class which creates a rotating cloud of scalar field given params for initial
 //! matter config
-class ScalarRotatingCloud
+class GaussianScalarRotatingCloud
 {
   public:
     //! A structure for the input params for scalar field properties
     struct params_t
     {
-        double amplitude; //!< Amplitude of initial SF
+        double amplitude; //!< Amplitude of bump in initial SF bubble
+	double width; //!< Width of bump in initial SF bubble
         std::array<double, CH_SPACEDIM>
             center;   //!< Centre of perturbation in initial SF bubble
         double omega; //!< frequency of scalar field
@@ -38,7 +39,7 @@ class ScalarRotatingCloud
     };
 
     //! The constructor for the class
-    ScalarRotatingCloud(params_t a_params, const IsotropicKerrFixedBG::params_t a_bg_params, const double a_dx)
+    GaussianScalarRotatingCloud(params_t a_params, const IsotropicKerrFixedBG::params_t a_bg_params, const double a_dx)
         : m_params(a_params), m_dx(a_dx), m_bg_params(a_bg_params)
     {
     }
@@ -66,7 +67,7 @@ class ScalarRotatingCloud
 	data_t sin_theta_prime = rho_prime / r;
 	data_t azimuth_prime = atan2(y_prime, x);	// need to use atan2 to obtain full 0 to 2pi range
 	// radius in the xy plane, subject to a floor
-	data_t rho2 = simd_max(x * x + y * y, 1e-8); // try making this 1e-4
+	data_t rho2 = simd_max(x * x + y * y, 1e-8);
         data_t rho = sqrt(rho2);
 
 	// get the metric vars
@@ -74,11 +75,17 @@ class ScalarRotatingCloud
         MetricVars<data_t> metric_vars;
         kerr_bh.compute_metric_background(metric_vars, coords);
 
+	//data_t g_function = boost::math::legendre_p(m_params.l, cos_theta_prime);
+	//data_t g_function_prime = boost::math::legendre_p_prime(m_params.l, cos_theta_prime);
+
 	data_t g_function = my_legendre_p(m_params.l, cos_theta_prime);
         data_t g_function_prime = my_legendre_p_prime(m_params.l, cos_theta_prime);
 
+	//data_t g_function = 1;
+	//data_t g_function_prime = 0;
+
 	// r dependence of phi
-	data_t r_function = m_params.amplitude; 
+	data_t r_function = m_params.amplitude * exp(-r * r / (m_params.width * m_params.width)); 
 	//angular dependence of phi
 	data_t angular_function = sin(m_params.m * azimuth_prime) * g_function;
         // set the field vars 
@@ -118,4 +125,4 @@ y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
 
 };
 
-#endif /* ScalarRotatingCloud_HPP_ */
+#endif /* GaussianScalarRotatingCloud_HPP_ */

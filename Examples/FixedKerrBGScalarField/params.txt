@@ -1,5 +1,7 @@
 #Params for runtime inputs
 
+nan_check = 0
+
 verbosity = 0
 chk_prefix = DATADIR/KerrSF_
 plot_prefix = DATADIR/KerrSFp_
@@ -15,6 +17,8 @@ N3 = 64
 # NB if non cubic, this determines dx for all sides
 L =  1024
 center = 512.0 512.0 0.0
+symmetry_dir = 0 0 1
+# this tells it which axes are symmetric
 
 # Level data
 # Maximum number of times you can regrid above coarsest level
@@ -44,7 +48,7 @@ lo_boundary = 3 3 2
 # 0 = even
 # 1,2,3 = odd x, y, z
 # 4,5,6 = odd xy, yz, xz
-vars_parity = 0 0 0 0		#phi, Pi, chi and rho
+vars_parity = 0 0 0 0 0 0		#phi, Pi, chi, rho, S_az, S_az_prime
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
@@ -55,7 +59,7 @@ vars_asymptotic_values = 0 0 1 0   #phi, Pi, chi and rho
 # HDF5files are written every dt = L/N*dt_multiplier*checkpoint_interval
 checkpoint_interval = 100
 plot_interval = 1
-dt_multiplier = 0.05
+dt_multiplier = 0.1 # 0.05
 stop_time = 500.0
 
 # coefficient for KO numerical dissipation
@@ -68,15 +72,12 @@ sigma = 0.5
 #
 # SF Initial data
 scalar_mass = 1.0
-scalar_amplitude = 1.0
-scalar_width = 100.0
-scalar_center = 512.0 512.0 0.0
+scalar_amplitude = 0.1
 scalar_omega = 1.0
 scalar_l = 0
-scalar_m = 2
-scalar_alignment = 0.0
+scalar_m = 1
+alignment = 0.0
 
 # BH initial data
 bh_mass = 1.0
 bh_spin = 0.99
-# bh_center = 512.0 512.0 0.0

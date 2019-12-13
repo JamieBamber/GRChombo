@@ -63,6 +63,7 @@ template <class matter_t, class background_t> class FixedBGDensity
 
         // assign values of density in output box
         current_cell.store_vars(emtensor.rho, c_rho);
+
     }
 };
 

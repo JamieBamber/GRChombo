@@ -39,7 +39,6 @@ class FixedGridsTaggingCriterion
                 // take L as the length of full grid, so tag inner 1/2
                 // of it, which means inner \pm L/4
                 double ratio = pow(2.0, -(i_level + 2.0));
-		pout() << "ratio = " << ratio << endl;
                 const Coordinates<data_t> coords(current_cell, m_dx, m_center);
                 if (abs(coords.x) < m_L*ratio && 
                     abs(coords.y) < m_L*ratio && 

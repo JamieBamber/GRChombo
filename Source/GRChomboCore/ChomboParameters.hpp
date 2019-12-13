@@ -20,6 +20,7 @@ class ChomboParameters
         pp.load("verbosity", verbosity, 0);
         // Grid setup
         pp.load("L", L, 1.0);
+	//pp.load("symmetry_dir", symmetry_dir, {0, 0, 0}); // load the directions of symmetry
         pp.load("center", center,
                 {0.5 * L, 0.5 * L, 0.5 * L}); // default to center
         pp.load("regrid_threshold", regrid_threshold, 0.5);
@@ -143,6 +144,7 @@ class ChomboParameters
     // General parameters
     int verbosity;
     double L;                               // Physical sidelength of the grid
+    // std::array<bool, CH_SPACEDIM> symmetry_dir; // Directions of symmetry
     std::array<double, CH_SPACEDIM> center; // grid center
     IntVect ivN;                 // The number of grid cells in each dimension
     double coarsest_dx;          // The coarsest resolution

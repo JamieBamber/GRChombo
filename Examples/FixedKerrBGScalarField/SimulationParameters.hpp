@@ -37,12 +37,13 @@ class SimulationParameters : public ChomboParameters
         sqrt(1e-10 / (0.5 * potential_params.scalar_mass *	//
                       potential_params.scalar_mass));	     */	//
         pp.load("scalar_amplitude", initial_params.amplitude); 
-        pp.load("scalar_width", initial_params.width);		
-        pp.load("scalar_center", initial_params.center, center);
+        pp.load("center", initial_params.center, center);
 	pp.load("scalar_omega", initial_params.omega);
 	pp.load("scalar_l", initial_params.l);
 	pp.load("scalar_m", initial_params.m);
+	pp.load("alignment", initial_params.alignment);
         pp.load("sigma", sigma);
+	
 
         // Background boosted bh data
         pp.load("bh_mass", bg_params.mass);
