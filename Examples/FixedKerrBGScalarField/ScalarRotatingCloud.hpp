@@ -86,7 +86,7 @@ class ScalarRotatingCloud
         vars.phi = r_function * angular_function;
 	
 	// dphi
-	data_t dphidt = r_function * g_function *m_params.omega*cos(m_params.m*azimuth_prime);
+	data_t dphidt = - r_function * g_function *m_params.omega*cos(m_params.m*azimuth_prime);
 	//!< derivative of phi w.r.t the cloud azimuthal angle
 	data_t dphid_azimuth_prime = r_function * g_function *m_params.m*cos(m_params.m*azimuth_prime);
 	//!< derivative of phi w.r.t the cloud theta angle

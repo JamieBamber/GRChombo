@@ -3,12 +3,12 @@ pout.*
 slurm_submit
 .bashrc
 *.pbs
-*.sh
 *.s
 *.bolt
 *.e*
 *.o*
 *.btr
+*.sh
 machine.file.*
 jobscript*
 *env

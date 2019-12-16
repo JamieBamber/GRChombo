@@ -1,0 +1,9 @@
+name: analysis_env
+dependencies:
+  - numpy
+  - scipy
+  - matplotlib
+  - yt
+  - h5py
+  - python=3.6
+prefix: ./analysis_env
