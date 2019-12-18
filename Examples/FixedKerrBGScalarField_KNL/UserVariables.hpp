@@ -15,14 +15,13 @@ enum
     c_rho,
     c_S_azimuth, 
     c_S_azimuth_prime,
-    c_S_r,
     NUM_VARS
 };
 
 namespace UserVariables
 {
 static constexpr char const *variable_names[NUM_VARS] = {"phi", "Pi", "chi",
-                                                         "rho", "S_azimuth", "S_azimuth_prime", "S_r"};
+                                                         "rho", "S_azimuth", "S_azimuth_prime"};
 }
 
 #endif /* USERVARIABLES_HPP */

@@ -6,4 +6,5 @@ dependencies:
   - yt
   - h5py
   - python=3.6
+  - mpi4py
 prefix: ./analysis_env

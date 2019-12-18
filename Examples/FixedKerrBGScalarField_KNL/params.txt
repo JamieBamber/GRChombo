@@ -20,7 +20,7 @@ center = 512.0 512.0 0.0
 
 # Level data
 # Maximum number of times you can regrid above coarsest level
-max_level = 7 # There are (max_level+1) grids, so min is zero
+max_level = 8 # There are (max_level+1) grids, so min is zero
 # Frequency of regridding at each level
 # Need one for each level, ie max_level+1 items (or more)
 # No regrid for fixed BG and no tag buffer
@@ -46,7 +46,7 @@ lo_boundary = 3 3 2
 # 0 = even
 # 1,2,3 = odd x, y, z
 # 4,5,6 = odd xy, yz, xz
-vars_parity = 0 0 0 0 0 0 0		#phi, Pi, chi, rho, S_az, S_az_prime, S_r
+vars_parity = 0 0 0 0 0 0		#phi, Pi, chi, rho, S_az, S_az_prime
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
@@ -79,7 +79,7 @@ scalar_mass = 1.0
 scalar_amplitude = 0.1
 scalar_omega = 1.0
 scalar_l = 0
-scalar_m = 2
+scalar_m = 0
 alignment = 0.0
 
 # BH initial data
