@@ -9,18 +9,18 @@ plot_prefix = DATADIR/KerrSFp_
 # NB - the N values need to be multiples of block_factor
 N1 = 128
 N2 = 128
-N3 = 64
+N3 = 128
 
 # Length of longest box side, dx_coarsest = L/N(max)
 # NB if non cubic, this determines dx for all sides
 L =  1024
-center = 512.0 512.0 0.0
-# symmetry_dir = 0 0 1
+center = 512.0 512.0 512.0
+# symmetry_dir = 0 0 0
 # this tells it which axes are symmetric
 
 # Level data
 # Maximum number of times you can regrid above coarsest level
-max_level = 7 # There are (max_level+1) grids, so min is zero
+max_level = 8 # There are (max_level+1) grids, so min is zero
 # Frequency of regridding at each level
 # Need one for each level, ie max_level+1 items (or more)
 # No regrid for fixed BG and no tag buffer
@@ -39,7 +39,7 @@ isPeriodic = 0 0 0
 # 3 = extrapolating
 # (see BoundaryConditions.hpp for details)
 hi_boundary = 3 3 3
-lo_boundary = 3 3 2
+lo_boundary = 3 3 3
 
 # if sommerfeld boundaries selected, must select 
 # asymptotic values (in order given by UserVariables.hpp)
@@ -50,7 +50,7 @@ vars_parity = 0 0 0 0 0 0 0		#phi, Pi, chi, rho, S_az, S_az_prime, S_r
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
-vars_asymptotic_values = 1 1 1 0 0 0 0  #phi, Pi, chi, rho, S_az, S_az_prime, S_r
+vars_asymptotic_values = 0 0 1 0   #phi, Pi, chi and rho
 
 # Set up time steps
 # dt will be dx*dt_multiplier on each grid level
@@ -63,7 +63,7 @@ dt_multiplier = 0.03125 # = 1/32
 stop_time = 1000.0
 ###
 # dt_raw = 8 * 1/32 = 0.25
-# dt_plot = 1.25
+# dt_plot = 1.2
 #
 
 # coefficient for KO numerical dissipation
@@ -73,14 +73,14 @@ sigma = 0.5
 # note that omega_crit = m * s / (2 r_+)
 # where r_+ = M + sqrt(M^2 - a^2) = = M(1 + sqrt(1-s^2)) = 1 + sqrt(1-s^2)
 # for s = 0.99 omega_crit = m * 0.4338
-#	so m_crit = 2.30
+#
 # SF Initial data
 scalar_mass = 1.0
 scalar_amplitude = 0.1
 scalar_omega = 1.0
-scalar_l = 3
+scalar_l = 0
 scalar_m = 1
-alignment = 0.0
+alignment = 0.5
 
 # BH initial data
 bh_mass = 1.0
