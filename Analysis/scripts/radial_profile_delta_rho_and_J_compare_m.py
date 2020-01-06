@@ -54,7 +54,7 @@ r_plus = 1 + math.sqrt(1 - a**2)
 ### derived fields
 # weighting field = (cell_volume)^(2/3) / (2*pi * r * dr) 
 @derived_field(name = "weighting_field", units = "")
-def _rho_E_eff(field, data):
+def _weighting_field(field, data):
         return pow(data["cell_volume"].in_base("cgs"),2.0/3) * N_bins / (2*math.pi* data["cylindrical_radius"]*(r_max - r_min)*cm)
 
 # load datasets
@@ -70,7 +70,7 @@ print("time = ", time.time() - start_time)
 def get_profile_data(ds):
 	slice = ds.r[:,:,z_position]
 	slice.set_field_parameter("center", center)
-	rp = yt.create_profile(slice, "spherical_radius", fields=["rho", "S_azimuth"], n_bins=128, weight_field="weighting_field", extrema={"spherical_radius" : (r_min, r_max)})
+	rp = yt.create_profile(slice, "cylindrical_radius", fields=["rho", "S_azimuth"], n_bins=128, weight_field="weighting_field", extrema={"cylindrical_radius" : (r_min, r_max)})
 	rho = rp["rho"].value
 	rho_J = rp["S_azimuth"].value
 	J = rho_J/rho
