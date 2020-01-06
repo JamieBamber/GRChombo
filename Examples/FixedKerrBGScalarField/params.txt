@@ -50,7 +50,7 @@ vars_parity = 0 0 0 0 0 0 0		#phi, Pi, chi, rho, S_az, S_az_prime, S_r
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
-vars_asymptotic_values = 1 1 1 0 0 0 0  #phi, Pi, chi, rho, S_az, S_az_prime, S_r
+vars_asymptotic_values = 0 0 1 0 0 0 0  #phi, Pi, chi, rho, S_az, S_az_prime, S_r
 
 # Set up time steps
 # dt will be dx*dt_multiplier on each grid level
@@ -78,8 +78,8 @@ sigma = 0.5
 scalar_mass = 1.0
 scalar_amplitude = 0.1
 scalar_omega = 1.0
-scalar_l = 3
-scalar_m = 1
+scalar_l = 0
+scalar_m = 4
 alignment = 0.0
 
 # BH initial data
