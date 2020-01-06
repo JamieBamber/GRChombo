@@ -70,7 +70,7 @@ print("time = ", time.time() - start_time)
 def get_profile_data(ds):
 	slice = ds.r[:,:,z_position]
 	slice.set_field_parameter("center", center)
-	rp = yt.create_profile(slice, "cylindrical_radius", fields=["rho", "S_azimuth"], n_bins=128, weight_field="weighting_field", extrema={"cylindrical_radius" : (r_min, r_max)})
+	rp = yt.create_profile(slice, "cylindrical_radius", fields=["rho", "S_azimuth"], n_bins=N_bins, weight_field="weighting_field", extrema={"cylindrical_radius" : (r_min, r_max)})
 	rho = rp["rho"].value
 	rho_J = rp["S_azimuth"].value
 	J = rho_J/rho
