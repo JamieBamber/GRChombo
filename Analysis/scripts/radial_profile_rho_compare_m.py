@@ -97,20 +97,20 @@ ax1, ax2 = ax
 colours = ['r-', 'r--']
 
 # make upper plot 
-ax1.plot(ln_r, r*rho1, colours[0], label="m = " + m_list[0])
-ax1.set_ylabel("$r_{BL}\\rho$   m = " + m_list[0])
+ax1.plot(ln_r, (r**2)*rho1, colours[0], label="m = " + m_list[0])
+ax1.set_ylabel("${r_{BL}}^2\\rho$   m = " + m_list[0])
 ax1.grid(axis='both')
-ax1.set_ylim((0, 15))
+#ax1.set_ylim((0, 15))
 
 title = "m = +/- 2 profile," + " time = {:.1f}".format(current_time) 
 ax1.set_title(title)
 
 # make lower plot
-ax2.plot(ln_r, r*rho2, colours[1], label="m = " + m_list[1])
-ax2.set_ylabel("$r_{BL}\\rho$   m = " + m_list[1])
+ax2.plot(ln_r, (r**2)*rho2, colours[1], label="m = " + m_list[1])
+ax2.set_ylabel("${r_{BL}}^2\\rho$   m = " + m_list[1])
 ax2.set_xlabel("$\\ln(r_{BL})$")
 ax2.grid(axis="both")
-ax2.set_ylim((0, 15))
+#ax2.set_ylim((0, 15))
 
 plt.tight_layout()
 
