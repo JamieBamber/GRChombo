@@ -21,7 +21,7 @@ m_dirs["2"] = "run3_KNL_l0_m2_a0.99_Al0_M1"
 m_dirs["3"] = "run4_KNL_l0_m3_a0.99_Al0_M1"
 m_dirs["10"] = "run9_KNL_l0_m10_a0.99_Al0_M1"
 
-z_position = 10.0	# z position of slice
+z_position = 20.0	# z position of slice
 number = 220
 dt = 5*0.25
 t = number*dt
@@ -67,21 +67,21 @@ def make_profile(ds):
 
 def get_data(key, number):
 	data_sub_dir = m_dirs[key]
-	ds0 = yt.load(data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(0))
-	print("loaded initial dataset for " + data_sub_dir) 
+	#ds0 = yt.load(data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(0))
+	#print("loaded initial dataset for " + data_sub_dir) 
 	dsi = yt.load(data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(5*number))
 	print("loaded dataset number " + str(number) + "for " + data_sub_dir) 
-	R, rho0 = make_profile(ds0)
-	rho = make_profile(dsi)[1]
-	delta_rho = rho - rho0
-	return (R, delta_rho)
+	#R, rho0 = make_profile(ds0)
+	R, rho = make_profile(dsi)
+	#delta_rho = rho - rho0
+	return (R, rho)
  
-R, delta_rho1 = get_data(m_list[0], number)
+R, rho1 = get_data(m_list[0], number)
 print("got profile for m=" + m_list[0], flush=True)
-delta_rho_list = [delta_rho1]
+rho_list = [rho1]
 for i in range(1, len(m_list)):
-	delta_rho = get_data(m_list[i], number)[1]
-	delta_rho_list.append(delta_rho)
+	rho = get_data(m_list[i], number)[1]
+	rho_list.append(rho)
 	print("got profile for m=" + m_list[i], flush=True)
 
 ### plot delta rho profiles vs r_BS
@@ -94,9 +94,9 @@ colours = ['r--', 'b--', 'g-', 'b-', 'r-', 'c-', 'm-']
 
 # make  plot 
 for i in range(0, len(m_list)):
-	plt.plot(r, delta_rho_list[i], colours[i], label="m = " + m_list[i])
+	plt.plot(r, rho_list[i], colours[i], label="m = " + m_list[i])
 #plt.ylabel("${r_{BL}}\\Delta\\rho$")
-plt.ylabel("$\\Delta\\rho$")
+plt.ylabel("$\\rho$")
 plt.legend(fontsize=8)
 #plt.ylim((-5, 35))
 title = "density profile, $L=0$, $M=1$, $z$={:.3}, time={:.1f}".format(z_position, t) 
@@ -105,7 +105,7 @@ plt.xlabel("$(r_{BL})$")
 plt.grid(axis="both")
 plt.tight_layout()
 
-save_name = "delta_rho_profile_compare_m_z={:.3f}_t={:.2f}.png".format(z_position, t)
+save_name = "rho_profile_compare_m_z={:.3f}_t={:.2f}.png".format(z_position, t)
 save_path = save_root_path + save_name
 plt.savefig(save_path, transparent=False)
 plt.clf()
