@@ -59,7 +59,7 @@ data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/Kerr
 def make_profile(ds):
 	slice = ds.r[:,:,z_position]
 	slice.set_field_parameter("center", center)
-	rp = yt.create_profile(slice, "spherical_radius", fields=["rho"], n_bins=128, weight_field="weighting_field", extrema={"spherical_radius" : (r_min, r_max)})
+	rp = yt.create_profile(slice, "cylindrical_radius", fields=["rho"], n_bins=128, weight_field="weighting_field", extrema={"cylindrical_radius" : (r_min, r_max)})
 	rho = rp["rho"].value
 	R = rp.x.value
 	print("made profile")
@@ -94,18 +94,18 @@ colours = ['r--', 'b--', 'g-', 'b-', 'r-', 'c-', 'm-']
 
 # make  plot 
 for i in range(0, len(m_list)):
-	plt.plot(r, rho_list[i], colours[i], label="m = " + m_list[i])
+	plt.plot(R, rho_list[i], colours[i], label="m = " + m_list[i])
 #plt.ylabel("${r_{BL}}\\Delta\\rho$")
 plt.ylabel("$\\rho$")
 plt.legend(fontsize=8)
 #plt.ylim((-5, 35))
 title = "density profile, $L=0$, $M=1$, $z$={:.3}, time={:.1f}".format(z_position, t) 
 plt.title(title)
-plt.xlabel("$(r_{BL})$")
+plt.xlabel("$R_{cyl}$")
 plt.grid(axis="both")
 plt.tight_layout()
 
-save_name = "rho_profile_compare_m_z={:.3f}_t={:.2f}.png".format(z_position, t)
+save_name = "rho_profile_R_compare_m_z={:.3f}_t={:.2f}.png".format(z_position, t)
 save_path = save_root_path + save_name
 plt.savefig(save_path, transparent=False)
 plt.clf()
