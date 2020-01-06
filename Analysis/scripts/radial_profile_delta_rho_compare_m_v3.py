@@ -27,7 +27,7 @@ dt = 5*0.25
 t = number*dt
 
 # choose m values to plot
-m_list = ["-2", "-1", "0", "1", "2", "3", "10"]
+m_list = ["-3", "-2", "-1", "0", "1", "2", "3", "10"]
 data_sub_dirs = []
 for m in m_list:
 	data_sub_dirs.append(m_dirs[m])
@@ -90,12 +90,12 @@ r = r_BL
 ln_r = np.log(r)
 r_star = np.log(r - 1)
 
-colours = ['r--', 'b--', 'g-', 'b-', 'r-', 'c-', 'm-']
+colours = ['c--', 'r--', 'b--', 'g-', 'b-', 'r-', 'c-', 'm-']
 
 # make  plot 
 for i in range(0, len(m_list)):
-	plt.plot(ln_r, r*delta_rho_list[i], colours[i], label="m = " + m_list[i])
-plt.ylabel("${r_{BL}}\\Delta\\rho$")
+	plt.plot(r_star, (r**2)*delta_rho_list[i], colours[i], label="m = " + m_list[i])
+plt.ylabel("${r_{BL}}^2\\Delta\\rho$")
 #plt.ylabel("$\\Delta\\rho$")
 plt.legend(fontsize=8)
 #plt.ylim((-5, 35))
@@ -105,7 +105,7 @@ plt.xlabel("$\\ln(r_{BL})$")
 plt.grid(axis="both")
 plt.tight_layout()
 
-save_name = "r_delta_rho_profile_compare_m_z={:.3f}_t={:.2f}.png".format(z_position, t)
+save_name = "r2_delta_rho_vs_ln_r-1_profile_compare_m_z={:.3f}_t={:.2f}.png".format(z_position, t)
 save_path = save_root_path + save_name
 plt.savefig(save_path, transparent=False)
 plt.clf()
