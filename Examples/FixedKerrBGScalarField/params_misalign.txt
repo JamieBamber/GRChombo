@@ -80,7 +80,7 @@ scalar_amplitude = 0.1
 scalar_omega = 1.0
 scalar_l = 0
 scalar_m = 1
-alignment = 0.5
+alignment = 0.25
 
 # BH initial data
 bh_mass = 1.0

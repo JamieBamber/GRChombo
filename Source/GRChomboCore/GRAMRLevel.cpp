@@ -501,6 +501,8 @@ void GRAMRLevel::readCheckpointHeader(HDF5Handle &a_handle)
         MayDay::Error("GRAMRLevel::readCheckpointHeader: checkpoint file does "
                       "not have num_components");
     }
+    pout() << "header.m_int[num_components] = " << header.m_int["num_components"] << std::endl;
+    pout() << "NUM_VARS = " << NUM_VARS << std::endl;
     int num_comps = header.m_int["num_components"];
     if (num_comps != NUM_VARS)
     {
