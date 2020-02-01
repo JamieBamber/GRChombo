@@ -13,7 +13,7 @@
 #include "ADMFixedBGVars.hpp"
 #include "IsotropicKerrFixedBG.hpp"
 
-#include "assoc_legendre.hpp" // I want this for the associted legendre polynomials needed for spherical harmonics
+#include "legendre.hpp" // I want this for the derivatives of legendre polynomials
 
 #include "Tensor.hpp"
 #include "UserVariables.hpp" //This files needs NUM_VARS - total no. components
@@ -73,10 +73,9 @@ class ScalarRotatingCloud
         IsotropicKerrFixedBG kerr_bh(m_bg_params, m_dx);
         MetricVars<data_t> metric_vars;
         kerr_bh.compute_metric_background(metric_vars, coords);
-	
-	auto my_P_lm = AssocLegendre::assoc_legendre_with_deriv(m_params.l, m_params.m, cos_theta_prime, sin_theta_prime);
-	data_t g_function = my_P_lm.Magnitude;
-        data_t g_function_prime = my_P_lm.Derivative;
+
+	data_t g_function = my_legendre_p(m_params.l, cos_theta_prime);
+        data_t g_function_prime = my_legendre_p_prime(m_params.l, cos_theta_prime);
 
 	// r dependence of phi
 	data_t r_function = m_params.amplitude; 
@@ -91,9 +90,11 @@ class ScalarRotatingCloud
 	//!< derivative of phi w.r.t the cloud azimuthal angle
 	data_t dphid_azimuth_prime = r_function * g_function *m_params.m*cos(m_params.m*azimuth_prime);
 	//!< derivative of phi w.r.t the cloud theta angle
- 	data_t dphid_theta_prime = r_function * g_function_prime * sin(m_params.m*azimuth_prime);
+ 	data_t dphid_theta_prime = r_function * (-sin_theta_prime) * 
+g_function_prime *sin(m_params.m*azimuth_prime);
 
-	data_t dphid_azimuth = - sin_alignment * (x / rho_prime) * dphid_theta_prime + (rho2 * cos_alignment - y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
+	data_t dphid_azimuth = - sin_alignment * (x / rho_prime) * dphid_theta_prime + (rho2 * cos_alignment - 
+y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
 	
 	//beta^azimuth
 	data_t beta_azimuth = sqrt( (pow(metric_vars.shift[0],2) + pow(metric_vars.shift[1],2))/rho2 );

@@ -6,7 +6,7 @@
 # Included makefiles need an absolute path to the Chombo installation
 # CHOMBO_HOME := Please set the CHOMBO_HOME locally (e.g. export CHOMBO_HOME=... in bash)
 
-GRCHOMBO_SOURCE = ../../Source
+GRCHOMBO_SOURCE = /home/dc-bamb1/GRChombo/Source
 
 include_dirs := -I$(GRCHOMBO_SOURCE)/utils \
             -I$(GRCHOMBO_SOURCE)/simd  \
@@ -20,4 +20,4 @@ include_dirs := -I$(GRCHOMBO_SOURCE)/utils \
             -I$(GRCHOMBO_SOURCE)/FixedBackground
 
 test : test.cpp
-	icpc test.cpp -o test $(include_dirs) -I$(CHOMBO_HOME)/include 
+	icpc test.cpp -o test ${include_dirs} -I$(CHOMBO_HOME)/include -std=c++14

@@ -6,10 +6,11 @@
 # Included makefiles need an absolute path to the Chombo installation
 # CHOMBO_HOME := Please set the CHOMBO_HOME locally (e.g. export CHOMBO_HOME=... in bash)
 
-#CHOMBO_HOME:=/home/fmuia/Chombo_Debug/lib 
 ebase := ReprocessingTool
 
 LibNames := AMRTimeDependent AMRTools BoxTools
+
+GRCHOMBO_SOURCE = /home/dc-bamb1/GRChombo/Source
 
 src_dirs := $(GRCHOMBO_SOURCE)/utils \
             $(GRCHOMBO_SOURCE)/simd  \
