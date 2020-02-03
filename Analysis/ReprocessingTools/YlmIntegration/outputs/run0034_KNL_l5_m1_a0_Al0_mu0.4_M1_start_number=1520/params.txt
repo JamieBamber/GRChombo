@@ -9,7 +9,7 @@ max_level = 7 # There are (max_level+1) grids, so min is zero
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
-data_subdir = run0041_KNL_l5_m1_a0.99_Al0_mu0.4_M1_correct_Ylm
+data_subdir = run0034_KNL_l5_m1_a0_Al0_mu0.4_M1_correct_Ylm
 
 # output directory 
 output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/
