@@ -3,7 +3,7 @@
 verbosity = 0
 chk_prefix = DATADIR/KerrSF_
 plot_prefix = DATADIR/KerrSFp_
-#restart_file = KerrSF_000000.3d.hdf5
+#restart_file = DATADIR/KerrSF_000100.3d.hdf5
 
 # Set up grid spacings and regrid params
 # NB - the N values need to be multiples of block_factor
@@ -50,7 +50,7 @@ lo_boundary = 3 3 2
 # 1,2,3 = odd x, y, z
 # 4,5,6 = odd xy, yz, xz
 # !!! If l+m = odd, for Al = 0 you need to set the parity of phi and Pi to be 3
-vars_parity = 0 0 0 0 0 0 0		#phi, Pi, chi, rho, S_az, S_az_prime, S_r
+vars_parity = 3 3 0 0 0 0 0		#phi, Pi, chi, rho, S_az, S_az_prime, S_r
 vars_asymptotic_values = 0 0 1 0 0 0 0  #phi, Pi, chi, rho, S_az, S_az_prime, S_r
 
 # Set up time steps
@@ -81,7 +81,7 @@ scalar_mass = 0.4
 scalar_amplitude = 0.1
 scalar_omega = 0.4
 scalar_l = 2
-scalar_m = -2
+scalar_m = 1
 alignment = 0.0
 
 # BH initial data
