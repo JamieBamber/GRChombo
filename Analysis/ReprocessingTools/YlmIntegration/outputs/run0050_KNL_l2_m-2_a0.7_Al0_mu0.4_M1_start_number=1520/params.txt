@@ -9,7 +9,7 @@ max_level = 7 # There are (max_level+1) grids, so min is zero
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
-data_subdir = run0034_KNL_l5_m1_a0_Al0_mu0.4_M1_correct_Ylm
+data_subdir = run0050_KNL_l2_m-2_a0.7_Al0_mu0.4_M1_correct_Ylm
 
 # output directory 
 output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/
@@ -37,8 +37,8 @@ linear_or_log = 0		#!< use linear or log spacing for radii array. Linear = 1, Lo
 
 # l m modes
 # in the form "modes = l1 m1 l2 m2 l3 m3 l4 m4 ... "
-num_modes = 3
-modes = 5 1 3 1 7 1  
+num_modes = 2
+modes = 2 -2 4 2  
 
 # From here it is mostly dummy params
 verbosity = 1

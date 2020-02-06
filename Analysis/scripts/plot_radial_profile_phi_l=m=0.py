@@ -9,16 +9,14 @@ start_time = time.time()
 # set up parameters 
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/"
 file_name_roots = {}
-a_list = ["0", "0.99"]
-file_name_roots["0"] = "run0032_KNL_l1_m1_a0_Al0_mu0.4_M1_correct_Ylm_phi_Ylm_integral"
-file_name_roots["0.7"] = "run0045_KNL_l10_m10_a0.7_Al0_mu0.4_M1_correct_Ylm_phi_Ylm_integral"
-file_name_roots["0.99"] = "run0049_KNL_l1_m-1_a0.99_Al0_mu0.4_M1_correct_Ylm_phi_Ylm_integral"
-lm_list = [(1, 1), (3, 1), (5, 1)]
-true_lm = [1, -1]
-mu = 0.4
+a_list = ["0"]
+file_name_roots["0"] = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_phi_Ylm_integral"
+lm_list = [(0, 0)]
+true_lm = [0, 0]
+mu = 1
 M = 1
 colours = ["r", "g", "b", "m"]
-styles = ["--", "-", "-."]
+styles = ["-"]
 time = 0
 
 ### get data and plot profile for each a and each lm
