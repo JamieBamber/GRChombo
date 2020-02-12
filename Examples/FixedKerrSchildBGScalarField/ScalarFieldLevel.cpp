@@ -9,12 +9,12 @@
 #include "NanCheck.hpp"
 
 // For RHS update
-#include "IsotropicKerrFixedBG.hpp"
+#include "KerrSchildFixedBG.hpp"
 #include "Excision.hpp"
 #include "FixedBGEvolution.hpp"
 
 // For density calculation
-#include "FixedBGDensity.hpp"
+#include "FixedBGDensityAndMom_withDetGamma.hpp"
 
 // For tag cells
 #include "FixedGridsTaggingCriterion.hpp"
@@ -44,22 +44,23 @@ void ScalarFieldLevel::initialData()
 
     // First set everything to zero ... we don't want undefined values in
     // constraints etc, then initial conditions for scalar field
-    IsotropicKerrFixedBG kerr_bg(m_p.bg_params, m_dx);
+    KerrSchildFixedBG kerr_bg(m_p.bg_params, m_dx);
     ScalarRotatingCloud initial_sf(m_p.initial_params, m_p.bg_params, m_dx);
     BoxLoops::loop(make_compute_pack(SetValue(0.0), kerr_bg, initial_sf),
                    m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
 }
 
-// Things to do before outputting a checkpoint file
-void ScalarFieldLevel::preCheckpointLevel()
+
+// Things to do before outputting a plot file
+void ScalarFieldLevel::prePlotLevel()
 {
     // Calculate matter density function
     fillAllGhosts();
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
-    IsotropicKerrFixedBG kerr_bg(m_p.bg_params, m_dx);
-    BoxLoops::loop(FixedBGDensity<ScalarFieldWithPotential, IsotropicKerrFixedBG>(
-                       scalar_field, kerr_bg, m_dx, m_p.center),
+    KerrSchildFixedBG kerr_bg(m_p.bg_params, m_dx);
+    BoxLoops::loop(FixedBGDensityAndMom<ScalarFieldWithPotential, KerrSchildFixedBG>(
+                       scalar_field, kerr_bg, m_dx, m_p.center, m_p.initial_params.alignment),
                    m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
 }
 
@@ -72,15 +73,15 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     // RHS for non evolution vars is zero, to prevent undefined values
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
-    IsotropicKerrFixedBG kerr_bg(m_p.bg_params, m_dx);
-    FixedBGEvolution<ScalarFieldWithPotential, IsotropicKerrFixedBG> my_evolution(
+    KerrSchildFixedBG kerr_bg(m_p.bg_params, m_dx);
+    FixedBGEvolution<ScalarFieldWithPotential, KerrSchildFixedBG> my_evolution(
         scalar_field, kerr_bg, m_p.sigma, m_dx, m_p.center);
-    SetValue set_static_rhs_zero(0.0, Interval(c_chi, c_rho));
+    SetValue set_static_rhs_zero(0.0, Interval(c_chi, c_S_r));
     auto compute_pack = make_compute_pack(my_evolution, set_static_rhs_zero);
     BoxLoops::loop(compute_pack, a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
 
     // Do excision within horizon
-    BoxLoops::loop(Excision<ScalarFieldWithPotential, IsotropicKerrFixedBG>(
+    BoxLoops::loop(Excision<ScalarFieldWithPotential, KerrSchildFixedBG>(
                        m_dx, m_p.center, kerr_bg),
                    a_soln, a_rhs, EXCLUDE_GHOST_CELLS, disable_simd());
 }
@@ -89,7 +90,7 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
 void ScalarFieldLevel::specificWritePlotHeader(
     std::vector<int> &plot_states) const
 {
-    plot_states = {c_phi, c_Pi, c_criterion};
+    plot_states = {c_phi, c_Pi, c_chi, c_rho, c_S_azimuth, c_S_r};
 }
 
 // Note that for the fixed grids this only happens on the initial timestep
