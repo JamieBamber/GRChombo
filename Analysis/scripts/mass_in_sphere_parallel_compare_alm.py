@@ -27,17 +27,19 @@ def add_data_dir(list, num, l, m, a):
 
 data_dirs = []
 # choose datasets to compare
-add_data_dir(data_dirs, 31, 0, 0, "0")
+"""add_data_dir(data_dirs, 31, 0, 0, "0")
 add_data_dir(data_dirs, 28, 0, 0, "0.7")
 add_data_dir(data_dirs, 29, 0, 0, "0.99")
 add_data_dir(data_dirs, 32, 1, 1, "0")
 add_data_dir(data_dirs, 37, 1, 1, "0.99")
 add_data_dir(data_dirs, 49, 1, -1, "0.99")
 add_data_dir(data_dirs, 42, 5, 1, "0.7")
-#add_data_dir(data_dirs, 40, 10, 1, "0.7")
+add_data_dir(data_dirs, 40, 10, 1, "0.7")
 add_data_dir(data_dirs, 47, 2, 2, "0.99")
 add_data_dir(data_dirs, 46, 2, 2, "0")
-add_data_dir(data_dirs, 50, 2, -2, "0.99")
+add_data_dir(data_dirs, 50, 2, -2, "0.99")"""
+add_data_dir(data_dirs, 55, 7, 1, "0.7")
+add_data_dir(data_dirs, 56, 2 1, "0.7")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
