@@ -2,8 +2,8 @@
 #error "This file should only be included through MainHeunC.hpp"
 #endif
 
-#ifndef HEUNC00_IMPL_HPP_
-#define HEUNC00_IMPL_HPP_
+#ifndef HEUNC0_IMPL_HPP_
+#define HEUNC0_IMPL_HPP_
 
 /* This computes the first local solution around z = 0
 */
@@ -29,7 +29,45 @@
 // 15 February 2018
 //
 
-HeunCvars HeunC00(HeunCparams p, double z, bool woexp=false)
+inline HeunCvars HeunC0(HeunCparams p, double z, bool aux = false){
+  
+  HeunCvars result;
+  
+  if (z>=1){
+    throw std::invalid_argument("HeunC0: z belongs to the branch-cut [1,\infty)");
+  }
+  else {
+    bool expgrow = false;
+    HeunCparams p1 = p;
+    if ! aux {
+      expgrow = real(-p.epsilon*z)>0;
+      if expgrow {
+        p1.q = p.q - p.epsilon * gamma;
+        p1.alpha = p.alpha - p.epsilon * (gamma+delta);
+        p1.epsilon = -p.epsilon;
+      }
+    }
+
+    if (abs(z)<Heun_cont_coef) {
+      result = HeunC00(p1,aux);
+    }
+    else {
+      double z0 = Heun_cont_coef*z/abs(z);
+      HeunCvars result0 = HeunC00(p1,z,aux);
+      HeunCvars result1 = HeunCconnect(p1,z,z0,result0.val,result0.dval, R);
+      result.numb = result0.numb + result1.numb;
+      result.err = result0.err + result1.err;
+    }
+    if expgrow {
+      result.val = result.val * exp(p1.epsilon*z);
+      result.dval = (p1.epsilon * result.val + result.dval) * exp(p1.epsilon*z);
+      result.err = result.err * abs(exp(p1.epsilon*z));
+    }
+  }
+  return result;
+}
+
+inline HeunCvars HeunC00(HeunCparams p, double z, bool woexp=false)
 {
 	// define the result 
 	HeunCvars result;
@@ -59,7 +97,7 @@ HeunCvars HeunC00(HeunCparams p, double z, bool woexp=false)
 }
 
 // confluent Heun function expansion for |z| < 1, gamma is not equal to 0, -1, -2, ...
-HeunCvars HeunC00gen(HeunCparams p, double z)
+inline HeunCvars HeunC00gen(HeunCparams p, double z)
 {
 	HeunCvars result;
 
@@ -125,11 +163,8 @@ HeunCvars HeunC00gen(HeunCparams p, double z)
 }
 
 // confluent Heun function, p.gamma = 0, -1, -2, ...
-HeunCvars HeunC00log(HeunCparams p, double z) {
+inline HeunCvars HeunC00log(HeunCparams p, double z) {
 	HeunCvars result;
-	global Heun_klimit;
-  	if isempty(Heun_klimit)
-    		HeunOpts();
   	
 	if (z==0) {
     		result.val = 1; 
@@ -230,4 +265,4 @@ HeunCvars HeunC00log(HeunCparams p, double z) {
 	return result;
 }
 
-#endif /* HEUNC00_IMPL_HPP_ */
+#endif /* HEUNC0_IMPL_HPP_ */

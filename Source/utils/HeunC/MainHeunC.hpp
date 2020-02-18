@@ -1,3 +1,12 @@
+#ifndef MAIN_HEUNC_HPP_
+#define MAIN_HEUNC_HPP_
+
+/* Class to numerically calculate the confluent Heun function for a real argument 
+   Converted from MATLAB code
+   Jamie Bamber 2020
+  
+   for the author of MATLAB code see below
+*/
 
 /* Comments from original author of MATLAB script. That is available here: https://github.com/motygin/confluent_Heun_functions */
 
@@ -25,6 +34,7 @@
 // 26 January 2018
 //
 
+#include <utility>
 #include <complex>
 #include <cmath>
 #include <vector>
@@ -66,7 +76,7 @@ void MakeNan(HeunCvars result){
         result.numb = nan;
 }
 
-class HeunC {
+class HeunCspace {
 
    public:
 	// options
@@ -90,6 +100,12 @@ class HeunC {
 	const int Heun_asympt_klimit = 200;	
 	const double Heun_proxco = 0.05, Heun_proxcoinf_rel = 1.0;
 
+	// data storage vectors (not sure why we need these... )
+	std::vector<savedataVars> savedata10, savedata0inf;
+	// variables R and N
+	double R = 0;
+	double N = 0;
+
 	// Constructor 
         HeunC() {} ;
 	
@@ -98,24 +114,47 @@ class HeunC {
                           std::complex<double> delta, std::complex<double> eta, double z);
   
   private: 
-        // component functions
+        // HeunC0
+	HeunCvars HeunC0(HeunCparams p, double z, bool aux);	
         HeunCvars HeunC00(HeunCparams p, double z, bool woexp);
 	HeunCvars HeunC00gen(HeunCparams p, double z);
 	HeunCvars HeunC00log(HeunCparams p, double z);	
-
-	HeunCvars HeunC0(HeunCparams p, double z, bool aux);	
-
+	// HeunCs
+	HeunCvars HeunCs(HeunCparams p, double z);	
 	HeunCvars HeunCs0(HeunCparams p,double z);
 	HeunCvars HeunCs00(HeunCparams p,double z);	
 	HeunCvars HeunCs00gamma1(HeunCparams p,double z);
-
+	// HeunCfromZ0
 	HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0)
+	// HeunCconnect
 	HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,bool varargin=false, double& R, double R0);
-
+	// HeunCfaraway
 	std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z);
+	// HeunCjoin
+	ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux);
+	ConnectionVars HeunCjoin10(HeunCparams p);	
+	HeunCvars HeunC1(HeunCparams p, double z);	
+	HeunCvars HeunCs1(HeunCparams p,double z);
+	ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known);
+	void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);	
+	// HeunCinf
+	HeunCvars HeunCinfA(HeunCparams p, double z);
+	HeunCvars HeunCinfB(HeunCparams p, double z);
+	// HeunCnear1
+	std::pair<HeunCvars, HeunCvars> HeunCnear1(HeunCparams p,double z);
+	// HeunCutils
+	std::complex<double> findcoef4HeunCs(HeunCparams p);
+	void findR(double& R, int& N)	
 	
-
-
-  end
-
-end
+  #include "HeunC0.impl.hpp"
+  #include "HeunCs.impl.hpp"
+  #include "HeunCfromZ0.impl.hpp"
+  #include "HeunCconnect.impl.hpp"
+  #include "HeunCfaraway.impl.hpp"
+  #include "HeunCjoin.impl.hpp"
+  #include "HeunCinf.impl.hpp"
+  #include "HeunCnear1.impl.hpp"
+  #include "HeunCutils.impl.hpp" 	
+  #include "HeunCcompute.impl.hpp"
+  }
+}

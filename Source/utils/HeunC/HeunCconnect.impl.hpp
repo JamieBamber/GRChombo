@@ -5,6 +5,12 @@
 #ifndef HEUNCCONNECT_IMPL_HPP_
 #define HEUNCONNECT_IMPL_HPP_
 
+// HeunC''(z)+(gamma/z+delta/(z-1)+epsilon)*HeunC'(z)+(alpha*z-q)/(z*(z-1))*HeunC(z) = 0
+// by analytic continuation from point z0, where HeunC(z0) = H0, HeunC'(z0) = dH0,
+// to another point z, along the line [z0,z], using a consequence of power expansions
+//
+// Assumptions:
+// z0, z are not 0 or 1
 //
 // R0 is an optional parameter, step size's guess
 //
@@ -15,9 +21,7 @@
 // 09 January 2018
 //
 
-#include <utility>
-
-HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,bool varargin=false, double& R, double R0=0)
+inline HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,bool varargin=false, double& R, double R0=0)
 {
   HeunCvars result;
   result.warningmessage = '';
@@ -27,11 +31,6 @@ HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0
     result.val = nan; result.dval = nan; result.err = nan; result.numb = nan;
   }
   else {
-
-    global Heun_cont_coef Heun_optserterms;
-  
-    if isempty(Heun_cont_coef) || isempty(Heun_optserterms){
-      HeunOpts();
     }
     
     int positivity = 2*(z >= z0) - 1;
