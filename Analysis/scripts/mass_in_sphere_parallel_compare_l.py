@@ -1,7 +1,8 @@
 import yt
 import numpy as np
-from scipy.interpolate import interp1d
-from scipy.optimize import fsolve
+#from scipy.interpolate import interp1d
+#from scipy.optimize import fsolve
+import math
 from yt import derived_field
 import time
 import sys
@@ -10,26 +11,47 @@ from os import makedirs
 
 yt.enable_parallelism()
 
-l_dirs = {}
-l_dirs["0"] = "run5_KNL_l0_m1_a0.99_Al0_M1"
-l_dirs["1"] = "run8_KNL_l1_m1_a0.99_Al0_M1"
-l_dirs["2"] = "run11_KNL_l2_m1_a0.99_Al0_M1"
-l_dirs["3"] = "run12_KNL_l3_m1_a0.99_Al0_M1"
-l_dirs["4"] = "run13_KNL_l4_m1_a0.99_Al0_M1"
+class data_dir:
+	def __init__(self, num, l, m, a):
+		self.num = num
+		self.l = l
+		self.m = m
+		self.a = float(a)
+		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu0.4_M1_correct_Ylm".format(num, l, m, a)
+	filename = ""
+		
+
+def add_data_dir(list, num, l, m, a):
+	x = data_dir(num, l, m, a)
+	list.append(x)
+
+data_dirs = []
+# choose datasets to compare
+add_data_dir(data_dirs, 28, 0, 0, "0.7")
+add_data_dir(data_dirs, 37, 1, 1, "0.99")
+add_data_dir(data_dirs, 56, 2, 1, "0.7")
+add_data_dir(data_dirs, 42, 5, 1, "0.7")
+add_data_dir(data_dirs, 55, 7, 1, "0.7")
+add_data_dir(data_dirs, 40, 10, 1, "0.7")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
-max_radius = 200
-min_radius = 0
+max_radius = 450
+M = 1
 
-output_dir = "data/compare_l_mass_inside_r=" + str(max_radius)
+output_dir = "data/compare_alm_mass"
 
 half_box = True
 
-def calculate_mass_in_sphere(l):
-	data_sub_dir = l_dirs[l]
-	
+change_in_E = True
+
+def calculate_mass_in_sphere(dd):
+	data_sub_dir = dd.name
+	a = dd.a	
+	r_plus = M*(1 + math.sqrt(1 - a**2))
+	min_radius = r_plus
+
 	start_time = time.time()
 	
 	# load dataset time series
@@ -41,6 +63,9 @@ def calculate_mass_in_sphere(l):
 	N = len(ds)
 	
 	ds0 = ds[0] # get the first dataset 
+
+	# trim dataset
+	ds = ds[0:350]
 	
 	# set centre
 	center = [512.0, 512.0, 0]
@@ -53,11 +78,7 @@ def calculate_mass_in_sphere(l):
 	
 	"""@derived_field(name = "rho_J_eff", units = "")
 	def _rho_J_eff(field, data):
-        	return data["S_azimuth"]*pow(data["chi"],-3)
-	
-	@derived_field(name = "rho_J_prime_eff", units = "")
-	def _rho_J_prime_eff(field, data):
-        	return data["S_azimuth_prime"]*pow(data["chi"],-3)"""
+        	return data["S_azimuth"]*pow(data["chi"],-3)"""
 	
 	data_storage = {}
 	# iterate through datasets (forcing each to go to a different processor)
@@ -68,10 +89,7 @@ def calculate_mass_in_sphere(l):
 		output = [current_time]
 		
 		# make sphere
-		if min_radius > 0:
-			sphere = dsi.sphere(center, max_radius) - dsi.sphere(center, min_radius)
-		elif min_radius == 0:
-			sphere = dsi.sphere(center, max_radius)
+		sphere = dsi.sphere(center, max_radius) - dsi.sphere(center, min_radius)
 		volume = sphere.sum("cell_volume")
 		if half_box:
 			volume = 2*volume
@@ -80,17 +98,7 @@ def calculate_mass_in_sphere(l):
 		meanE = sphere.mean("rho_E_eff", weight="cell_volume")
 		E = volume*meanE
 		output.append(E)
-		#
 		
-		"""# find angular momentum inside largest sphere
-		sphere = dsi.sphere(center, r_list[-1])
-		volume = sphere.sum("cell_volume")
-		if half_box:
-        		volume = 2*volume
-		meanJ =	sphere.mean("rho_J_eff", weight="cell_volume")
-		J = volume*meanJ
-		output.append(J)"""
-	
 		# store output
 		sto.result = output
 		sto.result_id = str(dsi)
@@ -102,67 +110,59 @@ def calculate_mass_in_sphere(l):
 		# make data directory if it does not already exist
 		makedirs(home_path + output_dir, exist_ok=True)
 		# output to file
-		output_file =  data_sub_dir + "_mass_in_r=" + str(radius) + ".csv"
-		output_path = home_path + output_dir + "/" + output_file 
+		dd.filename = "l={:d}_m={:d}_a={:s}_mass_in_r={:d}.csv".format(dd.l, dd.m, str(dd.a), max_radius)
+		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		f = open(output_path, "w+")
-		f.write("# t	mass in r<=" + str(radius) + " #\n")
+		f.write("# t	mass in r<=" + str(max_radius) + " #\n")
 		# output data
 		for key in sorted(data_storage.keys()):
 			data = data_storage[key]
 			f.write("{:.3f}	".format(data[0]))
 			f.write("{:.2f}\n".format(data[1]))
 		f.close()
-		print("saved data to file " + str(output_file))
+		print("saved data to file " + str(output_path))
 		
 def load_data():
 	# load data from csv files
 	data = {}
-	for key in l_dirs.keys():
-		file_name = home_path + output_dir + "/" + l_dirs[key] + "_mass_in_r=" + str(radius) + ".csv"
-		try:
-			data[key] = np.genfromtxt(file_name, skip_header=1)
-			print("loaded data for l = " + key)
-		except:
-			pass
-	print("loaded available data")
+	for dd in data_dirs:
+		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mass_in_r={:d}.csv".format(dd.l, dd.m, str(dd.a), max_radius)
+		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
+		print("loaded data for " + dd.name)
 	return data 	
-
-def fix_time_data(l):
-	file_name = home_path + output_dir + "/" + l_dirs[l] + "_mass_in_r=" + str(radius) + ".csv"
-	old_data = np.genfromtxt(file_name, skip_header=1)
-	dt = 1.25
-	N = old_data.shape[0]
-	new_t_data = dt*np.linspace(0.0, N-1, N)
-	# output header to file
-	f = open(file_name, "w+")
-	f.write("# t	mass in r<=" + str(radius) + " #\n")
-	# output data
-	for i in range(0, N):
-		f.write("{:.3f}	".format(new_t_data[i]))
-		f.write("{:.2f}\n".format(old_data[i,1]))
-	f.close()
-	print("remade " + file_name)		
 
 def plot_graph():
 	data = load_data()
-	colours = ['c--', 'r--', 'b--', 'g-', 'b-', 'r-', 'c-', 'm-']
+	colours = ['r-', 'b-', 'g-', 'm-', 'c-', 'k-'] 
 	i = 0
-	for key in data.keys():
-		line_data = data[key]
-		x = line_data[:,0]
-		y = line_data[:,1] #- line_data[0,1]
-		label_ = "m = " + key
-		plt.plot(x, y, colours[i], label=label_)
+	for dd in data_dirs:
+		line_data = data[dd.num]
+		t = line_data[:,0]
+		mass = line_data[:,1] #- line_data[0,1]
+		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
+		if change_in_E:
+			plt.plot(t[1:], mass[1:] - mass[0], colours[i], label=label_)
+		else:
+			plt.plot(t, mass, colours[i], label=label_)
 		i = i + 1
 	plt.xlabel("time")
-	plt.ylabel("$E$ in $r < $" + str(radius))
-	plt.legend(loc='upper left')
+	if change_in_E:
+		plt.ylabel("$\\Delta E$ in $r < $" + str(max_radius))
+	else:
+		plt.ylabel("$E$ in $r < $" + str(max_radius))
+	plt.legend(loc='upper left', fontsize=8)
+	plt.title("scalar field energy inside a sphere vs time, $M=1, \\mu=0.4$")
 	plt.tight_layout()
-	save_path = home_path + "plots/mass_in_sphere_compare_l_radius_" + str(radius) + ".png"
+	if change_in_E:
+		save_path = home_path + "plots/delta_mass_in_sphere_compare_l_radius_" + str(max_radius) + ".png"
+	else:
+		save_path = home_path + "plots/mass_in_sphere_compare_l_radius_" + str(max_radius) + ".png"
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-for l in l_dirs.keys():
-	calculate_mass_in_sphere(l)
+#for dd in data_dirs:
+#	calculate_mass_in_sphere(dd)
+
+plot_graph()

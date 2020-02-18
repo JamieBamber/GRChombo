@@ -11,9 +11,9 @@
 #include "ScalarField.hpp"
 
 #include "ADMFixedBGVars.hpp"
-#include "IsotropicKerrFixedBG.hpp"
+#include "KerrSchildFixedBG.hpp"
 
-#include "legendre.hpp" // I want this for the derivatives of legendre polynomials
+#include "assoc_legendre.hpp" // I want this for the associted legendre polynomials needed for spherical harmonics
 
 #include "Tensor.hpp"
 #include "UserVariables.hpp" //This files needs NUM_VARS - total no. components
@@ -28,8 +28,7 @@ class ScalarRotatingCloud
     //! A structure for the input params for scalar field properties
     struct params_t
     {
-        double amplitude; //!< Amplitude of bump in initial SF bubble
-	double width; //!< Width of bump in initial SF bubble
+        double amplitude; //!< Amplitude of initial SF
         std::array<double, CH_SPACEDIM>
             center;   //!< Centre of perturbation in initial SF bubble
         double omega; //!< frequency of scalar field
@@ -39,7 +38,7 @@ class ScalarRotatingCloud
     };
 
     //! The constructor for the class
-    ScalarRotatingCloud(params_t a_params, const IsotropicKerrFixedBG::params_t a_bg_params, const double a_dx)
+    ScalarRotatingCloud(params_t a_params, const KerrSchildFixedBG::params_t a_bg_params, const double a_dx)
         : m_params(a_params), m_dx(a_dx), m_bg_params(a_bg_params)
     {
     }
@@ -67,46 +66,39 @@ class ScalarRotatingCloud
 	data_t sin_theta_prime = rho_prime / r;
 	data_t azimuth_prime = atan2(y_prime, x);	// need to use atan2 to obtain full 0 to 2pi range
 	// radius in the xy plane, subject to a floor
-	data_t rho2 = simd_max(x * x + y * y, 1e-8);
+	data_t rho2 = simd_max(x * x + y * y, 1e-8); // try making this 1e-4
         data_t rho = sqrt(rho2);
 
 	// get the metric vars
-        IsotropicKerrFixedBG kerr_bh(m_bg_params, m_dx);
+        KerrSchildFixedBG kerr_bh(m_bg_params, m_dx);
         MetricVars<data_t> metric_vars;
         kerr_bh.compute_metric_background(metric_vars, coords);
-
-	//data_t g_func = boost::math::legendre_p(m_params.l, cos_theta_prime);
-	//data_t g_func_prime = boost::math::legendre_p_prime(m_params.l, cos_theta_prime);
-
-	data_t g_func = my_legendre_p(m_params.l, cos_theta_prime);
-        data_t g_func_prime = my_legendre_p_prime(m_params.l, cos_theta_prime);
-
-	//data_t g_func = 1;
-	//data_t g_func_prime = 0;
+	
+	auto my_P_lm = AssocLegendre::assoc_legendre_with_deriv(m_params.l, m_params.m, cos_theta_prime, sin_theta_prime);
+	data_t g_function = my_P_lm.Magnitude;
+        data_t g_function_prime = my_P_lm.Derivative;
 
 	// r dependence of phi
-	data_t r_func = m_params.amplitude * exp(-r * r / (m_params.width * m_params.width)); 
+	data_t r_function = m_params.amplitude; 
 	//angular dependence of phi
-	data_t ang_func = sin(m_params.m * azimuth_prime) * g_func;
+	data_t angular_function = sin(m_params.m * azimuth_prime) * g_function;
         // set the field vars 
 	// phi
-        vars.phi = r_func * ang_func;
+        vars.phi = r_function * angular_function;
 	
 	// dphi
-	data_t dphidt = r_func * g_func *m_params.omega*cos(m_params.m*azimuth_prime);
+	data_t dphidt = - r_function * g_function *m_params.omega*cos(m_params.m*azimuth_prime);
 	//!< derivative of phi w.r.t the cloud azimuthal angle
-	data_t dphid_azimuth_prime = r_func * g_func *m_params.m*cos(m_params.m*azimuth_prime);
+	data_t dphid_azimuth_prime = r_function * g_function *m_params.m*cos(m_params.m*azimuth_prime);
 	//!< derivative of phi w.r.t the cloud theta angle
- 	data_t dphid_theta_prime = r_func * (-sin_theta_prime) * 
-g_func_prime *sin(m_params.m*azimuth_prime);
+ 	data_t dphid_theta_prime = r_function * g_function_prime * sin(m_params.m*azimuth_prime);
 
-	data_t dphid_azimuth = - sin_alignment * (x / rho_prime) * dphid_theta_prime + (rho2 * cos_alignment - 
-y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
+	data_t dphid_azimuth = - sin_alignment * (x / rho_prime) * dphid_theta_prime + (rho2 * cos_alignment - y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
 	
 	//beta^azimuth
 	data_t beta_azimuth = sqrt( (pow(metric_vars.shift[0],2) + pow(metric_vars.shift[1],2))/rho2 );
 	// ---> its kind of annoying to have to recompute this, it would be better to get it directly from
-	// beta_phi in IsotropicKerrFixedBG.hpp
+	// beta_phi in KerSchildFixedBG
 
 	// Pi = alpha * d_t phi + beta^i d_i phi
         vars.Pi = metric_vars.lapse * dphidt + beta_azimuth * dphid_azimuth;
@@ -118,7 +110,7 @@ y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
   protected:
     double m_dx;
     const params_t m_params; //!< The matter initial condition params
-    const IsotropicKerrFixedBG::params_t m_bg_params; //!< the background metric parameters
+    const KerrSchildFixedBG::params_t m_bg_params; //!< the background metric parameters
 
     // Now the non grid ADM vars
     template <class data_t> using MetricVars = ADMFixedBGVars::Vars<data_t>;
