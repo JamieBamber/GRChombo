@@ -27,7 +27,7 @@ def add_data_dir(list, num, l, m, a):
 
 data_dirs = []
 # choose datasets to compare
-add_data_dir(data_dirs, 31, 0, 0, "0")
+"""add_data_dir(data_dirs, 31, 0, 0, "0")
 add_data_dir(data_dirs, 28, 0, 0, "0.7")
 add_data_dir(data_dirs, 29, 0, 0, "0.99")
 add_data_dir(data_dirs, 32, 1, 1, "0")
@@ -37,7 +37,9 @@ add_data_dir(data_dirs, 42, 5, 1, "0.7")
 add_data_dir(data_dirs, 40, 10, 1, "0.7")
 add_data_dir(data_dirs, 47, 2, 2, "0.99")
 add_data_dir(data_dirs, 46, 2, 2, "0")
-add_data_dir(data_dirs, 50, 2, -2, "0.99")
+add_data_dir(data_dirs, 50, 2, -2, "0.99")"""
+add_data_dir(data_dirs, 55, 7, 1, "0.7")
+add_data_dir(data_dirs, 56, 2 1, "0.7")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -144,20 +146,20 @@ def plot_graph():
 		mass = line_data[:,1] #- line_data[0,1]
 		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
 		if change_in_E:
-			plt.plot(t, mass - mass[0], colours[i], label=label_)
+			plt.plot(np.log(t[1:]), np.log(mass[1:] - mass[0]), colours[i], label=label_)
 		else:
 			plt.plot(t, mass, colours[i], label=label_)
 		i = i + 1
-	plt.xlabel("time")
+	plt.xlabel("$\\ln($time)")
 	if change_in_E:
-		plt.ylabel("$\\Delta E$ in $r < $" + str(max_radius))
+		plt.ylabel("$\\ln(\\Delta E)$ in $r < $" + str(max_radius))
 	else:
 		plt.ylabel("$E$ in $r < $" + str(max_radius))
 	plt.legend(loc='upper left', fontsize=8)
 	plt.title("scalar field energy inside a sphere vs time, $M=1, \\mu=0.4$")
 	plt.tight_layout()
 	if change_in_E:
-		save_path = home_path + "plots/delta_mass_in_sphere_compare_alm_radius_" + str(max_radius) + ".png"
+		save_path = home_path + "plots/ln_delta_mass_in_sphere_compare_alm_radius_" + str(max_radius) + ".png"
 	else:
 		save_path = home_path + "plots/mass_in_sphere_compare_alm_radius_" + str(max_radius) + ".png"
 	plt.savefig(save_path)
