@@ -37,7 +37,7 @@ class GRParmParse : public ParmParse
 
     // (MK): I called the functions below "load" rather than "get" to avoid
     // clashes with the many  different overloads of "get" in ParmParse. Also, I
-    // think load is a more intuitive name.
+    // think it is a more intuitive name.
 
     /// Loads an array from the parameter file
     template <class data_t, long unsigned int n_comp>
