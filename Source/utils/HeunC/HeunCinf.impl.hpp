@@ -1,35 +1,32 @@
-// confluent Heun function, a solution of the ep.quation
-// HeunC""(z)+(p.gamma/z+p.delta/(z-1)+p.epsilon)*HeunC"(z)+(p.alpha*z-p.q)/(z*(z-1))*HeunC(z) = 0
-//
+#if !defined(MAIN_HEUNC_HPP_)
+#error "This file should only be included through MainHeunC.hpp"
+#endif
+
+#ifndef HEUNCINF_IMPL_HPP_
+#define HEUNCINF_IMPL_HPP_
+
+// confluent Heun function
 // asymptotic expansion at z=infinity
 // the first, power solution
 //
 // Usage:
-// [val,dval,err,numb,result.warningmessage] = HeunCinfA(p.q,p.alpha,p.gamma,p.delta,p.epsilon,z)
+// [val,dval,err,numb] = HeunCinfA(p.q,p.alpha,p.gamma,p.delta,p.epsilon,z)
 //
 // Returned parameters:
 // val is the value of the Heun function
 // dval is the value of z-derivative of the Heun function
 // err is the estimated error
 // numb is the number of the summed series terms
-// warningmessage is a warning message:
-//   it is empty if computations are ok
-//   otherwise it is a diagnostic message and the function returns val, dval = nan
 //
 // Oleg V. Motygin, copyright 2017-2018, license: GNU GPL v3
 //
 // 20 December 2017
 //
-HeunCvars HeunCinfA(HeunCparams p, double z)
+
+inline HeunCvars HeunCinfA(HeunCparams p, double z)
 {
   HeunCvars result;
 
-  global Heun_asympt_klimit;
-  
-  if isempty(Heun_asympt_klimit){
-    HeunOpts();
-  }
-  
   result.val = 1; 
   result.dval = 0;
   result.err = 0; 
@@ -96,4 +93,25 @@ HeunCvars HeunCinfA(HeunCparams p, double z)
   return result;
 }
 
-    
+// asymptotic expansion at z=infinity,
+// the second solution, including exponential factor
+
+inline HeunCvars HeunCinfB(HeunCparams p, double z)
+{  
+  HeunCvars result0, result;
+  HeunCparams p0 = p;
+  p0.q = p.q - p.epsilon*p.gamma;
+  p0.alpha = p.alpha - p.epsilon*(p.gamma + p.delta);
+  p0.epsilon = -p.epsilon;
+
+  result0 = HeunCinfA(p0,z);
+  result = result0;  
+
+  result.val = exp(-p.epsilon*z) * result0.val;
+  result.dval = exp(-p.epsilon*z) * (-p.epsilon * result0.val + result0.dval);
+  result.err = abs(exp(-p.epsilon*z)) * result0.err;
+  
+  return result;
+}    
+
+#endif /* HEUNCINF_IMPL_HPP */

@@ -1,7 +1,9 @@
+#if !defined(MAIN_HEUNC_HPP_)
+#error "This file should only be included through MainHeunC.hpp"
+#endif
 
-
-
-
+#ifndef HEUNCJOIN_IMPL_HPP_
+#define HEUNCJOIN_IMPL_HPP_
 
 // for confluent Heun function, a solution of the equation
 // HeunC''(z)+(gamma/z+delta/(z-1)+epsilon)*HeunC'(z)+(alpha*z-q)/(z*(z-1))*HeunC(z) = 0
@@ -30,12 +32,12 @@
 // 15 March 2018
 //
 
-ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux = false)
+inline ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux = false)
 {
   ConnectionVars result;
   bool consts_known = false;
 
-  result = extrdatfromsav(p, savdata0inf, consts_known);
+  result = extrdatfromsav(p, savedata0inf, consts_known);
 
   if consts_known {
     result.numb = 0;
@@ -67,17 +69,17 @@ ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux = false)
     savedataVars s;
     s.p = p;
     s.Cvars = result;
-    keepdattosav(s, savdata0inf);
+    keepdattosav(s, savedata0inf);
   }
   return result;
 }
 
-ConnectionVars HeunCjoin10(HeunCparams p)
+inline ConnectionVars HeunCjoin10(HeunCparams p)
 {
   ConnectionVars result;
   
   bool consts_known = false;
-  result = extrdatfromsav(p, savdata10, consts_known);
+  result = extrdatfromsav(p, savedata10, consts_known);
   
   if consts_known {
     result.numb = 0;
@@ -101,7 +103,7 @@ ConnectionVars HeunCjoin10(HeunCparams p)
     savedataVars s;
     s.p = p;
     s.Cvars = result;
-    keepdattosav(s, savdata10);
+    keepdattosav(s, savedata10);
   }
   return result;
 }
@@ -118,7 +120,7 @@ HeunCvars HeunC1(HeunCparams p, double z){
     return result;
 }
    
-HeunCvars HeunCs1(HeunCparams p,z){
+HeunCvars HeunCs1(HeunCparams p, double z){
     HeunCvars result; 
     HeunCparams p0; 
     p0 = p; 
@@ -130,7 +132,7 @@ HeunCvars HeunCs1(HeunCparams p,z){
     return result;
 }
 
-ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known){
+inline ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known){
   ConnectionVars result;
   result.err = nan; result.numb = 0; 
   savedataVars s;
@@ -148,13 +150,7 @@ ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata,
   return result;
 }
 
-void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);
-  global Heun_memlimit;
-  
-  if isempty(Heun_memlimit){
-    HeunOpts();
-  }
-
+inline void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);
   if length(savedata)<=Heun_memlimit
   {
     savedata.pushback(s)
@@ -165,3 +161,5 @@ void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);
   }
   savedata.pushback(s); // store new element  
 }
+
+#endif /* HEUNCJOIN_IMPL_HPP_ */

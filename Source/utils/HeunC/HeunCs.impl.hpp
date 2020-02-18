@@ -2,36 +2,99 @@
 #error "This file should only be included through MainHeunC.hpp"
 #endif
 
-#ifndef HEUNCS00_IMPL_HPP_
-#define HEUNCS00_IMPL_HPP_
+#ifndef HEUNCS_IMPL_HPP_
+#define HEUNCS_IMPL_HPP_
 
 // confluent Heun function,
-// the second local solution at z=0
-// with branch-cut (1,+\INFINITYty)
+// the second local solution
+// with branch-cut (1,+\infinity)
 // HeunCs(z) = z^(1-p.gamma)*h(z), where h(0)=1, 
 // h'(0)=(-q+(1-p.gamma)*(p.delta-p.epsilon))/(2-p.gamma) for p.gamma not equal to 1, 2
 // h'(z)/log(z) -> -q+(1-p.gamma)*(p.delta-p.epsilon) as z\to0 for p.gamma=2
 // and
 // HeunCs(z) \sim log(z) - q * z * log(z) +   as z\to0 for p.gamma=1
 //
-// |z| should not exceed the convergency radius 1
 //
 // Usage:
 // [val,result.dval,err,numb,wrnmsg] = HeunCs00(q,p.alpha,p.gamma,p.delta,p.epsilon,z)
 //
 // Returned parameters:
-//result.valis the value of the confluent Heun function
-// result.dval is the value of z-derivative of the confluent Heun function
-//result.err is the estimatedresult.error
-// result.numb is the total result.number of power series terms needed for the evaluation
-// wrnmsg is empty if computations are ok
-//   otherwise it is a diagnostic message and the function returns val, result.dval = nan
+// val is the value of the confluent Heun function
+// dval is the value of z-derivative of the confluent Heun function
+// err is the estimatedresult.error
+// numb is the total result.number of power series terms needed for the evaluation
 //
 // Oleg V. Motygin, copyright 2018, license: GNU GPL v3
 //
 // 09 January 2018
 //
-HeunCvars HeunCs00(HeunCparams p,double z)
+
+inline HeunCvars HeunCs(HeunCparams p, double z)
+{ 
+  HeunCvars result;
+
+  if (z>=1) {
+    throw std::invalid_argument("HeunCfaraway: z belongs to the branch-cut [1,\infty)");
+  }
+  else {
+    findR(R, N);
+
+    if (abs(z-1)<Heun_proxco){
+      std::pair<HeunCvars, HeunCvars> vars_vars1 = HeunCnear1(p,z);
+      result = vars_vars1.first();
+    }
+    else if (abs(epsilon)>1/2)&&(abs(q)<2.5)&&(abs(z)>Heun_proxcoinf_rel*R/(abs(eps)+abs(epsilon))) {
+      std::pair<HeunCvars, HeunCvars> vars1_vars = HeunCfaraway(p,z);
+      result = vars1_vars.second();
+    }
+    else {
+      result = HeunCs0(p,z);
+    }
+    return result;
+  }
+}
+
+// the second local solution at z=0 (see HeunCs00)
+//
+// computed by a consequence of power expansions
+inline HeunCvars HeunCs0(HeunCparams p,double z){
+  
+  HeunCvars result;
+
+  if (z>=1){
+    throw std::invalid_argument("HeunC0: z belongs to the branch-cut [1,\infty)");
+  }
+  else {
+    bool expgrow = std::real(-p.epsilon*z)>0;
+    HeunCparams p1 = p;
+    if expgrow {
+      p1.q = p.q - p.epsilon * p.gamma;
+      p1.alpha = p.alpha - p.epsilon * (p.gamma+p.delta);
+      p1.epsilon = -p.epsilon;
+    } 
+    
+    if (abs(z)<Heun_cont_coef){
+      result = HeunCs00(p,z);
+    }
+    else {
+      double z0 = Heun_cont_coef*z/abs(z);
+      HeunCvars result0 = HeunCs00(p1,z0);
+      HeunCvars result1 = HeunCconnect(p,z,z0,result0.val,result0.dval,R);
+      result.numb = result0.numb + result1.numb;
+      result.err = result0.err + result1.err;
+    }
+    if expgrow {
+      result.val = result.val * exp(p.epsilon*z);
+      result.dval = (p.epsilon*result.val + result.dval) * exp(p.epsilon*z);
+      result.err = result.err * abs(exp(p.epsilon*z));
+    }
+    return result;
+  }
+}
+
+// solution at z ~ 0
+// |z| should not exceed the convergency radius 1
+inline HeunCvars HeunCs00(HeunCparams p,double z)
 {
   HeunCvars result;
   if (std::abs(z)>=1){
@@ -70,7 +133,7 @@ HeunCvars HeunCs00(HeunCparams p,double z)
 
 // confluent Heun function, second local solution at z=0, p.gamma = 1
 //
-HeunCvars HeunCs00gamma1(HeunCparams p,double z)
+inline HeunCvars HeunCs00gamma1(HeunCparams p,double z)
 {  
   HeunCvars result;
 
@@ -132,4 +195,4 @@ HeunCvars HeunCs00gamma1(HeunCparams p,double z)
   }
 }
 
-#endif /* HEUNCS00_IMPL_HPP_ */
+#endif /* HEUNCS_IMPL_HPP_ */

@@ -24,18 +24,13 @@
 //
 // 09 January 2018
 //
-HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0)
+inline HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0)
 {
   HeunCvars result;
-  global Heun_klimit;
-  
-  if isempty(Heun_klimit){
-    HeunOpts();
-  }
 
-  double R = min(abs(Z0),abs(Z0-1));
+  double R_ = min(abs(Z0),abs(Z0-1));
   
-  if (abs(z-Z0)>=R) {
+  if (abs(z-Z0)>=R_) {
     throw std::invalid_argument("HeunCfromZ0: z is out of the convergence radius"); 
   }
   else if ((abs(z-1)<eps) || (abs(Z0-1)<eps)) {

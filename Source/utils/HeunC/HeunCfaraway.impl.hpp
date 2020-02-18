@@ -52,9 +52,7 @@ HeunCinfB
 // 26 March 2018
 //
 
-#include "sgn.hpp"
-
-std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z)
+inline std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z)
 {
   HeunCvars result1, result2;
 
