@@ -2,8 +2,8 @@
 #error "This file should only be included through HeunC.hpp"
 #endif
 
-#ifndef HEUNCS_IMPL_HPP_
-#define HEUNCS_IMPL_HPP_
+#ifndef HEUNCS0_IMPL_HPP_
+#define HEUNCS0_IMPL_HPP_
 
 // confluent Heun function,
 // the second local solution
@@ -29,31 +29,6 @@
 // 09 January 2018
 //
 
-inline HeunCvars HeunCs(HeunCparams p, double z)
-{ 
-  HeunCvars result;
-
-  if (z>=1) {
-    throw std::invalid_argument("HeunCfaraway: z belongs to the branch-cut [1,\infty)");
-  }
-  else {
-    findR(R, N);
-
-    if (abs(z-1)<Heun_proxco){
-      std::pair<HeunCvars, HeunCvars> vars_vars1 = HeunCnear1(p,z);
-      result = vars_vars1.first();
-    }
-    else if (abs(epsilon)>1/2)&&(abs(q)<2.5)&&(abs(z)>Heun_proxcoinf_rel*R/(abs(eps)+abs(epsilon))) {
-      std::pair<HeunCvars, HeunCvars> vars1_vars = HeunCfaraway(p,z);
-      result = vars1_vars.second();
-    }
-    else {
-      result = HeunCs0(p,z);
-    }
-    return result;
-  }
-}
-
 // the second local solution at z=0 (see HeunCs00)
 //
 // computed by a consequence of power expansions
@@ -62,7 +37,7 @@ inline HeunCvars HeunCs0(HeunCparams p,double z){
   HeunCvars result;
 
   if (z>=1){
-    throw std::invalid_argument("HeunC0: z belongs to the branch-cut [1,\infty)");
+    throw std::invalid_argument("HeunC0: z belongs to the branch-cut [1,infty)");
   }
   else {
     bool expgrow = std::real(-p.epsilon*z)>0;
@@ -195,4 +170,4 @@ inline HeunCvars HeunCs00gamma1(HeunCparams p,double z)
   }
 }
 
-#endif /* HEUNCS_IMPL_HPP_ */
+#endif /* HEUNCS0_IMPL_HPP_ */

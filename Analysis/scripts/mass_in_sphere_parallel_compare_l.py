@@ -28,11 +28,14 @@ def add_data_dir(list, num, l, m, a):
 data_dirs = []
 # choose datasets to compare
 add_data_dir(data_dirs, 28, 0, 0, "0.7")
-add_data_dir(data_dirs, 37, 1, 1, "0.99")
+add_data_dir(data_dirs, 39, 1, 1, "0.7")
 add_data_dir(data_dirs, 56, 2, 1, "0.7")
 add_data_dir(data_dirs, 42, 5, 1, "0.7")
 add_data_dir(data_dirs, 55, 7, 1, "0.7")
 add_data_dir(data_dirs, 40, 10, 1, "0.7")
+add_data_dir(data_dirs, 48, 2, 2, "0.7")
+add_data_dir(data_dirs, 57, 8, 1, "0.7")
+add_data_dir(data_dirs, 58, 5, 5, "0.7")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -134,7 +137,7 @@ def load_data():
 
 def plot_graph():
 	data = load_data()
-	colours = ['r-', 'b-', 'g-', 'm-', 'c-', 'k-'] 
+	colours = ['r-', 'b-', 'g-', 'm-', 'c-', 'k-', 'g--', 'y-', 'm--'] 
 	i = 0
 	for dd in data_dirs:
 		line_data = data[dd.num]

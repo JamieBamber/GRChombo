@@ -57,7 +57,7 @@ inline std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z)
   HeunCvars result1, result2;
 
   if (z>=1) {
-    throw std::invalid_argument("HeunCfaraway: z belongs to the branch-cut [1,\infty)");
+    throw std::invalid_argument("HeunCfaraway: z belongs to the branch-cut [1,infty)");
   }
   else {
     std::complex<double> aSt = 1i/epsilon;

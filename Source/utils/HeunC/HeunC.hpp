@@ -34,53 +34,54 @@
 // 26 January 2018
 //
 
-#include <utility>
 #include <complex>
 #include <cmath>
 #include <vector>
 #include "Matrix.hpp"
 #include "sgn.hpp"
 
+#define M_PI           3.14159265358979323846  /* pi */
 #define eps 2.2204e-16
 
-namespace HeunC {
+namespace HeunCspace {
 
 struct HeunCvars {
 std::complex<double>    val;
 std::complex<double>    dval;
-std::int                numb;
-std::double             err;
-}
+int                numb;
+double             err;
+};
 
 struct HeunCparams {
-std::complex<double>    p.q, p.alpha, p.gamma, p.delta, p.epsilon;
-}
+std::complex<double> q, alpha, gamma, delta, epsilon;
+};
 
 struct ConnectionVars
 {
 Matrix<std::complex<double>> C10;
 double err;
 int numb;
-}
+};
 
 struct savedataVars
 {
 ConnectionVars Cvars;
 HeunCparams p;
-}
+};
 
 void MakeNan(HeunCvars result){
-        result.val = nan;
-        result.dval = nan;
-        result.err = nan;
-        result.numb = nan;
+	// make zero not nan for the moment until I can figure out how c++ nan works
+        result.val = 0;
+        result.dval = 0;
+        result.err = 0;
+        result.numb = 0;
 }
 
-class HeunCspace {
+class HeunC {
 
    public:
 	// options
-	------------------------/*
+	/*------------------------
         Heun_cont_coef:      for each power expansion of the analytic continuation procedure 
 		 	     the coefficient is the relative (to the radius of convergence) distance from 
  		             the centre to the calculated point.
@@ -112,6 +113,10 @@ class HeunCspace {
 	// main caluclation function
 	HeunCvars compute(std::complex<double> alpha, std::complex<double> beta, std::complex<double> gamma, 
                           std::complex<double> delta, std::complex<double> eta, double z);
+
+	// calculation function for the second local solution
+        HeunCvars compute_s(std::complex<double> alpha, std::complex<double> beta, std::complex<double> gamma, 
+                          std::complex<double> delta, std::complex<double> eta, double z);
   
   private: 
         // HeunC0
@@ -119,13 +124,12 @@ class HeunCspace {
         HeunCvars HeunC00(HeunCparams p, double z, bool woexp);
 	HeunCvars HeunC00gen(HeunCparams p, double z);
 	HeunCvars HeunC00log(HeunCparams p, double z);	
-	// HeunCs
-	HeunCvars HeunCs(HeunCparams p, double z);	
+	// HeunCs0
 	HeunCvars HeunCs0(HeunCparams p,double z);
 	HeunCvars HeunCs00(HeunCparams p,double z);	
 	HeunCvars HeunCs00gamma1(HeunCparams p,double z);
 	// HeunCfromZ0
-	HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0)
+	HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0);
 	// HeunCconnect
 	HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,bool varargin=false, double& R, double R0);
 	// HeunCfaraway
@@ -144,10 +148,10 @@ class HeunCspace {
 	std::pair<HeunCvars, HeunCvars> HeunCnear1(HeunCparams p,double z);
 	// HeunCutils
 	std::complex<double> findcoef4HeunCs(HeunCparams p);
-	void findR(double& R, int& N)	
+	void findR(double& R, int& N);
 	
   #include "HeunC0.impl.hpp"
-  #include "HeunCs.impl.hpp"
+  #include "HeunCs0.impl.hpp"
   #include "HeunCfromZ0.impl.hpp"
   #include "HeunCconnect.impl.hpp"
   #include "HeunCfaraway.impl.hpp"
@@ -156,5 +160,5 @@ class HeunCspace {
   #include "HeunCnear1.impl.hpp"
   #include "HeunCutils.impl.hpp" 	
   #include "HeunCcompute.impl.hpp"
-  }
+  };
 }
