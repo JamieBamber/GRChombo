@@ -131,6 +131,7 @@ class Matrix{
 		array[1][1] = a11;
 	}
 
+	/*
 	// Initialise general matrix from a width x height array
 	void init(data_t init_arr[width][height]){
 		for(int j=0; j<height; j++){
@@ -138,7 +139,7 @@ class Matrix{
                                 array[j][k] = init_arr[j][k];
                         }
                 }
-        }		
+        }*/		
 
 	// 2x2 Inverse
 	Matrix<data_t> inverse(){
@@ -184,7 +185,7 @@ class Matrix{
 
         void fill(const data_t& value);
         void put(int h, int w, const data_t& value);
-        T get(int h, int w) const;
+        data_t get(int h, int w) const;
 
         void print(std::ostream &flux) const;
 
@@ -256,7 +257,7 @@ void Matrix<data_t>::put(int h, int w, const data_t& value){
 }
 
 template <class data_t>
-T Matrix<data_t>::get(int h, int w) const{
+data_t Matrix<data_t>::get(int h, int w) const{
     if(!(h>=0 && h<height && w>=0 && w<width))
         throw std::invalid_argument("Index out of bounds.");
 
@@ -336,7 +337,7 @@ Matrix<data_t> Matrix<data_t>::dot(const Matrix& m) const{
     if(!(width==m.height))
         throw std::invalid_argument("Dot product not compatible.");
 
-    T w=0;
+    data_t w=0;
     int mwidth = m.width;
 
     Matrix<data_t> result(height, mwidth);

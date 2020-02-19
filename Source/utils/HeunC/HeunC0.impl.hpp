@@ -34,13 +34,13 @@ inline HeunCvars HeunC0(HeunCparams p, double z, bool aux = false){
   HeunCvars result;
   
   if (z>=1){
-    throw std::invalid_argument("HeunC0: z belongs to the branch-cut [1,\infty)");
+    throw std::invalid_argument("HeunC0: z belongs to the branch-cut [1,infty)");
   }
   else {
     bool expgrow = false;
     HeunCparams p1 = p;
     if ! aux {
-      expgrow = real(-p.epsilon*z)>0;
+      expgrow = std::real(-p.epsilon*z)>0;
       if expgrow {
         p1.q = p.q - p.epsilon * gamma;
         p1.alpha = p.alpha - p.epsilon * (gamma+delta);
@@ -48,11 +48,11 @@ inline HeunCvars HeunC0(HeunCparams p, double z, bool aux = false){
       }
     }
 
-    if (abs(z)<Heun_cont_coef) {
+    if (std::abs(z)<Heun_cont_coef) {
       result = HeunC00(p1,aux);
     }
     else {
-      double z0 = Heun_cont_coef*z/abs(z);
+      double z0 = Heun_cont_coef*z/std::abs(z);
       HeunCvars result0 = HeunC00(p1,z,aux);
       HeunCvars result1 = HeunCconnect(p1,z,z0,result0.val,result0.dval, R);
       result.numb = result0.numb + result1.numb;
@@ -61,7 +61,7 @@ inline HeunCvars HeunC0(HeunCparams p, double z, bool aux = false){
     if expgrow {
       result.val = result.val * exp(p1.epsilon*z);
       result.dval = (p1.epsilon * result.val + result.dval) * exp(p1.epsilon*z);
-      result.err = result.err * abs(exp(p1.epsilon*z));
+      result.err = result.err * std::abs(exp(p1.epsilon*z));
     }
   }
   return result;
@@ -85,7 +85,7 @@ inline HeunCvars HeunC00(HeunCparams p, double z, bool woexp=false)
 	          		HeunCvars result_s = HeunCs00(p, z);
 		          	result.val = result.val - co * result_s.val;
 		          	result.dval = result.dval - co * result_s.dval;
-		          	result.err = result.err + abs(co) * result_s.err;
+		          	result.err = result.err + std::abs(co) * result_s.err;
 		          	result.numb = result.numb + result_s.numb;
 			}
 		}
@@ -144,15 +144,15 @@ inline HeunCvars HeunC00gen(HeunCparams p, double z)
 			std::complex<double> val2;
 			if (p.q-p.alpha*z != 0) {
         			val2 = ( z*(z-1)*ddval+(p.gamma*(z-1)+p.delta*z+p.epsilon*z*(z-1))*result.dval ) / (p.q-p.alpha*z);
-        			err1 = abs(result.val-val2);
+        			err1 = std::abs(result.val-val2);
       			}
 			else {
         			err1 = INFINITY;
       			}
       			if (std::abs(p.q-p.alpha*z)<0.01) {
 				std::double err2;
-        			err2 = abs(ckm0) * sp.qrt(result.numb) + eps * numb * abs(result.val);
-        			result.err =  min(err1,err2);
+        			err2 = std::abs(ckm0) * sp.qrt(result.numb) + eps * numb * std::abs(result.val);
+        			result.err =  std::min(err1,err2);
       			}
 			else {		
         			result.err = err1;
@@ -233,7 +233,7 @@ inline HeunCvars HeunC00log(HeunCparams p, double z) {
 	    	result.numb = k-1;
 	   	result.val = L1 + L2 + std::log(z) * L3;
 	    	result.dval = dL1 + dL2 + std::log(z) * dL3 + L3/z;
-	    	ddval = ddL1 + ddL2 - L3/(z*z) + 2*dL3/z + log(z) * ddL3;
+	    	ddval = ddL1 + ddL2 - L3/(z*z) + 2*dL3/z + std::log(z) * ddL3;
 
 	    	if (std::isinf(result.val) ||std::isinf(result.dval) ||std::isnan(result.val) ||std::isnan(result.dval) ) {
                         throw std::runtime_error("HeunC00log: failed convergence of recurrence and summation"); 
@@ -243,19 +243,19 @@ inline HeunCvars HeunC00log(HeunCparams p, double z) {
 	      		std::double err1, err2;
 			if (p.q-p.alpha*z !=0) {	    
 	       			val2 = ( z*(z-1)*ddval+(p.gamma*(z-1)+p.delta*z+p.epsilon*z*(z-1))*dval ) / (p.q-p.alpha*z);
-	        		val3 = ((dL3*p.epsilon+ddL3)*(z*z)*log(z)+(dL3*(p.gamma-p.epsilon+p.delta)-ddL3)*z*log(z)-dL3*p.gamma*log(z)+
+	        		val3 = ((dL3*p.epsilon+ddL3)*(z*z)*std::log(z)+(dL3*(p.gamma-p.epsilon+p.delta)-ddL3)*z*std::log(z)-dL3*p.gamma*std::log(z)+
 	          			(p.epsilon*(dL2+dL1)+ddL2+ddL1)*(z*z)+((dL1+dL2)*(p.gamma-p.epsilon+p.delta)+L3*p.epsilon-ddL2-ddL1+2*dL3)*z+
 	          			L3*(1-p.gamma)/z-(dL1+dL2)*p.gamma+L3*(p.gamma+p.delta-p.epsilon)-2*dL3-L3) / (p.q-p.alpha*z);
 	      
-	        		err1 = min(std::abs(result.val-val2),std::abs(result.val-val3));
+	        		err1 = std::min(std::abs(result.val-val2),std::abs(result.val-val3));
 			}
 	      		else {
 	        		err1 = INFINITY;
 	      		}
 	      		if (std::abs(p.q-p.alpha*z)<0.01)||(err1<eps) {
-	        		err2 = abs(L1)*eps*N + abs(ckm0)*sp.qrt(result.numb-N+1) + abs(L2)*eps*(result.numb-N+1) +
-	               			abs(log(z)) * ( abs(skm0)*sp.qrt(result.numb-N+1) + abs(L3)*eps*(result.numb-N+1) );
-	        		result.err =  min(err1,err2);
+	        		err2 = std::abs(L1)*eps*N + std::abs(ckm0)*sp.qrt(result.numb-N+1) + std::abs(L2)*eps*(result.numb-N+1) +
+	               			std::abs(std::log(z)) * ( std::abs(skm0)*sp.qrt(result.numb-N+1) + std::abs(L3)*eps*(result.numb-N+1) );
+	        		result.err =  std::min(err1,err2);
 	      		}
 			else {
 	        		result.err = err1;

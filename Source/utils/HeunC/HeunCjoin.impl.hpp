@@ -10,7 +10,7 @@
 //
 // HeunCjoin0inf finds connection coefficients C0, Cs, such that
 // C0 * HeunC00(z) + Cs * HeunCs00(z) analytically continues to
-// the first, power solution at infinity \exp(i\theta) \infty
+// the first, power solution at infinity \exp(i\theta) infty
 // (see HeunCinfA)
 //
 // HeunCjoin10 finds matrix C of connection coefficients, such that
