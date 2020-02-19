@@ -12,7 +12,7 @@ Some extra utiliy functions used in the HeunC code
 */
 
 // function find coefficient for the second HeunC solution
-inline std::complex<double> findcoef4HeunCs(HeunCparams p){
+inline std::complex<double> HeunC::findcoef4HeunCs(HeunCparams p){
         int n = std::round(1-std::real(p.gamma));  
         std::complex<double> ckm1 = 1; 
         std::complex<double> ckm2 = 0;
@@ -32,7 +32,7 @@ inline std::complex<double> findcoef4HeunCs(HeunCparams p){
 // of type \sum_{n=0}^{\infty} b_n n!/z^n can be computed as superasymptotic
 // with accuracy better than machine epsilon
 
-inline void findR(double& R, int& N)
+inline void HeunC::findR()
 {
   if (R==0 || N==0) {
     double R_, R0;

@@ -21,7 +21,7 @@
 // 09 January 2018
 //
 
-inline HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,bool varargin=false, double& R, double R0=0)
+inline HeunCvars HeunC::HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0, double R0, bool aux)
 {
   HeunCvars result;
   result.warningmessage = '';
@@ -37,7 +37,7 @@ inline HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<dou
     bool insearch = true, failure = false;
     double Rmax;    
 
-    if varargin {
+    if aux {
 	Rmax = R0;
     } 
     else {

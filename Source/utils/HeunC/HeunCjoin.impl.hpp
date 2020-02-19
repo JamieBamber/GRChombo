@@ -32,7 +32,7 @@
 // 15 March 2018
 //
 
-inline ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux = false)
+inline ConnectionVars HeunC::HeunCjoin0inf(HeunCparams p,bool aux)
 {
   ConnectionVars result;
   bool consts_known = false;
@@ -45,7 +45,7 @@ inline ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux = false)
   else {
     HeunCvars result, varsinf, varsJinf, varsJ0, varsJs;
 
-    findR(R, N);
+    findR();
 
     R0 = R/(abs(eps)+abs(epsilon));
 
@@ -74,7 +74,7 @@ inline ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux = false)
   return result;
 }
 
-inline ConnectionVars HeunCjoin10(HeunCparams p)
+inline ConnectionVars HeunC::HeunCjoin10(HeunCparams p)
 {
   ConnectionVars result;
   
@@ -108,7 +108,7 @@ inline ConnectionVars HeunCjoin10(HeunCparams p)
   return result;
 }
 
-HeunCvars HeunC1(HeunCparams p, double z){
+HeunCvars HeunC::HeunC1(HeunCparams p, double z){
     HeunCvars result;
     HeunCparams p0;
     p0 = p;
@@ -120,7 +120,7 @@ HeunCvars HeunC1(HeunCparams p, double z){
     return result;
 }
    
-HeunCvars HeunCs1(HeunCparams p, double z){
+HeunCvars HeunC::HeunCs1(HeunCparams p, double z){
     HeunCvars result; 
     HeunCparams p0; 
     p0 = p; 
@@ -132,7 +132,7 @@ HeunCvars HeunCs1(HeunCparams p, double z){
     return result;
 }
 
-inline ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known){
+inline ConnectionVars HeunC::extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known){
   ConnectionVars result;
   result.err = nan; result.numb = 0; 
   savedataVars s;
@@ -150,7 +150,7 @@ inline ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> sa
   return result;
 }
 
-inline void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);
+inline void HeunC::keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);
   if length(savedata)<=Heun_memlimit
   {
     savedata.pushback(s)

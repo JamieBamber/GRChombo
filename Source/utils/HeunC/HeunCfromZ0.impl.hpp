@@ -24,7 +24,7 @@
 //
 // 09 January 2018
 //
-inline HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0)
+inline HeunCvars HeunC::HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0)
 {
   HeunCvars result;
 

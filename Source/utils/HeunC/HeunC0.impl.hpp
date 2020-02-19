@@ -29,7 +29,7 @@
 // 15 February 2018
 //
 
-inline HeunCvars HeunC0(HeunCparams p, double z, bool aux = false){
+inline HeunCvars HeunC::HeunC0(HeunCparams p, double z, bool aux){
   
   HeunCvars result;
   
@@ -39,26 +39,26 @@ inline HeunCvars HeunC0(HeunCparams p, double z, bool aux = false){
   else {
     bool expgrow = false;
     HeunCparams p1 = p;
-    if ! aux {
+    if (aux==false) {
       expgrow = std::real(-p.epsilon*z)>0;
-      if expgrow {
-        p1.q = p.q - p.epsilon * gamma;
-        p1.alpha = p.alpha - p.epsilon * (gamma+delta);
+      if (expgrow) {
+        p1.q = p.q - p.epsilon*p.gamma;
+        p1.alpha = p.alpha - p.epsilon * (p.gamma+p.delta);
         p1.epsilon = -p.epsilon;
       }
     }
 
     if (std::abs(z)<Heun_cont_coef) {
-      result = HeunC00(p1,aux);
+      result = HeunC00(p1,z,aux);
     }
     else {
       double z0 = Heun_cont_coef*z/std::abs(z);
       HeunCvars result0 = HeunC00(p1,z,aux);
-      HeunCvars result1 = HeunCconnect(p1,z,z0,result0.val,result0.dval, R);
+      HeunCvars result1 = HeunCconnect(p1,z,z0,result0.val,result0.dval,R);
       result.numb = result0.numb + result1.numb;
       result.err = result0.err + result1.err;
     }
-    if expgrow {
+    if (expgrow) {
       result.val = result.val * exp(p1.epsilon*z);
       result.dval = (p1.epsilon * result.val + result.dval) * exp(p1.epsilon*z);
       result.err = result.err * std::abs(exp(p1.epsilon*z));
@@ -67,7 +67,7 @@ inline HeunCvars HeunC0(HeunCparams p, double z, bool aux = false){
   return result;
 }
 
-inline HeunCvars HeunC00(HeunCparams p, double z, bool woexp=false)
+inline HeunCvars HeunC::HeunC00(HeunCparams p, double z, bool aux)
 {
 	// define the result 
 	HeunCvars result;
@@ -77,11 +77,11 @@ inline HeunCvars HeunC00(HeunCparams p, double z, bool woexp=false)
 		throw std::invalid_argument("HeunC00: z is out of the convergence radius = 1");
 	}
   	else{
-    		bool p.gamma_is_negative_integer = (std::imag(p.gamma)==0) && std::abs(std::ceil(std::real(p.gamma)-5*eps)+std::abs(p.gamma))<5*eps;
-		if p.gamma_is_negative_integer {
+    		bool gamma_is_negative_integer = (std::imag(p.gamma)==0) && std::abs(std::ceil(std::real(p.gamma)-5*eps)+std::abs(p.gamma))<5*eps;
+		if (gamma_is_negative_integer) {
 	     		result = HeunC00log(p, z);
-	      		if woexp {
-	          		co = findcoef4HeunCs(p);
+	      		if (aux) {
+	          		std::complex<double> co = findcoef4HeunCs(p);
 	          		HeunCvars result_s = HeunCs00(p, z);
 		          	result.val = result.val - co * result_s.val;
 		          	result.dval = result.dval - co * result_s.dval;
@@ -97,7 +97,7 @@ inline HeunCvars HeunC00(HeunCparams p, double z, bool woexp=false)
 }
 
 // confluent Heun function expansion for |z| < 1, gamma is not equal to 0, -1, -2, ...
-inline HeunCvars HeunC00gen(HeunCparams p, double z)
+inline HeunCvars HeunC::HeunC00gen(HeunCparams p, double z)
 {
 	HeunCvars result;
 
@@ -105,20 +105,20 @@ inline HeunCvars HeunC00gen(HeunCparams p, double z)
     		result.val = 1;
 		result.dval = -p.q/p.gamma;
     		result.err = 0;
-		numb = 1;
+		result.numb = 1;
   	}
   	else {
     		// recursion relation variables
     		std::complex<double> ckm2 = 1; 
 		std::complex<double> ckm1 = -z*p.q/p.gamma;
-    		std::complex<double> val = ckm2+ckm1; 
+    		result.val = ckm2+ckm1; 
 		std::complex<double> vm1 = result.val; 
-		std::complex<double> vm2 = NaN;
+		std::complex<double> vm2;
     		result.dval = -p.q/p.gamma; 
-		std::complex<double> dm1 = dval; 
-		std::complex<double> dm2 = NaN;
+		std::complex<double> dm1 = result.dval; 
+		std::complex<double> dm2;
     		std::complex<double> ddval = 0; 
-    		std::int k = 2; 
+    		int k = 2; 
 		std::complex<double> ckm0 = 1;
 		// perform recursion
     		while ( (k<=Heun_klimit) && ( (vm2 != vm1) || (dm2 != dm1) || (std::abs(ckm0)>eps) ) ) {
@@ -129,18 +129,18 @@ inline HeunCvars HeunC00gen(HeunCparams p, double z)
       			ckm2 = ckm1; 
 			ckm1 = ckm0;
       			vm2 = vm1; 
-			vm1 = val;
+			vm1 = result.val;
       			dm2 = dm1; 
-			dm1 = dval;
-      			k = k+1;
+			dm1 = result.dval;
+      			k += 1;
 		}
     		result.numb = k-1;
 
-		if ( std::isinf(result.val) || std::isinf(result.dval) || std::isnan(result.val) || std::isnan(result.dval) ) {
+		if ( isinf(abs(result.val)) || std::isinf(abs(result.dval)) || std::isnan(abs(result.val)) || std::isnan(abs(result.dval)) ) {
 			throw std::runtime_error("HeunC00: failed convergence of recurrence and summation"); 
       		}
     		else {
-			std::double err1;
+			double err1;
 			std::complex<double> val2;
 			if (p.q-p.alpha*z != 0) {
         			val2 = ( z*(z-1)*ddval+(p.gamma*(z-1)+p.delta*z+p.epsilon*z*(z-1))*result.dval ) / (p.q-p.alpha*z);
@@ -150,7 +150,7 @@ inline HeunCvars HeunC00gen(HeunCparams p, double z)
         			err1 = INFINITY;
       			}
       			if (std::abs(p.q-p.alpha*z)<0.01) {
-				std::double err2;
+				double err2;
         			err2 = std::abs(ckm0) * sp.qrt(result.numb) + eps * numb * std::abs(result.val);
         			result.err =  std::min(err1,err2);
       			}
@@ -163,7 +163,7 @@ inline HeunCvars HeunC00gen(HeunCparams p, double z)
 }
 
 // confluent Heun function, p.gamma = 0, -1, -2, ...
-inline HeunCvars HeunC00log(HeunCparams p, double z) {
+inline HeunCvars HeunC::HeunC00log(HeunCparams p, double z) {
 	HeunCvars result;
   	
 	if (z==0) {
@@ -178,7 +178,7 @@ inline HeunCvars HeunC00log(HeunCparams p, double z) {
     		}
   	}
 	else {
-    		std::int N = std::round(1-std::real(p.gamma));
+    		int N = std::round(1-std::real(p.gamma));
   		
 		// recursion relation variables
     		std::complex<double> L1 = 1, dL1 = 0, ddL1 = 0;
@@ -200,7 +200,7 @@ inline HeunCvars HeunC00log(HeunCparams p, double z) {
                 std::complex<double> sN = (ckm1*z*(p.q+p.gamma*(p.delta-p.epsilon-1)) + ckm2*(z*z)*(p.epsilon*(p.gamma+1)-p.alpha))/(p.gamma-1);
 
 		dm1 = dL2; 
-		dm2 = NaN;
+		//dm2 = nan;
 	    	ckm1 = 0; 
 		ckm2 = ckm0; 
 	    	L3 = sN; 
@@ -208,8 +208,8 @@ inline HeunCvars HeunC00log(HeunCparams p, double z) {
 	    	dL3 = N*sN/z; 
 		ddL3 = N*(N-1)*sN/(z*z); 
 	    	dsm1 = dL3; 
-		dsm2 = NaN; 
-		skm0 = NaN;
+		//dsm2 = nan; 
+		//skm0 = nan;
 	    
 	    	int k = N+1;
 
@@ -235,12 +235,12 @@ inline HeunCvars HeunC00log(HeunCparams p, double z) {
 	    	result.dval = dL1 + dL2 + std::log(z) * dL3 + L3/z;
 	    	ddval = ddL1 + ddL2 - L3/(z*z) + 2*dL3/z + std::log(z) * ddL3;
 
-	    	if (std::isinf(result.val) ||std::isinf(result.dval) ||std::isnan(result.val) ||std::isnan(result.dval) ) {
+	    	if (std::isinf(abs(result.val)) ||std::isinf(abs(result.dval)) ||std::isnan(abs(result.val)) ||std::isnan(abs(result.dval)) ) {
                         throw std::runtime_error("HeunC00log: failed convergence of recurrence and summation"); 
                 }
 	    	else {
 			std::complex<double> val2, val3;
-	      		std::double err1, err2;
+	      		double err1, err2;
 			if (p.q-p.alpha*z !=0) {	    
 	       			val2 = ( z*(z-1)*ddval+(p.gamma*(z-1)+p.delta*z+p.epsilon*z*(z-1))*dval ) / (p.q-p.alpha*z);
 	        		val3 = ((dL3*p.epsilon+ddL3)*(z*z)*std::log(z)+(dL3*(p.gamma-p.epsilon+p.delta)-ddL3)*z*std::log(z)-dL3*p.gamma*std::log(z)+

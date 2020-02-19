@@ -45,120 +45,121 @@
 
 namespace HeunCspace {
 
-struct HeunCvars {
-std::complex<double>    val;
-std::complex<double>    dval;
-int                numb;
-double             err;
-};
-
-struct HeunCparams {
-std::complex<double> q, alpha, gamma, delta, epsilon;
-};
-
-struct ConnectionVars
-{
-Matrix<std::complex<double>> C10;
-double err;
-int numb;
-};
-
-struct savedataVars
-{
-ConnectionVars Cvars;
-HeunCparams p;
-};
-
-void MakeNan(HeunCvars result){
-	// make zero not nan for the moment until I can figure out how c++ nan works
-        result.val = 0;
-        result.dval = 0;
-        result.err = 0;
-        result.numb = 0;
-}
-
-class HeunC {
-
-   public:
-	// options
-	/*------------------------
-        Heun_cont_coef:      for each power expansion of the analytic continuation procedure 
-		 	     the coefficient is the relative (to the radius of convergence) distance from 
- 		             the centre to the calculated point.
-
-	Heun_klimit          maximum number of power series' terms.
-
-	Heun_optserterms     number of power series' terms considered as in some sense optimal.
-
-	Heun_asympt_klimit   maximum number of asymptotic series' terms.
-
-	Heun_proxco, Heun_proxcoinf_rel      specifies relative proximity to singular point where special representation is used 
-
-	Heun_memlimit	is the maximum number of sets of data (parameters of confluent Heun function and corresponding connection coefficients) which are kept in memory */
-	const double Heun_cont_coef = 0.38;
-	const int Heun_klimit = 1000;
-	const int Heun_optserterms = 40;	
-	const int Heun_asympt_klimit = 200;	
-	const double Heun_proxco = 0.05, Heun_proxcoinf_rel = 1.0;
-
-	// data storage vectors (not sure why we need these... )
-	std::vector<savedataVars> savedata10, savedata0inf;
-	// variables R and N
-	double R = 0;
-	double N = 0;
-
-	// Constructor 
-        HeunC() {} ;
+	struct HeunCvars {
+	std::complex<double>    val;
+	std::complex<double>    dval;
+	int                numb;
+	double             err;
+	};
 	
-	// main caluclation function
-	HeunCvars compute(std::complex<double> alpha, std::complex<double> beta, std::complex<double> gamma, 
-                          std::complex<double> delta, std::complex<double> eta, double z);
-
-	// calculation function for the second local solution
-        HeunCvars compute_s(std::complex<double> alpha, std::complex<double> beta, std::complex<double> gamma, 
-                          std::complex<double> delta, std::complex<double> eta, double z);
-  
-  private: 
-        // HeunC0
-	HeunCvars HeunC0(HeunCparams p, double z, bool aux);	
-        HeunCvars HeunC00(HeunCparams p, double z, bool woexp);
-	HeunCvars HeunC00gen(HeunCparams p, double z);
-	HeunCvars HeunC00log(HeunCparams p, double z);	
-	// HeunCs0
-	HeunCvars HeunCs0(HeunCparams p,double z);
-	HeunCvars HeunCs00(HeunCparams p,double z);	
-	HeunCvars HeunCs00gamma1(HeunCparams p,double z);
-	// HeunCfromZ0
-	HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0);
-	// HeunCconnect
-	HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,bool varargin=false, double& R, double R0);
-	// HeunCfaraway
-	std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z);
-	// HeunCjoin
-	ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux);
-	ConnectionVars HeunCjoin10(HeunCparams p);	
-	HeunCvars HeunC1(HeunCparams p, double z);	
-	HeunCvars HeunCs1(HeunCparams p,double z);
-	ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known);
-	void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);	
-	// HeunCinf
-	HeunCvars HeunCinfA(HeunCparams p, double z);
-	HeunCvars HeunCinfB(HeunCparams p, double z);
-	// HeunCnear1
-	std::pair<HeunCvars, HeunCvars> HeunCnear1(HeunCparams p,double z);
-	// HeunCutils
-	std::complex<double> findcoef4HeunCs(HeunCparams p);
-	void findR(double& R, int& N);
+	struct HeunCparams {
+	std::complex<double> q, alpha, gamma, delta, epsilon;
+	};
 	
-  #include "HeunC0.impl.hpp"
-  #include "HeunCs0.impl.hpp"
-  #include "HeunCfromZ0.impl.hpp"
-  #include "HeunCconnect.impl.hpp"
-  #include "HeunCfaraway.impl.hpp"
-  #include "HeunCjoin.impl.hpp"
-  #include "HeunCinf.impl.hpp"
-  #include "HeunCnear1.impl.hpp"
-  #include "HeunCutils.impl.hpp" 	
-  #include "HeunCcompute.impl.hpp"
-  };
+	struct ConnectionVars
+	{
+	Matrix<std::complex<double>> C10;
+	double err;
+	int numb;
+	};
+	
+	struct savedataVars
+	{
+	ConnectionVars Cvars;
+	HeunCparams p;
+	};
+	
+	void MakeNan(HeunCvars result){
+		// make zero not nan for the moment until I can figure out how c++ nan works
+        	result.val = 0;
+        	result.dval = 0;
+        	result.err = 0;
+        	result.numb = 0;
+	}
+
+	class HeunC {
+
+   	public:
+		// options
+		/*------------------------
+        	Heun_cont_coef:      for each power expansion of the analytic continuation procedure 
+		 	     	the coefficient is the relative (to the radius of convergence) distance from 
+ 		             	the centre to the calculated point.
+	
+		Heun_klimit          maximum number of power series' terms.
+	
+		Heun_optserterms     number of power series' terms considered as in some sense optimal.
+	
+		Heun_asympt_klimit   maximum number of asymptotic series' terms.
+	
+		Heun_proxco, Heun_proxcoinf_rel      specifies relative proximity to singular point where special representation is used 
+	
+		Heun_memlimit	is the maximum number of sets of data (parameters of confluent Heun function and corresponding connection coefficients) which are kept in memory */
+		const double Heun_cont_coef = 0.38;
+		const int Heun_klimit = 1000;
+		const int Heun_optserterms = 40;	
+		const int Heun_asympt_klimit = 200;	
+		const double Heun_proxco = 0.05, Heun_proxcoinf_rel = 1.0;
+	
+		// data storage vectors (not sure why we need these... )
+		std::vector<savedataVars> savedata10, savedata0inf;
+		// variables R and N
+		double R = 0;
+		double N = 0;
+	
+		// Constructor 
+        	HeunC() {} ;
+		
+		// main caluclation function
+		HeunCvars compute(std::complex<double> alpha, std::complex<double> beta, std::complex<double> gamma, 
+                          	std::complex<double> delta, std::complex<double> eta, double z);
+	
+		// calculation function for the second local solution
+        	HeunCvars compute_s(std::complex<double> alpha, std::complex<double> beta, std::complex<double> gamma, 
+                          	std::complex<double> delta, std::complex<double> eta, double z);
+  	
+    	private: 
+        	// HeunC0
+		HeunCvars HeunC0(HeunCparams p, double z, bool aux=false);	
+        	HeunCvars HeunC00(HeunCparams p, double z, bool aux=false);
+		HeunCvars HeunC00gen(HeunCparams p, double z);
+		HeunCvars HeunC00log(HeunCparams p, double z);	
+		// HeunCs0
+		HeunCvars HeunCs0(HeunCparams p,double z);
+		HeunCvars HeunCs00(HeunCparams p,double z);	
+		HeunCvars HeunCs00gamma1(HeunCparams p,double z);
+		// HeunCfromZ0
+		HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0);
+		// HeunCconnect
+		HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,double R0=0,bool aux=false);
+		// HeunCfaraway
+		std::pair<HeunCvars, HeunCvars> HeunCnear1(HeunCparams p,double z);
+		std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z);
+		// HeunCjoin
+		ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux=false);
+		ConnectionVars HeunCjoin10(HeunCparams p);	
+		HeunCvars HeunC1(HeunCparams p, double z);	
+		HeunCvars HeunCs1(HeunCparams p,double z);
+		ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known);
+		void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);	
+		// HeunCinf
+		HeunCvars HeunCinfA(HeunCparams p, double z);
+		HeunCvars HeunCinfB(HeunCparams p, double z);
+		// HeunCutils
+		std::complex<double> findcoef4HeunCs(HeunCparams p);
+		void findR();
+	};		
+
+#include "HeunC0.impl.hpp"
+#include "HeunCs0.impl.hpp"
+#include "HeunCfromZ0.impl.hpp"
+#include "HeunCconnect.impl.hpp"
+#include "HeunCfaraway.impl.hpp"
+#include "HeunCjoin.impl.hpp"
+#include "HeunCinf.impl.hpp"
+#include "HeunCutils.impl.hpp" 	
+#include "HeunCcompute.impl.hpp"
+
 }
+	
+	
