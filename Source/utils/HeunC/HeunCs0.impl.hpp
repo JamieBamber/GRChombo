@@ -32,7 +32,7 @@
 // the second local solution at z=0 (see HeunCs00)
 //
 // computed by a consequence of power expansions
-inline HeunCvars HeunCs0(HeunCparams p,double z){
+inline HeunCvars HeunC::HeunCs0(HeunCparams p,double z){
   
   HeunCvars result;
 
@@ -69,7 +69,7 @@ inline HeunCvars HeunCs0(HeunCparams p,double z){
 
 // solution at z ~ 0
 // |z| should not exceed the convergency radius 1
-inline HeunCvars HeunCs00(HeunCparams p,double z)
+inline HeunCvars HeunC::HeunCs00(HeunCparams p,double z)
 {
   HeunCvars result;
   if (std::abs(z)>=1){
@@ -108,7 +108,7 @@ inline HeunCvars HeunCs00(HeunCparams p,double z)
 
 // confluent Heun function, second local solution at z=0, p.gamma = 1
 //
-inline HeunCvars HeunCs00gamma1(HeunCparams p,double z)
+inline HeunCvars HeunC::HeunCs00gamma1(HeunCparams p,double z)
 {  
   HeunCvars result;
 

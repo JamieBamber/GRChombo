@@ -23,7 +23,7 @@
 // 20 December 2017
 //
 
-inline HeunCvars HeunCinfA(HeunCparams p, double z)
+inline HeunCvars HeunC::HeunCinfA(HeunCparams p, double z)
 {
   HeunCvars result;
 
@@ -96,7 +96,7 @@ inline HeunCvars HeunCinfA(HeunCparams p, double z)
 // asymptotic expansion at z=infinity,
 // the second solution, including exponential factor
 
-inline HeunCvars HeunCinfB(HeunCparams p, double z)
+inline HeunCvars HeunC::HeunCinfB(HeunCparams p, double z)
 {  
   HeunCvars result0, result;
   HeunCparams p0 = p;

@@ -18,7 +18,7 @@ HeunCinfB
 // confluent Heun function, a solution of the equation
 // HeunC""(z)+(gamma/z+delta/(z-1)+epsilon)*HeunC"(z)+(alpha*z-q)/(z*(z-1))*HeunC(z) = 0
 //
-// computation for sufficiently large |z|, by analytic continuation from infinity
+// computation for  sufficiently large |z|, by analytic continuation from infinity, and for z near 1
 //
 // computes both the first at z=0 local solution (see HeunC00) and the second at z=0 local solution (see HeunCs0)
 //
@@ -52,7 +52,36 @@ HeunCinfB
 // 26 March 2018
 //
 
-inline std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z)
+//
+// power series solution for z near 1
+inline std::pair<HeunCvars, HeunCvars> HeunC::HeunCnear1(HeunCparams p,double z)
+{
+  HeunCvars vars1, vars2;
+  MakeNan(vars1);
+  MakeNan(vars2);
+
+  ConnectionVars m_vars = HeunCjoin10(p);
+  
+  HeunCvars vars1f = HeunC1(q,alpha,gamma,delta,epsilon,z);
+  HeunCvars vars1s = HeunCs1(q,alpha,gamma,delta,epsilon,z);
+
+  vars1.numb = m_vars.numb + vars1f.numb + vars1s.numb;
+  vars2.numb = vars1.numb;
+    
+  vars1.val = m_vars.C10[0, 0]*vars1f.val + m_vars.C10[0, 1]*vars1s.val;
+  vars1.dval = m_vars.C10[0, 0]*vars1f.dval + m_vars.C10[0, 1]*vars1s.dval;
+  vars1.err = std::abs(m_vars.C10[0, 0]*vars1f.err) + std::abs(m_vars.C10[0, 1]*vars1s.err) + m_vars.err;
+
+  vars2.val = m_vars.C10[1, 0]*vars1f.val + m_vars.C10[1, 1]*vars1s.val;
+  vars2.dval = m_vars.C10[1, 0]*vars1f.dval + m_vars.C10[1, 1]*vars1s.dval;
+  vars2.err = std::abs(m_vars.C10[1, 0]*vars1f.err) + std::abs(m_vars.C10[1, 1]*vars1s.err) + m_vars.err;
+
+  std::pair output(vars1, vars2);
+  return output;
+}
+
+// for large |z|
+inline std::pair<HeunCvars, HeunCvars> HeunC::HeunCfaraway(HeunCparams p,double z)
 {
   HeunCvars result1, result2;
 
@@ -73,7 +102,7 @@ inline std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z)
     ConnectionVars CA = HeunCjoin0infA(p);
     ConnectionVars CB = HeunCjoin0infA(pB);
 
-    findR(R, N);
+    findR();
 
     double infpt = -max(1,R/(abs(eps)+abs(epsilon)));
 

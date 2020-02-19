@@ -37,7 +37,7 @@ HeunCnear1
 // 26 January 2018
 //
 
-inline HeunCvars compute(std::complex<double> alpha_, std::complex<double> beta_, std::complex<double> gamma_, 
+inline HeunCvars HeunC::compute(std::complex<double> alpha_, std::complex<double> beta_, std::complex<double> gamma_, 
                           std::complex<double> delta_, std::complex<double> eta_, double z);
 {
   HeunCvars result;
@@ -70,7 +70,7 @@ inline HeunCvars compute(std::complex<double> alpha_, std::complex<double> beta_
   }
 }
 
-inline HeunCvars compute_s(std::complex<double> alpha_, std::complex<double> beta_, std::complex<double> gamma_, 
+inline HeunCvars HeunC::compute_s(std::complex<double> alpha_, std::complex<double> beta_, std::complex<double> gamma_, 
                           std::complex<double> delta_, std::complex<double> eta_, double z);
 {
   HeunCvars result;
@@ -86,7 +86,7 @@ inline HeunCvars compute_s(std::complex<double> alpha_, std::complex<double> bet
     throw std::invalid_argument("HeunCfaraway: z belongs to the branch-cut [1,infty)");
   }
   else {
-    findR(R, N);
+    findR();
 
     if (abs(z-1)<Heun_proxco){
       std::pair<HeunCvars, HeunCvars> vars_vars1 = HeunCnear1(p,z);
