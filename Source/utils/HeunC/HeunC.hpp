@@ -1,5 +1,5 @@
-#ifndef MAIN_HEUNC_HPP_
-#define MAIN_HEUNC_HPP_
+#ifndef HEUNC_HPP_
+#define HEUNC_HPP_
 
 /* Class to numerically calculate the confluent Heun function for a real argument 
    Converted from MATLAB code
