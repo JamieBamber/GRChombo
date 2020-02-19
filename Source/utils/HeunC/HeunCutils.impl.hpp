@@ -1,5 +1,5 @@
-#if !defined(MAIN_HEUNC_HPP_)
-#error "This file should only be included through MainHeunC.hpp"
+#if !defined(HEUNC_HPP_)
+#error "This file should only be included through HeunC.hpp"
 #endif
 
 #ifndef HEUNCUTILS_IMPL_HPP_
