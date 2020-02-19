@@ -120,46 +120,37 @@ namespace HeunCspace {
   	
     	private: 
         	// HeunC0
-		HeunCvars HeunC0(HeunCparams p, double z, bool aux=false);	
-        	HeunCvars HeunC00(HeunCparams p, double z, bool aux=false);
-		HeunCvars HeunC00gen(HeunCparams p, double z);
-		HeunCvars HeunC00log(HeunCparams p, double z);	
-		// HeunCs0
-		HeunCvars HeunCs0(HeunCparams p,double z);
-		HeunCvars HeunCs00(HeunCparams p,double z);	
-		HeunCvars HeunCs00gamma1(HeunCparams p,double z);
-		// HeunCfromZ0
-		HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0);
-		// HeunCconnect
-		HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,double R0=0,bool aux=false);
-		// HeunCfaraway
-		std::pair<HeunCvars, HeunCvars> HeunCnear1(HeunCparams p,double z);
-		std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z);
-		// HeunCjoin
-		ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux=false);
-		ConnectionVars HeunCjoin10(HeunCparams p);	
-		HeunCvars HeunC1(HeunCparams p, double z);	
-		HeunCvars HeunCs1(HeunCparams p,double z);
-		ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known);
-		void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);	
-		// HeunCinf
-		HeunCvars HeunCinfA(HeunCparams p, double z);
-		HeunCvars HeunCinfB(HeunCparams p, double z);
-		// HeunCutils
-		std::complex<double> findcoef4HeunCs(HeunCparams p);
-		void findR();
+        	HeunCvars HeunC0(HeunCparams p, double z, bool aux=false);	
+			HeunCvars HeunC00(HeunCparams p, double z, bool aux=false);
+			HeunCvars HeunC00gen(HeunCparams p, double z);
+			HeunCvars HeunC00log(HeunCparams p, double z);	
+			// HeunCs0
+			HeunCvars HeunCs0(HeunCparams p,double z);
+			HeunCvars HeunCs00(HeunCparams p,double z);	
+			HeunCvars HeunCs00gamma1(HeunCparams p,double z);
+			// HeunCfromZ0
+			HeunCvars HeunCfromZ0(HeunCparams p,double z,double Z0,std::complex<double> H0,std::complex<double> dH0);
+			// HeunCconnect
+			HeunCvars HeunCconnect(HeunCparams p,double z, double z0,std::complex<double> H0,std::complex<double> dH0,double R0=0,bool aux=false);
+			// HeunCfaraway
+			std::pair<HeunCvars, HeunCvars> HeunCnear1(HeunCparams p,double z);
+			std::pair<HeunCvars, HeunCvars> HeunCfaraway(HeunCparams p,double z);
+			// HeunCjoin
+			ConnectionVars HeunCjoin0inf(HeunCparams p,bool aux=false);
+			ConnectionVars HeunCjoin10(HeunCparams p);	
+			HeunCvars HeunC1(HeunCparams p, double z);	
+			HeunCvars HeunCs1(HeunCparams p,double z);
+			ConnectionVars extrdatfromsav(HeunCparams p, std::vector<savedataVars> savedata, bool& consts_known);
+			void keepdattosav(savedataVars s, std::vector<savedataVars>& savedata);	
+			// HeunCinf
+			HeunCvars HeunCinfA(HeunCparams p, double z);
+			HeunCvars HeunCinfB(HeunCparams p, double z);
+			// HeunCutils
+			std::complex<double> findcoef4HeunCs(HeunCparams p);
+			void findR();
 	};		
 
-#include "HeunC0.impl.hpp"
-#include "HeunCs0.impl.hpp"
-#include "HeunCfromZ0.impl.hpp"
-#include "HeunCconnect.impl.hpp"
-#include "HeunCfaraway.impl.hpp"
-#include "HeunCjoin.impl.hpp"
-#include "HeunCinf.impl.hpp"
-#include "HeunCutils.impl.hpp" 	
-#include "HeunCcompute.impl.hpp"
-
+#include "HeunC.impl.hpp"
 }
 	
 	
