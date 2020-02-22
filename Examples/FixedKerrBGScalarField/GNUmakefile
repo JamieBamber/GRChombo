@@ -9,7 +9,6 @@
 GRCHOMBO_SOURCE = /home/dc-bamb1/GRChombo/Source
 
 include_dirs := -I$(GRCHOMBO_SOURCE)/utils \
-	    -I$(GRCHOMBO_SOURCE)/utils/HeunC \
             -I$(GRCHOMBO_SOURCE)/simd  \
             -I$(GRCHOMBO_SOURCE)/CCZ4  \
             -I$(GRCHOMBO_SOURCE)/Matter  \
