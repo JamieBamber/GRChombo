@@ -34,6 +34,7 @@
 // 26 January 2018
 //
 
+#include <algorithm>
 #include <complex>
 #include <cmath>
 #include <vector>
@@ -100,7 +101,8 @@ namespace HeunCspace {
 		const int Heun_optserterms = 40;	
 		const int Heun_asympt_klimit = 200;	
 		const double Heun_proxco = 0.05, Heun_proxcoinf_rel = 1.0;
-	
+		const int Heun_memlimit	= 5;
+		
 		// data storage vectors (not sure why we need these... )
 		std::vector<savedataVars> savedata10, savedata0inf;
 		// variables R and N
@@ -153,4 +155,4 @@ namespace HeunCspace {
 #include "HeunC.impl.hpp"
 }
 	
-	
+#endif /* HEUNC_HPP_ */	

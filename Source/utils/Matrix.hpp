@@ -90,7 +90,7 @@ class Matrix{
 		double sigma1 = std::sqrt(std::abs(S1 + S2));
 		double sigma2 = std::sqrt(std::abs(S1 - S2));
 		double sigma_min = std::min(sigma1, sigma2);
-		if sigma_min == 0
+		if (sigma_min == 0)
 		{
 			return INFINITY;
 		} else {
@@ -146,7 +146,7 @@ class Matrix{
 		if ( height==2 && width ==2 ){
 			Matrix<data_t> Inv(2, 2);
 			data_t determinant = array[0][0]*array[1][1] - array[0][1]*array[1][0];
-			if determinant == 0{
+			if (abs(determinant) == 0){
 				throw std::overflow_error("Inverse(): determinant = zero exception");
 			}
 			else {
