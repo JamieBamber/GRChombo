@@ -20,4 +20,4 @@ include_dirs := -I$(GRCHOMBO_SOURCE)/utils \
             -I$(GRCHOMBO_SOURCE)/FixedBackground
 
 test : test_HeunC.cpp
-	icpc test_HeunC.cpp -o test_HeunC.ex ${include_dirs} -I$(CHOMBO_HOME)/include -std=c++14
+	icpc test_HeunC.cpp -o test_HeunC.ex ${include_dirs} -I$(CHOMBO_HOME)/include -std=c++14 -ggdb

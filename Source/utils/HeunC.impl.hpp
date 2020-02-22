@@ -37,8 +37,8 @@ HeunCnear1
 // 26 January 2018
 //
 
-inline HeunCvars HeunC::compute(const std::complex<double> alpha_, const std::complex<double> beta_, const std::complex<double> gamma_, 
-                          const std::complex<double> delta_, const std::complex<double> eta_, const double z)
+inline HeunCvars HeunC::compute(std::complex<double> alpha_, std::complex<double> beta_, std::complex<double> gamma_, 
+                          std::complex<double> delta_, std::complex<double> eta_, double z)
 {
   HeunCvars result;
  
@@ -66,8 +66,8 @@ inline HeunCvars HeunC::compute(const std::complex<double> alpha_, const std::co
   }
 }
 
-inline HeunCvars HeunC::compute_s(const std::complex<double> alpha_, const std::complex<double> beta_, const std::complex<double> gamma_, 
-                          const std::complex<double> delta_, const std::complex<double> eta_, const double z)
+inline HeunCvars HeunC::compute_s(std::complex<double> alpha_, std::complex<double> beta_, std::complex<double> gamma_, 
+                          std::complex<double> delta_, std::complex<double> eta_, double z)
 {
   HeunCvars result;
  
@@ -119,7 +119,7 @@ inline HeunCvars HeunC::compute_s(const std::complex<double> alpha_, const std::
 // 15 February 2018
 //
 
-inline HeunCvars HeunC::HeunC0(const HeunCparams& p, const double& z, bool aux){
+inline HeunCvars HeunC::HeunC0(HeunCparams& p, double& z, bool aux){
   
   HeunCvars result;
   
@@ -159,7 +159,7 @@ inline HeunCvars HeunC::HeunC0(const HeunCparams& p, const double& z, bool aux){
   return result;
 }
 
-inline HeunCvars HeunC::HeunC00(const HeunCparams& p, const double& z, const bool aux)
+inline HeunCvars HeunC::HeunC00(HeunCparams& p, double& z, bool aux)
 {
 	// define the result 
 	HeunCvars result;
@@ -189,7 +189,7 @@ inline HeunCvars HeunC::HeunC00(const HeunCparams& p, const double& z, const boo
 }
 
 // confluent Heun function expansion for |z| < 1, gamma is not equal to 0, -1, -2, ...
-inline HeunCvars HeunC::HeunC00gen(const HeunCparams& p, const double& z)
+inline HeunCvars HeunC::HeunC00gen(HeunCparams& p, double& z)
 {
 	HeunCvars result;
 
@@ -255,7 +255,7 @@ inline HeunCvars HeunC::HeunC00gen(const HeunCparams& p, const double& z)
 }
 
 // confluent Heun function, p.gamma = 0, -1, -2, ...
-inline HeunCvars HeunC::HeunC00log(const HeunCparams& p, const double& z) {
+inline HeunCvars HeunC::HeunC00log(HeunCparams& p, double& z) {
 	HeunCvars result;
   	
 	if (z==0) {
@@ -385,7 +385,7 @@ inline HeunCvars HeunC::HeunC00log(const HeunCparams& p, const double& z) {
 // the second local solution at z=0 (see HeunCs00)
 //
 // computed by a consequence of power expansions
-inline HeunCvars HeunC::HeunCs0(HeunCparams& p, const double& z){
+inline HeunCvars HeunC::HeunCs0(HeunCparams& p, double& z){
   
   HeunCvars result;
 
@@ -393,20 +393,21 @@ inline HeunCvars HeunC::HeunCs0(HeunCparams& p, const double& z){
     throw std::invalid_argument("HeunC0: z belongs to the branch-cut [1,infty)");
   }
   else {
+    HeunCparams p1 = p;
     bool expgrow = std::real(-p.epsilon*z)>0;
     if (expgrow) {
-      p.q = p.q - p.epsilon * p.gamma;
-      p.alpha = p.alpha - p.epsilon * (p.gamma+p.delta);
-      p.epsilon = -p.epsilon;
+      p1.q = p.q - p.epsilon * p.gamma;
+      p1.alpha = p.alpha - p.epsilon * (p.gamma+p.delta);
+      p1.epsilon = -p.epsilon;
     } 
     
     if (std::abs(z)<Heun_cont_coef){
-      result = HeunCs00(p,z);
+      result = HeunCs00(p1,z);
     }
     else {
       double z0 = Heun_cont_coef*z/std::abs(z);
       HeunCvars result0 = HeunCs00(p1,z0);
-      HeunCvars result1 = HeunCconnect(p,z,z0,result0.val,result0.dval,R);
+      HeunCvars result1 = HeunCconnect(p1,z,z0,result0.val,result0.dval,R);
       result.numb = result0.numb + result1.numb;
       result.err = result0.err + result1.err;
     }
@@ -421,7 +422,7 @@ inline HeunCvars HeunC::HeunCs0(HeunCparams& p, const double& z){
 
 // solution at z ~ 0
 // |z| should not exceed the convergency radius 1
-inline HeunCvars HeunC::HeunCs00(HeunCparams p,double z)
+inline HeunCvars HeunC::HeunCs00(HeunCparams& p, double& z)
 {
   HeunCvars result;
   if (std::abs(z)>=1){
@@ -461,7 +462,7 @@ inline HeunCvars HeunC::HeunCs00(HeunCparams p,double z)
 
 // confluent Heun function, second local solution at z=0, p.gamma = 1
 //
-inline HeunCvars HeunC::HeunCs00gamma1(HeunCparams p,double z)
+inline HeunCvars HeunC::HeunCs00gamma1(HeunCparams& p,double& z)
 {  
   HeunCvars result;
 
@@ -543,7 +544,7 @@ inline HeunCvars HeunC::HeunCs00gamma1(HeunCparams p,double z)
 //
 // 09 January 2018
 //
-inline HeunCvars HeunC::HeunCfromZ0(const HeunCparams& p, double& z,double& Z0,const std::complex<double>& H0,const std::complex<double>& dH0)
+inline HeunCvars HeunC::HeunCfromZ0(HeunCparams& p,double& z,double& Z0,std::complex<double>& H0,std::complex<double>& dH0)
 {
   HeunCvars result;
 
@@ -560,7 +561,7 @@ inline HeunCvars HeunC::HeunCfromZ0(const HeunCparams& p, double& z,double& Z0,c
    result.err= 0; result.numb = 0;
   } 
   else {
-    const double zeta = z-Z0;
+    double zeta = z-Z0;
     // iteration variables
     std::complex<double> ckm0, ckm1, ckm2, ckm3;
     std::complex<double> dm1, dm2, vm1, vm2;  
@@ -640,7 +641,7 @@ inline HeunCvars HeunC::HeunCfromZ0(const HeunCparams& p, double& z,double& Z0,c
 // 09 January 2018
 //
 
-inline HeunCvars HeunC::HeunCconnect(const HeunCparams& p, const double& z, double& z0,std::complex<double>& H0,std::complex<double>& dH0, double R0, bool aux)
+inline HeunCvars HeunC::HeunCconnect(HeunCparams& p, double& z, double& z0,std::complex<double>& H0,std::complex<double>& dH0, double R0, bool aux)
 {
   HeunCvars result;
 
@@ -664,7 +665,7 @@ inline HeunCvars HeunC::HeunCconnect(const HeunCparams& p, const double& z, doub
     bool Rtuned = false;
     int iter = 1;
     double z1;       // step end point
-    const int positivity = 2*(z >= z0) - 1;
+    int positivity = 2*(z >= z0) - 1;
 
     while (Rtuned==false) {
       if (std::abs(z-z0) <= R) {
@@ -769,7 +770,7 @@ HeunCinfB
 //
 
 // for large |z|
-inline std::pair<HeunCvars, HeunCvars> HeunC::HeunCfaraway(const HeunCparams& p, const double& z)
+inline std::pair<HeunCvars, HeunCvars> HeunC::HeunCfaraway(HeunCparams& p, double& z)
 {
   HeunCvars result1, result2;
 
@@ -777,7 +778,7 @@ inline std::pair<HeunCvars, HeunCvars> HeunC::HeunCfaraway(const HeunCparams& p,
     throw std::invalid_argument("HeunCfaraway: z belongs to the branch-cut [1,infty)");
   }
   else {
-    const HeunCparams pB = p;
+    HeunCparams pB = p;
     pB.q = p.q-p.epsilon*p.gamma;
     pB.alpha = p.alpha-p.epsilon*(p.gamma+p.delta);
     pB.epsilon = -p.epsilon;
@@ -847,7 +848,7 @@ inline std::pair<HeunCvars, HeunCvars> HeunC::HeunCfaraway(const HeunCparams& p,
 // 15 March 2018
 //
 
-inline ConnectionVars HeunC::HeunCjoin0inf(const HeunCparams& p,bool aux)
+inline ConnectionVars HeunC::HeunCjoin0inf(HeunCparams& p,bool aux)
 {
   ConnectionVars result;
   bool consts_known = false;
@@ -891,7 +892,7 @@ inline ConnectionVars HeunC::HeunCjoin0inf(const HeunCparams& p,bool aux)
   return result;
 }
 
-inline ConnectionVars HeunC::extrdatfromsav(const HeunCparams& p, std::vector<savedataVars>& savedata, bool& consts_known){
+inline ConnectionVars HeunC::extrdatfromsav(HeunCparams& p, std::vector<savedataVars>& savedata, bool& consts_known){
   ConnectionVars result;
   result.numb = 0; 
   savedataVars s;
@@ -936,7 +937,7 @@ inline void HeunC::keepdattosav(savedataVars& s, std::vector<savedataVars>& save
 // 20 December 2017
 //
 
-inline HeunCvars HeunC::HeunCinfA(const HeunCparams& p, const double& z)
+inline HeunCvars HeunC::HeunCinfA(HeunCparams& p, double& z)
 {
   HeunCvars result;
 
@@ -1009,7 +1010,7 @@ inline HeunCvars HeunC::HeunCinfA(const HeunCparams& p, const double& z)
 // asymptotic expansion at z=infinity,
 // the second solution, including exponential factor
 
-inline HeunCvars HeunC::HeunCinfB(const HeunCparams& p, const double& z)
+inline HeunCvars HeunC::HeunCinfB(HeunCparams& p, double& z)
 {  
   HeunCvars result0, result;
   HeunCparams p0 = p;
@@ -1034,7 +1035,7 @@ Some extra utiliy functions used in the HeunC code
 */
 
 // function find coefficient for the second HeunC solution
-inline std::complex<double> HeunC::findcoef4HeunCs(const HeunCparams& p){
+inline std::complex<double> HeunC::findcoef4HeunCs(HeunCparams& p){
         int n = std::round(1-std::real(p.gamma));  
         std::complex<double> ckm1 = 1; 
         std::complex<double> ckm2 = 0;
@@ -1058,7 +1059,7 @@ inline void HeunC::findR()
 {
   if (R==0 || N==0) {
     double R0;
-    double logeps = std::log(eps);
+    double logeps = -36.043674;
     R = -logeps;
     int fact = 1;
     int n = 1;
