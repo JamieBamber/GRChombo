@@ -163,7 +163,7 @@ def plot_graph():
 		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
 		plt.plot(t[:], outer_flux[:], 'r-', label=label_+" Jr r={:.0f}".format(max_radius))
 		plt.plot(t[:], inner_flux[:], 'g-', label=label_+" Jr r={:.2f}".format(min_radius))
-		plt.plot(t[:], old_outer_flux[:], 'b--', label=label_+" Sr r={:.2f}".format(min_radius))
+		plt.plot(t[:], old_outer_flux[:], 'b--', label=label_+" Sr r={:.2f}".format(max_radius))
 		plt.plot(t[:], old_inner_flux[:], 'c--', label=label_+" Sr r={:.2f}".format(min_radius))
 		i = i + 1
 	plt.xlabel("time")
