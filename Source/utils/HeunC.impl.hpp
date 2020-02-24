@@ -1057,7 +1057,7 @@ inline std::complex<double> HeunC::findcoef4HeunCs(HeunCparams& p){
 
 inline void HeunC::findR()
 {
-  if (R==0 || N==0) {
+  if (noRN) {
     double R0;
     double logeps = -36.043674;
     R = -logeps;
@@ -1074,7 +1074,7 @@ inline void HeunC::findR()
         break;
       }
     }
-  
+    noRN = false;
     N = n-1;
     R = std::pow((fact/n/eps),(1.0/N));
   }
