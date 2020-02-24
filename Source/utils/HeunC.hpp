@@ -106,9 +106,10 @@ namespace HeunCspace {
 		// data storage vectors (not sure why we need these... )
 		std::vector<savedataVars> savedata10, savedata0inf;
 		// variables R and N
+		bool noRN = true;
 		double R = 0;
 		double N = 0;
-	
+		
 		// Constructor 
         	HeunC() {} ;
 		

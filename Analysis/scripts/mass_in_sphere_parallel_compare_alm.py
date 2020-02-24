@@ -4,6 +4,7 @@ import numpy as np
 #from scipy.optimize import fsolve
 import math
 from yt import derived_field
+from yt.units import cm
 import time
 import sys
 from matplotlib import pyplot as plt
@@ -27,8 +28,8 @@ def add_data_dir(list, num, l, m, a):
 
 data_dirs = []
 # choose datasets to compare
-"""add_data_dir(data_dirs, 31, 0, 0, "0")
-add_data_dir(data_dirs, 28, 0, 0, "0.7")
+add_data_dir(data_dirs, 31, 0, 0, "0")
+"""add_data_dir(data_dirs, 28, 0, 0, "0.7")
 add_data_dir(data_dirs, 29, 0, 0, "0.99")
 add_data_dir(data_dirs, 32, 1, 1, "0")
 add_data_dir(data_dirs, 37, 1, 1, "0.99")
@@ -37,9 +38,9 @@ add_data_dir(data_dirs, 42, 5, 1, "0.7")
 add_data_dir(data_dirs, 40, 10, 1, "0.7")
 add_data_dir(data_dirs, 47, 2, 2, "0.99")
 add_data_dir(data_dirs, 46, 2, 2, "0")
-add_data_dir(data_dirs, 50, 2, -2, "0.99")"""
-add_data_dir(data_dirs, 55, 7, 1, "0.7")
-add_data_dir(data_dirs, 56, 2 1, "0.7")
+add_data_dir(data_dirs, 50, 2, -2, "0.99")
+#add_data_dir(data_dirs, 55, 7, 1, "0.7")
+#add_data_dir(data_dirs, 56, 2 1, "0.7")"""
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -52,6 +53,10 @@ output_dir = "data/compare_alm_mass"
 half_box = True
 
 change_in_E = True
+	
+"""@derived_field(name = "rho_J_eff", units = "")
+def _rho_J_eff(field, data):
+       	return data["S_azimuth"]*pow(data["chi"],-3)"""
 
 def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
@@ -63,6 +68,18 @@ def calculate_mass_in_sphere(dd):
 	
 	# load dataset time series
 	
+	# derived fields
+	@derived_field(name = "rho_E_eff", units = "")
+	def _rho_E_eff(field, data):
+		r_BL = (data["spherical_radius"]/cm)*(1 + r_plus*cm/(4*data["spherical_radius"]))**2
+		Sigma2 = r_BL**2 + (data["z"]*a*M/r_BL)
+		Delta = r_BL**2 + (a*M)**2 - 2*M*r_BL
+		A = (r_BL**2 + (a*M)**2)**2 - ((a*M)**2)*Delta*(data["x"]**2 + data["y"]**2)/r_BL
+		alpha = pow(Delta*Sigma2/A, 0.5)
+		beta = 2*a*(M**2)*r_BL/A 
+		return (data["rho"]*alpha - beta*data["S_azimuth"])*pow(data["chi"],-3)
+
+
 	dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_*.3d.hdf5"
 	ds = yt.load(dataset_path) # this loads a dataset time series
 	print("loaded data from ", dataset_path)
@@ -74,16 +91,7 @@ def calculate_mass_in_sphere(dd):
 	# set centre
 	center = [512.0, 512.0, 0]
 	L = 512.0	
-	
-	# derived fields
-	@derived_field(name = "rho_E_eff", units = "")
-	def _rho_E_eff(field, data):
-		return data["rho"]*pow(data["chi"],-3)
-	
-	"""@derived_field(name = "rho_J_eff", units = "")
-	def _rho_J_eff(field, data):
-        	return data["S_azimuth"]*pow(data["chi"],-3)"""
-	
+		
 	data_storage = {}
 	# iterate through datasets (forcing each to go to a different processor)
 	for sto, dsi in ds.piter(storage=data_storage):
@@ -166,7 +174,7 @@ def plot_graph():
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-#for dd in data_dirs:
-#	calculate_mass_in_sphere(dd)
+for dd in data_dirs:
+	calculate_mass_in_sphere(dd)
 
-plot_graph()
+#plot_graph()
