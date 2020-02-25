@@ -152,19 +152,25 @@ def load_data():
 		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), max_radius)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded data for " + dd.name)
-	return data 	
+	for dd in data_dirs:
+                file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mass_in_r={:d}.csv".format(dd.l, dd.m, str(dd.a), max_radius)
+                old_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
+                print("loaded data for " + dd.name)
+	return (old_data, data) 	
 
 def plot_graph():
 	old_data, data = load_data()
 	colours = ['r--', 'r-.', 'r-', 'b--', 'b-', 'c-', 'm-', 'k-', 'g-', 'g--', 'y-'] 
 	i = 0
 	for dd in data_dirs:
+		old_line_data = old_data[dd.num]
 		line_data = data[dd.num]
 		t = line_data[:,0]
 		mass = line_data[:,1] #- line_data[0,1]
 		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
 		if change_in_E:
-			plt.plot(t[1:], line_data[1:,1] - line_data[0,1], colours[i], label=label_)
+			plt.plot(t[1:], old_line_data[1:,1] - old_line_data[0,1], 'r-', label=label_+" old $\\rho$")
+			plt.plot(t[1:], line_data[1:,1] - line_data[0,1], 'b-', label=label_+" new $\\rho$")
 		else:
 			plt.plot(t, mass, colours[i], label=label_)
 		i = i + 1
@@ -177,7 +183,7 @@ def plot_graph():
 	plt.title("scalar field energy inside a sphere vs time, $M=1, \\mu=0.4$")
 	plt.tight_layout()
 	if change_in_E:
-		save_path = home_path + "plots/delta_mass_in_sphere_compare_alm_radius_" + str(max_radius) + ".png"
+		save_path = home_path + "plots/delta_mass_in_sphere_compare_alm_radius_" + str(max_radius) + "_compare_rho.png"
 	else:
 		save_path = home_path + "plots/mass_in_sphere_compare_alm_radius_" + str(max_radius) + ".png"
 	plt.savefig(save_path)

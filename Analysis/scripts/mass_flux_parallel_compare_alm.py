@@ -48,6 +48,7 @@ def calculate_flux(dd):
 	data_sub_dir = dd.name
 	a = dd.a	
 	r_plus = M*(1 + math.sqrt(1 - a**2))
+	r_minus = M*(1 - math.sqrt(1 - a**2))
 	min_radius = r_plus
 	max_r = max_radius*(1 + 4*r_plus/max_radius)**2
 
@@ -71,8 +72,8 @@ def calculate_flux(dd):
 		def _rho_Jr_eff(field, data):
 			r_BL = (data["spherical_radius"]/cm)*(1 + r_plus*cm/(4*data["spherical_radius"]))**2
 			Sigma2 = r_BL**2 + (data["z"]*a*M/(r_BL*cm))
-			Delta = r_BL**2 + (a*M)**2 - 2*M*r_BL		
-			return (Delta/Sigma2)*data["S_r"]*pow(data["chi"],-3)
+			#Delta = r_BL**2 + (a*M)**2 - 2*M*r_BL		
+			return ((data["spherical_radius"]**2/cm**2)*(r_BL - r_minus)/(Sigma2*r_BL))*data["S_r"]*pow(data["chi"],-3)
 	
 	elif not Jr_or_Sr:
 		# derived fields
@@ -97,8 +98,8 @@ def calculate_flux(dd):
 		inner_shell = dsi.sphere(center, min_radius+inner_thickness) - dsi.sphere(center, min_radius)
 
 		# calculate inner and outer flux
-		Jr_outer = outer_shell.mean("rho_Jr_eff", weight="cell_volume")*4*math.pi*(max_r**2)
-		Jr_inner = inner_shell.mean("rho_Jr_eff", weight="cell_volume")*4*math.pi*(min_radius**2)
+		Jr_outer = outer_shell.mean("rho_Jr_eff", weight="cell_volume")*4*math.pi*(max_radius**2)
+		Jr_inner = inner_shell.mean("rho_Jr_eff", weight="cell_volume")*4*math.pi*((r_plus/4)**2)
 		output.append(Jr_outer)
 		output.append(Jr_inner)
 		
@@ -161,10 +162,10 @@ def plot_graph():
 		old_outer_flux = old_line_data[:,1] 
 		old_inner_flux = old_line_data[:,2]		 
 		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
-		plt.plot(t[:], outer_flux[:], 'r-', label=label_+" Jr r={:.0f}".format(max_radius))
-		plt.plot(t[:], inner_flux[:], 'g-', label=label_+" Jr r={:.2f}".format(min_radius))
-		plt.plot(t[:], old_outer_flux[:], 'b--', label=label_+" Sr r={:.2f}".format(max_radius))
-		plt.plot(t[:], old_inner_flux[:], 'c--', label=label_+" Sr r={:.2f}".format(min_radius))
+		plt.plot(t[:], outer_flux[:], 'r-', label=label_+" Jr R={:.0f}".format(max_radius))
+		plt.plot(t[:], inner_flux[:], 'g-', label=label_+" Jr R={:.2f}".format(min_radius))
+		plt.plot(t[:], old_outer_flux[:], 'b--', label=label_+" Sr R={:.2f}".format(max_radius))
+		plt.plot(t[:], old_inner_flux[:], 'c--', label=label_+" Sr R={:.2f}".format(min_radius))
 		i = i + 1
 	plt.xlabel("time")
 	plt.ylabel("energy flux across the outer radius and horizon" + str(max_radius))
@@ -176,7 +177,14 @@ def plot_graph():
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-#for dd in data_dirs:
-#	calculate_flux(dd)
+"""Jr_or_Sr = True
+
+for dd in data_dirs:
+	calculate_flux(dd)
+
+Jr_or_Sr = False
+
+for dd in data_dirs:
+        calculate_flux(dd)"""
 
 plot_graph()
