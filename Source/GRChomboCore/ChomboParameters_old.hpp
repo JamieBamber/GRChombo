@@ -20,6 +20,7 @@ class ChomboParameters
         pp.load("verbosity", verbosity, 0);
         // Grid setup
         pp.load("L", L, 1.0);
+	//pp.load("symmetry_dir", symmetry_dir, {0, 0, 0}); // load the directions of symmetry
         pp.load("center", center,
                 {0.5 * L, 0.5 * L, 0.5 * L}); // default to center
         pp.load("regrid_threshold", regrid_threshold, 0.5);
@@ -37,8 +38,9 @@ class ChomboParameters
         boundary_params.vars_parity.fill(BoundaryConditions::EVEN);
         boundary_params.vars_asymptotic_values.fill(0.0);
         boundary_params.is_periodic.fill(true);
+        boundary_params.extrapolation_order = 0;
         nonperiodic_boundaries_exist = false;
-        symmetric_boundaries_exist = false;
+        boundary_solution_enforced = false;
         FOR1(idir)
         {
             if (isPeriodic[idir] == false)
@@ -54,8 +56,17 @@ class ChomboParameters
                     (boundary_params.lo_boundary[idir] ==
                      BoundaryConditions::REFLECTIVE_BC))
                 {
-                    symmetric_boundaries_exist = true;
+                    boundary_solution_enforced = true;
                     pp.load("vars_parity", boundary_params.vars_parity);
+                }
+                if ((boundary_params.hi_boundary[idir] ==
+                     BoundaryConditions::EXTRAPOLATING_BC) ||
+                    (boundary_params.lo_boundary[idir] ==
+                     BoundaryConditions::EXTRAPOLATING_BC))
+                {
+                    boundary_solution_enforced = true;
+                    pp.load("extrapolation_order", 
+                             boundary_params.extrapolation_order, 1); 
                 }
                 if ((boundary_params.hi_boundary[idir] ==
                      BoundaryConditions::SOMMERFELD_BC) ||
@@ -93,14 +104,12 @@ class ChomboParameters
         coarsest_dx = L / max_N;
 
         pp.load("max_level", max_level, 0);
-        // the reference ratio is hard coded to 2 on all levels
+        // the reference ratio is hard coded to 2
         // in principle it can be set to other values, but this is
         // not recommended since we do not test GRChombo with other
         // refinement ratios - use other values at your own risk
         ref_ratios.resize(max_level + 1);
         ref_ratios.assign(2);
-        // read in frequency of regrid on each levels, needs
-        // max_level + 1 entries (although never regrids on max_level+1)
         pp.getarr("regrid_interval", regrid_interval, 0, max_level + 1);
 
         // time stepping outputs and regrid data
@@ -135,6 +144,7 @@ class ChomboParameters
     // General parameters
     int verbosity;
     double L;                               // Physical sidelength of the grid
+    // std::array<bool, CH_SPACEDIM> symmetry_dir; // Directions of symmetry
     std::array<double, CH_SPACEDIM> center; // grid center
     IntVect ivN;                 // The number of grid cells in each dimension
     double coarsest_dx;          // The coarsest resolution
@@ -157,7 +167,7 @@ class ChomboParameters
     std::array<bool, CH_SPACEDIM> isPeriodic;     // periodicity
     BoundaryConditions::params_t boundary_params; // set boundaries in each dir
     bool nonperiodic_boundaries_exist;
-    bool symmetric_boundaries_exist;
+    bool boundary_solution_enforced;
 
     // For tagging
     double regrid_threshold;
