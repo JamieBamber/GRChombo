@@ -138,15 +138,15 @@ def load_data():
 		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_flux.csv".format(dd.l, dd.m, str(dd.a), max_radius)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded data for " + dd.name)
-	old_data = {}
+	"""old_data = {}
 	for dd in data_dirs:
                 file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_flux_old.csv".format(dd.l, dd.m, str(dd.a), max_radius)
                 old_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
-                print("loaded data for " + dd.name)
-	return (data, old_data) 	
+                print("loaded data for " + dd.name)"""
+	return data 	
 
 def plot_graph():
-	data, old_data = load_data()
+	data = load_data()
 	colours = ['r-', 'g-', 'b--', 'c--'] 
 
 	i = 0
@@ -155,24 +155,25 @@ def plot_graph():
 		r_plus = M*(1 + math.sqrt(1 - a**2))
 		min_radius = r_plus
 		line_data = data[dd.num]
-		old_line_data = old_data[dd.num]
+		#old_line_data = old_data[dd.num]
 		t = line_data[:,0]
 		outer_flux = line_data[:,1] 
 		inner_flux = line_data[:,2]
-		old_outer_flux = old_line_data[:,1] 
-		old_inner_flux = old_line_data[:,2]		 
+		#old_outer_flux = old_line_data[:,1] 
+		#old_inner_flux = old_line_data[:,2]		 
 		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
 		plt.plot(t[:], outer_flux[:], 'r-', label=label_+" Jr R={:.0f}".format(max_radius))
-		plt.plot(t[:], inner_flux[:], 'g-', label=label_+" Jr R={:.2f}".format(min_radius))
-		plt.plot(t[:], old_outer_flux[:], 'b--', label=label_+" Sr R={:.2f}".format(max_radius))
-		plt.plot(t[:], old_inner_flux[:], 'c--', label=label_+" Sr R={:.2f}".format(min_radius))
+		plt.plot(t[:], inner_flux[:], 'b-', label=label_+" Jr R={:.2f}".format(min_radius))
+		#plt.plot(t[:], old_outer_flux[:], 'b--', label=label_+" Sr R={:.2f}".format(max_radius))
+		#plt.plot(t[:], old_inner_flux[:], 'c--', label=label_+" Sr R={:.2f}".format(min_radius))
+		plt.plot(t[:], outer_flux[:]-inner_flux[:], 'g-', label=label_+" net growth rate")
 		i = i + 1
 	plt.xlabel("time")
 	plt.ylabel("energy flux across the outer radius and horizon" + str(max_radius))
 	plt.legend(loc='upper left', fontsize=8)
 	plt.title("scalar field energy flux vs time, $M=1, \\mu=0.4$")
 	plt.tight_layout()
-	save_path = home_path + "plots/flux_compare_alm_radius_Sr_vs_Jr" + str(max_radius) + ".png"
+	save_path = home_path + "plots/flux_compare_alm_radius_r=" + str(max_radius) + "_.png"
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
 	plt.clf()

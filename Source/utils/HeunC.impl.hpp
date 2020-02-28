@@ -120,7 +120,6 @@ inline HeunCvars HeunC::compute_s(std::complex<double> alpha_, std::complex<doub
 //
 
 inline HeunCvars HeunC::HeunC0(HeunCparams& p, double& z, bool aux){
-  
   HeunCvars result;
   
   if (z>=1){
@@ -1061,22 +1060,24 @@ inline void HeunC::findR()
     double R0;
     double logeps = -36.043674;
     R = -logeps;
-    int fact = 1;
+    double logfact = 0;
     int n = 1;
   
     while (true)
     {
       n += 1;
-      fact = fact * n;
+      logfact += std::log(static_cast<double>(n));
       R0 = R;
-      R = (std::log(fact)-logeps)/n;
+      R = (logfact-logeps)/n;
       if (R > R0){
         break;
       }
     }
     noRN = false;
     N = n-1;
-    R = std::pow((fact/n/eps),(1.0/N));
+    //R = static_cast<double>(N)*std::exp(-logeps/N)/std::exp(1);
+    R = std::exp((logfact - std::log(static_cast<double>(n)) -logeps)/N);
+    //R = std::pow((fact/n/eps),(1.0/N));
   }
 }
 
