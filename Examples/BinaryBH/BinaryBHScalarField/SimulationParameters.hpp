@@ -24,11 +24,6 @@ class SimulationParameters : public SimulationParametersBase
     /// Read parameters from the parameter file
     void readParams(GRParmParse &pp)
     {
-    	// Initial and SF data
-        pp.load("G_Newton", G_Newton, 0.0);
-        pp.load("scalar_mass", potential_params.scalar_mass);
-        pp.load("field_amplitude", field_amplitude);
-    	
         // Initial data
         pp.load("massA", bh1_params.mass);
         pp.load("momentumA", bh1_params.momentum);
@@ -64,9 +59,6 @@ class SimulationParameters : public SimulationParametersBase
     // Initial data
     bool activate_extraction, track_punctures;
     std::vector<std::array<double, CH_SPACEDIM>> initial_puncture_coords;
-    double G_Newton, field_amplitude;
-    ScalarPotential::params_t potential_params;
-    
     // Collection of parameters necessary for initial conditions
     BoostedBH::params_t bh2_params;
     BoostedBH::params_t bh1_params;
