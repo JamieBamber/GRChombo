@@ -6,7 +6,8 @@ import sys
 # define true radial solution function
 M = 1
 mu = 0.4
-omega = 0.6
+k = 0.1
+omega = np.sqrt(mu**2 + k**2)
 a = 0
 l = 0
 m = 0
@@ -16,7 +17,7 @@ Kerrlib.Rfunc.restype = ctypes.c_double
 
 r_plus = M*(1 + np.sqrt(1 - a**2))
 
-ln_r = np.linspace(-2, 6)
+ln_r = np.linspace(-5, 5)
 r_BL = np.exp(ln_r) + r_plus
 
 def True_stationary_Rfunc(index, reality, r):
