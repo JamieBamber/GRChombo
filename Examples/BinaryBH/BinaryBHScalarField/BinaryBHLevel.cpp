@@ -43,8 +43,7 @@ void BinaryBHLevel::initialData()
     // Set up the compute class for the BinaryBH initial data
     BinaryBH binary(m_p.bh1_params, m_p.bh2_params, m_dx);
 
-    // scalar field compute class
-    ScalarRotatingCloud initial_sf(m_p.initial_params, m_dx);
+    // Set up the compute class for the Scalar Field initial data
     
     // setup initial puncture coords for tracking
     // do puncture tracking, just set them once, so on level 0
@@ -56,12 +55,11 @@ void BinaryBHLevel::initialData()
         my_punctures.set_initial_punctures(m_bh_amr,
                                            m_p.initial_puncture_coords);
     }
-    
+
     // First set everything to zero (to avoid undefinded values in constraints)
     // then calculate initial data
-    BoxLoops::loop(make_compute_pack(SetValue(0.), binary, intial_sf), m_state_new,
+    BoxLoops::loop(make_compute_pack(SetValue(0.), binary), m_state_new,
                    m_state_new, INCLUDE_GHOST_CELLS);
-
 }
 
 // Things to do after a restart
@@ -94,24 +92,14 @@ void BinaryBHLevel::preCheckpointLevel()
 void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                                     const double a_time)
 {
-    // Scalar Field terms?
-    Potential potential(m_p.potential_params);
-    ScalarFieldWithPotential scalar_field(potential);
-	
-	// Enforce positive chi and alpha and trace free A
+    // Enforce positive chi and alpha and trace free A
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
                    a_soln, a_soln, INCLUDE_GHOST_CELLS);
 
     // Calculate CCZ4 right hand side and set constraints to zero to avoid
     // undefined values
-    // ---> With Scalar Field
-    ScalarPotential potential(m_p.potential_params);
-    ScalarFieldWithPotential scalar_field(potential);
-    MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
-    	scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
-    	m_p.G_Newton);
     BoxLoops::loop(
-        make_compute_pack(CCZ4(my_ccz4_matter,
+        make_compute_pack(CCZ4(m_p.ccz4_params, m_dx, m_p.sigma),
                           SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
         a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
 }
@@ -193,8 +181,6 @@ void BinaryBHLevel::specificPostTimeStep()
 void BinaryBHLevel::prePlotLevel()
 {
     fillAllGhosts();
-    Potential potential(m_p.potential_params);
-    ScalarFieldWithPotential scalar_field(potential);
     if (m_p.activate_extraction == 1)
     {
         BoxLoops::loop(Weyl4(m_p.extraction_params.extraction_center, m_dx),
@@ -205,6 +191,6 @@ void BinaryBHLevel::prePlotLevel()
 // Specify if you want any plot files to be written, with which vars
 void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const
 {
-    plot_states = {c_chi, c_phi, c_Weyl4_Re, c_Weyl4_Im};
+    plot_states = {c_chi, c_Weyl4_Re, c_Weyl4_Im};
 }
 
