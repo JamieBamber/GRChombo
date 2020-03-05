@@ -209,4 +209,3 @@ class SmallDataIO
 };
 
 #endif /* SMALLDATAIO_HPP_ */
-
