@@ -158,6 +158,7 @@ class ChomboParameters
     BoundaryConditions::params_t boundary_params; // set boundaries in each dir
     bool nonperiodic_boundaries_exist;
     bool symmetric_boundaries_exist;
+    bool boundary_solution_enforced;
 
     // For tagging
     double regrid_threshold;
