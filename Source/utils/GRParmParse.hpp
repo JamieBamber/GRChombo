@@ -37,7 +37,7 @@ class GRParmParse : public ParmParse
 
     // (MK): I called the functions below "load" rather than "get" to avoid
     // clashes with the many  different overloads of "get" in ParmParse. Also, I
-    // think it is a more intuitive name.
+    // think load is a more intuitive name.
 
     /// Loads an array from the parameter file
     template <class data_t, long unsigned int n_comp>
@@ -94,10 +94,10 @@ class GRParmParse : public ParmParse
     }
 
     /// Loads a vector with num_comp components from the parameter file, if the
-    /// vector isn't defined it sets all components to the supplied default
+    /// vector isn't defined, it is set to the supplied default
     template <class data_t>
     void load(const char *name, std::vector<data_t> &vector, const int num_comp,
-              const data_t default_value) const
+              const std::vector<data_t> &default_vector) const
     {
         if (contains(name))
         {
@@ -105,11 +105,20 @@ class GRParmParse : public ParmParse
         }
         else
         {
-            vector.resize(num_comp);
-            vector.assign(num_comp, default_value);
+            vector = default_vector;
             pout() << "Parameter: " << name << " not found in parameter file. "
                    << "It has been set to its default value." << std::endl;
         }
+    }
+
+    /// Loads a vector with num_comp components from the parameter file, if the
+    /// vector isn't defined it sets all components to the supplied default
+    template <class data_t>
+    void load(const char *name, std::vector<data_t> &vector, const int num_comp,
+              const data_t default_value) const
+    {
+        load(name, vector, num_comp,
+             std::vector<data_t>(num_comp, default_value));
     }
 };
 
