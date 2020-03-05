@@ -12,14 +12,14 @@ class KerrBH_Rfunc {
 public:
 	double M;
 	double mu;
-	double omega;
+	std::complex<double> omega;
 	double a; 
 	double r_plus, r_minus;
 	int l, m;
 	std::complex<double> alpha, beta, gamma, delta, eta;
 	
 	//constructor
-	KerrBH_Rfunc(const double M_, const double mu_, const double omega_, double a_, int l_, int m_){
+	KerrBH_Rfunc(const double M_, const double mu_, const std::complex<double> omega_, double a_, int l_, int m_){
 		if (std::abs(m_)>l_){
 			throw std::invalid_argument("|m| must be less than or equal to l");
 		}
@@ -32,12 +32,12 @@ public:
 		r_plus = M*(1 + std::sqrt(1 - a*a));
         	r_minus = M*(1 - std::sqrt(1 - a*a)); 
         	double d = std::sqrt(1 - a*a);
-        	double lambda = Lambda_func(l,m,(a*a)*(std::pow(omega,2) - mu*mu));
-        	double A = (std::pow((m*a),2) - 4*a*omega*m*r_plus + 4*std::pow((omega*r_plus),2) + d*d)/d*d;
-        	double B = (-std::pow((m*a),2) + 4*a*M*omega*m + 4*(2*d - 1)*std::pow((omega*r_plus),2) - 2*std::pow((mu*d*r_plus),2)
+        	std::complex<double> lambda = Lambda_func(l,m,(a*a)*(std::pow(omega,2) - mu*mu));
+        	std::complex<double> A = (std::pow((m*a),2) - 4*a*omega*m*r_plus + 4*std::pow((omega*r_plus),2) + d*d)/d*d;
+        	std::complex<double> B = (-std::pow((m*a),2) + 4*a*M*omega*m + 4*(2*d - 1)*std::pow((omega*r_plus),2) - 2*std::pow((mu*d*r_plus),2)
                         	-2*(d*d)*(std::pow((omega*a*M),2) + lambda) - d*d)/(2*d*d);
-        	double C = (std::pow((m*a),2) - 4*a*omega*m*r_minus + 4*std::pow((omega*r_minus),2) + d*d)/(d*d);
-        	double D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
+        	std::complex<double> C = (std::pow((m*a),2) - 4*a*omega*m*r_minus + 4*std::pow((omega*r_minus),2) + d*d)/(d*d);
+        	std::complex<double> D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
                         	+2*(d*d)*(std::pow((omega*a*M),2) + lambda) + d*d)/(2*d*d);
         	alpha = 4*d*M*std::sqrt(static_cast<std::complex<double>>(mu*mu - std::pow(omega,2)));
         	beta = std::sqrt(static_cast<std::complex<double>>(1 - A));
@@ -72,7 +72,7 @@ private:
         	return h_;
 	}
 	
-	double Lambda_func(int l,int m,double c2=0){
+	std::complex<double> Lambda_func(int l,int m,std::complex<double> c2=0){
         	if (c2==0){
                 	return l*(l+1);
 		}
