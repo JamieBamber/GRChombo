@@ -18,6 +18,9 @@ class BinaryBHLevel : public GRAMRLevel
 
     BHAMR &m_bh_amr = dynamic_cast<BHAMR &>(m_gr_amr);
 
+    //Typedef for scalar field
+    typedef ScalarField<ScalarPotential> ScalarFieldWithPotential;
+
     /// Things to do at every full timestep
     ///(might include several substeps, e.g. in RK4)
     virtual void specificAdvance() override;
