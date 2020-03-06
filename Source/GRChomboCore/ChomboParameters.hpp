@@ -40,7 +40,6 @@ class ChomboParameters
         boundary_params.extrapolation_order = 0;
         nonperiodic_boundaries_exist = false;
         boundary_solution_enforced = false;
-        symmetric_boundaries_exist = false;
         FOR1(idir)
         {
             if (isPeriodic[idir] == false)
@@ -163,7 +162,7 @@ class ChomboParameters
     int tag_buffer_size;         // Amount the tagged region is grown by
     Vector<int> ref_ratios;      // ref ratios between levels
     Vector<int> regrid_interval; // steps between regrid at each level
-    int max_steps;is
+    int max_steps;
     bool ignore_checkpoint_name_mismatch;   // ignore mismatch of variable names
                                             // between restart file and program
     double dt_multiplier, stop_time;        // The Courant factor and stop time
@@ -178,8 +177,7 @@ class ChomboParameters
     BoundaryConditions::params_t boundary_params; // set boundaries in each dir
     bool nonperiodic_boundaries_exist;
     bool boundary_solution_enforced;
-    bool symmetric_boundaries_exist;
-    
+
     // For tagging
     double regrid_threshold;
 };
