@@ -35,8 +35,7 @@ class BoundaryConditions
         SOMMERFELD_BC,
         REFLECTIVE_BC,
         EXTRAPOLATING_BC,
-        MIXED_BC,
-        ANALYTIC_BC
+        MIXED_BC
     };
 
     /// enum for possible parity states
@@ -59,6 +58,7 @@ class BoundaryConditions
         std::array<bool, CH_SPACEDIM> is_periodic;
         std::array<int, NUM_VARS> vars_parity;
         std::array<double, NUM_VARS> vars_asymptotic_values;
+        int extrapolation_order = 1;
     };
 
   protected:
@@ -151,9 +151,7 @@ class BoundaryConditions
                               const IntVect iv,
                               const Interval comps = Interval(0,
                                                               NUM_VARS)) const;
-    void fill_analytic_cell(FArrayBox &rhs_box, const FArrayBox &soln_box,
-                            const IntVect iv,
-                            const Interval comps = Interval(0, NUM_VARS)) const;
+
     void fill_reflective_cell(FArrayBox &rhs_box, const IntVect iv,
                               const Side::LoHiSide a_side, const int dir,
                               const Interval comps = Interval(0,
