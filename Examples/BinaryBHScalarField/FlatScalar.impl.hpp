@@ -24,7 +24,7 @@ void FlatScalar::compute(Cell<data_t> current_cell) const
     // Coordinates<data_t> coords(current_cell, m_dx, m_params.centerSF);
 
     // set the field vars
-    vars.phi = m_params.amplitudeSF; // uniform phi field
+    vars.phi = m_params.field_amplitude; // uniform phi field
     vars.Pi = 0;
 
     // Store the initial values of the variables

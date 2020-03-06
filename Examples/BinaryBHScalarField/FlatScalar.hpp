@@ -24,7 +24,7 @@ class FlatScalar
     //! conditions
     struct params_t
     {
-        double amplitudeSF; //!< Amplitude of bump in initial SF bubble
+        double field_amplitude; //!< Amplitude of bump in initial SF bubble
     };
 
     //! The constructor

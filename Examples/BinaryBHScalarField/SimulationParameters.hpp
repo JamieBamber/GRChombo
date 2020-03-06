@@ -7,11 +7,14 @@
 #define SIMULATIONPARAMETERS_HPP_
 
 // General includes
+
 #include "GRParmParse.hpp"
 #include "SimulationParametersBase.hpp"
 
 // Problem specific includes:
 #include "BoostedBH.hpp"
+#include "ScalarPotential.hpp"
+#include "FlatScalar.hpp"
 
 class SimulationParameters : public SimulationParametersBase
 {
@@ -27,7 +30,7 @@ class SimulationParameters : public SimulationParametersBase
     	// Initial and SF data
         pp.load("G_Newton", G_Newton, 0.0);
         pp.load("scalar_mass", potential_params.scalar_mass);
-        pp.load("field_amplitude", field_amplitude);
+        pp.load("field_amplitude", initial_params.field_amplitude);
     	
         // Initial data
         pp.load("massA", bh1_params.mass);
@@ -64,7 +67,8 @@ class SimulationParameters : public SimulationParametersBase
     // Initial data
     bool activate_extraction, track_punctures;
     std::vector<std::array<double, CH_SPACEDIM>> initial_puncture_coords;
-    double G_Newton, field_amplitude;
+    double G_Newton;
+    FlatScalar::params_t initial_params;
     ScalarPotential::params_t potential_params;
     
     // Collection of parameters necessary for initial conditions

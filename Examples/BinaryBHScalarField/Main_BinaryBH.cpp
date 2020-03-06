@@ -25,12 +25,22 @@ int runGRChombo(int argc, char *argv[])
     GRParmParse pp(argc - 2, argv + 2, NULL, in_file);
     SimulationParameters sim_params(pp);
 
+    pout() << "Loaded simulation parameters" << endl;
+
     // The line below selects the problem that is simulated
     // (To simulate a different problem, define a new child of AMRLevel
     // and an associated LevelFactory)
     GRAMR gr_amr;
+
+    pout() << "GRAMR gr_amr line: initialised GRAMR object" << endl;
+
     DefaultLevelFactory<BinaryBHLevel> binary_bh_level_fact(gr_amr, sim_params);
+
+    pout() << "Initialised DefaultLevelFactory<BinaryBHLevel> object" << endl;
+
     setupAMRObject(gr_amr, binary_bh_level_fact);
+
+    pout() << "Setup AMRObject" << endl;
 
     // call this after amr object setup so grids known
     // and need it to stay in scope throughout run
@@ -38,10 +48,14 @@ int runGRChombo(int argc, char *argv[])
         gr_amr, sim_params.origin, sim_params.dx, sim_params.verbosity);
     gr_amr.set_interpolator(&interpolator);
 
+    pout() << "set interpolator" << endl;
+
     using Clock = std::chrono::steady_clock;
     using Minutes = std::chrono::duration<double, std::ratio<60, 1>>;
 
     std::chrono::time_point<Clock> start_time = Clock::now();
+
+    pout() << "About to start running simulation: " << endl;
 
     gr_amr.run(sim_params.stop_time, sim_params.max_steps);
 

@@ -11,6 +11,7 @@
 #include "ChiPunctureExtractionTaggingCriterion.hpp"
 #include "ComputePack.hpp"
 #include "Constraints.hpp"
+#include "MatterCCZ4.hpp"
 #include "NanCheck.hpp"
 #include "PositiveChiAndAlpha.hpp"
 #include "PunctureTracker.hpp"
@@ -18,6 +19,10 @@
 #include "TraceARemoval.hpp"
 #include "Weyl4.hpp"
 #include "WeylExtraction.hpp"
+
+#include "FlatScalar.hpp"
+#include "ScalarPotential.hpp"
+#include "ScalarField.hpp"
 
 // Things to do during the advance step after RK4 steps
 void BinaryBHLevel::specificAdvance()
@@ -44,7 +49,7 @@ void BinaryBHLevel::initialData()
     BinaryBH binary(m_p.bh1_params, m_p.bh2_params, m_dx);
 
     // scalar field compute class
-    ScalarRotatingCloud initial_sf(m_p.initial_params, m_dx);
+    FlatScalar initial_sf(m_p.initial_params, m_dx);
     
     // setup initial puncture coords for tracking
     // do puncture tracking, just set them once, so on level 0
@@ -59,8 +64,10 @@ void BinaryBHLevel::initialData()
     
     // First set everything to zero (to avoid undefinded values in constraints)
     // then calculate initial data
-    BoxLoops::loop(make_compute_pack(SetValue(0.), binary, intial_sf), m_state_new,
+    BoxLoops::loop(make_compute_pack(SetValue(0.), binary, initial_sf), m_state_new,
                    m_state_new, INCLUDE_GHOST_CELLS);
+
+   pout() << "Done BinaryBHLevel::initialData()" << endl;
 
 }
 
@@ -88,17 +95,15 @@ void BinaryBHLevel::preCheckpointLevel()
     fillAllGhosts();
     BoxLoops::loop(Constraints(m_dx), m_state_new, m_state_new,
                    EXCLUDE_GHOST_CELLS);
+
+    pout() << "Done BinaryBHLevel::preCheckpointLevel() " << endl;
 }
 
 // Calculate RHS during RK4 substeps
 void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                                     const double a_time)
 {
-    // Scalar Field terms?
-    Potential potential(m_p.potential_params);
-    ScalarFieldWithPotential scalar_field(potential);
-	
-	// Enforce positive chi and alpha and trace free A
+    // Enforce positive chi and alpha and trace free A
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
                    a_soln, a_soln, INCLUDE_GHOST_CELLS);
 
@@ -111,9 +116,11 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     	scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
     	m_p.G_Newton);
     BoxLoops::loop(
-        make_compute_pack(CCZ4(my_ccz4_matter,
+        make_compute_pack(my_ccz4_matter,
                           SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
         a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+
+   pout() << "Done BinaryBHLevel::specificEvalRHS() t = " << a_time << endl;
 }
 
 // enforce trace removal during RK4 substeps
@@ -193,13 +200,12 @@ void BinaryBHLevel::specificPostTimeStep()
 void BinaryBHLevel::prePlotLevel()
 {
     fillAllGhosts();
-    Potential potential(m_p.potential_params);
-    ScalarFieldWithPotential scalar_field(potential);
     if (m_p.activate_extraction == 1)
     {
         BoxLoops::loop(Weyl4(m_p.extraction_params.extraction_center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
     }
+    pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
 }
 
 // Specify if you want any plot files to be written, with which vars
