@@ -37,7 +37,9 @@ class ChomboParameters
         boundary_params.vars_parity.fill(BoundaryConditions::EVEN);
         boundary_params.vars_asymptotic_values.fill(0.0);
         boundary_params.is_periodic.fill(true);
+        boundary_params.extrapolation_order = 0;
         nonperiodic_boundaries_exist = false;
+        boundary_solution_enforced = false;
         symmetric_boundaries_exist = false;
         FOR1(idir)
         {
@@ -54,8 +56,26 @@ class ChomboParameters
                     (boundary_params.lo_boundary[idir] ==
                      BoundaryConditions::REFLECTIVE_BC))
                 {
-                    symmetric_boundaries_exist = true;
+                    boundary_solution_enforced = true;
                     pp.load("vars_parity", boundary_params.vars_parity);
+                }
+                if ((boundary_params.hi_boundary[idir] ==
+                     BoundaryConditions::EXTRAPOLATING_BC) ||
+                    (boundary_params.lo_boundary[idir] ==
+                     BoundaryConditions::EXTRAPOLATING_BC))
+                {
+                    boundary_solution_enforced = true;
+                    pp.load("extrapolation_order",
+                            boundary_params.extrapolation_order, 1);
+                }
+                if ((boundary_params.hi_boundary[idir] ==
+                     BoundaryConditions::MIXED_BC) ||
+                    (boundary_params.lo_boundary[idir] ==
+                     BoundaryConditions::MIXED_BC))
+                {
+                    boundary_solution_enforced = true;
+                    pp.load("vars_asymptotic_values",
+                            boundary_params.vars_asymptotic_values);
                 }
                 if ((boundary_params.hi_boundary[idir] ==
                      BoundaryConditions::SOMMERFELD_BC) ||
@@ -143,7 +163,7 @@ class ChomboParameters
     int tag_buffer_size;         // Amount the tagged region is grown by
     Vector<int> ref_ratios;      // ref ratios between levels
     Vector<int> regrid_interval; // steps between regrid at each level
-    int max_steps;
+    int max_steps;is
     bool ignore_checkpoint_name_mismatch;   // ignore mismatch of variable names
                                             // between restart file and program
     double dt_multiplier, stop_time;        // The Courant factor and stop time
@@ -157,8 +177,9 @@ class ChomboParameters
     std::array<bool, CH_SPACEDIM> isPeriodic;     // periodicity
     BoundaryConditions::params_t boundary_params; // set boundaries in each dir
     bool nonperiodic_boundaries_exist;
+    bool boundary_solution_enforced;
     bool symmetric_boundaries_exist;
-
+    
     // For tagging
     double regrid_threshold;
 };
