@@ -4,7 +4,11 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
+<<<<<<< HEAD
 verbosity = 0
+=======
+verbosity = 5
+>>>>>>> 96e6a663f72a6c60ad4e04cc5f1d7852e3e5e65e
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
 #restart_file = BinaryBHChk_000000.3d.hdf5
@@ -17,7 +21,11 @@ N3 = 32
 
 # scalar field parameters
 G_Newton = 0.0
+<<<<<<< HEAD
 scalar_mass = 0.4
+=======
+scalar_mass = 0.25
+>>>>>>> 96e6a663f72a6c60ad4e04cc5f1d7852e3e5e65e
 field_amplitude = 1.0
 
 # Length of the longest N side
