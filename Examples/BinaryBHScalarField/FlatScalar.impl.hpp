@@ -21,14 +21,26 @@ void FlatScalar::compute(Cell<data_t> current_cell) const
 {
     MatterCCZ4<ScalarField<>>::Vars<data_t> vars;
     VarsTools::assign(vars, 0.); // Set only the non-zero components below
-    // Coordinates<data_t> coords(current_cell, m_dx, m_params.centerSF);
+    Coordinates<data_t> coords(current_cell, m_dx);
 
     // set the field vars
-    vars.phi = m_params.amplitudeSF; // uniform phi field
+    vars.phi = m_params.field_amplitude; // uniform phi field
     vars.Pi = 0;
 
     // Store the initial values of the variables
     current_cell.store_vars(vars);
+}
+
+// Compute the value of phi at the current point
+template <class data_t>
+data_t FlatScalar::compute_phi(Coordinates<data_t> coords) const
+{
+    //data_t rr = coords.get_radius();
+    //data_t rr2 = rr * rr;
+    //data_t out_phi = m_params.amplitudeSF * rr2 *
+    //                exp(-pow(rr - m_params.r_zero / m_params.widthSF, 2.0));
+
+    return m_params.field_amplitude;
 }
 
 #endif /* FLATSCALAR_IMPL_HPP_ */
