@@ -5,7 +5,6 @@ import time
 # import sys
 import matplotlib.pyplot as plt
 import math
-from scipy.optimize import minimize
 from yt.units import cm
 
 
@@ -31,7 +30,7 @@ mu = 1
 r_plus = M*(1 + np.sqrt(1 - a**2))
 z_position = 0.001	# s position of slice
 R_plus = 0.25*r_plus	# R_outer = r_+ / 4
-R_min = R_plus*2
+R_min = R_plus*1.1
 R_max = 50
 N_bins = 256
 
@@ -80,16 +79,8 @@ t = number*dt
 def envelope(r_BL, A):
 	return 0.1*(1.05 + A*r_plus/r_BL)
 
-# find the best fitting envelope
-def loss_func(A, r_BL, true_y):
-	envelope_y = envelope(r_BL, A)
-	loss = np.sum(np.abs(envelope_y - true_y))
-	constraint = np.sum(np.abs(np.greater(envelope_y, true_y)))
-	print("constraint = ", constraint)
-	return loss + 10000000*(r_BL.size)*constraint 
-
-res = minimize(loss_func, 10, args=(r_BL, phi))
-A_best = res.x[0]
+minA = np.max((phi/0.1 - 1)*r_BL/r_plus) 
+A_best = minA
 print("best fit value of A is ", A_best)
 
 save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/"
