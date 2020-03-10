@@ -72,7 +72,7 @@ print("made profile")
 
 # np.exp(-0.1*(r_BL/r_plus))
 
-A = 5.5
+A = 6
 C = -1
 B1 = 0.1
 B2 = 0
@@ -90,8 +90,11 @@ def anzatz_phi(r_star):
 		result[i] = 0.1*(1 + A/z)*np.cos((k*(r_star[i] + C) + 0)*mu*r_plus)
 	return result
 
-def envelope(r_BL, A):
+def envelope(r_BL):
 	return 0.1*(1 + A*r_plus/r_BL)
+
+def envelope2(r_BL, r_star):
+        return 0.1*(1 + A*r_plus/r_BL)(1 + np.exp(-r_star/5))
 
 # plot phi
 
@@ -129,7 +132,7 @@ def plot_wavelengths():
 	pos1 = 0.5*(local_max[1:] + local_min)
 	wl2 = 2*(local_min - local_max[:-1])
 	pos2 = 0.5*(local_min + local_max[:-1])
-	wl = np.concatenate((wl1,wl2))/(math.pi*2) # = 2*pi/k
+	wl = np.concatenate((wl1,wl2)) # = 2*pi/k
 	print("wl = ", wl)
 	pos = np.concatenate((pos1, pos2)) 
 	print("pos = ", pos)
@@ -138,16 +141,16 @@ def plot_wavelengths():
 	# wl_anzatz = (r_BL-r_plus)/(2*math.pi*r_plus) + 0.05*((r_BL-r_plus)/(2*math.pi*r_plus))**2
 	z = (r_BL-r_plus)/(2*math.pi*r_plus)
 	z_pos = (r_BL_pos - r_plus)/(2*math.pi*r_plus)
-	plt.plot(pos, (wl-1/r_plus)/z_pos, "r+")
-	#wl_anzatz = np.exp(z/2) - 1
-	#plt.plot(r_star, wl_anzatz, "k--", label="r_BL")
+	plt.plot(pos, 2*np.pi/wl, "r+", label="estimated k")
+	k_anzatz = 2*np.pi*r_plus/(r_BL)
+	plt.plot(r_star, k_anzatz, "b--", label="$r_s/r$")
 	#plt.xlim((-10, 100))
-	plt.ylim((0, 20))
+	plt.ylim((0, 5))
 	plt.legend()
-	plt.title("est. wavelengths vs position")
+	plt.title("est. k vs position")
 	plt.xlabel("est position ($r_*$)")
-	plt.ylabel("est wavelengths")
-	save_name = "phi_profile_wavelengths_plot.png"
+	plt.ylabel("est k")
+	save_name = "phi_profile_k_plot.png"
 	print("saved " + save_root_path + save_name)
 	plt.savefig(save_root_path + save_name, transparent=False)
 	plt.clf()
@@ -167,12 +170,13 @@ def plot_graph():
 		x_label = "$r_*$"
 	plt.plot(x, phi, 'r-', label="simulation phi")
 	plt.plot(x, envelope(r_BL), 'b--', label="ansatz envelope")
+	plt.plot(x, envelope2(r_BL, r_star), 'm--', label="ansatz envelope v2")
 	plt.plot(x, anzatz, 'g--', label="anzatz phi")
 	plt.xlabel(x_label)
 	plt.ylabel("$\\phi$")
 	plt.grid(axis='both')
 	#plt.ylim((-0.5, 0.5))
-	#plt.xlim((-10, 75))
+	plt.xlim((-10, 50))
 	plt.legend()
 	title = data_sub_dir + " time = {:.1f}".format(t) 
 	plt.title(title)
@@ -182,4 +186,4 @@ def plot_graph():
 	plt.savefig(save_root_path + save_name, transparent=False)
 	plt.clf()
 	
-plot_graph()
+plot_wavelengths()
