@@ -34,8 +34,7 @@ class BoundaryConditions
         STATIC_BC,
         SOMMERFELD_BC,
         REFLECTIVE_BC,
-        EXTRAPOLATING_BC,
-        MIXED_BC
+        EXTRAPOLATING_BC
     };
 
     /// enum for possible parity states

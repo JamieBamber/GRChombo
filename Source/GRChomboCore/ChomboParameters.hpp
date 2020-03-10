@@ -68,15 +68,6 @@ class ChomboParameters
                             boundary_params.extrapolation_order, 1);
                 }
                 if ((boundary_params.hi_boundary[idir] ==
-                     BoundaryConditions::MIXED_BC) ||
-                    (boundary_params.lo_boundary[idir] ==
-                     BoundaryConditions::MIXED_BC))
-                {
-                    boundary_solution_enforced = true;
-                    pp.load("vars_asymptotic_values",
-                            boundary_params.vars_asymptotic_values);
-                }
-                if ((boundary_params.hi_boundary[idir] ==
                      BoundaryConditions::SOMMERFELD_BC) ||
                     (boundary_params.lo_boundary[idir] ==
                      BoundaryConditions::SOMMERFELD_BC))
@@ -112,14 +103,12 @@ class ChomboParameters
         coarsest_dx = L / max_N;
 
         pp.load("max_level", max_level, 0);
-        // the reference ratio is hard coded to 2 on all levels
+        // the reference ratio is hard coded to 2
         // in principle it can be set to other values, but this is
         // not recommended since we do not test GRChombo with other
         // refinement ratios - use other values at your own risk
         ref_ratios.resize(max_level + 1);
         ref_ratios.assign(2);
-        // read in frequency of regrid on each levels, needs
-        // max_level + 1 entries (although never regrids on max_level+1)
         pp.getarr("regrid_interval", regrid_interval, 0, max_level + 1);
 
         // time stepping outputs and regrid data
