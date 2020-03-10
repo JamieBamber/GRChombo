@@ -72,29 +72,33 @@ print("made profile")
 
 # np.exp(-0.1*(r_BL/r_plus))
 
-A = 5.6
+A = 5.0
 C = -1
 B1 = 0.1
 B2 = 0
 
 def k_func(z):
 	# z = (r_BL/r_plus)
-	result = 1/(1+0.05*z) - 0.05/z**2
+	result = 2*np.pi/z
 	return result
 
-def anzatz_phi(r_star):
+def anzatz_phi(r_star, phi, gamma):
 	result = np.zeros(r_star.size)
+	Abest = np.max((phi/0.1 - 1)*np.power(r_BL/r_plus, gamma))
+	print("Abest = ", Abest)
 	for i in range(0, r_star.size):
 		z = (r_BL[i]/r_plus)
 		k = k_func(z)
-		result[i] = 0.1*(1 + A/z)*np.cos((k*(r_star[i] + C) + 0)*mu*r_plus)
+		result[i] = 0.1*(1 + Abest/(z**gamma))*np.cos((k*(r_star[i] + C) + 0)*mu*r_plus)
 	return result
 
-def envelope(r_BL):
-	return 0.1*(1 + A*r_plus*(r_BL**(-3/4)))
+def envelope(r_BL, phi, gamma):
+	Abest = np.max((phi/0.1 - 1)*np.power(r_BL/r_plus, gamma))
+	print("Abest = ", Abest)
+	return 0.1*(1 + Abest*np.power(r_BL/r_plus, -gamma))
 
 def envelope2(r_BL, r_star):
-        return 0.1*(1 + A*r_plus/r_BL)(1 + np.exp(-r_star/5))
+        return 0.1*(1 + A*r_plus/r_BL)/(1 + np.exp(-(r_star+2)/5))
 
 # plot phi
 
@@ -113,44 +117,28 @@ t = number*dt
 
 #popt, pconv = curve_fit(anzatz_phi, x, phi, p0=(0.1, 0))
 
-anzatz = anzatz_phi(r_star)
 def plot_wavelengths():
-	osc_phi = phi/envelope(r_BL)
-	local_max_indices = argrelextrema(osc_phi, np.greater)[0]
-	local_min_indices = argrelextrema(osc_phi, np.less)[0]
-	local_max = r_star[local_max_indices]
-	local_min = r_star[local_min_indices]
-	r_BL_max = r_BL[local_max_indices]
-	r_BL_min = r_BL[local_min_indices]
-	r_BL_pos1 = 0.5*(r_BL_max[1:] + r_BL_min)
-	r_BL_pos2 = 0.5*(r_BL_max[:-1] + r_BL_min)
-	r_BL_pos = np.concatenate((r_BL_pos1, r_BL_pos2))
-	print("local_max.size = ", local_max.size)
-	print("local_min.size = ", local_min.size)
-	print(local_max, local_min)
-	wl1 = 2*(local_max[1:] - local_min)
-	pos1 = 0.5*(local_max[1:] + local_min)
-	wl2 = 2*(local_min - local_max[:-1])
-	pos2 = 0.5*(local_min + local_max[:-1])
-	wl = np.concatenate((wl1,wl2)) # = 2*pi/k
-	print("wl = ", wl)
-	pos = np.concatenate((pos1, pos2)) 
-	print("pos = ", pos)
-	indices = np.linspace(0, 6, 6)
-	#
-	# wl_anzatz = (r_BL-r_plus)/(2*math.pi*r_plus) + 0.05*((r_BL-r_plus)/(2*math.pi*r_plus))**2
-	z = (r_BL-r_plus)/(2*math.pi*r_plus)
-	z_pos = (r_BL_pos - r_plus)/(2*math.pi*r_plus)
-	plt.plot(pos, 2*np.pi/wl, "r+", label="estimated k")
-	k_anzatz = 2*np.pi*r_plus/(r_BL)
-	plt.plot(r_star, k_anzatz, "b--", label="$r_s/r$")
+	osc_phi = phi/envelope(r_BL, phi, 1)
+	local_extrema_indices = argrelextrema(np.abs(osc_phi), np.greater)[0]
+	local_extrema = r_star[local_extrema_indices]
+	r_BL_extrema = r_BL[local_extrema_indices]
+	wl = 2*(local_extrema[1:] - local_extrema[:-1])
+	pos = 0.5*(local_extrema[1:] + local_extrema[:-1])
+	r_BL_pos =  0.5*(r_BL_extrema[1:] + r_BL_extrema[:-1]) 
+	k = 2*np.pi/wl
+	#wl_anzatz = (r_BL-r_plus)/(2*math.pi*r_plus) + 0.05*((r_BL-r_plus)/(2*math.pi*r_plus))**2
+	#z = (r_BL-r_plus)/(2*math.pi*r_plus)
+	#z_pos = (r_BL_pos - r_plus)/(2*math.pi*r_plus)
+	plt.plot(np.log(r_BL_pos/r_plus), np.log(k), "r+", label="estimated k")
+	k_anzatz = r_plus*r_plus/(r_BL)
+	plt.plot(np.log(r_BL/r_plus), np.log(k_anzatz), "b--", label="$mu*(r_s**2)/r$")
 	#plt.xlim((-10, 100))
-	plt.ylim((0, 5))
+	#plt.ylim((0, 2.1))
 	plt.legend()
-	plt.title("est. k vs position")
-	plt.xlabel("est position ($r_*$)")
-	plt.ylabel("est k")
-	save_name = "phi_profile_k_plot.png"
+	plt.title("estimated k vs position")
+	plt.xlabel("ln(position in $r_{BL}/r_+$)")
+	plt.ylabel("ln(k)")
+	save_name = "phi_profile_k_plot_ln.png"
 	print("saved " + save_root_path + save_name)
 	plt.savefig(save_root_path + save_name, transparent=False)
 	plt.clf()
@@ -169,8 +157,9 @@ def plot_graph():
 		x = r_star
 		x_label = "$r_*$"
 	plt.plot(x, phi, 'r-', label="simulation phi")
-	plt.plot(x, envelope(r_BL), 'b--', label="ansatz envelope")
-	plt.plot(x, envelope2(r_BL, r_star), 'm--', label="ansatz envelope v2")
+	plt.plot(x, envelope(r_BL, phi, 3/4), 'b--', label="ansatz envelope (1 + a/r**(3/4))")
+	#plt.plot(x, envelope2(r_BL, r_star), 'm--', label="ansatz envelope v2")
+	anzatz = anzatz_phi(r_star, phi, 1)
 	plt.plot(x, anzatz, 'g--', label="anzatz phi")
 	plt.xlabel(x_label)
 	plt.ylabel("$\\phi$")
