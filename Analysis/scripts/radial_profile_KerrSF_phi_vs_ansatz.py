@@ -72,7 +72,7 @@ print("made profile")
 
 # np.exp(-0.1*(r_BL/r_plus))
 
-A = 6
+A = 5.6
 C = -1
 B1 = 0.1
 B2 = 0
@@ -91,7 +91,7 @@ def anzatz_phi(r_star):
 	return result
 
 def envelope(r_BL):
-	return 0.1*(1 + A*r_plus/r_BL)
+	return 0.1*(1 + A*r_plus*(r_BL**(-3/4)))
 
 def envelope2(r_BL, r_star):
         return 0.1*(1 + A*r_plus/r_BL)(1 + np.exp(-r_star/5))
