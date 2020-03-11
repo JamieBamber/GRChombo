@@ -75,8 +75,7 @@ void BoundaryConditions::write_boundary_conditions(params_t a_params)
     std::map<int, std::string> bc_names = {{STATIC_BC, "Static"},
                                            {SOMMERFELD_BC, "Sommerfeld"},
                                            {REFLECTIVE_BC, "Reflective"},
-                                           {EXTRAPOLATING_BC, "Extrapolating"},
-                                           {MIXED_BC, "Mixed"}};
+                                           {EXTRAPOLATING_BC, "Extrapolating"}};
     FOR1(idir)
     {
         if (!a_params.is_periodic[idir])
@@ -88,8 +87,7 @@ void BoundaryConditions::write_boundary_conditions(params_t a_params)
             {
                 write_reflective_conditions(idir, a_params);
             }
-            else if (a_params.hi_boundary[idir] == SOMMERFELD_BC ||
-                     a_params.hi_boundary[idir] == MIXED_BC)
+            else if (a_params.hi_boundary[idir] == SOMMERFELD_BC)
             {
                 write_sommerfeld_conditions(idir, a_params);
             }
@@ -102,8 +100,7 @@ void BoundaryConditions::write_boundary_conditions(params_t a_params)
             {
                 write_reflective_conditions(idir, a_params);
             }
-            else if (a_params.lo_boundary[idir] == SOMMERFELD_BC ||
-                     a_params.lo_boundary[idir] == MIXED_BC)
+            else if (a_params.lo_boundary[idir] == SOMMERFELD_BC)
             {
                 write_sommerfeld_conditions(idir, a_params);
             }
@@ -278,43 +275,42 @@ void BoundaryConditions::fill_extrapolating_cell(FArrayBox &rhs_box,
     for (int icomp = comps.begin(); icomp < comps.end(); icomp++)
     {
         // current radius
-        double radius = Coordinates<double>::get_radius(iv, m_dx);
+        double radius = Coordinates<double>::get_radius(
+            iv, m_dx, {m_center[0], m_center[1], m_center[2]});
+
         // vector of 2 nearest values and radii within the grid
-        std::array<double, 2> a;
-        std::array<double, 2> r_a;
+        std::array<double, 2> value_at_point;
+        std::array<double, 2> r_at_point;
         // how many units are we from domain boundary?
-        int n = 0;
+        int units_from_edge = 0;
         if (a_side == Side::Hi)
         {
             // how many units are we from domain boundary?
-            n = iv[dir] - m_domain_box.bigEnd(dir);
-            // vector of 3 nearest values within the grid
+            units_from_edge = iv[dir] - m_domain_box.bigEnd(dir);
+            // vector of 2 nearest values and radii within the grid
             for (int i = 0; i < 2; i++)
             {
                 IntVect iv_tmp = iv;
-                iv_tmp[dir] += -n - i;
-                a[i] = rhs_box(iv_tmp, icomp);
-                r_a[i] = Coordinates<double>::get_radius(iv_tmp, m_dx);
+                iv_tmp[dir] += -units_from_edge - i;
+                value_at_point[i] = rhs_box(iv_tmp, icomp);
+                r_at_point[i] = Coordinates<double>::get_radius(
+                    iv_tmp, m_dx, {m_center[0], m_center[1], m_center[2]});
             }
         }
         else // Lo side
         {
             // how many units are we from domain boundary?
-            n = -iv[dir] + m_domain_box.smallEnd(dir);
+            units_from_edge = -iv[dir] + m_domain_box.smallEnd(dir);
             // vector of 2 nearest values within the grid
             for (int i = 0; i < 2; i++)
             {
                 IntVect iv_tmp = iv;
-                iv_tmp[dir] += n + i;
-                a[i] = rhs_box(iv_tmp, icomp);
-                r_a[i] = Coordinates<double>::get_radius(iv_tmp, m_dx);
+                iv_tmp[dir] += units_from_edge + i;
+                value_at_point[i] = rhs_box(iv_tmp, icomp);
+                r_at_point[i] = Coordinates<double>::get_radius(
+                    iv_tmp, m_dx, {m_center[0], m_center[1], m_center[2]});
             }
         }
-
-        // extrapolate at first order to current position just using cells
-        // this is just a backstop to stop crazy values coming in
-        // when, for example, the value of a[0]= a[1] in the linear case
-        double linear_change = -0.5 * a[1] * n + 0.5 * a[0] * n;
 
         // assume some radial dependence and fit it
         double analytic_change = 0.0;
@@ -326,31 +322,20 @@ void BoundaryConditions::fill_extrapolating_cell(FArrayBox &rhs_box,
         // comp = B + A*r
         else if (order == 1)
         {
-            double A = (a[1] - a[0]) / (r_a[1] - r_a[0]);
-            // double B = a[0] - A * r_a[0];
-            analytic_change = A * (radius - r_a[0]);
+            double delta_r_in_domain = r_at_point[1] - r_at_point[0];
+            double A =
+                (value_at_point[1] - value_at_point[0]) / delta_r_in_domain;
+            double delta_r_here = radius - r_at_point[0];
+            analytic_change = A * delta_r_here;
         }
-        // comp = B + A/r
-        else if (order == -1)
-        {
-            double A = (a[1] - a[0]) / (1.0 / r_a[1] - 1.0 / r_a[2]);
-            // double B = a[0] + A / r_a[0];
-            analytic_change = A * (1.0 / radius - 1.0 / r_a[0]);
-        }
-        // other orders not supported
+        // other orders not supported yet
         else
         {
             MayDay::Error("Order not supported for boundary extrapolation.");
         }
 
-        if (abs(analytic_change) > abs(linear_change))
-        {
-            rhs_box(iv, icomp) = a[0] + linear_change;
-        }
-        else
-        {
-            rhs_box(iv, icomp) = a[0] + analytic_change;
-        }
+        // set the value here to the extrapolated value
+        rhs_box(iv, icomp) = value_at_point[0] + analytic_change;
     }
 }
 
@@ -413,35 +398,6 @@ void BoundaryConditions::fill_boundary_rhs_dir(const Side::LoHiSide a_side,
             {
                 fill_extrapolating_cell(rhs_box, iv, a_side, dir,
                                         m_params.extrapolation_order);
-                break;
-            }
-            case MIXED_BC:
-            {
-                // Interval chi_comps(0, 0);
-                Interval ccz4_comps(0, 25);
-                Interval field_comps(25, 27);
-
-                // use sommerfeld for ccz4 vars
-                if (filling_rhs)
-                {
-                    fill_sommerfeld_cell(rhs_box, soln_box, iv, ccz4_comps);
-                }
-
-                // may need zeroth order for K and chi?
-                // int order = 0;
-                // fill_extrapolating_cell(rhs_box, iv, a_side, dir, order,
-                //                        chi_comps);
-
-                // use linear extrapolation for field values
-                int order = 1;
-                fill_extrapolating_cell(rhs_box, iv, a_side, dir, order,
-                                        field_comps);
-
-                // set non evolving vars to zero
-                for (int icomp = 27; icomp < NUM_VARS; icomp++)
-                {
-                    rhs_box(iv, icomp) = 0.0;
-                }
                 break;
             }
             default:
@@ -524,8 +480,7 @@ void BoundaryConditions::enforce_solution_boundaries(
             // as a bit of a hack, just use the rhs update, since it is the
             // same copying of cells which we require for the solution
             if (boundary_condition == REFLECTIVE_BC ||
-                boundary_condition == EXTRAPOLATING_BC ||
-                boundary_condition == MIXED_BC)
+                boundary_condition == EXTRAPOLATING_BC)
             {
                 const bool filling_rhs = false;
                 fill_boundary_rhs_dir(a_side, a_state, a_state, idir,
@@ -769,18 +724,14 @@ Box ExpandGridsToBoundaries::operator()(const Box &a_in_box)
     {
         if (!m_boundaries.m_params.is_periodic[idir])
         {
-            if (((m_boundaries.get_boundary_condition(Side::Lo, idir) ==
-                  BoundaryConditions::SOMMERFELD_BC) ||
-                 (m_boundaries.get_boundary_condition(Side::Lo, idir) ==
-                  BoundaryConditions::MIXED_BC)) &&
+            if (m_boundaries.get_boundary_condition(Side::Lo, idir) ==
+                    BoundaryConditions::SOMMERFELD_BC &&
                 offset_lo[idir] == 0)
             {
                 out_box.growLo(idir, m_boundaries.m_num_ghosts);
             }
-            if (((m_boundaries.get_boundary_condition(Side::Hi, idir) ==
-                  BoundaryConditions::SOMMERFELD_BC) ||
-                 (m_boundaries.get_boundary_condition(Side::Hi, idir) ==
-                  BoundaryConditions::MIXED_BC)) &&
+            if (m_boundaries.get_boundary_condition(Side::Hi, idir) ==
+                    BoundaryConditions::SOMMERFELD_BC &&
                 offset_hi[idir] == 0)
             {
                 out_box.growHi(idir, m_boundaries.m_num_ghosts);
@@ -809,13 +760,11 @@ void BoundaryConditions::expand_grids_to_boundaries(
     {
         if (!m_params.is_periodic[idir])
         {
-            if ((get_boundary_condition(Side::Lo, idir) == SOMMERFELD_BC) ||
-                (get_boundary_condition(Side::Lo, idir) == MIXED_BC))
+            if (get_boundary_condition(Side::Lo, idir) == SOMMERFELD_BC)
             {
                 domain_with_boundaries.growLo(idir, m_num_ghosts);
             }
-            if ((get_boundary_condition(Side::Hi, idir) == SOMMERFELD_BC) ||
-                (get_boundary_condition(Side::Lo, idir) == MIXED_BC))
+            if (get_boundary_condition(Side::Hi, idir) == SOMMERFELD_BC)
             {
                 domain_with_boundaries.growHi(idir, m_num_ghosts);
             }
