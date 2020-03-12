@@ -65,9 +65,9 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 	const data_t det_gamma = 
             TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
 
-	// first rho. True rho = -sqrt(-g)T^0_0 = alpha*sqrt(det_gamma)*(rho_3+1 - beta^i/alpha * S_i)
+	// first rho. True rho = -sqrt(-g)T^0_0 = alpha*sqrt(det_gamma)*(rho_3+1 + beta^i/alpha * S_i)
 	data_t rho = emtensor.rho;
-	FOR1(k){ rho += -metric_vars.shift[k]*emtensor.Si[k]; 	}
+	FOR1(k){ rho += +metric_vars.shift[k]*emtensor.Si[k]; 	}
 	rho = rho*sqrt(det_gamma)*metric_vars.lapse;
 
 	// find angular momentum in Kerr BH direction and the cloud spin direction
@@ -79,13 +79,16 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         double sin_alignment = sin(m_alignment*M_PI);
         double y_prime = y * cos_alignment + z * sin_alignment;
 
-	Tensor<1, data_t> J;
+	// True j^i = alpha^2 * gamma^ij [ S_j - beta^k S_kj ] for the cartesian coordinates
+	Tensor<1, data_t> Sbeta; 
+	FOR2(i, j){ Sbeta[i] += metric_vars.shift[j]*emtensor.Sij[i][j]; }			
+	Tensor<1, data_t> J; 
 	FOR2(i, j){ J[i] += sqrt(det_gamma)*gamma_UU[i][j]*emtensor.Si[j]; }			
 
-	// S_azimuth = x * S_y - y * S_z
-	// S_azimuth_prime = x(S_y cos(alignment) + S_z sin(alignment)) - yprime * S_x
-	data_t J_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0])*sqrt(det_gamma);
-	data_t J_azimuth_prime = (x*(cos_alignment*emtensor.Si[1] + sin_alignment*emtensor.Si[2]) - y_prime*emtensor.Si[0])*sqrt(det_gamma);
+	// J_azimuth = x * S_y - y * S_z
+	// J_azimuth_prime = x(S_y cos(alignment) + S_z sin(alignment)) - yprime * S_x
+	data_t J_azimuth = (x * J[1] - y * J[0]);
+	data_t J_azimuth_prime = (x*(J[1] + sin_alignment*J[2]) - y_prime*J[0]);
 
 	// fine the inward radial momentum (i.e. radial mass flux density)
 	// S_r = (x * S_x + y * S_y + z * S_z)/r
