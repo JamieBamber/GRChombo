@@ -117,7 +117,7 @@ t = number*dt
 
 #popt, pconv = curve_fit(anzatz_phi, x, phi, p0=(0.1, 0))
 
-def plot_wavelengths():
+def plot_wavelengths(type):
 	osc_phi = phi/envelope(r_BL, phi, 1)
 	local_extrema_indices = argrelextrema(np.abs(osc_phi), np.greater)[0]
 	local_extrema = r_star[local_extrema_indices]
@@ -126,19 +126,40 @@ def plot_wavelengths():
 	pos = 0.5*(local_extrema[1:] + local_extrema[:-1])
 	r_BL_pos =  0.5*(r_BL_extrema[1:] + r_BL_extrema[:-1]) 
 	k = 2*np.pi/wl
-	#wl_anzatz = (r_BL-r_plus)/(2*math.pi*r_plus) + 0.05*((r_BL-r_plus)/(2*math.pi*r_plus))**2
-	#z = (r_BL-r_plus)/(2*math.pi*r_plus)
-	#z_pos = (r_BL_pos - r_plus)/(2*math.pi*r_plus)
-	plt.plot(np.log(r_BL_pos/r_plus), np.log(k), "r+", label="estimated k")
-	k_anzatz = r_plus*r_plus/(r_BL)
-	plt.plot(np.log(r_BL/r_plus), np.log(k_anzatz), "b--", label="$mu*(r_s**2)/r$")
-	#plt.xlim((-10, 100))
-	#plt.ylim((0, 2.1))
-	plt.legend()
-	plt.title("estimated k vs position")
-	plt.xlabel("ln(position in $r_{BL}/r_+$)")
-	plt.ylabel("ln(k)")
-	save_name = "phi_profile_k_plot_ln.png"
+	z = r_BL/r_plus
+	#k_anzatz = r_plus/(z)
+	if (type == "log_log"):
+		plt.plot(np.log(r_BL_pos/r_plus), np.log(k), "r+", label="estimated k")
+		## fit line to points ##
+		ln_z = np.log(r_BL_pos/r_plus)
+		ln_k = np.log(k)
+		
+		p = np.polyfit(ln_z[0:6], np.log(k)[0:6], deg=1)
+		x = np.linspace(ln_z[0], ln_z[5], 16)
+		plt.plot(x, p[0]*x + p[1], 'm--', label="{:.2f} + {:.2f}x".format(p[1], p[0])) 
+		
+		p2 = np.polyfit(ln_z[5:], np.log(k)[5:], deg=1)
+		x = np.linspace(ln_z[5], ln_z[-1], 16)
+		plt.plot(x, p2[0]*x + p2[1], 'c--', label="{:.2f} + {:.2f}x".format(p2[1], p2[0]))
+		plt.plot(np.log(r_BL/r_plus), np.log(k_anzatz), "b--", label="anzatz")
+		
+		#plt.xlim((-10, 100))
+		#plt.ylim((0, 2.1))
+		plt.legend()
+		plt.title("estimated k vs position")
+		plt.xlabel("ln(position in $r_{BL}/r_+$)")
+		plt.ylabel("ln(k)")
+		save_name = "phi_profile_k_plot_ln_ln.png"
+	elif (type == "log"):
+		plt.plot(pos, np.log(k), "r+", label="estimated k")
+		plt.plot(r_star, np.log(mu*r_plus*(r_plus/r_BL)), "b--", label="$\\mu r_+ (r_+/r_{BL})$")
+		plt.plot(r_star, np.log(mu*r_plus*np.sqrt(r_plus/r_BL)), "m--", label="$\\mu r_+ (r_+/r_{BL})^{1/2}$")
+		plt.legend()
+		plt.title("estimated k vs position")
+		plt.xlabel("position in $r_*$")
+		plt.xlim((-10, 100))
+		plt.ylabel("ln(k)")
+		save_name = "phi_profile_k_plot_ln.png"
 	print("saved " + save_root_path + save_name)
 	plt.savefig(save_root_path + save_name, transparent=False)
 	plt.clf()
@@ -175,4 +196,4 @@ def plot_graph():
 	plt.savefig(save_root_path + save_name, transparent=False)
 	plt.clf()
 	
-plot_wavelengths()
+plot_wavelengths("log")

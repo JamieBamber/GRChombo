@@ -28,7 +28,7 @@ def add_data_dir(list, num, l, m, a):
 
 data_dirs = []
 # choose datasets to compare
-add_data_dir(data_dirs, 39, 1, 1, "0.7")
+add_data_dir(data_dirs, 22, 0, 0, "0")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -42,7 +42,7 @@ output_dir = "data/compare_alm_flux"
 
 half_box = True
 
-Jr_or_Sr = False
+Jr_or_Sr = True
 
 def calculate_flux(dd):
 	data_sub_dir = dd.name
@@ -72,7 +72,8 @@ def calculate_flux(dd):
 		def _rho_Jr_eff(field, data):
 			r_BL = (data["spherical_radius"]/cm)*(1 + r_plus*cm/(4*data["spherical_radius"]))**2
 			Sigma2 = r_BL**2 + (data["z"]*a*M/(r_BL*cm))
-			#Delta = r_BL**2 + (a*M)**2 - 2*M*r_BL		
+			#Delta = r_BL**2 + (a*M)**2 - 2*M*r_BL
+			# r^2*(r_BL - r_minus)/(Sigma^2*r)*S_r*det(gamma)		
 			return ((data["spherical_radius"]**2/cm**2)*(r_BL - r_minus)/(Sigma2*r_BL))*data["S_r"]*pow(data["chi"],-3)
 	
 	elif not Jr_or_Sr:

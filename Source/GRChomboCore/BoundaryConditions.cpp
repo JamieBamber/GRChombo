@@ -75,7 +75,7 @@ void BoundaryConditions::write_boundary_conditions(params_t a_params)
     std::map<int, std::string> bc_names = {{STATIC_BC, "Static"},
                                            {SOMMERFELD_BC, "Sommerfeld"},
                                            {REFLECTIVE_BC, "Reflective"},
-                                           {EXTRAPOLATING_BC, "Extrapolating"}
+                                           {EXTRAPOLATING_BC, "Extrapolating"},
 					   {MIXED_BC, "Mixed"}};
 
     FOR1(idir)
@@ -403,10 +403,10 @@ void BoundaryConditions::fill_boundary_rhs_dir(const Side::LoHiSide a_side,
                 fill_extrapolating_cell(rhs_box, iv, a_side, dir,
                                         m_params.extrapolation_order);
                 break;
-            }
+	    }
 	    case MIXED_BC:
 +           {
-+                // Interval chi_comps(0, 0);
+		 // Interval chi_comps(0, 0);
 +                Interval ccz4_comps(0, 25);
 +                Interval field_comps(25, 27);
 +
@@ -433,7 +433,6 @@ void BoundaryConditions::fill_boundary_rhs_dir(const Side::LoHiSide a_side,
 +                }
 +                break;
 +           }
-
             default:
                 MayDay::Error(
                     "BoundaryCondition::Supplied boundary not supported.");
