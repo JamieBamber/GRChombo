@@ -45,7 +45,7 @@ void ScalarFieldLevel::initialData()
     // First set everything to zero ... we don't want undefined values in
     // constraints etc, then initial conditions for scalar field
     IsotropicKerrFixedBG kerr_bg(m_p.bg_params, m_dx);
-    FlatScalar initial_sf(m_p.initial_params, m_p.bg_params, m_dx);
+    ScalarRotatingCloud initial_sf(m_p.initial_params, m_p.bg_params, m_dx);
     BoxLoops::loop(make_compute_pack(SetValue(0.0), kerr_bg, initial_sf),
                    m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
 }
