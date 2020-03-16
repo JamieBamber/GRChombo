@@ -1,0 +1,46 @@
+#!/bin/bash
+# Job Name and Files (also --job-name)
+#SBATCH -J visit
+
+#Initial working directory (also --chdir):
+#SBATCH -D ./
+
+# Wall clock limit:
+#SBATCH --time=00:10:00
+#SBATCH --no-requeue
+
+#Setup of execution environment
+#SBATCH --dependency=singleton    # Jobs with the same name will wait
+#SBATCH --export=NONE
+#SBATCH --get-user-env
+#SBATCH --account=pn34tu
+#SBATCH --partition=test
+##SBATCH --mail-type=all
+##SBATCH --mail-user=james.bamber@physics.ox.ac.uk 
+
+#Number of nodes and MPI tasks per node:
+#SBATCH --nodes=2
+# There are 48 physical cores per node, so
+# the product of these numbers should be 48
+#SBATCH --ntasks-per-node=4
+
+#Load modules
+module load slurm_setup
+module load intel mkl hdf5 gcc/7
+module load visit
+ 
+echo ${SLURM_JOB_NAME} ${SLURM_JOB_ID} $(date)
+cpuinfo
+module list 
+
+#! Run options for the application:
+currentdir=$(pwd)
+python_script=${currentdir}/phi_plot_script.py
+
+#Run the program:
+visit -cli -nowin -launchengine localhost -l mpiexec -np ${II} -ppn ${SLURM_NTASKS_PER_NODE} -s ${python_script} 
+# your python script here, also supporting own options and arguments. 
+
+echo "ran visit"
+
+exit
