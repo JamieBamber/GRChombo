@@ -9,7 +9,6 @@ slurm_submit
 *.e*
 *.o*
 *.btr
-*.sh
 machine.file.*
 jobscript*
 *env

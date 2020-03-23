@@ -30,15 +30,9 @@ int runGRChombo(int argc, char *argv[])
     // The line below selects the problem that is simulated
     // (To simulate a different problem, define a new child of AMRLevel
     // and an associated LevelFactory)
-<<<<<<< HEAD
     BHAMR gr_amr;
 
     pout() << "BHAMR gr_amr line: initialised BHAMR object" << endl;
-=======
-    GRAMR gr_amr;
-
-    pout() << "GRAMR gr_amr line: initialised GRAMR object" << endl;
->>>>>>> 96e6a663f72a6c60ad4e04cc5f1d7852e3e5e65e
 
     DefaultLevelFactory<BinaryBHLevel> binary_bh_level_fact(gr_amr, sim_params);
 

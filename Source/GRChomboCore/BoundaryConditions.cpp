@@ -90,7 +90,7 @@ void BoundaryConditions::write_boundary_conditions(params_t a_params)
                 write_reflective_conditions(idir, a_params);
             }
             else if (a_params.hi_boundary[idir] == SOMMERFELD_BC ||
-+                     a_params.hi_boundary[idir] == MIXED_BC)
+                     a_params.hi_boundary[idir] == MIXED_BC)
             {
                 write_sommerfeld_conditions(idir, a_params);
             }
@@ -104,7 +104,7 @@ void BoundaryConditions::write_boundary_conditions(params_t a_params)
                 write_reflective_conditions(idir, a_params);
             }
             else if (a_params.lo_boundary[idir] == SOMMERFELD_BC ||
-+                     a_params.lo_boundary[idir] == MIXED_BC)
+                     a_params.lo_boundary[idir] == MIXED_BC)
             {
                 write_sommerfeld_conditions(idir, a_params);
             }
@@ -405,34 +405,34 @@ void BoundaryConditions::fill_boundary_rhs_dir(const Side::LoHiSide a_side,
                 break;
 	    }
 	    case MIXED_BC:
-+           {
+	    {    pout() << "does this count as an expression?" << endl;
+		 
 		 // Interval chi_comps(0, 0);
-+                Interval ccz4_comps(0, 25);
-+                Interval field_comps(25, 27);
-+
-+                // use sommerfeld for ccz4 vars
-+                if (filling_rhs)
-+                {
-+                    fill_sommerfeld_cell(rhs_box, soln_box, iv, ccz4_comps);
-+                }
-+
-+                // may need zeroth order for K and chi?
-+                // int order = 0;
-+                // fill_extrapolating_cell(rhs_box, iv, a_side, dir, order,
-+                //                        chi_comps);
-+
-+                // use linear extrapolation for field values
-+                int order = 1;
-+                fill_extrapolating_cell(rhs_box, iv, a_side, dir, order,
-+                                        field_comps);
-+
-+                // set non evolving vars to zero
-+                for (int icomp = 27; icomp < NUM_VARS; icomp++)
-+                {
-+                    rhs_box(iv, icomp) = 0.0;
-+                }
-+                break;
-+           }
+                Interval ccz4_comps(0, 25);
+                Interval field_comps(25, 27);
+                // use sommerfeld for ccz4 vars
+                if (filling_rhs)
+                {
+                    fill_sommerfeld_cell(rhs_box, soln_box, iv, ccz4_comps);
+                }
+
+                // may need zeroth order for K and chi?
+                // int order = 0;
+                // fill_extrapolating_cell(rhs_box, iv, a_side, dir, order,
+                //                        chi_comps);
+
+                // use linear extrapolation for field values
+                int order = 1;
+                fill_extrapolating_cell(rhs_box, iv, a_side, dir, order,
+                                        field_comps);
+
+                // set non evolving vars to zero
+                for (int icomp = 27; icomp < NUM_VARS; icomp++)
+                {
+                    rhs_box(iv, icomp) = 0.0;
+                }
+                break;
+            }
             default:
                 MayDay::Error(
                     "BoundaryCondition::Supplied boundary not supported.");
@@ -514,7 +514,7 @@ void BoundaryConditions::enforce_solution_boundaries(
             // same copying of cells which we require for the solution
             if (boundary_condition == REFLECTIVE_BC ||
                 boundary_condition == EXTRAPOLATING_BC ||
-+                boundary_condition == MIXED_BC)
+                boundary_condition == MIXED_BC)
             {
                 const bool filling_rhs = false;
                 fill_boundary_rhs_dir(a_side, a_state, a_state, idir,
@@ -760,16 +760,16 @@ Box ExpandGridsToBoundaries::operator()(const Box &a_in_box)
         {
             if (((m_boundaries.get_boundary_condition(Side::Lo, idir) ==
                     BoundaryConditions::SOMMERFELD_BC) ||
-+                 (m_boundaries.get_boundary_condition(Side::Lo, idir) ==
-+                  BoundaryConditions::MIXED_BC)) &&
+                 (m_boundaries.get_boundary_condition(Side::Lo, idir) ==
+                  BoundaryConditions::MIXED_BC)) &&
                 offset_lo[idir] == 0)
             {
                 out_box.growLo(idir, m_boundaries.m_num_ghosts);
             }
             if (((m_boundaries.get_boundary_condition(Side::Hi, idir) ==
                     BoundaryConditions::SOMMERFELD_BC) ||
-+                 (m_boundaries.get_boundary_condition(Side::Hi, idir) ==
-+                  BoundaryConditions::MIXED_BC)) &&
+                 (m_boundaries.get_boundary_condition(Side::Hi, idir) ==
+                  BoundaryConditions::MIXED_BC)) &&
                 offset_hi[idir] == 0)
             {
                 out_box.growHi(idir, m_boundaries.m_num_ghosts);
@@ -799,12 +799,12 @@ void BoundaryConditions::expand_grids_to_boundaries(
         if (!m_params.is_periodic[idir])
         {
             if ((get_boundary_condition(Side::Lo, idir) == SOMMERFELD_BC) ||
-+                (get_boundary_condition(Side::Lo, idir) == MIXED_BC))
+                (get_boundary_condition(Side::Lo, idir) == MIXED_BC))
             {
                 domain_with_boundaries.growLo(idir, m_num_ghosts);
             }
             if ((get_boundary_condition(Side::Hi, idir) == SOMMERFELD_BC) ||
-+                (get_boundary_condition(Side::Lo, idir) == MIXED_BC))
+                (get_boundary_condition(Side::Lo, idir) == MIXED_BC))
             {
                 domain_with_boundaries.growHi(idir, m_num_ghosts);
             }
