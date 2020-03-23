@@ -65,23 +65,21 @@ void BinaryBHLevel::initialData()
     
     // First set everything to zero (to avoid undefinded values in constraints)
     // then calculate initial data
-<<<<<<< HEAD
+    /*
     BoxLoops::loop(make_compute_pack(SetValue(0.), binary), m_state_new,
                   m_state_new, INCLUDE_GHOST_CELLS);
 
     // Initial conditions for scalar field - constant amplitude
     BoxLoops::loop(SetValue(m_p.initial_params.field_amplitude, Interval(c_phi, c_phi)), m_state_new,
-                   m_state_new, FILL_GHOST_CELLS);
+                   m_state_new, FILL_GHOST_CELLS);*/
 
    if (m_verbosity)
    	pout() << "Done BinaryBHLevel::initialData()" << endl;
-=======
+
     BoxLoops::loop(make_compute_pack(SetValue(0.), binary, initial_sf), m_state_new,
                    m_state_new, INCLUDE_GHOST_CELLS);
->>>>>>> 96e6a663f72a6c60ad4e04cc5f1d7852e3e5e65e
 
    pout() << "Done BinaryBHLevel::initialData()" << endl;
-
 }
 
 // Things to do after a restart
@@ -113,23 +111,17 @@ void BinaryBHLevel::preCheckpointLevel()
     BoxLoops::loop(Constraints(m_dx), m_state_new, m_state_new,
                    EXCLUDE_GHOST_CELLS);
 
-<<<<<<< HEAD
     if (m_verbosity)
         pout() << "Done BinaryBHLevel::preCheckpointLevel() " << endl;
-=======
-    pout() << "Done BinaryBHLevel::preCheckpointLevel() " << endl;
->>>>>>> 96e6a663f72a6c60ad4e04cc5f1d7852e3e5e65e
 }
 
 // Calculate RHS during RK4 substeps
 void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                                     const double a_time)
 {
-<<<<<<< HEAD
     if (m_verbosity)
        pout() << "starting BinaryBHLevel::specificEvalRHS()" << endl;
-=======
->>>>>>> 96e6a663f72a6c60ad4e04cc5f1d7852e3e5e65e
+
     // Enforce positive chi and alpha and trace free A
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
                    a_soln, a_soln, INCLUDE_GHOST_CELLS);
@@ -147,19 +139,16 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                           SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
         a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
 
-<<<<<<< HEAD
    if (m_verbosity)
       pout() << "Done BinaryBHLevel::specificEvalRHS() t = " << a_time << endl;
-=======
-   pout() << "Done BinaryBHLevel::specificEvalRHS() t = " << a_time << endl;
->>>>>>> 96e6a663f72a6c60ad4e04cc5f1d7852e3e5e65e
 }
 
 // enforce trace removal during RK4 substeps
 void BinaryBHLevel::specificUpdateODE(GRLevelData &a_soln,
                                       const GRLevelData &a_rhs, Real a_dt)
 {
-    pout() << "starting BinaryBHLevel::specificEpdateODE()" << endl;
+    if (m_verbosity)
+	pout() << "starting BinaryBHLevel::specificEpdateODE()" << endl;
     // Enforce the trace free A_ij condition
     BoxLoops::loop(TraceARemoval(), a_soln, a_soln, INCLUDE_GHOST_CELLS);
 }
@@ -244,12 +233,8 @@ void BinaryBHLevel::prePlotLevel()
         BoxLoops::loop(Weyl4(m_p.extraction_params.extraction_center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
     }
-<<<<<<< HEAD
     if (m_verbosity)
     	pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
-=======
-    pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
->>>>>>> 96e6a663f72a6c60ad4e04cc5f1d7852e3e5e65e
 }
 
 // Specify if you want any plot files to be written, with which vars
