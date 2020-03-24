@@ -15,13 +15,17 @@ start_time = time.time()
 # load dataset
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 #data_sub_dir = "run0031_KNL_l0_m0_a0_Al0_mu0.4_M1_correct_Ylm"
-data_sub_dir = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_new_rho_more_levels"
+data_sub_dir = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild_more_levels"
 #data_sub_dir = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_correct_Ylm"
 number = 130
 dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(number)
 ds = yt.load(dataset_path) 
 print("loaded data from ", dataset_path)
 print("time = ", time.time() - start_time)
+
+data = ds.all_data()
+print(data["phi"])
+sysexit()
 
 # set centre
 center = [512.0, 512.0, 0]
@@ -66,8 +70,8 @@ elif not sphere_or_slice:
 	data.set_field_parameter("center", center)
 
 # make profile
-rp = yt.create_profile(data, "spherical_radius", fields=["phi"], n_bins=N_bins, weight_field="weighting_field", extrema={"spherical_radius" : (R_min, R_max)})
-print("made profile")
+#rp = yt.create_profile(data, "spherical_radius", fields=["phi"], n_bins=N_bins, weight_field="weighting_field", extrema={"spherical_radius" : (R_min, R_max)})
+#print("made profile")
 
 ### plot profile
 
@@ -100,8 +104,10 @@ def envelope2(r_BL, r_star):
 # plot phi
 
 save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/"
-R = rp.x.value
-phi = rp["phi"].value
+#R = data["spherical_radius"].value
+phi = data["phi"].value
+sysexit()
+
 r_BL = R*(1 + r_plus/(4*R))**2
 r_minus = M*(1 - np.sqrt(1 - a**2))
 r_star = r_BL/r_plus + np.log(r_BL/r_plus - 1)
@@ -175,17 +181,17 @@ def plot_graph():
 	elif (r_type == "r_star"):
 		x = r_star
 		x_label = "$r_*$"
-	plt.plot(x, phi, 'r-', label="simulation phi")
-	plt.plot(x, envelope(r_BL, phi, 1), 'b--', label="ansatz envelope (1 + a/r**(3/4))")
+	plt.plot(x, phi, 'r+', label="simulation phi")
+	#plt.plot(x, envelope(r_BL, phi, 1), 'b--', label="ansatz envelope (1 + a/r**(3/4))")
 	#plt.plot(x, envelope2(r_BL, r_star), 'm--', label="ansatz envelope v2")
-	anzatz = anzatz_phi(r_star, phi, 1)
-	plt.plot(x, anzatz, 'g--', label="anzatz phi")
+	#anzatz = anzatz_phi(r_star, phi, 1)
+	#plt.plot(x, anzatz, 'g--', label="anzatz phi")
 	plt.xlabel(x_label)
 	plt.ylabel("$\\phi$")
 	plt.grid(axis='both')
 	#plt.ylim((-0.5, 0.5))
 	plt.xlim((-10, 200))
-	plt.legend()
+	#plt.legend()
 	title = data_sub_dir + " time = {:.1f}".format(t) 
 	plt.title(title)
 	plt.tight_layout()
@@ -195,4 +201,4 @@ def plot_graph():
 	plt.clf()
 	
 #plot_wavelengths("loglog")
-#plot_graph()
+plot_graph()
