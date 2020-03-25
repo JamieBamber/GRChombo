@@ -58,14 +58,14 @@ module load rhel7/default-peta4            # REQUIRED - loads the basic environm
 #! Insert additional module load commands after this line if needed:
 module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
 module load intel/bundles/complib/2018.4
-module load hdf5/openmpi/gcc/9.2/openmpi-4.0.1/1.10.5
+module load hdf5/impi/1.8.16
 
 #! Full path to application executable: 
 application="/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/Main_BinaryBH3d.Linux.64.mpicxx.ifort.OPTHIGH.MPI.OPENMPCC.ex"
 
 #! Run options for the application:
 currentdir=$(pwd)
-options="${currentdir}/../params.txt"
+options="${currentdir}/params.txt"
 
 #! Work directory (i.e. where the job will run):
 workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory
