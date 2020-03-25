@@ -405,8 +405,7 @@ void BoundaryConditions::fill_boundary_rhs_dir(const Side::LoHiSide a_side,
                 break;
 	    }
 	    case MIXED_BC:
-	    {    pout() << "does this count as an expression?" << endl;
-		 
+	    {    //pout() << "does this count as an expression?" << endl;
 		 // Interval chi_comps(0, 0);
                 Interval ccz4_comps(0, 25);
                 Interval field_comps(25, 27);

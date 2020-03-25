@@ -10,6 +10,7 @@
 #include "ChiExtractionTaggingCriterion.hpp"
 #include "ChiPunctureExtractionTaggingCriterion.hpp"
 #include "ComputePack.hpp"
+//#include "MatterConstraints.hpp"
 #include "Constraints.hpp"
 #include "MatterCCZ4.hpp"
 #include "NanCheck.hpp"
@@ -19,6 +20,8 @@
 #include "TraceARemoval.hpp"
 #include "Weyl4.hpp"
 #include "WeylExtraction.hpp"
+
+#include "DensityAndMom.hpp"
 
 #include "FlatScalar.hpp"
 #include "ScalarPotential.hpp"
@@ -49,16 +52,24 @@ void BinaryBHLevel::initialData()
     // Set up the compute class for the BinaryBH initial data
     BinaryBH binary(m_p.bh1_params, m_p.bh2_params, m_dx);
 
+    if (m_verbosity)
+        pout() << "BinaryBHLevel::initialData --> made binary" << endl;
+
     // scalar field compute class
     FlatScalar initial_sf(m_p.initial_params, m_dx);
     
+    if (m_verbosity)
+        pout() << "BinaryBHLevel::initialData --> made FlatScalar object" << endl;
+
     // setup initial puncture coords for tracking
     // do puncture tracking, just set them once, so on level 0
-    if (m_p.track_punctures == 1 && m_level == 0)
+    if ((m_p.track_punctures == 1) && (m_level == 0))
     {
         const double coarsest_dt = m_p.coarsest_dx * m_p.dt_multiplier;
         PunctureTracker my_punctures(m_time, m_restart_time, coarsest_dt,
                                      m_p.checkpoint_prefix);
+        if (m_verbosity)
+	        pout() << "BinaryBHLevel::initialData --> made puncture tracker" << endl;
         my_punctures.set_initial_punctures(m_bh_amr,
                                            m_p.initial_puncture_coords);
     }
@@ -74,12 +85,19 @@ void BinaryBHLevel::initialData()
                    m_state_new, FILL_GHOST_CELLS);*/
 
    if (m_verbosity)
-   	pout() << "Done BinaryBHLevel::initialData()" << endl;
+        pout() << "BinaryBHLevel::initialData() --> now start BoxLoop" << endl;
 
     BoxLoops::loop(make_compute_pack(SetValue(0.), binary, initial_sf), m_state_new,
                    m_state_new, INCLUDE_GHOST_CELLS);
 
-   pout() << "Done BinaryBHLevel::initialData()" << endl;
+   // Check for nan's
+   if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in initialData: "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
+
+   if (m_verbosity)
+   	pout() << "Done BinaryBHLevel::initialData()" << endl;
+
 }
 
 // Things to do after a restart
@@ -107,9 +125,41 @@ void BinaryBHLevel::preCheckpointLevel()
     if (m_verbosity)
     	pout() << "starting BinaryBHLevel::preCheckpointLevel()" << endl;
     // Calculate and assing values of Ham and Mom constraints on grid
-    fillAllGhosts();
+   
+   // Check for nan's
+   if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in preCheckpointLevel (before fillAllGhosts() ): "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
+
+   if (m_verbosity)
+        pout() << "starting fillAllGhosts()" << endl;
+
+   fillAllGhosts();
+
+    if (m_verbosity)
+        pout() << "done fillAllGhosts()" << endl;
+
+   // Check for nan's
+   if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in preCheckpointLevel (before constraints loop): "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
+
+    if (m_verbosity)
+        pout() << "starting constraints loop" << endl;
+
     BoxLoops::loop(Constraints(m_dx), m_state_new, m_state_new,
                    EXCLUDE_GHOST_CELLS);
+
+    /*ScalarPotential potential(m_p.potential_params);
+    ScalarFieldWithPotential scalar_field(potential);
+    BoxLoops::loop(MatterConstraints<ScalarFieldWithPotential>(
+                       scalar_field, m_dx, m_p.G_Newton),
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+
+    // Check for nan's
+   if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in preCheckpointLevel: "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 
     if (m_verbosity)
         pout() << "Done BinaryBHLevel::preCheckpointLevel() " << endl;
@@ -134,10 +184,15 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
     	scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
     	m_p.G_Newton);
+    SetValue set_other_values_zero(0.0, Interval(c_Ham, c_Weyl4_Im));
     BoxLoops::loop(
-        make_compute_pack(my_ccz4_matter,
-                          SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
+        make_compute_pack(my_ccz4_matter,set_other_values_zero),
         a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+
+   // Check for nan's
+   if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in specificEvalRHS: "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 
    if (m_verbosity)
       pout() << "Done BinaryBHLevel::specificEvalRHS() t = " << a_time << endl;
@@ -151,6 +206,9 @@ void BinaryBHLevel::specificUpdateODE(GRLevelData &a_soln,
 	pout() << "starting BinaryBHLevel::specificEpdateODE()" << endl;
     // Enforce the trace free A_ij condition
     BoxLoops::loop(TraceARemoval(), a_soln, a_soln, INCLUDE_GHOST_CELLS);
+    if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in specificUpdateODE: "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
 // specify the cells to tag
@@ -178,6 +236,10 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
                            m_p.activate_extraction),
                        current_state, tagging_criterion);
     }
+
+    if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in computeTaggingCriterion: "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
 void BinaryBHLevel::specificPostTimeStep()
@@ -220,6 +282,10 @@ void BinaryBHLevel::specificPostTimeStep()
         }
         my_punctures.execute_tracking(m_bh_amr, write_punctures);
     }
+  
+    if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in specificPostTimeStep: "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
 // Things to do before a plot level - need to calculate the Weyl scalars
@@ -227,12 +293,24 @@ void BinaryBHLevel::prePlotLevel()
 {
     if (m_verbosity)
          pout() << "starting BinaryBHLevel::prePlotLevel()" << endl;
+    // Check for nan's
+   if (m_p.nan_check)
+        BoxLoops::loop(NanCheck("NaNCheck in prePlotLevel: "), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
     fillAllGhosts();
     if (m_p.activate_extraction == 1)
     {
         BoxLoops::loop(Weyl4(m_p.extraction_params.extraction_center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
     }
+
+    // Calculate and save ADM density rho 
+    ScalarPotential potential(m_p.potential_params);
+    ScalarFieldWithPotential scalar_field(potential);
+    BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
+                       scalar_field, m_dx),
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);    
+
     if (m_verbosity)
     	pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
 }

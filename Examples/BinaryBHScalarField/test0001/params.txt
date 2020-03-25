@@ -62,6 +62,7 @@ vars_parity            = 0 0 4 6 0 5 0    #chi and hij
                          0 1 2 3          #Theta and Gamma
                          0 1 2 3 1 2 3    #lapse shift and B
                          0 0	          # phi and Pi
+			 0 		  # rho
                          0 1 2 3          #Ham and Mom
                          0 0              #Weyl
 
@@ -72,7 +73,8 @@ vars_asymptotic_values = 1.0 1.0 0.0 0.0 1.0 0.0 1.0 #chi and hij
                          0.0 0.0 0.0 0.0             #Theta and Gamma
                          1.0 0.0 0.0 0.0 0.0 0.0 0.0 #lapse shift and B
                          0.0 0.0		     #phi and Pi
-                         0.0 0.0 0.0 0.0             #Ham and Mom
+                         0.0			     #rho
+			 0.0 0.0 0.0 0.0             #Ham and Mom
                          0.0 0.0                     #Weyl
 
 # Max and min box sizes
@@ -85,7 +87,7 @@ block_factor = 16
 
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
-plot_interval = 100
+plot_interval = 5
 dt_multiplier = 0.25
 stop_time = 1200.0
 

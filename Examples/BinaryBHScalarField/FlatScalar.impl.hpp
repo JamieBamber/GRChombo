@@ -27,6 +27,13 @@ void FlatScalar::compute(Cell<data_t> current_cell) const
     vars.phi = m_params.field_amplitude; // uniform phi field
     vars.Pi = 0;
 
+    // start with unit lapse and flat metric (must be relaxed for chi)
+    vars.lapse = 1;
+    vars.chi = 1;
+
+    // conformal metric is flat
+    FOR1(i) vars.h[i][i] = 1.;
+
     // Store the initial values of the variables
     current_cell.store_vars(vars);
 }
