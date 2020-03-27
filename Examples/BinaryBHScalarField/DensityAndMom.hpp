@@ -42,15 +42,16 @@ class DensityAndMom : public Constraints
         }
     };
 
-    DensityAndMom(matter_t a_matter, double a_dx)
-        : Constraints(a_dx, 0.0 /*No cosmological constant*/), m_matter(a_matter), m_deriv(a_dx), m_dx(a_dx)
+    DensityAndMom(matter_t a_matter, double a_dx, std::array<double, CH_SPACEDIM> a_center)
+        : Constraints(a_dx, 0.0 /*No cosmological constant*/), m_matter(a_matter), m_deriv(a_dx), 
+		m_dx(a_dx), m_center(a_center)
     {
     }
 
     template <class data_t> void compute(Cell<data_t> current_cell) const
     {
         // copy data from chombo gridpoint into local variables, and derivs
-        const auto vars = current_cell.template load_vars<BSSNMatterVars>();
+	const auto vars = current_cell.template load_vars<BSSNMatterVars>();
         const auto d1 = m_deriv.template diff1<BSSNMatterVars>(current_cell);
 
         const auto h_UU = TensorAlgebra::compute_inverse_sym(vars.h);
@@ -61,11 +62,23 @@ class DensityAndMom : public Constraints
 
     	// assign values of density in output box
     	current_cell.store_vars(emtensor.rho, c_rho);
-    }
+
+	// Eulerian momentum density
+	const Coordinates<data_t> coords(current_cell, m_dx, m_center);
+	data_t x = coords.x;
+        double y = coords.y;
+        double z = coords.z;
+	data_t S_azimuth = x * emtensor.Si[1] - y * emtensor.Si[0];
+	data_t r = coords.get_radius();
+	data_t S_r = -(x * emtensor.Si[0] + y * emtensor.Si[1] + z * emtensor.Si[2])/r;		
+	current_cell.store_vars(S_azimuth, c_S_azimuth);
+	current_cell.store_vars(S_r, c_S_r);
+     }
 
   protected:
     const matter_t m_matter;              //!< The matter object
     const FourthOrderDerivatives m_deriv; //!< An object for calculating derivatives of the variables
+    const std::array<double, CH_SPACEDIM> m_center; //!< The grid center
     const double m_dx;
 };
 

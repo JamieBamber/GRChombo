@@ -14,12 +14,12 @@
 #! Which project should be charged (NB Peta4-KNL projects end in '-KNL'):
 #SBATCH -A DIRAC-DP131-SL4-KNL
 #! How many whole nodes should be allocated?
-#SBATCH --nodes=32
+#SBATCH --nodes=1
 #! How many (MPI) tasks will there be in total? (<=nodes*256)
-#SBATCH --ntasks=256
-#SBATCH --ntasks-per-node=8
+#SBATCH --ntasks=128
+#SBATCH --ntasks-per-node=128
 #! How much wallclock time will be required?
-#SBATCH --time=12:00:00
+#SBATCH --time=0:20:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -60,7 +60,7 @@ module load intel/bundles/complib/2018.4
 module load hdf5-1.10.4-intel-17.0.4-swn7n43
 
 #! Full path to application executable: 
-application="/home/dc-bamb1/GRChombo/Examples/FixedKerrBGScalarField/Main_ScalarField3d.Linux.64.mpiicpc.ifort.OPTHIGH.MPI.OPENMPCC.KNL.Intel.ex"
+application="/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/Main_BinaryBH3d.Linux.64.mpiicpc.ifort.OPTHIGH.MPI.OPENMPCC.KNL.Intel.ex"
 
 #! Run options for the application:
 currentdir=$(pwd)
@@ -75,7 +75,7 @@ np=$[${numnodes}*${mpi_tasks_per_node}]
 
 #! Are you using OpenMP (NB this is unrelated to OpenMPI)? If so increase this
 #! safe value to no more than 256:
-export OMP_NUM_THREADS=8
+export OMP_NUM_THREADS=2
 
 #! The following variables define a sensible pinning strategy for Intel MPI tasks -
 #! this should be suitable for both pure MPI and hybrid MPI/OpenMP jobs:

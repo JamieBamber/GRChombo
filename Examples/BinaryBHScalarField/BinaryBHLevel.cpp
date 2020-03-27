@@ -6,7 +6,7 @@
 #include "BinaryBHLevel.hpp"
 #include "BinaryBH.hpp"
 #include "BoxLoops.hpp"
-#include "CCZ4.hpp"
+//#include "CCZ4.hpp"
 #include "ChiExtractionTaggingCriterion.hpp"
 #include "ChiPunctureExtractionTaggingCriterion.hpp"
 #include "ComputePack.hpp"
@@ -63,7 +63,7 @@ void BinaryBHLevel::initialData()
 
     // setup initial puncture coords for tracking
     // do puncture tracking, just set them once, so on level 0
-    if ((m_p.track_punctures == 1) && (m_level == 0))
+    if (m_p.track_punctures == 1 && m_level == 0)
     {
         const double coarsest_dt = m_p.coarsest_dx * m_p.dt_multiplier;
         PunctureTracker my_punctures(m_time, m_restart_time, coarsest_dt,
@@ -88,7 +88,7 @@ void BinaryBHLevel::initialData()
         pout() << "BinaryBHLevel::initialData() --> now start BoxLoop" << endl;
 
     BoxLoops::loop(make_compute_pack(SetValue(0.), binary, initial_sf), m_state_new,
-                   m_state_new, INCLUDE_GHOST_CELLS);
+                   m_state_new, FILL_GHOST_CELLS);
 
    // Check for nan's
    if (m_p.nan_check)
@@ -97,7 +97,6 @@ void BinaryBHLevel::initialData()
 
    if (m_verbosity)
    	pout() << "Done BinaryBHLevel::initialData()" << endl;
-
 }
 
 // Things to do after a restart
@@ -305,14 +304,14 @@ void BinaryBHLevel::prePlotLevel()
     }
 
     // Calculate and save ADM density rho 
-    ScalarPotential potential(m_p.potential_params);
+    /*ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
-                       scalar_field, m_dx),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);    
+                       scalar_field, m_dx, m_p.center),
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
 
     if (m_verbosity)
-    	pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
+    	pout() << "Done BinaryBHLevel::prePlotLevel() level = " << m_level << endl;
 }
 
 // Specify if you want any plot files to be written, with which vars
@@ -320,7 +319,7 @@ void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const
 {
     if (m_verbosity)
 	pout() << "starting BinaryBHLevel::specificWritePlotHeader()" << endl;
-    plot_states = {c_chi, c_phi, c_Weyl4_Re, c_Weyl4_Im};
+    plot_states = {c_chi, c_phi};
     if (m_verbosity)
 	pout() << "Done BinaryBHLevel::specificWritePlotHeader()" << endl;
 }
