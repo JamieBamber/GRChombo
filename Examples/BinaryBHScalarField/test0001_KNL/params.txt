@@ -4,10 +4,9 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 0
-nan_check = 0
-chk_prefix = DATADIR/BinaryBHSFChk_
-plot_prefix = DATADIR/BinaryBHSFPlot_
+verbosity = 5
+chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test0001_KNL/BinaryBHSFChk_
+plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test0001_KNL/BinaryBHSFPlot_
 #restart_file = BinaryBHChk_000000.3d.hdf5
 
 # Set up coarsest level number of grid points in each dir

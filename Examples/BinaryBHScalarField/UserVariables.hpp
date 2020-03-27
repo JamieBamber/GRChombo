@@ -48,6 +48,8 @@ enum
     c_Pi,
 
     c_rho,
+    c_S_azimuth,
+    c_S_r,
 
     c_Ham,
 
@@ -84,7 +86,7 @@ static constexpr char const *variable_names[NUM_VARS] = {
     
     "phi",      "Pi",
 
-    "rho",
+    "rho",	"S_azimuth",	"S_r",
 
     "Ham",
 
