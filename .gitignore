@@ -4,7 +4,6 @@ slurm_submit
 .bashrc
 *.pbs
 *.s
-<<<<<<< HEAD
 *.bolt
 *.e*
 *.o*
@@ -13,8 +12,6 @@ machine.file.*
 jobscript*
 *env
 core
-=======
->>>>>>> 67003420c8ea21661c1ba8d6e6dd6c8890bb85b4
 d
 o
 p

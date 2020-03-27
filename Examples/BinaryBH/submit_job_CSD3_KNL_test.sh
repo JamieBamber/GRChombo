@@ -5,16 +5,18 @@
 
 # this copy is for the KNL nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Examples/FixedKerrBGScalarField
+work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH
 cd $work_dir
 # data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
-run_number=1
+run_number=2
 
 params_file=params_test.txt
 
 # extract parameters from params.txt
 cd $work_dir
+G=$(grep "G_Newton" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
+mu=$(grep "scalar_mass" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
 
 text_number=$(printf "%04d" ${run_number})
 
