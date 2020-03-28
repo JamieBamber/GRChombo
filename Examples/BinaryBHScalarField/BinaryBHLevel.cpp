@@ -66,18 +66,16 @@ void BinaryBHLevel::initialData()
     // --> simple initial data
     // First set everything to zero (to avoid undefinded values in constraints)
     // then calculate initial data
-    BoxLoops::loop(make_compute_pack(SetValue(0.), binary), m_state_new,
+    /*BoxLoops::loop(make_compute_pack(SetValue(0.), binary), m_state_new,
                   m_state_new, INCLUDE_GHOST_CELLS);
     // Initial conditions for scalar field - constant amplitude
     BoxLoops::loop(SetValue(m_p.initial_params.field_amplitude, Interval(c_phi, c_phi)), m_state_new,
-                   m_state_new, FILL_GHOST_CELLS);
-
-    // ---> class based initial scalar field data
-    /*FlatScalar initial_sf(m_p.initial_params, m_dx);
-    BoxLoops::loop(make_compute_pack(SetValue(0.), binary, initial_sf), m_state_new,
                    m_state_new, FILL_GHOST_CELLS);*/
 
-   // Check for nan's
+    // ---> class based initial scalar field data
+    FlatScalar initial_sf(m_p.initial_params, m_dx);
+    BoxLoops::loop(make_compute_pack(SetValue(0.), binary, initial_sf), m_state_new,
+                   m_state_new, INCLUDE_GHOST_CELLS);
 }
 
 // Things to do after a restart
@@ -114,11 +112,6 @@ void BinaryBHLevel::preCheckpointLevel()
     BoxLoops::loop(MatterConstraints<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.G_Newton),
                    m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
-
-    // Check for nan's
-   if (m_p.nan_check)
-        BoxLoops::loop(NanCheck("NaNCheck in preCheckpointLevel: "), m_state_new,
-                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
 // Calculate RHS during RK4 substeps
@@ -140,7 +133,7 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
     	scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
     	m_p.G_Newton);
-    SetValue set_other_values_zero(0.0, Interval(c_Ham, c_Weyl4_Im));
+    SetValue set_other_values_zero(0.0, Interval(c_Ham, NUM_VARS - 1));
     BoxLoops::loop(
         make_compute_pack(my_ccz4_matter,set_other_values_zero),
         a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
@@ -170,7 +163,7 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
             m_bh_amr.get_puncture_coords();
         BoxLoops::loop(ChiPunctureExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
-                           puncture_coords, m_p.activate_extraction,
+                           puncture_coords, 1,
                            m_p.track_punctures, puncture_masses),
                        current_state, tagging_criterion);
     }
@@ -178,7 +171,7 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     {
         BoxLoops::loop(ChiExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
-                           m_p.activate_extraction),
+                           1),
                        current_state, tagging_criterion);
     }
 
@@ -239,11 +232,11 @@ void BinaryBHLevel::prePlotLevel()
     }
 
     // Calculate and save ADM density rho 
-    /*ScalarPotential potential(m_p.potential_params);
+    ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.center),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
 }
 
 // Specify if you want any plot files to be written, with which vars
@@ -251,6 +244,6 @@ void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const
 {
     if (m_verbosity)
 	pout() << "starting BinaryBHLevel::specificWritePlotHeader()" << endl;
-    plot_states = {c_chi, c_phi};
+    plot_states = {c_chi, c_phi, c_rho, c_S_azimuth, c_S_r};
 }
 
