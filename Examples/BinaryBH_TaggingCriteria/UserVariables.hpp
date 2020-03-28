@@ -53,6 +53,9 @@ enum
     c_Weyl4_Re,
     c_Weyl4_Im,
 
+    c_d1_chi,
+    c_d2_chi,
+
     NUM_VARS
 };
 
@@ -81,7 +84,9 @@ static constexpr char const *variable_names[NUM_VARS] = {
 
     "Mom1",     "Mom2",    "Mom3",
 
-    "Weyl4_Re", "Weyl4_Im"
+    "Weyl4_Re", "Weyl4_Im",
+
+    "d1_chi", "d2_chi"
     };
 }
 

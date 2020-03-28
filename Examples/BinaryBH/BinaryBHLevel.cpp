@@ -96,10 +96,10 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
 
     // Calculate CCZ4 right hand side and set constraints to zero to avoid
     // undefined values
-    BoxLoops::loop(
-        make_compute_pack(CCZ4(m_p.ccz4_params, m_dx, m_p.sigma),
-                          SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
-        a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+    BoxLoops::loop(make_compute_pack(
+                       CCZ4(m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation),
+                       SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
+                   a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
 }
 
 // enforce trace removal during RK4 substeps
@@ -130,7 +130,7 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     {
         BoxLoops::loop(ChiExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
-                           m_p.activate_extraction),
+                           1),
                        current_state, tagging_criterion);
     }
 }
@@ -189,5 +189,5 @@ void BinaryBHLevel::prePlotLevel()
 // Specify if you want any plot files to be written, with which vars
 void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const
 {
-    plot_states = {c_chi, c_Weyl4_Re, c_Weyl4_Im};
+    plot_states = {c_chi};
 }

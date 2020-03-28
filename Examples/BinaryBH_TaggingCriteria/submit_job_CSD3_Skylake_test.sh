@@ -5,7 +5,7 @@
 
 # this copy is for the KNL nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH
+work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH_TaggingCriteria
 cd $work_dir
 # data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
@@ -20,12 +20,12 @@ mu=$(grep "scalar_mass" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed
 
 text_number=$(printf "%04d" ${run_number})
 
-new_dir=test${text_number}_KNL
+new_dir=test${text_number}_Skylake
 echo ${new_dir}
 new_dir_path=${work_dir}/${new_dir}
 #
 mkdir -p ${new_dir_path}
-cp slurm_submit_KNL_test ${new_dir_path}/slurm_submit
+cp slurm_submit_Skylake_test ${new_dir_path}/slurm_submit
 cp ${params_file} ${new_dir_path}/params.txt
 
 cd ${new_dir_path}

@@ -5,8 +5,8 @@
 
 # location / naming of output files (must give full path)
 verbosity = 5
-chk_prefix = BinaryBHChk_
-plot_prefix = BinaryBHPlot_
+chk_prefix = DATADIR/BinaryBHChk_
+plot_prefix = DATADIR/BinaryBHPlot_
 #restart_file = BinaryBHChk_000000.3d.hdf5
 
 # Set up coarsest level number of grid points in each dir
@@ -25,7 +25,7 @@ L = 512
 
 # BH params, use puncture tracking to
 # ensure horizons resolved
-track_punctures = 1
+track_punctures = 0
 puncture_tracking_level = 5
 massA = 0.48847892320123
 offsetA = 0.0 6.10679 0.0
@@ -47,9 +47,9 @@ block_factor = 16
 # Set up time steps
 # dt will be dx*dt_multiplier on each grid level
 # HDF5files are written every dt = L/N*dt_multiplier*checkpoint_interval
-checkpoint_interval = 1000
+checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
-plot_interval = 1000
+plot_interval = 10
 dt_multiplier = 0.25
 stop_time = 2200.0
 
@@ -94,6 +94,7 @@ shift_Gamma_coeff = 0.75
 eta = 1.0
 
 # CCZ4 parameters
+# formulation = 0
 kappa1 = 0.1
 kappa2 = 0
 kappa3 = 1.0

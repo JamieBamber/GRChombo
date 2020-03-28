@@ -128,4 +128,3 @@ class ChiPunctureExtractionTaggingCriterion
 };
 
 #endif /* CHIPUNCTUREEXTRACTIONTAGGINGCRITERION_HPP_ */
-

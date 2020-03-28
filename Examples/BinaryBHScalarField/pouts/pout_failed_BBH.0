@@ -1,0 +1,2355 @@
+ number_procs = 128
+ threads = 2
+ simd width (doubles) = 8
+Parameter: center not found in parameter file. It has been set to its default value.
+Parameter: num_ghosts not found in parameter file. It has been set to its default value.
+Parameter: tag_buffer_size not found in parameter file. It has been set to its default value.
+Parameter: fill_ratio not found in parameter file. It has been set to its default value.
+You are using non periodic boundary conditions.
+The boundary params chosen are:  
+---------------------------------
+- Sommerfeld boundaries in direction high 0
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction low 0
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction high 1
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction low 1
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction high 2
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction low 2
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+---------------------------------
+Parameter: ignore_checkpoint_name_mismatch not found in parameter file. It has been set to its default value.
+Parameter: max_steps not found in parameter file. It has been set to its default value.
+Parameter: write_plot_ghosts not found in parameter file. It has been set to its default value.
+Parameter: formulation not found in parameter file. It has been set to its default value.
+Parameter: nan_check not found in parameter file. It has been set to its default value.
+Parameter: min_chi not found in parameter file. It has been set to its default value.
+Parameter: min_lapse not found in parameter file. It has been set to its default value.
+Parameter: extraction_center not found in parameter file. It has been set to its default value.
+Parameter: write_extraction not found in parameter file. It has been set to its default value.
+Parameter: centerA not found in parameter file. It has been set to its default value.
+Parameter: centerB not found in parameter file. It has been set to its default value.
+Parameter: center not found in parameter file. It has been set to its default value.
+Parameter: num_ghosts not found in parameter file. It has been set to its default value.
+Parameter: tag_buffer_size not found in parameter file. It has been set to its default value.
+Parameter: fill_ratio not found in parameter file. It has been set to its default value.
+You are using non periodic boundary conditions.
+The boundary params chosen are:  
+---------------------------------
+- Sommerfeld boundaries in direction high 0
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction low 0
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction high 1
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction low 1
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction high 2
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+- Sommerfeld boundaries in direction low 2
+The non zero asymptotic values of the variables in this direction are : 
+chi = 1    h11 = 1    h22 = 1    h33 = 1    lapse = 1    
+---------------------------------
+Parameter: ignore_checkpoint_name_mismatch not found in parameter file. It has been set to its default value.
+Parameter: max_steps not found in parameter file. It has been set to its default value.
+Parameter: write_plot_ghosts not found in parameter file. It has been set to its default value.
+GRAMRLevel constructor
+GRAMRLevel::define 0
+GRAMRLevel constructor
+GRAMRLevel::define 1
+GRAMRLevel constructor
+GRAMRLevel::define 2
+GRAMRLevel constructor
+GRAMRLevel::define 3
+GRAMRLevel constructor
+GRAMRLevel::define 4
+GRAMRLevel constructor
+GRAMRLevel::define 5
+GRAMRLevel constructor
+GRAMRLevel::define 6
+GRAMRLevel constructor
+GRAMRLevel::define 7
+GRAMRLevel constructor
+GRAMRLevel::define 8
+GRAMRLevel constructor
+GRAMRLevel::define 9
+ AMR::verbosity  m_verbosity=5
+AMR::setupForNewAMRRun
+AMR::initialGrid
+AMR::initialGrid: top level = 0
+GRAMRLevel::initialGrid 0
+GRAMRLevel::::loadBalance: procesor map: 
+0: 0  
+1: 1  
+2: 2  
+3: 3  
+4: 4  
+5: 5  
+6: 6  
+7: 7  
+8: 8  
+9: 9  
+10: 10  
+11: 11  
+12: 12  
+13: 13  
+14: 14  
+15: 15  
+16: 16  
+17: 17  
+18: 18  
+19: 19  
+20: 20  
+21: 21  
+22: 22  
+23: 23  
+24: 24  
+25: 25  
+26: 26  
+27: 27  
+28: 28  
+29: 29  
+30: 30  
+31: 31  
+32: 32  
+33: 33  
+34: 34  
+35: 35  
+36: 36  
+37: 37  
+38: 38  
+39: 39  
+40: 40  
+41: 41  
+42: 42  
+43: 43  
+44: 44  
+45: 45  
+46: 46  
+47: 47  
+48: 48  
+49: 49  
+50: 50  
+51: 51  
+52: 52  
+53: 53  
+54: 54  
+55: 55  
+56: 56  
+57: 57  
+58: 58  
+59: 59  
+60: 60  
+61: 61  
+62: 62  
+63: 63  
+
+BinaryBHLevel::initialData 0
+GRAMRLevel::tagCells 0
+GRAMRLevel::fillAllGhosts
+AMR::initialGrid: problem domain[0]: ((0,0,0) (63,63,63) (0,0,0)), 0 0 0
+AMR::initialGrid: old_grids[0]: 
+  0: ((0,0,0) (15,15,15) (0,0,0))
+  1: ((16,0,0) (31,15,15) (0,0,0))
+  2: ((32,0,0) (47,15,15) (0,0,0))
+  3: ((48,0,0) (63,15,15) (0,0,0))
+  4: ((0,16,0) (15,31,15) (0,0,0))
+  5: ((16,16,0) (31,31,15) (0,0,0))
+  6: ((32,16,0) (47,31,15) (0,0,0))
+  7: ((48,16,0) (63,31,15) (0,0,0))
+  8: ((0,32,0) (15,47,15) (0,0,0))
+  9: ((16,32,0) (31,47,15) (0,0,0))
+  10: ((32,32,0) (47,47,15) (0,0,0))
+  11: ((48,32,0) (63,47,15) (0,0,0))
+  12: ((0,48,0) (15,63,15) (0,0,0))
+  13: ((16,48,0) (31,63,15) (0,0,0))
+  14: ((32,48,0) (47,63,15) (0,0,0))
+  15: ((48,48,0) (63,63,15) (0,0,0))
+  16: ((0,0,16) (15,15,31) (0,0,0))
+  17: ((16,0,16) (31,15,31) (0,0,0))
+  18: ((32,0,16) (47,15,31) (0,0,0))
+  19: ((48,0,16) (63,15,31) (0,0,0))
+  20: ((0,16,16) (15,31,31) (0,0,0))
+  21: ((16,16,16) (31,31,31) (0,0,0))
+  22: ((32,16,16) (47,31,31) (0,0,0))
+  23: ((48,16,16) (63,31,31) (0,0,0))
+  24: ((0,32,16) (15,47,31) (0,0,0))
+  25: ((16,32,16) (31,47,31) (0,0,0))
+  26: ((32,32,16) (47,47,31) (0,0,0))
+  27: ((48,32,16) (63,47,31) (0,0,0))
+  28: ((0,48,16) (15,63,31) (0,0,0))
+  29: ((16,48,16) (31,63,31) (0,0,0))
+  30: ((32,48,16) (47,63,31) (0,0,0))
+  31: ((48,48,16) (63,63,31) (0,0,0))
+  32: ((0,0,32) (15,15,47) (0,0,0))
+  33: ((16,0,32) (31,15,47) (0,0,0))
+  34: ((32,0,32) (47,15,47) (0,0,0))
+  35: ((48,0,32) (63,15,47) (0,0,0))
+  36: ((0,16,32) (15,31,47) (0,0,0))
+  37: ((16,16,32) (31,31,47) (0,0,0))
+  38: ((32,16,32) (47,31,47) (0,0,0))
+  39: ((48,16,32) (63,31,47) (0,0,0))
+  40: ((0,32,32) (15,47,47) (0,0,0))
+  41: ((16,32,32) (31,47,47) (0,0,0))
+  42: ((32,32,32) (47,47,47) (0,0,0))
+  43: ((48,32,32) (63,47,47) (0,0,0))
+  44: ((0,48,32) (15,63,47) (0,0,0))
+  45: ((16,48,32) (31,63,47) (0,0,0))
+  46: ((32,48,32) (47,63,47) (0,0,0))
+  47: ((48,48,32) (63,63,47) (0,0,0))
+  48: ((0,0,48) (15,15,63) (0,0,0))
+  49: ((16,0,48) (31,15,63) (0,0,0))
+  50: ((32,0,48) (47,15,63) (0,0,0))
+  51: ((48,0,48) (63,15,63) (0,0,0))
+  52: ((0,16,48) (15,31,63) (0,0,0))
+  53: ((16,16,48) (31,31,63) (0,0,0))
+  54: ((32,16,48) (47,31,63) (0,0,0))
+  55: ((48,16,48) (63,31,63) (0,0,0))
+  56: ((0,32,48) (15,47,63) (0,0,0))
+  57: ((16,32,48) (31,47,63) (0,0,0))
+  58: ((32,32,48) (47,47,63) (0,0,0))
+  59: ((48,32,48) (63,47,63) (0,0,0))
+  60: ((0,48,48) (15,63,63) (0,0,0))
+  61: ((16,48,48) (31,63,63) (0,0,0))
+  62: ((32,48,48) (47,63,63) (0,0,0))
+  63: ((48,48,48) (63,63,63) (0,0,0))
+AMR::initialGrid: tags[0]: 
+new_grids[0]: 
+  0: ((0,0,0) (15,15,15) (0,0,0))
+  1: ((16,0,0) (31,15,15) (0,0,0))
+  2: ((32,0,0) (47,15,15) (0,0,0))
+  3: ((48,0,0) (63,15,15) (0,0,0))
+  4: ((0,16,0) (15,31,15) (0,0,0))
+  5: ((16,16,0) (31,31,15) (0,0,0))
+  6: ((32,16,0) (47,31,15) (0,0,0))
+  7: ((48,16,0) (63,31,15) (0,0,0))
+  8: ((0,32,0) (15,47,15) (0,0,0))
+  9: ((16,32,0) (31,47,15) (0,0,0))
+  10: ((32,32,0) (47,47,15) (0,0,0))
+  11: ((48,32,0) (63,47,15) (0,0,0))
+  12: ((0,48,0) (15,63,15) (0,0,0))
+  13: ((16,48,0) (31,63,15) (0,0,0))
+  14: ((32,48,0) (47,63,15) (0,0,0))
+  15: ((48,48,0) (63,63,15) (0,0,0))
+  16: ((0,0,16) (15,15,31) (0,0,0))
+  17: ((16,0,16) (31,15,31) (0,0,0))
+  18: ((32,0,16) (47,15,31) (0,0,0))
+  19: ((48,0,16) (63,15,31) (0,0,0))
+  20: ((0,16,16) (15,31,31) (0,0,0))
+  21: ((16,16,16) (31,31,31) (0,0,0))
+  22: ((32,16,16) (47,31,31) (0,0,0))
+  23: ((48,16,16) (63,31,31) (0,0,0))
+  24: ((0,32,16) (15,47,31) (0,0,0))
+  25: ((16,32,16) (31,47,31) (0,0,0))
+  26: ((32,32,16) (47,47,31) (0,0,0))
+  27: ((48,32,16) (63,47,31) (0,0,0))
+  28: ((0,48,16) (15,63,31) (0,0,0))
+  29: ((16,48,16) (31,63,31) (0,0,0))
+  30: ((32,48,16) (47,63,31) (0,0,0))
+  31: ((48,48,16) (63,63,31) (0,0,0))
+  32: ((0,0,32) (15,15,47) (0,0,0))
+  33: ((16,0,32) (31,15,47) (0,0,0))
+  34: ((32,0,32) (47,15,47) (0,0,0))
+  35: ((48,0,32) (63,15,47) (0,0,0))
+  36: ((0,16,32) (15,31,47) (0,0,0))
+  37: ((16,16,32) (31,31,47) (0,0,0))
+  38: ((32,16,32) (47,31,47) (0,0,0))
+  39: ((48,16,32) (63,31,47) (0,0,0))
+  40: ((0,32,32) (15,47,47) (0,0,0))
+  41: ((16,32,32) (31,47,47) (0,0,0))
+  42: ((32,32,32) (47,47,47) (0,0,0))
+  43: ((48,32,32) (63,47,47) (0,0,0))
+  44: ((0,48,32) (15,63,47) (0,0,0))
+  45: ((16,48,32) (31,63,47) (0,0,0))
+  46: ((32,48,32) (47,63,47) (0,0,0))
+  47: ((48,48,32) (63,63,47) (0,0,0))
+  48: ((0,0,48) (15,15,63) (0,0,0))
+  49: ((16,0,48) (31,15,63) (0,0,0))
+  50: ((32,0,48) (47,15,63) (0,0,0))
+  51: ((48,0,48) (63,15,63) (0,0,0))
+  52: ((0,16,48) (15,31,63) (0,0,0))
+  53: ((16,16,48) (31,31,63) (0,0,0))
+  54: ((32,16,48) (47,31,63) (0,0,0))
+  55: ((48,16,48) (63,31,63) (0,0,0))
+  56: ((0,32,48) (15,47,63) (0,0,0))
+  57: ((16,32,48) (31,47,63) (0,0,0))
+  58: ((32,32,48) (47,47,63) (0,0,0))
+  59: ((48,32,48) (63,47,63) (0,0,0))
+  60: ((0,48,48) (15,63,63) (0,0,0))
+  61: ((16,48,48) (31,63,63) (0,0,0))
+  62: ((32,48,48) (47,63,63) (0,0,0))
+  63: ((48,48,48) (63,63,63) (0,0,0))
+
+GRAMRLevel::initialGrid 0
+GRAMRLevel::::loadBalance: procesor map: 
+0: 0  
+1: 1  
+2: 2  
+3: 3  
+4: 4  
+5: 5  
+6: 6  
+7: 7  
+8: 8  
+9: 9  
+10: 10  
+11: 11  
+12: 12  
+13: 13  
+14: 14  
+15: 15  
+16: 16  
+17: 17  
+18: 18  
+19: 19  
+20: 20  
+21: 21  
+22: 22  
+23: 23  
+24: 24  
+25: 25  
+26: 26  
+27: 27  
+28: 28  
+29: 29  
+30: 30  
+31: 31  
+32: 32  
+33: 33  
+34: 34  
+35: 35  
+36: 36  
+37: 37  
+38: 38  
+39: 39  
+40: 40  
+41: 41  
+42: 42  
+43: 43  
+44: 44  
+45: 45  
+46: 46  
+47: 47  
+48: 48  
+49: 49  
+50: 50  
+51: 51  
+52: 52  
+53: 53  
+54: 54  
+55: 55  
+56: 56  
+57: 57  
+58: 58  
+59: 59  
+60: 60  
+61: 61  
+62: 62  
+63: 63  
+
+BinaryBHLevel::initialData 0
+GRAMRLevel::initialGrid 1
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 1
+GRAMRLevel::initialGrid 2
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 2
+GRAMRLevel::initialGrid 3
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 3
+GRAMRLevel::initialGrid 4
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 4
+GRAMRLevel::initialGrid 5
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 5
+GRAMRLevel::initialGrid 6
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 6
+GRAMRLevel::initialGrid 7
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 7
+GRAMRLevel::initialGrid 8
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 8
+GRAMRLevel::initialGrid 9
+GRAMRLevel::::loadBalance: procesor map: 
+
+BinaryBHLevel::initialData 9
+GRAMRLevel::computeInitialDt 0
+AMR::assignDt
+AMR::coarseTimeStep:
+max_time = 2200
+max_step = 1000000
+AMR::writeCheckpointFile
+checkpoint file name = /home/dc-bamb1/GRChombo/Examples/BinaryBH_old/test0001_KNL/BinaryBHChk_000000.3d.hdf5
+time :0
+iteration :0
+max_level :9
+num_levels :1
+regrid_interval_0 :0
+regrid_interval_1 :0
+regrid_interval_2 :0
+regrid_interval_3 :64
+regrid_interval_4 :64
+regrid_interval_5 :64
+regrid_interval_6 :64
+regrid_interval_7 :64
+regrid_interval_8 :64
+regrid_interval_9 :0
+steps_since_regrid_0 :0
+steps_since_regrid_1 :0
+steps_since_regrid_2 :0
+steps_since_regrid_3 :0
+steps_since_regrid_4 :0
+steps_since_regrid_5 :0
+steps_since_regrid_6 :0
+steps_since_regrid_7 :0
+steps_since_regrid_8 :0
+
+GRAMRLevel::writeCheckpointHeader
+num_components :31
+component_0 :chi
+component_1 :h11
+component_10 :A13
+component_11 :A22
+component_12 :A23
+component_13 :A33
+component_14 :Theta
+component_15 :Gamma1
+component_16 :Gamma2
+component_17 :Gamma3
+component_18 :lapse
+component_19 :shift1
+component_2 :h12
+component_20 :shift2
+component_21 :shift3
+component_22 :B1
+component_23 :B2
+component_24 :B3
+component_25 :Ham
+component_26 :Mom1
+component_27 :Mom2
+component_28 :Mom3
+component_29 :Weyl4_Re
+component_3 :h13
+component_30 :Weyl4_Im
+component_4 :h22
+component_5 :h23
+component_6 :h33
+component_7 :K
+component_8 :A11
+component_9 :A12
+
+GRAMRLevel::fillAllGhosts
+GRAMRLevel::writeCheckpointLevel
+dt :2
+dx :8
+time :0
+is_periodic_0 :0
+is_periodic_1 :0
+is_periodic_2 :0
+ref_ratio :2
+tag_buffer_size :3
+prob_domain :((0,0,0) (63,63,63) (0,0,0))
+
+AMR::writePlotFile
+plot file name = /home/dc-bamb1/GRChombo/Examples/BinaryBH_old/test0001_KNL/BinaryBHPlot_000000.3d.hdf5
+time :0
+iteration :0
+max_level :9
+num_levels :1
+
+GRAMRLevel::writePlotHeader
+num_components :3
+component_0 :chi
+component_1 :Weyl4_Re
+component_2 :Weyl4_Im
+
+GRAMRLevel::fillAllGhosts
+GRAMRLevel::writePlotLevel
+dt :2
+dx :8
+time :0
+is_periodic_0 :0
+is_periodic_1 :0
+is_periodic_2 :0
+ref_ratio :2
+tag_buffer_size :3
+prob_domain :((0,0,0) (63,63,63) (0,0,0))
+
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 0 (0 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   0  old time = 0.000000e+00  old dt = 2.000000e+00  wallclocktime = 3.44e+00
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 2 (619.297 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   1  old time = 2.000000e+00  old dt = 2.000000e+00  wallclocktime = 4.07e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 4 (1196.66 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   2  old time = 4.000000e+00  old dt = 2.000000e+00  wallclocktime = 4.12e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 6 (1735.63 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   3  old time = 6.000000e+00  old dt = 2.000000e+00  wallclocktime = 4.08e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 8 (2240.72 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   4  old time = 8.000000e+00  old dt = 2.000000e+00  wallclocktime = 4.09e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 10 (2714.57 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   5  old time = 1.000000e+01  old dt = 2.000000e+00  wallclocktime = 4.06e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 12 (3160.66 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   6  old time = 1.200000e+01  old dt = 2.000000e+00  wallclocktime = 4.12e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 14 (3579.57 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   7  old time = 1.400000e+01  old dt = 2.000000e+00  wallclocktime = 4.11e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 16 (3974.81 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   8  old time = 1.600000e+01  old dt = 2.000000e+00  wallclocktime = 4.00e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 18 (4351.66 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step   9  old time = 1.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.51e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 20 (4723.65 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  10  old time = 2.000000e+01  old dt = 2.000000e+00  wallclocktime = 3.40e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 22 (5082.56 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  11  old time = 2.200000e+01  old dt = 2.000000e+00  wallclocktime = 3.55e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 24 (5421.02 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  12  old time = 2.400000e+01  old dt = 2.000000e+00  wallclocktime = 3.42e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 26 (5749.33 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  13  old time = 2.600000e+01  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 28 (6065.75 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  14  old time = 2.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.35e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 30 (6370.45 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  15  old time = 3.000000e+01  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 32 (6662.41 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  16  old time = 3.200000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 34 (6943.51 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  17  old time = 3.400000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 36 (7214.14 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  18  old time = 3.600000e+01  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 38 (7474.32 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  19  old time = 3.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 40 (7725.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  20  old time = 4.000000e+01  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 42 (7967.71 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  21  old time = 4.200000e+01  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 44 (8201.21 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  22  old time = 4.400000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 46 (8426.83 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  23  old time = 4.600000e+01  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 48 (8645.25 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  24  old time = 4.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.56e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 50 (8847.61 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  25  old time = 5.000000e+01  old dt = 2.000000e+00  wallclocktime = 3.34e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 52 (9052.97 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  26  old time = 5.200000e+01  old dt = 2.000000e+00  wallclocktime = 4.79e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 54 (9188.06 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  27  old time = 5.400000e+01  old dt = 2.000000e+00  wallclocktime = 3.81e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 56 (9359.58 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  28  old time = 5.600000e+01  old dt = 2.000000e+00  wallclocktime = 3.39e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 58 (9543.74 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  29  old time = 5.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 60 (9723.47 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  30  old time = 6.000000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 62 (9897.26 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  31  old time = 6.200000e+01  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 64 (10066.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  32  old time = 6.400000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 66 (10230.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  33  old time = 6.600000e+01  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 68 (10390 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  34  old time = 6.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 70 (10544.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  35  old time = 7.000000e+01  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 72 (10694.8 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  36  old time = 7.200000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 74 (10841.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  37  old time = 7.400000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 76 (10983.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  38  old time = 7.600000e+01  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 78 (11122.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  39  old time = 7.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 80 (11257 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  40  old time = 8.000000e+01  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 82 (11388.9 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  41  old time = 8.200000e+01  old dt = 2.000000e+00  wallclocktime = 3.45e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 84 (11513.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  42  old time = 8.400000e+01  old dt = 2.000000e+00  wallclocktime = 3.33e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 86 (11639.8 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  43  old time = 8.600000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 88 (11761.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  44  old time = 8.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 90 (11880.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  45  old time = 9.000000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 92 (11996 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  46  old time = 9.200000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 94 (12108.9 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  47  old time = 9.400000e+01  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 96 (12218.8 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  48  old time = 9.600000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 98 (12326.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  49  old time = 9.800000e+01  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 100 (12431.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  50  old time = 1.000000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 102 (12533.9 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  51  old time = 1.020000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 104 (12634.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  52  old time = 1.040000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 106 (12732.8 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  53  old time = 1.060000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 108 (12828.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  54  old time = 1.080000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 110 (12922.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  55  old time = 1.100000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 112 (13014.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  56  old time = 1.120000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 114 (13104.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  57  old time = 1.140000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 116 (13192.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  58  old time = 1.160000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 118 (13278.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  59  old time = 1.180000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 120 (13362.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  60  old time = 1.200000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 122 (13445.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  61  old time = 1.220000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 124 (13526.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  62  old time = 1.240000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 126 (13604.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  63  old time = 1.260000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 128 (13682.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  64  old time = 1.280000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 130 (13758.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  65  old time = 1.300000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 132 (13833.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  66  old time = 1.320000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 134 (13906.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  67  old time = 1.340000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 136 (13977.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  68  old time = 1.360000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 138 (14048 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  69  old time = 1.380000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 140 (14117.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  70  old time = 1.400000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 142 (14185.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  71  old time = 1.420000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 144 (14252 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  72  old time = 1.440000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 146 (14317.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  73  old time = 1.460000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 148 (14381.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  74  old time = 1.480000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 150 (14444 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  75  old time = 1.500000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 152 (14505.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  76  old time = 1.520000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 154 (14566.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  77  old time = 1.540000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 156 (14625.9 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  78  old time = 1.560000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 158 (14684.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  79  old time = 1.580000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 160 (14741.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  80  old time = 1.600000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 162 (14798.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  81  old time = 1.620000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 164 (14853.8 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  82  old time = 1.640000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 166 (14908.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  83  old time = 1.660000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 168 (14962 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  84  old time = 1.680000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 170 (15014.8 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  85  old time = 1.700000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 172 (15067 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  86  old time = 1.720000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 174 (15118.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  87  old time = 1.740000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 176 (15168.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  88  old time = 1.760000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 178 (15218.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  89  old time = 1.780000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 180 (15267.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  90  old time = 1.800000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 182 (15314.9 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  91  old time = 1.820000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 184 (15362.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  92  old time = 1.840000e+02  old dt = 2.000000e+00  wallclocktime = 3.56e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 186 (15402 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  93  old time = 1.860000e+02  old dt = 2.000000e+00  wallclocktime = 3.33e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 188 (15449.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  94  old time = 1.880000e+02  old dt = 2.000000e+00  wallclocktime = 3.35e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 190 (15495.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  95  old time = 1.900000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 192 (15539.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  96  old time = 1.920000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 194 (15582.8 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  97  old time = 1.940000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 196 (15626.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  98  old time = 1.960000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 198 (15668.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step  99  old time = 1.980000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 200 (15710.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 100  old time = 2.000000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 202 (15751.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 101  old time = 2.020000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 204 (15792.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 102  old time = 2.040000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 206 (15832 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 103  old time = 2.060000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 208 (15871.9 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 104  old time = 2.080000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 210 (15910.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 105  old time = 2.100000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 212 (15949.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 106  old time = 2.120000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 214 (15986.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 107  old time = 2.140000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 216 (16024.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 108  old time = 2.160000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 218 (16061.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 109  old time = 2.180000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 220 (16097.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 110  old time = 2.200000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 222 (16133.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 111  old time = 2.220000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 224 (16168.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 112  old time = 2.240000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 226 (16203.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 113  old time = 2.260000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 228 (16238.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 114  old time = 2.280000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 230 (16271.8 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 115  old time = 2.300000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 232 (16305.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 116  old time = 2.320000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 234 (16338.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 117  old time = 2.340000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 236 (16371 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 118  old time = 2.360000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 238 (16403.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 119  old time = 2.380000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 240 (16435.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 120  old time = 2.400000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 242 (16466.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 121  old time = 2.420000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 244 (16497.9 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 122  old time = 2.440000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 246 (16528.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 123  old time = 2.460000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 248 (16558.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 124  old time = 2.480000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 250 (16588.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 125  old time = 2.500000e+02  old dt = 2.000000e+00  wallclocktime = 3.35e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 252 (16618.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 126  old time = 2.520000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 254 (16647.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 127  old time = 2.540000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 256 (16676.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 128  old time = 2.560000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 258 (16704.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 129  old time = 2.580000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 260 (16732.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 130  old time = 2.600000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 262 (16760.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 131  old time = 2.620000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 264 (16788.2 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 132  old time = 2.640000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 266 (16815.1 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 133  old time = 2.660000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 268 (16841.9 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 134  old time = 2.680000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 270 (16868.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 135  old time = 2.700000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 272 (16894.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 136  old time = 2.720000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 274 (16920 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 137  old time = 2.740000e+02  old dt = 2.000000e+00  wallclocktime = 3.38e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 276 (16945.3 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 138  old time = 2.760000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 278 (16970.5 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 139  old time = 2.780000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 280 (16995.6 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 140  old time = 2.800000e+02  old dt = 2.000000e+00  wallclocktime = 3.36e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 282 (17020.4 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::computeDt 0
+GRAMRLevel::postTimeStep 0
+GRAMRLevel::postTimeStep 0 finished
+AMR::assignDt
+coarse time step 141  old time = 2.820000e+02  old dt = 2.000000e+00  wallclocktime = 3.37e-01
+AMR::timeStep(0)
+Regrid (level 0) needed - AMR::needToRegrid(0)
+no
+GRAMRLevel::advance level 0 at time 284 (17044.7 M/hr). Boxes on this rank: 1.
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS
+GRAMRLevel::evalRHS

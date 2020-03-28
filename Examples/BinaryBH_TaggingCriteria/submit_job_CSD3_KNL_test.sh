@@ -5,7 +5,7 @@
 
 # this copy is for the KNL nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH
+work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH_TaggingCriteria
 cd $work_dir
 # data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
