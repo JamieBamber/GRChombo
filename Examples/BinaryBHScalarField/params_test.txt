@@ -5,10 +5,10 @@
 
 # location / naming of output files (must give full path)
 verbosity = 5
+nan_check = 1
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
-#restart_file = BinaryBHChk_000000.3d.hdf5
-nan_check = 1
+#restart_file = DATADIR/BinaryBHChk_000000.3d.hdf5
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
@@ -89,8 +89,11 @@ block_factor = 16
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
 plot_interval = 5
-dt_multiplier = 0.25
+dt_multiplier = 0.25 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 1200.0
+## dt_actual = 8*dt_multiplier = 2
+## 2*pi / scalar_mass =~ 6 / 0.4 = 15
+## 1 / scalar_mass = 2.5
 
 # Lapse evolution
 lapse_advec_coeff = 1.0
@@ -115,7 +118,7 @@ sigma = 1.0
 # extraction params
 # default of extraction_center is center, uncomment to change
 extraction_center = 256 256 0
-activate_extraction = 1
+activate_extraction = 0 # this needs to be 1 otherwise it breaks.
 write_extraction = 0
 num_extraction_radii = 2
 extraction_radii = 50.0 100.0
@@ -126,7 +129,6 @@ num_modes = 1
 modes = 2 0 # l m for spherical harmonics
         2 1
         2 2
-        
         #4 0
         #4 1
         #4 2

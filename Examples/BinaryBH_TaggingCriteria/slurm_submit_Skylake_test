@@ -65,7 +65,7 @@ application="/home/dc-bamb1/GRChombo/Examples/BinaryBH_TaggingCriteria/Main_Bina
 
 #! Run options for the application:
 currentdir=$(pwd)
-options="${currentdir}/params.txt"
+options="${currentdir}/../params.txt"
 
 #! Work directory (i.e. where the job will run):
 workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory

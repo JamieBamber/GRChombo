@@ -36,10 +36,6 @@ class FlatScalar
   protected:
     double m_dx;
     const params_t m_params; //!< The matter initial condition params
-
-    //! Function to compute the value of phi at each point
-    template <class data_t>
-    data_t compute_phi(Coordinates<data_t> coords) const;
 };
 
 #include "FlatScalar.impl.hpp"

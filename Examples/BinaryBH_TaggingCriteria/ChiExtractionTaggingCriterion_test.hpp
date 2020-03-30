@@ -57,19 +57,21 @@ class ChiExtractionTaggingCriterion
         {
             mod_d2_chi += d2.chi[idir][jdir] * d2.chi[idir][jdir];
         }
-        data_t criterion = m_dx * sqrt(mod_d2_chi);
+	data_t criterion = m_dx * sqrt(mod_d2_chi);
+        pout() << "d2_chi criterion = " << criterion << endl;
 
 	// store initial tagging criterion
 	current_cell.store_vars(criterion, c_d2_chi);
 
 	// d1_chi criterion
-	auto chi = current_cell.load_vars(c_chi);
-	Tensor<1, data_t> d1_chi;
-        FOR1(idir) m_deriv.diff1(d1_chi, current_cell, idir, c_chi);
+	/*auto chi = current_cell.load_vars(c_chi);
+	pout() << "chi = " << chi << endl;
+	const auto d1 = m_deriv.template diff1<Vars>(current_cell);
         data_t mod_d1_chi = 0;
-        FOR1(idir) mod_d1_chi += d1_chi[idir] * d1_chi[idir];
+        FOR1(idir) mod_d1_chi += d1.chi[idir] * d1.chi[idir];
         data_t d1_chi_criterion = m_dx * sqrt(mod_d1_chi) / pow(chi, 2);
-	current_cell.store_vars(d1_chi_criterion, c_d1_chi);
+	pout() << "d1_chi criterion = " << d1_chi_criterion << endl;*/
+	current_cell.store_vars(criterion*0, c_d1_chi);
 
         // if extracting weyl data at a given radius, enforce a given resolution
         // there
