@@ -32,7 +32,9 @@ cd ${new_dir_path}
 # add the location of the new directory to the input files
 sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
 # 
-sbatch slurm_submit
+mkdir -p outputs
+cd outputs
+sbatch ../slurm_submit
 #
 cd ${work_dir}
 

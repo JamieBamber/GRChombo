@@ -1,15 +1,15 @@
-#!/bin/bash
+#!OA/bin/bash
 #
 # This script should make a new directory in ~/GRChombo_data for the data, and copy the slurm_submit file, params.txt file and output files to
 # that directory, submit the job, then change back to the working directory
 
 # this copy is for the KNL nodes
-
+OA
 work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField
 cd $work_dir
 data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
-run_number=2
+run_number=1
 
 params_file=params_test.txt
 

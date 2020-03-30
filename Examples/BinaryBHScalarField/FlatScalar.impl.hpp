@@ -19,27 +19,16 @@ inline FlatScalar::FlatScalar(params_t a_params, double a_dx)
 template <class data_t>
 void FlatScalar::compute(Cell<data_t> current_cell) const
 {
-    MatterCCZ4<ScalarField<>>::Vars<data_t> vars;
-    VarsTools::assign(vars, 0.); // Set only the non-zero components below
+    // get coordinates
     Coordinates<data_t> coords(current_cell, m_dx);
 
-    // set the field vars
-    vars.phi = m_params.field_amplitude; // uniform phi field
-    vars.Pi = 0;
-
-    // start with unit lapse and flat metric (must be relaxed for chi)
-    vars.lapse = 1;
-    vars.chi = 1;
-
-    // conformal metric is flat
-    FOR1(i) vars.h[i][i] = 1.;
-
-    // Store the initial values of the variables
-    current_cell.store_vars(vars);
+    // store phi and Pi
+    current_cell.store_vars(m_params.field_amplitude, c_phi);
+    // current_cell.store_vars(0, c_Pi);
 }
 
 // Compute the value of phi at the current point
-template <class data_t>
+/*template <class data_t>
 data_t FlatScalar::compute_phi(Coordinates<data_t> coords) const
 {
     //data_t rr = coords.get_radius();
@@ -49,5 +38,5 @@ data_t FlatScalar::compute_phi(Coordinates<data_t> coords) const
 
     return m_params.field_amplitude;
 }
-
+*/
 #endif /* FLATSCALAR_IMPL_HPP_ */

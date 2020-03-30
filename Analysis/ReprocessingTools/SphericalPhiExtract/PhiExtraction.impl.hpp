@@ -57,7 +57,7 @@ inline void PhiExtraction::execute_query(
     // submit the query
     a_interpolator->interp(query);
 
-    auto integral = integrate_surface(0, interp_re_part);
+    auto integral = integrate_surface(interp_re_part);
     std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] + 
     "_phi_integral.dat";
     write_integral(integral, integral_filename);
@@ -72,8 +72,7 @@ inline void PhiExtraction::execute_query(
 //! integrate over a spherical shell with given harmonics for each integration
 //! radius and normalise by multiplying by radius
 inline std::vector<double>
-PhiExtraction::integrate_surface(int es, int el, int em,
-                                  const std::vector<double> a_re_part) const
+PhiExtraction::integrate_surface(const std::vector<double> a_re_part) const
 {
     CH_TIME("PhiExtraction::integrate_surface");
     int rank;
@@ -83,7 +82,6 @@ PhiExtraction::integrate_surface(int es, int el, int em,
     	rank = 0;
     #endif
     std::vector<double> integral(m_params.num_integration_radii, 0.);
-    std::vector<double> integral_re(m_params.num_integration_radii, 0.);
 
     const int num_phi_points = m_params.num_points_phi;
 
@@ -103,7 +101,7 @@ PhiExtraction::integrate_surface(int es, int el, int em,
 			#define OPENMP_CONST_SHARED
 		#endif
 		#pragma omp parallel for collapse(1) default(none)                             \
-    				shared(es, el, em, integral, integral_re, integral_im) OPENMP_CONST_SHARED
+    				shared(integral) OPENMP_CONST_SHARED
 		#undef OPENMP_CONST_SHARED
 	#endif
 	for (int iradius = 0; iradius < m_params.num_integration_radii;
@@ -116,7 +114,6 @@ PhiExtraction::integrate_surface(int es, int el, int em,
                 for (int itheta = 0; itheta < m_params.num_points_theta;
                      itheta++)
                 {
-                    using namespace SphericalHarmonics;
                     double theta = (itheta + 0.5) * m_dtheta;
                     int idx = iradius * m_num_points +
                               itheta * m_params.num_points_phi + iphi;
@@ -129,13 +126,9 @@ PhiExtraction::integrate_surface(int es, int el, int em,
 		#ifdef _OPENMP
 			#pragma omp atomic
 		#endif
-       	        integral_re[iradius] += m_dphi * inner_integral_re;
-		#ifdef _OPENMP
-			#pragma omp atomic
-		#endif
+       	        integral[iradius] += m_dphi * inner_integral_re;
 		//! inner_re = Sum [ r * Re{a_[idx]} * dphi * sin(theta) * dtheta ]
             }
-	    integral[iradius] = integral_re[iradius];
         }
     }
     return integral;
@@ -160,8 +153,7 @@ PhiExtraction::write_integral(const std::vector<double> a_integral,
     {
 	pout() << "making headers ... " << std::endl;
         // make header strings
-        std::vector<std::string> headers = {
-	"r = ..."}
+        std::vector<std::string> headers = {"r = ..."};
 	integral_file.write_header_line(headers, "t");
 
 	// write out radii
