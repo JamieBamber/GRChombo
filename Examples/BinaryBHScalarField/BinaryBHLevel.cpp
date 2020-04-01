@@ -233,11 +233,11 @@ void BinaryBHLevel::prePlotLevel()
     }
 
     // Calculate and save ADM density rho 
-    ScalarPotential potential(m_p.potential_params);
+    /*ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.center),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
 }
 
 // Specify if you want any plot files to be written, with which vars

@@ -13,63 +13,55 @@ from os import makedirs
 yt.enable_parallelism()
 
 class data_dir:
-	def __init__(self, num, l, m, a):
+	def __init__(self, num, l, m, a, mu):
 		self.num = num
 		self.l = l
 		self.m = m
 		self.a = float(a)
-		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu0.4_M1_correct_Ylm".format(num, l, m, a)
+		self.mu = mu
+		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu{:s}_M1_correct_Ylm_new_rho".format(num, l, m, a, mu)
 	filename = ""
 		
-
-def add_data_dir(list, num, l, m, a):
-	x = data_dir(num, l, m, a)
+def add_data_dir(list, num, l, m, a, mu):
+	x = data_dir(num, l, m, a, mu)
 	list.append(x)
 
 data_dirs = []
 # choose datasets to compare
-"""add_data_dir(data_dirs, 31, 0, 0, "0")
-add_data_dir(data_dirs, 28, 0, 0, "0.7")
-add_data_dir(data_dirs, 29, 0, 0, "0.99")
-add_data_dir(data_dirs, 32, 1, 1, "0")"""
-add_data_dir(data_dirs, 37, 1, 1, "0.99")
-"""add_data_dir(data_dirs, 49, 1, -1, "0.99")
-add_data_dir(data_dirs, 42, 5, 1, "0.7")
-add_data_dir(data_dirs, 40, 10, 1, "0.7")
-add_data_dir(data_dirs, 47, 2, 2, "0.99")
-add_data_dir(data_dirs, 46, 2, 2, "0")
-add_data_dir(data_dirs, 50, 2, -2, "0.99")
-#add_data_dir(data_dirs, 55, 7, 1, "0.7")
-#add_data_dir(data_dirs, 56, 2 1, "0.7")"""
+add_data_dir(data_dirs, 59, 1, 1, "0.7", "0.05")
+add_data_dir(data_dirs, 39, 1, 1, "0.7", "0.4")
+add_data_dir(data_dirs, 61, 1, 1, "0.7", "1")
+add_data_dir(data_dirs, 60, 1, 1, "0.7", "2")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
-max_radius = 450
 M = 1
+max_radius = 450
 
-output_dir = "data/compare_alm_mass"
+output_dir = "data/compare_mu_mass"
 
 half_box = True
 
 change_in_E = True
-modified_rho = True
 	
 """@derived_field(name = "rho_J_eff", units = "")
 def _rho_J_eff(field, data):
        	return data["S_azimuth"]*pow(data["chi"],-3)"""
 
+rho_v1_yes_no = False
+
 def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
 	a = dd.a	
 	r_plus = M*(1 + math.sqrt(1 - a**2))
-	min_radius = r_plus
+	min_radius = r_plus/4
 
 	start_time = time.time()
 	
 	# load dataset time series
 	
-	if modified_rho:
+	if rho_v1_yes_no:
 		# derived fields
 		@derived_field(name = "rho_E_eff", units = "")
 		def _rho_E_eff(field, data):
@@ -79,9 +71,9 @@ def calculate_mass_in_sphere(dd):
 			A = (r_BL**2 + (a*M)**2)**2 - ((a*M)**2)*Delta*(data["x"]**2 + data["y"]**2)/((cm**2)*r_BL)
 			alpha = pow(Delta*Sigma2/A, 0.5)
 			beta = 2*a*(M**2)*r_BL/A 
-			return (data["rho"]*alpha - beta*data["S_azimuth"])*pow(data["chi"],-3)
+			return (data["rho"]*alpha + beta*data["S_azimuth"])*pow(data["chi"],-3)
 
-	elif not modified_rho:
+	elif not rho_v1_yes_no:
 		# derived fields
         	@derived_field(name = "rho_E_eff", units = "")
         	def _rho_E_eff(field, data):
@@ -130,7 +122,7 @@ def calculate_mass_in_sphere(dd):
 		# make data directory if it does not already exist
 		makedirs(home_path + output_dir, exist_ok=True)
 		# output to file
-		dd.filename = "l={:d}_m={:d}_a={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), max_radius)
+		dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		f = open(output_path, "w+")
@@ -146,39 +138,38 @@ def calculate_mass_in_sphere(dd):
 def load_data():
 	# load data from csv files
 	data = {}
-	old_data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mass_in_r={:d}.csv".format(dd.l, dd.m, str(dd.a), max_radius)
+		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded data for " + dd.name)
 	return data 	
 
 def plot_graph():
-	old_data, data = load_data()
-	colours = ['r--', 'r-.', 'r-', 'b--', 'b-', 'c-', 'm-', 'k-', 'g-', 'g--', 'y-'] 
+	data = load_data()
+	colours = ['r-', 'b-', 'g-', 'm-']
 	i = 0
 	for dd in data_dirs:
 		line_data = data[dd.num]
 		t = line_data[:,0]
 		mass = line_data[:,1] #- line_data[0,1]
-		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
+		label_ = "l={:d} m={:d} a={:s} mu={:s}".format(dd.l, dd.m, str(dd.a), dd.mu)
 		if change_in_E:
-			plt.plot(t[1:], line_data[1:,1] - line_data[0,1], colours[i], label=label_)
+			plt.plot(t[1:], (line_data[1:,1] - line_data[0,1])/(float(dd.mu)**2), colours[i], label=label_)
 		else:
 			plt.plot(t, mass, colours[i], label=label_)
 		i = i + 1
 	plt.xlabel("time")
 	if change_in_E:
-		plt.ylabel("$\\Delta E$ in $r < $" + str(max_radius))
+		plt.ylabel("$\\Delta E / \mu^2$ in $r < $" + str(max_radius))
 	else:
 		plt.ylabel("$E$ in $r < $" + str(max_radius))
 	plt.legend(loc='upper left', fontsize=8)
-	plt.title("scalar field energy inside a sphere vs time, $M=1, \\mu=0.4$")
+	plt.title("scalar field energy inside a sphere vs time, $M=1$, different $\\mu$")
 	plt.tight_layout()
 	if change_in_E:
-		save_path = home_path + "plots/delta_mass_in_sphere_compare_alm_radius_" + str(max_radius) + ".png"
+		save_path = home_path + "plots/delta_mass_in_sphere_compare_mu_radius_" + str(max_radius) + ".png"
 	else:
-		save_path = home_path + "plots/mass_in_sphere_compare_alm_radius_" + str(max_radius) + ".png"
+		save_path = home_path + "plots/mass_in_sphere_compare_mu_radius_" + str(max_radius) + ".png"
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
 	plt.clf()

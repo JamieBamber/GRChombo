@@ -43,16 +43,31 @@ class SimulationParameters : public SimulationParametersBase
         // an offset (not both, or they will be offset from center
         // provided)
         std::array<double, CH_SPACEDIM> offsetA, offsetB;
-        std::array<double, CH_SPACEDIM> centerA, centerB;
         pp.load("offsetA", offsetA, {0.0, 0.0, 0.0});
         pp.load("offsetB", offsetB, {0.0, 0.0, 0.0});
+
+	// scale to achieve desired seperation
+	double base_seperation_squared = 0;
+	FOR1(idir){
+	base_seperation += pow((offsetA[idir]-offsetB[idir]),2); 
+	}
+	double base_seperation = sqrt(base_seperation_squared);
+	double desired_sep;
+	pp.load("desired_seperation", desired_sep);
+	double scaling = desired_sep/base_seperation;
+	
+        std::array<double, CH_SPACEDIM> centerA, centerB;
         pp.load("centerA", centerA, center);
         pp.load("centerB", centerB, center);
         FOR1(idir)
         {
-            bh1_params.center[idir] = centerA[idir] + offsetA[idir];
-            bh2_params.center[idir] = centerB[idir] + offsetB[idir];
+            bh1_params.center[idir] = centerA[idir] + scaling*offsetA[idir];
+            bh2_params.center[idir] = centerB[idir] + scaling*offsetB[idir];
+            bh1_params.momentum[idir] = scaling*bh1_params.momentum[idir];
+            bh2_params.momentum[idir] = scaling*bh2_params.momentum[idir];
 	}
+	bh1_params.mass = scaling*bh1_params.mass;
+	bh2_params.mass = scaling*bh2_params.mass;
 
         // Do we want Weyl extraction and puncture tracking?
         pp.load("activate_extraction", activate_extraction, false);

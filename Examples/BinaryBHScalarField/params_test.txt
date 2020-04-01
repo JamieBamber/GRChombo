@@ -92,8 +92,8 @@ plot_interval = 5
 dt_multiplier = 0.25 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 1200.0
 ## dt_actual = 8*dt_multiplier = 2
-## 2*pi / scalar_mass =~ 6 / 0.4 = 15
-## 1 / scalar_mass = 2.5
+## 2*pi / mu =~ 6 / 0.4 = 15
+## 1 / mu = 2.5
 
 # Lapse evolution
 lapse_advec_coeff = 1.0
