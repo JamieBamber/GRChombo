@@ -15,7 +15,7 @@ data_subdir = run0022_KNL_l0_m0_a0_Al0_mu1_M1_new_rho_more_levels
 output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/SphericalPhiData
 
 # Files parameters
-# chk_prefix = KerrSF_
+chk_prefix = KerrSF_
 plot_prefix = KerrSFp_
 # restart_file = KerrSFp_000000.3d.hdf5
 plot_interval = 5
