@@ -13,9 +13,9 @@ yt.enable_parallelism()
 
 start_time = time.time()
 
-m_dirs = {}
-m_dirs["-3"] = "run10_KNL_l0_m-3_a0.99_Al0_M1"
-m_dirs["-2"] = "run7_KNL_l0_m-2_a0.99_Al0_M1"
+dirs = {}
+dirs["Isotropic Kerr"] = "run10_KNL_l0_m-3_a0.99_Al0_M1"
+m_dirs["Kerr Schild"] = "run7_KNL_l0_m-2_a0.99_Al0_M1"
 m_dirs["-1"] = "run1_KNL_l0_m-1_a0.99_Al0_M1"
 m_dirs["0"] = "run2.2_KNL_l0_m0_a0.99_Al0"
 m_dirs["1"] = "run5_KNL_l0_m1_a0.99_Al0_M1"

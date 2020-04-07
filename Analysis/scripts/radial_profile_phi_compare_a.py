@@ -44,22 +44,6 @@ omega = 0.4
 def true_radial_phi(r_BL, C1, C2):
 	sol1 = ctypes.CDLL('~/GRChombo/Source/utils/KerrBH_Rfunc_lib.so').Rfunc(r_BL, True)
 	sol1 = ctypes.CDLL('~/GRChombo/Source/utils/KerrBH_Rfunc_lib.so').Rfunc(r_BL, True)
-### 
-# try making smoothed interpolated radial profile using scipy interpolaters
-"""def make_smoothed_profile(key, number):
-	# load dataset 
-	data_sub_dir = a_dirs[key]
-	dsi = yt.load(data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(number))
-	print("loaded dataset number " + str(number) + " for " + data_sub_dir) 
-	# make slice 	
-	slice = dsi.r[:,:,z_position]
-	slice.set_field_parameter("center", center)
-	# get 1D data
-	cyl_r = slice['index', 'cylindrical_radius']
-	print("cyl_r.shape", cylindrical_radius.shape)
-	phi = slice['chombo', 'phi']	
-	print("phi.shape", phi.shape)
-	phi_fit = interp1d(cyl_r, phi"""
 
 #make_smoothed_profile(a_list[0], 20)
 #sys.exit()
@@ -72,7 +56,7 @@ def _weighting_field(field, data):
 
 def get_data(key, number):
 	data_sub_dir = a_dirs[key]
-	dsi = yt.load(data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(5*number))
+	dsi = yt.load(data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(number))
 	print("loaded dataset number " + str(number) + " for " + data_sub_dir) 
 	slice = dsi.r[:,:,z_position]
 	slice.set_field_parameter("center", center)
@@ -91,7 +75,7 @@ for i in range(1, len(a_list)):
 	print("got profile for m=" + a_list[i], flush=True)
 
 ### plot phi profiles vs r_BS
-colours = ['r+', 'b+', 'g+']
+colours = ['r-', 'b-', 'g-']
 
 # make  plot 
 for i in range(0, len(a_list)):
@@ -99,19 +83,20 @@ for i in range(0, len(a_list)):
 	r_plus = 1 + math.sqrt(1 - float(a)**2)
 	r_minus = 1 - math.sqrt(1 - float(a)**2)
 	r = R*(1 + r_plus/(4*R))**2
-	#r_star = r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus)	
-	plt.plot(np.log(r - r_plus), phi_list[i], colours[i], markersize=2, label="a = " + a_list[i])
+	r_star = r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus)	
+	plt.plot(r_star, phi_list[i], colours[i], label="a = " + a_list[i])
 plt.ylabel("$\\phi")
 plt.legend(fontsize=8)
+plt.xlim(-10, 50)
 #plt.ylim((-5, 35))
-title = "field profile, $L=0$, $M=1$, $m=0$, $M\\omega=M\\mu=1$ $z$={:.3}, time={:.1f}".format(z_position, t) 
+title = "field profile, $l=m=0$, $M=1$, $\\omega=\\mu=0.4$, time={:.1f}".format(t) 
 plt.title(title)
-plt.xlabel("$\\ln(r_{BL} - r_+)$")
+plt.xlabel("$r_*$")
 plt.grid(axis="both")
 plt.tight_layout()
 
 save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/" 
-save_name = "phi_profile_vs_ln_r-r_plus_compare_a_t={:.2f}.png".format(z_position, t)
+save_name = "phi_profile_vs_r_star_compare_a_t={:.2f}.png".format(t)
 save_path = save_root_path + save_name
 plt.savefig(save_path, transparent=False)
 plt.clf()

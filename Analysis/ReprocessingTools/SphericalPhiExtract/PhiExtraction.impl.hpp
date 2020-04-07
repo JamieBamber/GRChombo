@@ -29,6 +29,7 @@ inline void PhiExtraction::execute_query(
     // Work out the coordinates
     for (int iradius = 0; iradius < m_params.num_integration_radii; ++iradius)
     {
+	pout() << "extraction radius index = " << m_params.integration_radii[iradius] << endl;
         for (int idx = 0; idx < m_num_points; ++idx)
         {
             int itheta = idx / m_params.num_points_phi;
@@ -58,8 +59,7 @@ inline void PhiExtraction::execute_query(
     a_interpolator->interp(query);
 
     auto integral = integrate_surface(interp_re_part);
-    std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] + 
-    "_phi_integral.dat";
+    std::string integral_filename = m_output_rootdir + "/" + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index];
     write_integral(integral, integral_filename);
     
 
@@ -107,14 +107,17 @@ PhiExtraction::integrate_surface(const std::vector<double> a_re_part) const
 	for (int iradius = 0; iradius < m_params.num_integration_radii;
      	iradius++)
         {
+	    pout() << "extraction radius index = " << m_params.integration_radii[iradius] << endl;
 	    for (int iphi = 0; iphi < m_params.num_points_phi; ++iphi)
             {
                 double phi = iphi * 2 * M_PI / m_params.num_points_phi;
+		pout() << "exraction phi = " << phi << endl;
                 double inner_integral_re = 0.;
                 for (int itheta = 0; itheta < m_params.num_points_theta;
                      itheta++)
                 {
                     double theta = (itheta + 0.5) * m_dtheta;
+		    pout() << "extraction theta = " << theta << endl;
                     int idx = iradius * m_num_points +
                               itheta * m_params.num_points_phi + iphi;
                     double integrand_re = a_re_part[idx];
@@ -127,6 +130,7 @@ PhiExtraction::integrate_surface(const std::vector<double> a_re_part) const
 			#pragma omp atomic
 		#endif
        	        integral[iradius] += m_dphi * inner_integral_re;
+    		pout() << "phi = " << integral[iradius] << endl;
 		//! inner_re = Sum [ r * Re{a_[idx]} * dphi * sin(theta) * dtheta ]
             }
         }
