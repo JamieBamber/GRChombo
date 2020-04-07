@@ -26,7 +26,7 @@ class KerrSchildFixedBG
     {
         double mass = 1.0;                      //!<< The mass of the BH
         std::array<double, CH_SPACEDIM> center; //!< The center of the BH
-        double spin = 0.0; //!< The dimensionless spin param a = J / M^2
+        double spin = 0.0;                      //!< The spin param a = J / M
     };
 
     template <class data_t> using Vars = ADMFixedBGVars::Vars<data_t>;
@@ -38,7 +38,7 @@ class KerrSchildFixedBG
         : m_params(a_params), m_dx(a_dx)
     {
         // check this spin param is sensible
-        if ((m_params.spin > 1.0) || (m_params.spin < -1.0))
+        if ((m_params.spin > m_params.mass) || (m_params.spin < -m_params.mass))
         {
             MayDay::Error(
                 "The dimensionless spin parameter must be in the range "
@@ -53,7 +53,7 @@ class KerrSchildFixedBG
         // get position and set vars
         const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
         Vars<data_t> metric_vars;
-        compute_metric_background(metric_vars, coords);
+        compute_metric_background(metric_vars, current_cell);
 
         // calculate and save chi
         data_t chi = TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
@@ -64,13 +64,13 @@ class KerrSchildFixedBG
     // Kerr Schild solution
     template <class data_t, template <typename> class vars_t>
     void compute_metric_background(vars_t<data_t> &vars,
-                                   const Coordinates<data_t> &coords) const
+                                   const Cell<data_t> &current_cell) const
     {
-        //const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
+        const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
 
         // black hole params - mass M and spin a
         const double M = m_params.mass;
-        const double a = M*m_params.spin;
+        const double a = m_params.spin;
         const double a2 = a * a;
 
         // work out where we are on the grid including effect of spin
@@ -82,21 +82,16 @@ class KerrSchildFixedBG
         const data_t rho2 = rho * rho;
 
         // the Kerr Schild radius r
-        const data_t r2 = 0.5 * (rho2 - a2) 
-                                  + sqrt(0.25 * (rho2 - a2) * (rho2 - a2) 
-                                            + a2 * z*z);
+        const data_t r2 = 0.5 * (rho2 - a2) +
+                          sqrt(0.25 * (rho2 - a2) * (rho2 - a2) + a2 * z * z);
         const data_t r = sqrt(r2);
         const data_t cos_theta = z / r;
 
         // find the H and el quantities (el decomposed into space and time)
         data_t H = M * r / (r2 + a2 * cos_theta * cos_theta);
-        const Tensor<1, data_t> el = {(r * x + a * y) / (r2 + a2), 
+        const Tensor<1, data_t> el = {(r * x + a * y) / (r2 + a2),
                                       (r * y - a * x) / (r2 + a2), z / r};
         const data_t el_t = 1.0;
-
-        // fudge values within singularity
-        auto in_horizon = simd_compare_lt(r2, a * abs(z));
-        H = simd_conditional(in_horizon, 0.5 * M / r, H);
 
         // Calculate the gradients in el and H
         Tensor<1, data_t> dHdx;
@@ -195,9 +190,8 @@ class KerrSchildFixedBG
         const data_t rho2 = rho * rho;
 
         // the Kerr Schild radius r
-        const data_t r2 = 0.5 * (rho2 - a2) 
-                                  + sqrt(0.25 * (rho2 - a2) * (rho2 - a2) 
-                                            + a2 * z * z);
+        const data_t r2 = 0.5 * (rho2 - a2) +
+                          sqrt(0.25 * (rho2 - a2) * (rho2 - a2) + a2 * z * z);
         const data_t r = sqrt(r2);
         const data_t cos_theta = z / r;
         const data_t cos_theta2 = cos_theta * cos_theta;
@@ -208,33 +202,24 @@ class KerrSchildFixedBG
         FOR1(i) { drhodx[i] = x[i] / rho; }
 
         Tensor<1, data_t> drdx;
-        FOR1(i) 
-        { 
-            drdx[i] = 0.5 / r * (rho * drhodx[i] 
-                                 + 0.5 / sqrt(0.25 * (rho2 - a2) 
-                                                 * (rho2 - a2) + a2 * z*z)
-                                       * (drhodx[i] * rho * (rho2 - a2) 
-                                           + delta(i,2) * 2.0 * a2 * z));
+        FOR1(i)
+        {
+            drdx[i] =
+                0.5 / r *
+                (rho * drhodx[i] +
+                 0.5 / sqrt(0.25 * (rho2 - a2) * (rho2 - a2) + a2 * z * z) *
+                     (drhodx[i] * rho * (rho2 - a2) +
+                      delta(i, 2) * 2.0 * a2 * z));
         }
 
         Tensor<1, data_t> dcosthetadx;
-        FOR1(i) { dcosthetadx[i] = - z / r2 * drdx[i] + delta(i,2) / r; }
+        FOR1(i) { dcosthetadx[i] = -z / r2 * drdx[i] + delta(i, 2) / r; }
 
-        FOR1(i) 
-        { 
-            dHdx[i] = H * ( drdx[i] / r  
-                            - 2.0 / (r2 + a2 * cos_theta2)
-                                  * (r * drdx[i] 
-                                       + a2 * cos_theta * dcosthetadx[i]));
-
-        }
-
-        // fudge values within singularity
-        auto in_horizon = simd_compare_lt(r2, a * abs(z));
         FOR1(i)
         {
-            dHdx[i] = simd_conditional(in_horizon, 
-                                           - drdx[i] * 0.5 * M / r2, dHdx[i]);
+            dHdx[i] = H * (drdx[i] / r -
+                           2.0 / (r2 + a2 * cos_theta2) *
+                               (r * drdx[i] + a2 * cos_theta * dcosthetadx[i]));
         }
 
         // note to use convention as in rest of tensors the last index is the
@@ -242,55 +227,50 @@ class KerrSchildFixedBG
         FOR1(i)
         {
             // first the el_x comp
-            dldx[0][i] = (x[0] * drdx[i] + r * delta(i, 0) + a * delta(i,1)
-                          - 2.0 * r * drdx[i] * (r * x[0] + a * x[1]) / (r2 + a2))
-                             / (r2 + a2);
+            dldx[0][i] =
+                (x[0] * drdx[i] + r * delta(i, 0) + a * delta(i, 1) -
+                 2.0 * r * drdx[i] * (r * x[0] + a * x[1]) / (r2 + a2)) /
+                (r2 + a2);
             // now the el_y comp
-            dldx[1][i] = (x[1] * drdx[i] + r * delta(i, 1) - a * delta(i,0)
-                          - 2.0 * r * drdx[i] * (r * x[1] - a * x[0]) / (r2 + a2))
-                             / (r2 + a2);
+            dldx[1][i] =
+                (x[1] * drdx[i] + r * delta(i, 1) - a * delta(i, 0) -
+                 2.0 * r * drdx[i] * (r * x[1] - a * x[0]) / (r2 + a2)) /
+                (r2 + a2);
             // now the el_z comp
-            dldx[2][i] = - x[2] * drdx[i] / r2 + delta(i, 2) / r;
+            dldx[2][i] = -x[2] * drdx[i] / r2 + delta(i, 2) / r;
         }
 
         // then dltdi
-        FOR1(i)
-        {
-            dltdx[i] = 0.0;
-        }
+        FOR1(i) { dltdx[i] = 0.0; }
     }
 
   public:
     // used to decide when to excise - ie when within the horizon of the BH
     // note that this is not templated over data_t
-    double excise(const Coordinates<double> &coords) const
+    double excise(const Cell<double> &current_cell) const
     {
         // black hole params - mass M and spin a
         const double M = m_params.mass;
         const double a = m_params.spin;
         const double a2 = a * a;
 
-        // work out where we are on the grid including effect of boost
-        // on x direction (length contraction)
+        // work out where we are on the grid
+        const Coordinates<double> coords(current_cell, m_dx, m_params.center);
         const double x = coords.x;
         const double y = coords.y;
         const double z = coords.z;
-        const double rho = coords.get_radius();
-        const double rho2 = rho * rho;
+        const double r_plus = M + sqrt(M * M - a2);
+        const double r_minus = M - sqrt(M * M - a2);
 
-        // the Kerr Schild radius r
-        const double r2 = 0.5 * (rho2 - a2) 
-                                  + sqrt(0.25 * (rho2 - a2) * (rho2 - a2) 
-                                            + a2 * z*z);
-        const double r = sqrt(r2);
-        const double cos_theta = z / r;
+        const double outer_horizon = (x * x + y * y) / (2.0 * M * r_plus) 
+                                         + z * z / r_plus / r_plus;
 
-        // compare this to horizon in kerr schild coords
-        const double r_horizon = M + sqrt(M * M - a2 * cos_theta);
+        const double inner_horizon = (x * x + y * y) / (2.0 * M * r_minus) 
+                                         + z * z / r_minus / r_minus;
 
-        return r / r_horizon;
+        // value less than 1 indicates we are within the horizon
+        return sqrt(outer_horizon);
     }
 };
 
 #endif /* KERRSCHILDFIXEDBG_HPP_ */
-
