@@ -53,51 +53,57 @@ class ScalarRotatingCloud
 	data_t x = coords.x;
         double y = coords.y;
         double z = coords.z;	
+	// Kerr Schild parameters
+	double a = m_bg_params.spin*m_bg_params.mass;
+	double M = m_bg_params.mass;
+	double a2 = a*a;
+
 	// perform rotation about x axis by the alignment angle
-	double cos_alignment = cos(m_params.alignment*M_PI);
-	double sin_alignment = sin(m_params.alignment*M_PI);
-	double y_prime = y * cos_alignment + z * sin_alignment;
-	double z_prime = z * cos_alignment - y * sin_alignment; 
-	data_t r = coords.get_radius();
+
+	// Cartesian radius
+	data_t rho = coords.get_radius();
+	data_t rho2 = rho * rho;
+
+	// convert to KS r
+	data_t r2 = 0.5 * (rho2 - a2) + sqrt(0.25 * (rho2 - a2) * (rho2 - a2) 
+                                            + a2 * z*z); 
+	data_t r = sqrt(r2);
+
 	// the radius in xy' plane, subject to a floor
-        data_t rho_prime2 = simd_max(x * x + y_prime * y_prime, 1e-8);
-        data_t rho_prime = sqrt(rho_prime2);
-	data_t cos_theta_prime = z_prime / r;
-	data_t sin_theta_prime = rho_prime / r;
-	data_t azimuth_prime = atan2(y_prime, x);	// need to use atan2 to obtain full 0 to 2pi range
+	data_t cos_theta = z / r;
+	data_t sin_theta = sqrt(1 - cos_theta*cos_theta);
+
+	// --> need to be careful for the Kerr Schild coordinates
+	data_t azimuth = atan2(y*r+a*x, x*r - a*y);	// need to use atan2 to obtain full 0 to 2pi range
 	// radius in the xy plane, subject to a floor
-	data_t rho2 = simd_max(x * x + y * y, 1e-8); // try making this 1e-4
-        data_t rho = sqrt(rho2);
 
 	// get the metric vars
         KerrSchildFixedBG kerr_bh(m_bg_params, m_dx);
         MetricVars<data_t> metric_vars;
         kerr_bh.compute_metric_background(metric_vars, coords);
 	
-	auto my_P_lm = AssocLegendre::assoc_legendre_with_deriv(m_params.l, m_params.m, cos_theta_prime, sin_theta_prime);
+	auto my_P_lm = AssocLegendre::assoc_legendre_with_deriv(m_params.l, m_params.m, cos_theta, sin_theta);
 	data_t g_function = my_P_lm.Magnitude;
         data_t g_function_prime = my_P_lm.Derivative;
 
 	// r dependence of phi
 	data_t r_function = m_params.amplitude; 
 	//angular dependence of phi
-	data_t angular_function = sin(m_params.m * azimuth_prime) * g_function;
+	data_t angular_function = sin(m_params.m * azimuth) * g_function;
         // set the field vars 
 	// phi
         vars.phi = r_function * angular_function;
 	
 	// dphi
-	data_t dphidt = - r_function * g_function *m_params.omega*cos(m_params.m*azimuth_prime);
-	//!< derivative of phi w.r.t the cloud azimuthal angle
-	data_t dphid_azimuth_prime = r_function * g_function *m_params.m*cos(m_params.m*azimuth_prime);
-	//!< derivative of phi w.r.t the cloud theta angle
- 	data_t dphid_theta_prime = r_function * g_function_prime * sin(m_params.m*azimuth_prime);
-
-	data_t dphid_azimuth = - sin_alignment * (x / rho_prime) * dphid_theta_prime + (rho2 * cos_alignment - y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
+	data_t dphidt = - r_function * g_function * m_params.omega*cos(m_params.m*azimuth);
+	//!< derivative of phi w.r.t the azimuthal angle and theta
+	data_t dphid_azimuth = r_function * g_function * m_params.m*cos(m_params.m*azimuth);
+ 	//data_t dphid_theta = r_function * g_function_prime * sin(m_params.m*azimuth);
 	
-	//beta^azimuth
-	data_t beta_azimuth = sqrt( (pow(metric_vars.shift[0],2) + pow(metric_vars.shift[1],2))/rho2 );
-	// ---> its kind of annoying to have to recompute this, it would be better to get it directly from
+	// shift 
+	data_t Sigma = r2 + a2*cos_theta*cos_theta;
+	data_t beta_azimuth = -2*M*r*a/(Sigma*(a2 + r2));
+
 	// beta_phi in KerSchildFixedBG
 
 	// Pi = alpha * d_t phi + beta^i d_i phi
