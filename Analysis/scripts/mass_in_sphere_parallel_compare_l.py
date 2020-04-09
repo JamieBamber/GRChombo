@@ -41,20 +41,21 @@ add_data_dir(data_dirs, 58, 5, 5, "0.7")
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
 max_radius = 450
+mu = 0.4
 M = 1
+a = 0.7	
+r_plus = M*(1 + math.sqrt(1 - a**2))
+min_radius = r_plus
 
 output_dir = "data/compare_alm_mass"
 
 half_box = True
 
-change_in_E = True
+change_in_E = False
 
 def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
-	a = dd.a	
-	r_plus = M*(1 + math.sqrt(1 - a**2))
-	min_radius = r_plus
-
+	
 	start_time = time.time()
 	
 	# load dataset time series
@@ -135,6 +136,11 @@ def load_data():
 		print("loaded data for " + dd.name)
 	return data 	
 
+volume = (4*np.pi/3)*(max_radius**3 - min_radius**3)
+rho0 = 0.5*(0.1**2)*(mu**2)
+print("volume = ", volume)
+print("rho0 = ", rho0)
+
 def plot_graph():
 	data = load_data()
 	colours = ['r-', 'b-', 'g-', 'm-', 'c-', 'k-', 'g--', 'y-', 'm--'] 
@@ -142,7 +148,7 @@ def plot_graph():
 	for dd in data_dirs:
 		line_data = data[dd.num]
 		t = line_data[:,0]
-		mass = line_data[:,1] #- line_data[0,1]
+		mass = line_data[:,1]/(volume*rho0) #- line_data[0,1]
 		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
 		if change_in_E:
 			plt.plot(t[1:], mass[1:] - mass[0], colours[i], label=label_)
@@ -151,9 +157,9 @@ def plot_graph():
 		i = i + 1
 	plt.xlabel("time")
 	if change_in_E:
-		plt.ylabel("$\\Delta E$ in $r < $" + str(max_radius))
+		plt.ylabel("mean $\\Delta\\rho/\\rho_0$ in $r < $" + str(max_radius))
 	else:
-		plt.ylabel("$E$ in $r < $" + str(max_radius))
+		plt.ylabel("mean $\\rho/\\rho_0$ in $r_+ < r < $" + str(max_radius))
 	plt.legend(loc='upper left', fontsize=8)
 	plt.title("scalar field energy inside a sphere vs time, $M=1, \\mu=0.4$")
 	plt.tight_layout()

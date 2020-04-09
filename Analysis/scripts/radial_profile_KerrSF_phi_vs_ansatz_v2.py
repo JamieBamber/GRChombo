@@ -59,7 +59,7 @@ print("made profile")
 ### plot profile
 
 def k_func(z, a, b):
-	result = pow(z,-a)/(1 + b*(pow(z,1-a)-1))
+	result = pow(z,-0.5)
 	return result
 
 def f(z):
@@ -71,7 +71,7 @@ def anzatz_phi(r_star, phi, A, a, b):
 	result = np.zeros(r_star.size)
 	for i in range(0, r_star.size):
 		z = (r_BL[i]/r_plus)
-		k = k_func(z)
+		k = k_func(z, a, b)
 		result[i] = 0.1*(1 + A/z)*np.sin(-(k*(r_star[i]+C) + t)*mu*r_plus)
 	return result
 
@@ -146,25 +146,25 @@ def plot_wavelengths(type):
 	plt.clf()
 	
 def plot_graph():
-	r_type = "r_star"
-	x = r_star
-	x_label = "$r_*$"
+	r_type = "r_BL_long"
+	x = r_BL/r_plus
+	x_label = "$r_{BL}/r_s$"
 	Abest = np.max((phi/0.1 - 1)*np.power(r_BL/r_plus, 1))
 	plt.plot(x, phi, 'r-', label="simulation phi")
-	plt.plot(x, envelope(r_BL, phi, 1, Abest), 'b--', label="ansatz envelope (1 + a/r**(3/4))")
+	plt.plot(x, envelope(r_BL, phi, 1, Abest), 'b--', label="ansatz envelope (1 + A/r)")
 	plt.plot(x, envelope2(r_BL, Abest), 'm--', label="ansatz envelope v2")
-	anzatz = anzatz_phi(r_star, phi, 1, Abest)
+	anzatz = anzatz_phi(r_star, phi, Abest, 0.39, 0.05)
 	plt.plot(x, anzatz, 'g--', label="anzatz phi")
 	plt.xlabel(x_label)
 	plt.ylabel("$\\phi$")
 	plt.grid(axis='both')
 	plt.ylim((-1, 1))
-	plt.xlim((-10, 50))
+	#plt.xlim((1, 2))
 	plt.legend()
 	title = data_sub_dir + " time = {:.1f}".format(t) 
 	plt.title(title)
 	plt.tight_layout()
-	save_name = data_sub_dir + "_t={:.1f}_phi_profile_vs_anzatz".format(t) + ".png"
+	save_name = data_sub_dir + "_t={:.1f}_phi_profile_vs_anzatz".format(t) + "_" + r_type + ".png"
 	print("saved " + save_root_path + save_name)
 	plt.savefig(save_root_path + save_name, transparent=False)
 	plt.clf()

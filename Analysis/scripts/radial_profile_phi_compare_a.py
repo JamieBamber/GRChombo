@@ -49,7 +49,7 @@ sphere_or_slice = False
 if sphere_or_slice:
         @derived_field(name = "weighting_field", units = "")
         def _weighting_field(field, data):
-                return pow(data["cell_volume"].in_base("cgs"),2.0/3) * N_bins / (2*math.pi* (data["spherical_radius"]**2))
+                return data["cell_volume"].in_base("cgs") * N_bins / (2*math.pi* (data["spherical_radius"]**2)*cm)
 elif not sphere_or_slice:
         @derived_field(name = "weighting_field", units = "")
         def _weighting_field(field, data):
