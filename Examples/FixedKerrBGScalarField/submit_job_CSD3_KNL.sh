@@ -15,7 +15,7 @@ data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF
 #run_number=$((run_number+1))
 #echo $run_number > run_number.txt
 
-run_number=58
+run_number=65
 
 params_file=params.txt
 
@@ -27,10 +27,11 @@ Al=$(grep "alignment" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -
 a=$(grep "bh_spin" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
 M=$(grep "bh_mass" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
 mu=$(grep "scalar_mass" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
+phase=$(grep "phase" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
 
 text_number=$(printf "%04d" ${run_number})
 
-new_dir=run${text_number}_KNL_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_correct_Ylm
+new_dir=run${text_number}_KNL_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_phase${phase}_correct_Ylm
 echo ${new_dir}
 new_dir_path=${data_directory}/${new_dir}
 #
@@ -41,7 +42,6 @@ cp ${params_file} ${new_dir_path}/params.txt
 cd ${new_dir_path}
 # add the location of the new directory to the input files
 sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
-sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/slurm_submit
 # 
 mkdir -p outputs
 cd outputs
