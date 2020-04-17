@@ -9,7 +9,8 @@ import numpy as np
 import h5py
 
 root_data_path="/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
-path = root_data_path + "/run1_l0_m1_a0_Al0/KerrSFp_000001.3d.hdf5"
+subdir = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_correct_Ylm"
+path = root_data_path + "/" + subdir + "/KerrSFp_000001.3d.hdf5"
 
 f = h5py.File(path, 'r')
 print(f.keys())
@@ -51,7 +52,7 @@ number of output variables = 2 (phi and Pi)
 	except: 
 		print("Not a group, is type ", type(m)) """
 
-level_0 = f['level_0']
+#level_0 = f['level_0']
 
 """ for member in level_0.keys():
 	m = level_0[member]
@@ -61,7 +62,7 @@ level_0 = f['level_0']
 	except:
 		print(member, " is ", m[0:]) """
 
-print(level_0['data:datatype=0'][0:8])
+#print(level_0['data:datatype=0'][0:8])
 
 
 
