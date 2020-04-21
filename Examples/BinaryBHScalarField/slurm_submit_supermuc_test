@@ -14,17 +14,17 @@
 #SBATCH --mail-user=james.bamber@physics.ox.ac.uk
 
 # Wall clock limit:
-#SBATCH --time=12:00:00
+#SBATCH --time=0:30:00
 #SBATCH --no-requeue
 
 #Setup of execution environment
 #SBATCH --export=NONE
 #SBATCH --get-user-env
 #SBATCH --account=pn34tu
-#SBATCH --partition=general
+#SBATCH --partition=test
 
 #Number of nodes and MPI tasks per node:
-#SBATCH --nodes=21
+#SBATCH --nodes=2
 # There are 48 physical cores per node, so
 # the product of these numbers should be 48
 #SBATCH --ntasks-per-node=12
@@ -44,7 +44,7 @@ application="/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarF
 
 #! Run options for the application:
 currentdir=$(pwd)
-options="${currentdir}/../params.txt"
+options="${currentdir}/params.txt"
 
 #Run the program:
 mpiexec -n $SLURM_NTASKS $application $options

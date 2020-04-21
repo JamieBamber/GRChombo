@@ -21,14 +21,14 @@
 #SBATCH --export=NONE
 #SBATCH --get-user-env
 #SBATCH --account=pn34tu
-#SBATCH --partition=general
+#SBATCH --partition=fat
 
 #Number of nodes and MPI tasks per node:
-#SBATCH --nodes=21
+#SBATCH --nodes=5
 # There are 48 physical cores per node, so
 # the product of these numbers should be 48
-#SBATCH --ntasks-per-node=12
-export OMP_NUM_THREADS=4
+#SBATCH --ntasks-per-node=48
+export OMP_NUM_THREADS=1
 
 #Load modules
 module load slurm_setup
