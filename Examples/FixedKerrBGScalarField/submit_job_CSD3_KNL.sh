@@ -15,7 +15,7 @@ data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF
 #run_number=$((run_number+1))
 #echo $run_number > run_number.txt
 
-run_number=65
+run_number=66
 
 params_file=params.txt
 
@@ -31,7 +31,7 @@ phase=$(grep "phase" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r
 
 text_number=$(printf "%04d" ${run_number})
 
-new_dir=run${text_number}_KNL_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_phase${phase}_correct_Ylm
+new_dir=run${text_number}_KNL_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_correct_Ylm
 echo ${new_dir}
 new_dir_path=${data_directory}/${new_dir}
 #

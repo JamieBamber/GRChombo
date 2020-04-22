@@ -83,9 +83,9 @@ scalar_omega = 1
 scalar_l = 0
 scalar_m = 0
 alignment = 0.0
-phase = 0.5	
+phase = 0
 # "phase" initial extra phase term in units of pi
 
 # BH initial data
 bh_mass = 1
-bh_spin = 0
+bh_spin = 0.99
