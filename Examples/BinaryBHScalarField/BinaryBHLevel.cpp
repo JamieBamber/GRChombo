@@ -29,7 +29,9 @@
 // Things to do during the advance step after RK4 steps
 void BinaryBHLevel::specificAdvance()
 {
-    pout() << "starting BinaryBHLevel::specificAdvance()" << endl;
+    if (m_verbosity)
+	pout() << "starting BinaryBHLevel::specificAdvance()" << endl;
+    
     // Enforce the trace free A_ij condition and positive chi and alpha
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
                    m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
@@ -51,6 +53,7 @@ void BinaryBHLevel::initialData()
     // Set up the compute class for the BinaryBH initial data
     BinaryBH binary(m_p.bh1_params, m_p.bh2_params, m_dx);
 
+    
     // setup initial puncture coords for tracking
     // do puncture tracking, just set them once, so on level 0
     if (m_p.track_punctures == 1 && m_level == 0)
@@ -67,15 +70,17 @@ void BinaryBHLevel::initialData()
     BoxLoops::loop(make_compute_pack(SetValue(0.), binary), m_state_new,
                   m_state_new, INCLUDE_GHOST_CELLS);
 
-    // --> simple initial data
     // Initial conditions for scalar field - constant amplitude
     /*BoxLoops::loop(SetValue(m_p.initial_params.field_amplitude, Interval(c_phi, c_phi)), m_state_new,
                    m_state_new, FILL_GHOST_CELLS);*/
 
-    // ---> class based initial scalar field data
+    // scalar field compute class
     FlatScalar initial_sf(m_p.initial_params, m_dx);
-    BoxLoops::loop(initial_sf, m_state_new,
-                   m_state_new, FILL_GHOST_CELLS);
+   BoxLoops::loop(initial_sf, m_state_new,
+                   m_state_new, INCLUDE_GHOST_CELLS);
+   if (m_verbosity)
+   	pout() << "Done BinaryBHLevel::initialData()" << endl;
+
 }
 
 // Things to do after a restart
@@ -102,16 +107,13 @@ void BinaryBHLevel::preCheckpointLevel()
 {
     if (m_verbosity)
     	pout() << "starting BinaryBHLevel::preCheckpointLevel()" << endl;
-    // Calculate and assing values of Ham and Mom constraints on grid   
-   fillAllGhosts();
+    // Calculate and assing values of Ham and Mom constraints on grid
+    fillAllGhosts();
     BoxLoops::loop(Constraints(m_dx), m_state_new, m_state_new,
                    EXCLUDE_GHOST_CELLS);
 
-    /*ScalarPotential potential(m_p.potential_params);
-    ScalarFieldWithPotential scalar_field(potential);
-    BoxLoops::loop(MatterConstraints<ScalarFieldWithPotential>(
-                       scalar_field, m_dx, m_p.G_Newton),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+    if (m_verbosity)
+        pout() << "Done BinaryBHLevel::preCheckpointLevel() " << endl;
 }
 
 // Calculate RHS during RK4 substeps
@@ -120,7 +122,6 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
 {
     if (m_verbosity)
        pout() << "starting BinaryBHLevel::specificEvalRHS()" << endl;
-
     // Enforce positive chi and alpha and trace free A
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
                    a_soln, a_soln, INCLUDE_GHOST_CELLS);
@@ -133,10 +134,13 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
     	scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
     	m_p.G_Newton);
-    SetValue set_other_values_zero(0.0, Interval(c_Ham, NUM_VARS - 1));
     BoxLoops::loop(
-        make_compute_pack(my_ccz4_matter,set_other_values_zero),
+        make_compute_pack(my_ccz4_matter,
+                          SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
         a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+
+   if (m_verbosity)
+      pout() << "Done BinaryBHLevel::specificEvalRHS() t = " << a_time << endl;
 }
 
 // enforce trace removal during RK4 substeps
@@ -174,7 +178,6 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
                            1),
                        current_state, tagging_criterion);
     }
-
 }
 
 void BinaryBHLevel::specificPostTimeStep()
@@ -216,7 +219,7 @@ void BinaryBHLevel::specificPostTimeStep()
             write_punctures = true;
         }
         my_punctures.execute_tracking(m_bh_amr, write_punctures);
-    }  
+    }
 }
 
 // Things to do before a plot level - need to calculate the Weyl scalars
@@ -230,13 +233,17 @@ void BinaryBHLevel::prePlotLevel()
         BoxLoops::loop(Weyl4(m_p.extraction_params.extraction_center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
     }
-
-    // Calculate and save ADM density rho 
-    /*ScalarPotential potential(m_p.potential_params);
+    
+    // Calculate and save ADM density and momentum
+    ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
+    /*
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.center),
                    m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+
+    if (m_verbosity)
+    	pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
 }
 
 // Specify if you want any plot files to be written, with which vars
@@ -245,5 +252,7 @@ void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const
     if (m_verbosity)
 	pout() << "starting BinaryBHLevel::specificWritePlotHeader()" << endl;
     plot_states = {c_chi, c_phi, c_rho, c_S_azimuth, c_S_r};
+    if (m_verbosity)
+	pout() << "Done BinaryBHLevel::specificWritePlotHeader()" << endl;
 }
 
