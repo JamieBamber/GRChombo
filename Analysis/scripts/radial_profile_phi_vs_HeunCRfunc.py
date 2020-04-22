@@ -88,6 +88,7 @@ for i in range(0, len(a_list)):
 	R_list.append(R)
 	phi_list.append(phi)
 	print("got profile for a=" + a_list[i], flush=True)
+	print("t = ", t)	
 
 # Stationary solution
 Kerrlib = ctypes.cdll.LoadLibrary('/home/dc-bamb1/GRChombo/Source/utils/KerrBH_Rfunc_lib.so')
@@ -108,14 +109,6 @@ colours = ['r-', 'b-', 'g-']
 colours2 = ['k--', 'm--', 'c--']
 # make  plot 
 
-def Stationary_sol(r, C2):
-	A = 0.6
-	omega = mu
-	H1 = HeunC(0, 0, float(a), omega, r)
-	H2 = HeunC(0, 1, float(a), omega, r)
-	result = np.sqrt(A**2 - C2**2)*H1 + C2*H2
-	return result
-
 for i in range(0, len(a_list)):
 	a = a_list[i]
 	r_plus = 1 + math.sqrt(1 - float(a)**2)
@@ -130,16 +123,20 @@ for i in range(0, len(a_list)):
 	plt.plot(x, phi, colours[i], markersize=2, label="a = " + a_list[i])
 	###
 	# --- fit stationary solution(s)
-	popt = (0.15)
-	popt, pconv = curve_fit(Stationary_sol, r, phi, p0=popt)
-	c1 = 0.6
-	c2 = popt[0]
 	r_plot_1 = r_plus + np.exp(np.linspace(r_star[0]/r_plus, 1, 64))
 	r_plot_2 = np.linspace(r_plot_1[-1],60,64)[1:]
 	r_plot = np.concatenate((r_plot_1,r_plot_2))
 	r_star_plot = r_star_func(r_plot)
+	A = np.max(np.abs(phi))
+	def Stationary_sol(r, phase):
+		omega = mu
+		HR = HeunC(0, 0, float(a), omega, r)
+		HI = HeunC(0, 1, float(a), omega, r)
+		result = -A*(HR*np.sin(omega*t-phase) - HI*np.cos(omega*t-phase))
+		return result	
+	popt, pconv = curve_fit(Stationary_sol, r, phi, p0=(0))
 	phi_fit = Stationary_sol(r_plot, popt[0])
-	plt.plot(r_star_plot, phi_fit, colours2[i], linewidth=1, label="stationary solution, a={:s}, C1,C2=({:.2f},{:.2f})".format(a, c1, c2))		
+	plt.plot(r_star_plot, phi_fit, colours2[i], linewidth=1, label="stationary solution, a={:s}, A={:.2f} phase={:.2}".format(a, A, popt[0]))		
 plt.ylabel("$\\phi$")
 plt.legend(fontsize=8)
 plt.xlim((-20, 60))

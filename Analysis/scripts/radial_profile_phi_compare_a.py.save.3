@@ -80,6 +80,7 @@ for i in range(0, len(a_list)):
 	phi_list.append(phi)
 	print("got profile for a=" + a_list[i], flush=True)
 
+
 # Stationary solution
 Kerrlib = ctypes.cdll.LoadLibrary('/home/dc-bamb1/GRChombo/Source/utils/KerrBH_Rfunc_lib.so')
 Kerrlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_bool, ctypes.c_bool, ctypes.c_double]
@@ -91,7 +92,7 @@ def HeunC(index, reality, a, omega, r):
         factor = 1
         for i in range(0, r.size):
                 sol[i] = factor*Kerrlib.Rfunc(M, mu, omega, 0, a, 0, 0, index, reality, r[i])
-        sol = sol/np.max(np.abs(sol))
+        sol = sol/np.max(sol)
         return sol
 
 ### plot phi profiles vs r_BS
@@ -106,35 +107,26 @@ for i in range(0, len(a_list)):
 	R = R_list[i]
 	phi = phi_list[i]
 	r = R*(1 + r_plus/(4*R))**2
-	def r_star_func(r):
-                return r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus)
-	r_star = r_star_func(r)
+	r_star = r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus)	
 	x = r_star
 	#plt.plot(r_star, phi, colours[i], markersize=2, label="a = " + a_list[i])
 	#plt.plot(np.log(r - r_plus), phi, colours[i], markersize=2, label="a = " + a_list[i])
-	print("plotting a = ", a)
 	plt.plot(x, phi, colours[i], markersize=2, label="a = " + a_list[i])
 	###
 	# --- fit stationary solutions
-	A = np.abs(np.min(phi))
+	def Stationary_sol(A, omega, r, t):
+		HReal = HeunC(0, 0, float(a), omega, r)
+		HImag = HeunC(0, 1, float(a), omega, r)
+		result = C1*H1 + C2*H2
+		return result
+	popt = (0, 0.1, mu)
 	if a=="0":
-		def Stationary_sol(r, phase):
-			omega = mu
-			HReal = HeunC(0, 0, float(a), omega, r)
-			HImag = HeunC(0, 1, float(a), omega, r)
-			result = A*(HImag*np.cos(omega*t-phase) - HReal*np.sin(omega*t-phase))
-			return result
-		r_plot_1 = r_plus + np.exp(np.linspace(r_star[0]/r_plus, 1, 64))
-		r_plot_2 = np.linspace(r_plot_1[-1],100,64)[1:]
-		r_plot = np.concatenate((r_plot_1,r_plot_2))
-		r_star_plot = r_star_func(r_plot)
-		popt, pconv = curve_fit(Stationary_sol, r[1:], phi[1:], p0=(0))
-		phi_fit = Stationary_sol(r_plot, popt[0])
-		plt.plot(r_star_plot, phi_fit, colours2[i], label="stationary solution, a={:s}, A={:.2f}, phase={:.2f}".format(a, A, popt[0]))
+		phi_stat = Stationary_sol(r, popt[0], popt[1], popt[2])
+		plt.plot(x, colours2[i], label="stationary solution, a={:s}, C1,C2,$\\omega$=({:.2f},{:.2f},{:.2f})".format(a, popt[0], popt[1], popt[2]))		
 plt.ylabel("$\\phi$")
 plt.legend(fontsize=8)
 plt.xlim((-15, 75))
-plt.ylim((-1.5, 1.5))
+plt.ylim((-1, 1))
 title = "field profile, $M\mu=M\omega=0.4$ $l=m=0$ time={:.1f}".format(t) 
 plt.title(title)
 plt.xlabel("$r_*$")
