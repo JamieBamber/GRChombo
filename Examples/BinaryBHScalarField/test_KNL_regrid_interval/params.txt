@@ -5,9 +5,9 @@
 
 # location / naming of output files (must give full path)
 verbosity = 0
-chk_prefix = DATADIR/BinaryBHSFChk_
-plot_prefix = DATADIR/BinaryBHSFPlot_
-#restart_file = DATADIR/BinaryBHChk_000000.3d.hdf5
+chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_regrid_interval/BinaryBHSFChk_
+plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_regrid_interval/BinaryBHSFPlot_
+#restart_file = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_regrid_interval/BinaryBHChk_000000.3d.hdf5
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor

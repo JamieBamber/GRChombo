@@ -10,6 +10,7 @@ cd $work_dir
 data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
 run_number=2
+suffix=regrid_interval
 
 params_file=params_test.txt
 
@@ -20,7 +21,7 @@ mu=$(grep "scalar_mass" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed
 
 text_number=$(printf "%04d" ${run_number})
 
-new_dir=test${text_number}_KNL
+new_dir=test_KNL_${suffix}
 echo ${new_dir}
 new_dir_path=${work_dir}/${new_dir}
 #

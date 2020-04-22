@@ -10,9 +10,7 @@
 #include "ChiExtractionTaggingCriterion.hpp"
 #include "ChiPunctureExtractionTaggingCriterion.hpp"
 #include "ComputePack.hpp"
-#include "MatterConstraints.hpp"
 #include "Constraints.hpp"
-#include "MatterCCZ4.hpp"
 #include "NanCheck.hpp"
 #include "PositiveChiAndAlpha.hpp"
 #include "PunctureTracker.hpp"
@@ -21,8 +19,9 @@
 #include "Weyl4.hpp"
 #include "WeylExtraction.hpp"
 
-#include "DensityAndMom.hpp"
-
+#include "MatterConstraints.hpp"
+#include "MatterCCZ4.hpp"
+#include "DensityAndMom_v2.hpp"
 #include "FlatScalar.hpp"
 #include "ScalarPotential.hpp"
 #include "ScalarField.hpp"
