@@ -14,17 +14,15 @@ import ctypes
 start_time = time.time()
 
 a_dirs = {}
-a_dirs["0"] = "run0031_KNL_l0_m0_a0_Al0_mu0.4_M1_correct_Ylm"
-a_dirs["0.7"] = "run0028_KNL_l0_m0_a0.7_Al0_mu0.4_M1_correct_Ylm"
-a_dirs["0.99"] = "run0029_KNL_l0_m0_a0.99_Al0_mu0.4_M1_correct_Ylm"
+a_dirs["0"] = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_correct_Ylm"
 
 z_position = 0.001	# z position of slice
-number = 1550
+number = 1460
 dt = 0.25
 t = number*dt
 
 # choose a values to plot
-a_list = ["0", "0.7", "0.99"]
+a_list = ["0"]
 
 # set centre
 center = [512.0, 512.0, 0]
@@ -37,8 +35,8 @@ N_bins = 67
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 
 M = 1
-mu = 0.4
-omega = 0.4
+mu = 1
+omega = 1
 phi0 = 0.1
 
 sphere_or_slice = False
@@ -71,15 +69,25 @@ def get_data(a_str, number):
 	R = rp.x.value
 	print("made profile")
 	return (R, phi)
- 
+
+def get_chombo_data(a_str):
+	file_name = a_dirs[a_str] + "_phi.dat"
+	chombo_data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/SphericalPhiData/"
+	dataset_path = chombo_data_root_path + file_name
+	data = np.genfromtxt(dataset_path, skip_header=1)
+	time = data[1, 0]
+	R = data[0,1:]
+	phi_integral = data[1, 1:]/(2*np.pi)
+	return (time, R, phi_integral) 
+	
 phi_list = []
 R_list = []
 for i in range(0, len(a_list)):
-	R, phi = get_data(a_list[i], number)
+	#R, phi = get_data(a_list[i], number)
+	t, R, phi = get_chombo_data(a_list[i])
 	R_list.append(R)
 	phi_list.append(phi)
 	print("got profile for a=" + a_list[i], flush=True)
-
 
 # Stationary solution
 Kerrlib = ctypes.cdll.LoadLibrary('/home/dc-bamb1/GRChombo/Source/utils/KerrBH_Rfunc_lib.so')
@@ -92,7 +100,7 @@ def HeunC(index, reality, a, omega, r):
         factor = 1
         for i in range(0, r.size):
                 sol[i] = factor*Kerrlib.Rfunc(M, mu, omega, 0, a, 0, 0, index, reality, r[i])
-        sol = sol
+        sol = sol/np.max(np.abs(sol))
         return sol
 
 ### plot phi profiles vs r_BS
@@ -100,45 +108,52 @@ colours = ['r-', 'b-', 'g-']
 colours2 = ['k--', 'm--', 'c--']
 # make  plot 
 
+def Stationary_sol(r, C2):
+	A = 0.6
+	omega = mu
+	H1 = HeunC(0, 0, float(a), omega, r)
+	H2 = HeunC(0, 1, float(a), omega, r)
+	result = np.sqrt(A**2 - C2**2)*H1 + C2*H2
+	return result
+
 for i in range(0, len(a_list)):
 	a = a_list[i]
 	r_plus = 1 + math.sqrt(1 - float(a)**2)
 	r_minus = 1 - math.sqrt(1 - float(a)**2)
-	R = R_list[i]
-	phi = phi_list[i]
+	R = R_list[i][1:]
+	phi = phi_list[i][1:]
 	r = R*(1 + r_plus/(4*R))**2
-	r_star = r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus)	
-	x = r_star - r
-	#plt.plot(r_star, phi, colours[i], markersize=2, label="a = " + a_list[i])
-	#plt.plot(np.log(r - r_plus), phi, colours[i], markersize=2, label="a = " + a_list[i])
+	def r_star_func(r):
+		return r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus)	
+	r_star = r_star_func(r)
+	x = r_star
 	plt.plot(x, phi, colours[i], markersize=2, label="a = " + a_list[i])
 	###
-	# --- fit stationary solutions
-	def Stationary_sol(r, C1, C2, omega):
-		H1 = HeunC(0, 0, float(a), omega, r)
-		H2 = HeunC(0, 1, float(a), omega, r)
-		result = C1*H1 + C2*H2
-		return result
-	popt = (0, 0.1, mu)
-	if a=="0":
-		plt.plot(x, Stationary_sol(r, popt[0], popt[1], popt[2]), colours2[i], label="stationary solution, a={:s}, C1,C2,$\\omega$=({:.2f},{:.2f},{:.2f})".format(a, popt[0], popt[1], popt[2]))		
+	# --- fit stationary solution(s)
+	popt = (0.15)
+	popt, pconv = curve_fit(Stationary_sol, r, phi, p0=popt)
+	c1 = 0.6
+	c2 = popt[0]
+	r_plot_1 = r_plus + np.exp(np.linspace(r_star[0]/r_plus, 1, 64))
+	r_plot_2 = np.linspace(r_plot_1[-1],60,64)[1:]
+	r_plot = np.concatenate((r_plot_1,r_plot_2))
+	r_star_plot = r_star_func(r_plot)
+	phi_fit = Stationary_sol(r_plot, popt[0])
+	plt.plot(r_star_plot, phi_fit, colours2[i], linewidth=1, label="stationary solution, a={:s}, C1,C2=({:.2f},{:.2f})".format(a, c1, c2))		
 plt.ylabel("$\\phi$")
 plt.legend(fontsize=8)
-#plt.ylim((-0.005, 0.005))
-plt.xlim((-15, 12))
-plt.ylim((-1, 1))
-title = "field profile, $M\mu=M\omega=0.4$ $l=m=0$ time={:.1f}".format(t) 
+plt.xlim((-20, 60))
+plt.ylim((-0.75, 0.75))
+title = "$\\Phi$ profile, $M\mu=M\omega=1$ $l=m=0$ time={:.1f}".format(t) 
 plt.title(title)
-#plt.xlabel("$r_*$")
+plt.xlabel("$r_*$")
 #plt.xlabel("$\\ln(r_{BL} - r_+)$")
-plt.xlabel("$r_* - r_{BL}$")
+#plt.xlabel("$r_* - r_{BL}$")
 plt.grid(axis="both")
 plt.tight_layout()
 
 save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/" 
-#save_name = "phi_profile_vs_r_star_compare_a_t={:.2f}.png".format(z_position, t)
-#save_name = "phi_profile_vs_ln_r-r_plus_compare_a_t={:.2f}.png".format(t)
-save_name = "phi_profile_vs_r_star-r_compare_a_t={:.2f}.png".format(t)
+save_name = "phi_profile_vs_r_star_compare_Heun_t={:.2f}.png".format(t)
 save_path = save_root_path + save_name
 plt.savefig(save_path, transparent=False)
 plt.clf()

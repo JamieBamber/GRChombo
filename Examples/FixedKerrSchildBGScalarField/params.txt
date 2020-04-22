@@ -60,7 +60,7 @@ vars_asymptotic_values = 0 0 1 0 0 0 0  #phi, Pi, chi, rho, S_az, S_az_prime, S_
 #
 checkpoint_interval = 100
 plot_interval = 5
-dt_multiplier = 0.0625 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
+dt_multiplier = 0.03125 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 2000.0
 ###
 # dt_raw = 8 * 1/16 = 0.5
@@ -86,4 +86,4 @@ alignment = 0.0
 
 # BH initial data
 bh_mass = 1
-bh_spin = 0
+bh_spin = 0.7
