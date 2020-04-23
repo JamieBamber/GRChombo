@@ -5,12 +5,12 @@
 
 # this copy is for the KNL nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField
+work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH
 cd $work_dir
 #data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
 run_number=1 
-suffix=4_nodes_8_OMP_Skylake_params_A
+suffix=2_nodes_4_OMP_Skylake_params_A_mixed_bcs
 
 params_file=params_test.txt
 

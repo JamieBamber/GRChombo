@@ -7,7 +7,7 @@
 verbosity = 0
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
-#restart_file = DATADIR/BinaryBHChk_000000.3d.hdf5
+#restart_file = BinaryBHChk_000000.3d.hdf5
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
@@ -61,8 +61,8 @@ vars_parity            = 0 0 4 6 0 5 0    #chi and hij
                          0 0 4 6 0 5 0    #K and Aij
                          0 1 2 3          #Theta and Gamma
                          0 1 2 3 1 2 3    #lapse shift and B
-                         0 0	          # phi and Pi
-			 0 0 0		  # rho, S_azimuth, S_r
+                         0 0              # phi and Pi
+                         0 0 0            # rho, S_azimuth, S_r
                          0 1 2 3          #Ham and Mom
                          0 0              #Weyl
 
@@ -72,9 +72,9 @@ vars_asymptotic_values = 1.0 1.0 0.0 0.0 1.0 0.0 1.0 #chi and hij
                          0.0 0.0 0.0 0.0 0.0 0.0 0.0 #K and Aij
                          0.0 0.0 0.0 0.0             #Theta and Gamma
                          1.0 0.0 0.0 0.0 0.0 0.0 0.0 #lapse shift and B
-                         0.0 0.0		     #phi and Pi
-                         0.0 0.0 0.0 		     #rho, S_azimuth, S_r
-			 0.0 0.0 0.0 0.0             #Ham and Mom
+                         0.0 0.0                     #phi and Pi
+                         0.0 0.0 0.0                 #rho, S_azimuth, S_r
+                         0.0 0.0 0.0 0.0             #Ham and Mom
                          0.0 0.0                     #Weyl
 
 # Max and min box sizes
@@ -88,11 +88,10 @@ block_factor = 16
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
 plot_interval = 5
-dt_multiplier = 0.25 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
-stop_time = 1200.0
-## dt_actual = 8*dt_multiplier = 2
-## 2*pi / mu =~ 6 / 0.4 = 15
-## 1 / mu = 2.5
+dt_multiplier = 0.25 # 1/16 = 0.0625, 1/32 = 0.03125
+stop_time = 1200
+## base level 0 timestep = 8, min timestep = 1/16
+# period = 2pi/mu
 
 # Lapse evolution
 lapse_advec_coeff = 1.0
@@ -117,7 +116,7 @@ sigma = 1.0
 # extraction params
 # default of extraction_center is center, uncomment to change
 extraction_center = 256 256 0
-activate_extraction = 0 # this needs to be 1 otherwise it breaks.
+activate_extraction = 0
 write_extraction = 0
 num_extraction_radii = 2
 extraction_radii = 50.0 100.0
@@ -128,9 +127,9 @@ num_modes = 1
 modes = 2 0 # l m for spherical harmonics
         2 1
         2 2
+
         #4 0
         #4 1
         #4 2
         #4 3
         #4 4
-
