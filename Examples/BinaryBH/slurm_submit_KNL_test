@@ -17,9 +17,9 @@
 #SBATCH --nodes=32
 #! How many (MPI) tasks will there be in total? (<=nodes*256)
 #SBATCH --ntasks=256
-#SBATCH --ntasks-per-node=16
+#SBATCH --ntasks-per-node=8
 #! How much wallclock time will be required?
-#SBATCH --time=4:00:00
+#SBATCH --time=0:30:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -64,7 +64,7 @@ application="/home/dc-bamb1/GRChombo/Examples/BinaryBH/Main_BinaryBH3d.Linux.64.
 
 #! Run options for the application:
 currentdir=$(pwd)
-options="${currentdir}/../params.txt"
+options="${currentdir}/params.txt"
 
 #! Work directory (i.e. where the job will run):
 workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory
