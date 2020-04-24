@@ -136,7 +136,7 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     	m_p.G_Newton);
     BoxLoops::loop(
         make_compute_pack(my_ccz4_matter,
-                          SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
+                          SetValue(0, Interval(c_rho, NUM_VARS - 1))),
         a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
 
    if (m_verbosity)
@@ -235,11 +235,11 @@ void BinaryBHLevel::prePlotLevel()
     }
     
     // Calculate and save ADM density and momentum
-    /*ScalarPotential potential(m_p.potential_params);
+    ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.center),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
 
     if (m_verbosity)
     	pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
