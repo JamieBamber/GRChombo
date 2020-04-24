@@ -4,7 +4,7 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/SphericalPhiExtract
 
-subdir=run0031_KNL_l0_m0_a0_Al0_mu0.4_M1_correct_Ylm
+subdir=run0022_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild
 
 # extract parameters from params.txt
 echo ${subdir} "phi extraction"
