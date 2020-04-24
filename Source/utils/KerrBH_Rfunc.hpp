@@ -55,8 +55,8 @@ public:
 		} else if (index==false){
 			sgn = -1;
 		}
-		std::complex<double> Rfunc = (M/rootDelta)*std::exp(0.5*alpha*z)*pow((z-1),0.5*(1+gamma))
-						*pow(z,0.5*(1+sgn*beta))*HC.compute(alpha, sgn*beta, gamma, delta, eta, z).val;		
+		std::complex<double> Rfunc = (M/rootDelta)*std::exp(sgn*0.5*alpha*z)*pow((z-1),0.5*(1+gamma))
+						*pow(z,0.5*(1-sgn*beta))*HC.compute(sgn*alpha, -sgn*beta, gamma, delta, eta, z).val;		
 		if (real_or_imag==true){
 			return std::real(Rfunc);
 		} else if (real_or_imag==false){
