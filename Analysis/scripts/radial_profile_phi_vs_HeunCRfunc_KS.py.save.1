@@ -105,7 +105,7 @@ def HeunC(index, reality, a, omega, r):
         return sol
 
 ### plot phi profiles vs r_BS
-colours = ['b-', 'r-', 'g-']
+colours = ['r-', 'b-', 'g-']
 colours2 = ['k--', 'm--', 'c--']
 # make  plot 
 
@@ -127,20 +127,29 @@ for i in range(0, len(a_list)):
 	r_plot_2 = np.linspace(r_plot_1[-1],60,64)[1:]
 	r_plot = np.concatenate((r_plot_1,r_plot_2))
 	r_star_plot = r_star_func(r_plot)"""
-	A = np.max(np.abs(phi))*0.9
+	A = np.max(np.abs(phi))
+	def Stationary_sol(r, phase):
+                omega = mu
+                HR = HeunC(0, 0, float(a), omega, r)
+                HI = HeunC(0, 1, float(a), omega, r)
+                result = -A*(HR*np.sin(omega*(t)-phase) - HI*np.cos(omega*(t)-phase))
+                return result
 	def Stationary_sol_KS(r, phase):
 		omega = mu
 		HR = HeunC(0, 0, float(a), omega, r)
 		HI = HeunC(0, 1, float(a), omega, r)
 		r_factor = 2*M*(r_plus*np.log(r/r_plus - 1) - r_minus*np.log(r - r_minus))/(r_plus - r_minus) 
-		result = -A*(HR*np.sin(omega*(t-r_factor)-phase) - HI*np.cos(omega*(t-r_factor)-phase))
+		result = -A*(HR*np.sin(omega*(-t+r_factor)-phase) - HI*np.cos(omega*(t+r_factor)-phase))
 		return result	
 	r_out = r[15:]
 	phi_out = phi[15:]
-	popt, pconv = curve_fit(Stationary_sol_KS, r_out, phi_out, p0=(0))
-	#popt = [0.0]
+	#popt, pconv = curve_fit(Stationary_sol, r_out, phi_out, p0=(0))
+	popt = [0.14]
+	phi_stationary = Stationary_sol(r_out, popt[0])
 	phi_stationary_KS = Stationary_sol_KS(r_out, popt[0])
+	plt.plot(r_out, phi_stationary, 'c--', linewidth=1, label="stationary solution, a={:s}, A={:.2f} phase={:.2}".format(a, A, popt[0]))		
 	plt.plot(r_out, phi_stationary_KS, 'k--', linewidth=1, label="KS stationary solution, a={:s}, A={:.2f} phase={:.2}".format(a, A, popt[0]))		
+	#plt.plot(r_out, np.cos(mu*r_out),'m--', linewidth=1, label="$\\cos(\\mu r)$")
 plt.ylabel("$\\phi$")
 plt.legend(fontsize=8)
 plt.xlim((2, 50))
@@ -154,7 +163,7 @@ plt.grid(axis="both")
 plt.tight_layout()
 
 save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/" 
-save_name = "phi_profile_vs_r_compare_Heun_KS_t={:.2f}.png".format(t)
+save_name = "phi_profile_vs_r_star_compare_Heun_KS_t={:.2f}.png".format(t)
 save_path = save_root_path + save_name
 plt.savefig(save_path, transparent=False)
 plt.clf()

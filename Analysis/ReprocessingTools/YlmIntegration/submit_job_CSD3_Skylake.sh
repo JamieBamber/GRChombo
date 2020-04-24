@@ -2,12 +2,12 @@
 #
 # this copy is for the Skylake nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/SphericalPhiExtract
+work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/YlmIntegration
 
-subdir=run0031_KNL_l0_m0_a0_Al0_mu0.4_M1_correct_Ylm
+subdir=run0029_KNL_l0_m0_a0.99_Al0_mu0.4_M1_correct_Ylm
 
 # extract parameters from params.txt
-echo ${subdir} "phi extraction"
+echo ${subdir} "Ylm Integration"
 new_dir_path=outputs/${subdir}
 #
 mkdir -p ${new_dir_path}
