@@ -9,25 +9,24 @@ start_time = time.time()
 # set up parameters 
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/"
 file_name_roots = {}
-a_list = ["0", "0.99", "-0.99"]
-file_name_roots["0"] = "run0032_KNL_l1_m1_a0_Al0_mu0.4_M1_correct_Ylm_phi_Ylm_integral"
-file_name_roots["0.99"] = "run0037_KNL_l1_m1_a0.99_Al0_mu0.4_M1_correct_Ylm_phi_Ylm_integral"
-file_name_roots["-0.99"] = "run0049_KNL_l1_m-1_a0.99_Al0_mu0.4_M1_correct_Ylm_phi_Ylm_integral"
-lm_list = [(1, 1), (3, 1), (5, 1)]
-true_lm = [1, 1]
+a_list = ["0.99"]
+file_name_roots["0.99"] = "run0002.2_KNL_l0_m0_a0.99_Al0_mu1_M1_phi_Ylm_integral_linear"
+lm_list = [(0, 0), (2, 0), (4, 0)]
+true_lm = [0, 0]
 mu = 0.4
 M = 1
-colours = ["r", "g", "b", "m"]
+colours = ["r-", "g--", "b-.", "m"]
 styles = ["--", "-", "-."]
 time = 0
 
 ### get data and plot profile for each a and each lm
 
-log_x = True
+use_r_star = True
 
 for i in range(0, len(a_list)):
 	a = float(a_list[i])
 	r_plus = M*(1 + math.sqrt(1 - a**2))
+	r_minus = M*(1 - math.sqrt(1 - a**2))
 	file_name_root = file_name_roots[a_list[i]]
 	file_name_base = file_name_root + "_l={:d}_m={:d}.dat"
 	for j in range(0, len(lm_list)):
@@ -37,26 +36,27 @@ for i in range(0, len(a_list)):
 		data = np.genfromtxt(dataset_path, skip_header=1)
 		time = data[1, 0]
 		R = data[0,1:]
-		phi_integral = data[1, 1:]
+		phi_integral = np.log(data[1, 1:])
 		r = R*(1 + r_plus/(4*R))**2
-		if log_x:
-			plt.plot(np.log10(r - r_plus), phi_integral, colours[j] + styles[i], label="$a = ${:.2f} $l,m = $ {:d},{:d} mode".format(a, l, m))
+		r_star = r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus) 
+		if use_r_star:
+			plt.plot(r_star, phi_integral, colours[j], label="$a = ${:.2f} $l,m = $ {:d},{:d} mode".format(a, l, m))
 		else:	
 			plt.plot(r - r_plus, phi_integral, colours[j] + styles[i], label="$a = ${:.2f} $l,m = $ {:d},{:d} mode".format(a, l, m))
-if log_x:
-	plt.xlabel("$\\log_{10}(r_{BL}-r_+)$")
+if use_r_star:
+	plt.xlabel("$r_*$")
 else:
 	plt.xlabel("$r_{BL}-r_+$")
-plt.ylabel("$\\phi$ integral")
+plt.ylabel("ln($\\phi$ integral)")
 plt.grid(axis='both')
 #plt.ylim((-0.5, 0.5))
-dt = 0.5
-title = "l{:d}_m{:d}_Al0_mu{:.1f} Ylm integral, time = {:.1f}".format(true_lm[0], true_lm[1], mu, time) 
+title = "l={:d} m={:d} $\mu=${:.1f} $Y^m_l$ integral, time = {:.1f}".format(true_lm[0], true_lm[1], mu, time) 
 plt.title(title)
 plt.legend(fontsize=8)
 plt.tight_layout()
-if log_x:
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/phi_Ylm_integral_log10_l={:d}_m={:d}_t={:.1f}_plot_v2.png".format(true_lm[0], true_lm[1], time)
+subdir = file_name_roots[a_list[0]]
+if use_r_star:
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/phi_Ylm_integral_r_star_{:s}_t={:.1f}.png".format(subdir, time)
 else:
 	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/phi_Ylm_integral_l={:d}_m={:d}_t={:.1f}_plot_v2.png".format(true_lm[0], true_lm[1], time)	
 print("saved " + save_name)
