@@ -14,11 +14,11 @@ import ctypes
 start_time = time.time()
 
 a_dirs = {}
-a_dirs["0"] = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild_linear"
+a_dirs["0"] = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild_linear_rmax_400"
 
 z_position = 0.001	# z position of slice
 number = 1460
-dt = 0.25
+dt = 0.5
 t = number*dt
 
 # choose a values to plot
@@ -127,7 +127,7 @@ for i in range(0, len(a_list)):
 	r_plot_2 = np.linspace(r_plot_1[-1],60,64)[1:]
 	r_plot = np.concatenate((r_plot_1,r_plot_2))
 	r_star_plot = r_star_func(r_plot)"""
-	A = np.max(np.abs(phi))*0.9
+	A = np.max(np.abs(phi))*1.3
 	def Stationary_sol_KS(r, phase):
 		omega = mu
 		HR = HeunC(0, 0, float(a), omega, r)
@@ -135,15 +135,15 @@ for i in range(0, len(a_list)):
 		r_factor = 2*M*(r_plus*np.log(r/r_plus - 1) - r_minus*np.log(r - r_minus))/(r_plus - r_minus) 
 		result = -A*(HR*np.sin(omega*(t-r_factor)-phase) - HI*np.cos(omega*(t-r_factor)-phase))
 		return result	
-	r_out = r[15:]
-	phi_out = phi[15:]
+	r_out = r[2:]
+	phi_out = phi[2:]
 	popt, pconv = curve_fit(Stationary_sol_KS, r_out, phi_out, p0=(0))
 	#popt = [0.0]
 	phi_stationary_KS = Stationary_sol_KS(r_out, popt[0])
 	plt.plot(r_out, phi_stationary_KS, 'k--', linewidth=1, label="KS stationary solution, a={:s}, A={:.2f} phase={:.2}".format(a, A, popt[0]))		
 plt.ylabel("$\\phi$")
 plt.legend(fontsize=8)
-plt.xlim((2, 50))
+plt.xlim((2, 100))
 plt.ylim((-0.75, 0.75))
 title = "$\\Phi$ profile, Kerr-Schild coordinates, $M\mu=M\omega=1$ $l=m=0$ time={:.1f}".format(t) 
 plt.title(title)
@@ -154,7 +154,7 @@ plt.grid(axis="both")
 plt.tight_layout()
 
 save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/" 
-save_name = "phi_profile_vs_r_compare_Heun_KS_t={:.2f}.png".format(t)
+save_name = "phi_profile_vs_r_compare_Heun_KS_t={:.2f}_rmax_100.png".format(t)
 save_path = save_root_path + save_name
 plt.savefig(save_path, transparent=False)
 plt.clf()

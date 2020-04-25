@@ -4,11 +4,12 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/YlmIntegration
 
-subdir=run0029_KNL_l0_m0_a0.99_Al0_mu0.4_M1_correct_Ylm
+subdir=run0002.2_KNL_l0_m0_a0.99_Al0_mu1_M1
+suffix=_log_correct_r_min
 
 # extract parameters from params.txt
 echo ${subdir} "Ylm Integration"
-new_dir_path=outputs/${subdir}
+new_dir_path=outputs/${subdir}${suffix}
 #
 mkdir -p ${new_dir_path}
 
