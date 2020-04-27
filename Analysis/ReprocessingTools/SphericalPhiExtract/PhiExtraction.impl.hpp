@@ -59,9 +59,25 @@ inline void PhiExtraction::execute_query(
     a_interpolator->interp(query);
 
     auto integral = integrate_surface(interp_re_part);
-    std::string integral_filename = m_output_rootdir + "/" + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index];
+
+    // linear or log label
+    std::string log_label;
+    if (m_params.linear_or_log){
+        log_label = "linear_";
+    }
+    else {
+        log_label = "log_";
+    }
+
+    // number label 
+    std::ostringstream nlabel;
+    nlabel << std::setw(6) << std::setfill('0') << m_start_number;
+    std::string nstring = "n" + nlabel.str() + "_";
+
+    std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] + log_label + nstring + 
+    m_params.suffix;
+
     write_integral(integral, integral_filename);
-    
 
     if (m_params.write_extraction)
     {

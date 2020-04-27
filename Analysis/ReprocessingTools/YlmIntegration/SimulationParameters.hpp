@@ -26,8 +26,6 @@ struct integration_params_t
     int num_points_phi;
     int num_points_theta;
     int num_modes;
-    int start_number;
-    int end_number;
     std::vector<std::pair<int, int>> modes; // l = first, m = second
     std::vector<int> integration_levels;
     bool write_extraction;
@@ -55,8 +53,8 @@ class SimulationParameters : public ChomboParameters
 	pp.get("data_subdir", data_subdir);
 
         // Files setup
-        pp.get("end_number", integration_params.end_number);
-        pp.get("start_number", integration_params.start_number);
+        pp.get("end_number", end_number);
+        pp.get("start_number", start_number);
         pp.get("plot_interval", plot_interval);
 
         // basic integration params
@@ -131,10 +129,12 @@ class SimulationParameters : public ChomboParameters
 	}
 
 	// load suffix
-	if (pp.contains("suffix"))
-	{
-		pp.load("suffix", integration_params.suffix);
-	}
+        if (pp.contains("suffix"))
+        {
+                pp.get("suffix", integration_params.suffix);
+        } else {
+                integration_params.suffix = "";
+        }
 
 	pp.load("write_extraction", integration_params.write_extraction, false);
 
