@@ -26,9 +26,13 @@ struct integration_params_t
     int num_points_phi;
     int num_points_theta;
     int num_modes;
+    int start_number;
+    int end_number;
     std::vector<std::pair<int, int>> modes; // l = first, m = second
     std::vector<int> integration_levels;
     bool write_extraction;
+    bool linear_or_log;
+    std::string suffix;
     int min_integration_level;
     int variable_index; // index of the variable to integrate in the array of User Variables
 };
@@ -51,8 +55,8 @@ class SimulationParameters : public ChomboParameters
 	pp.get("data_subdir", data_subdir);
 
         // Files setup
-        pp.get("end_number", end_number);
-        pp.get("start_number", start_number);
+        pp.get("end_number", integration_params.end_number);
+        pp.get("start_number", integration_params.start_number);
         pp.get("plot_interval", plot_interval);
 
         // basic integration params
@@ -87,10 +91,10 @@ class SimulationParameters : public ChomboParameters
         }
 	// -- make integration radius array
 	if (pp.contains("min_integration_radius") && pp.contains("max_integration_radius")) {
-		pp.load("linear_or_log", linear_or_log, true);
+		pp.load("linear_or_log", integration_params.linear_or_log, true);
 		pp.load("min_integration_radius", integration_params.min_integration_radius);
 		pp.load("max_integration_radius", integration_params.max_integration_radius);
-		if (linear_or_log) {
+		if (integration_params.linear_or_log) {
 			integration_params.integration_radii = 
 			NumpyTools::linspace(integration_params.min_integration_radius, integration_params.max_integration_radius, integration_params.num_integration_radii);
 		} else {
@@ -124,6 +128,12 @@ class SimulationParameters : public ChomboParameters
                 integration_params.modes[i].second =
                     integration_modes_vect[2 * i + 1];
             }
+	}
+
+	// load suffix
+	if (pp.contains("suffix"))
+	{
+		pp.load("suffix", integration_params.suffix);
 	}
 
 	pp.load("write_extraction", integration_params.write_extraction, false);
