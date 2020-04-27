@@ -59,13 +59,26 @@ inline void YlmIntegration::execute_query(
     // submit the query
     a_interpolator->interp(query);
 
+    // linear or log label
+    std::string log_label;
+    if (m_params.linear_or_log){
+	log_label = "linear_";
+    }
+    else {
+	log_label = "log_";
+    }
+
+    // number label 
+    char nlabel[7];
+    std::string num_label = std::sprintf(nlabel,"%06d",m_start_number) + "_";   
+
     for (int imode = 0; imode < m_params.num_modes; ++imode)
     {
         const std::pair<int, int> &mode = m_params.modes[imode];
         auto integral = integrate_surface(0, mode.first, mode.second,
                                           interp_re_part);
-        std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] + 
-	"_Ylm_integral_l=" + std::to_string(mode.first) + "_m=" + std::to_string(mode.second) + ".dat";
+        std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] +
+	"_Ylm_integral_" + log_label + num_label + m_params.suffix + "l=" + std::to_string(mode.first) + "_m=" + std::to_string(mode.second);
         write_integral(integral, integral_filename, mode);
     }
 
@@ -167,11 +180,11 @@ YlmIntegration::write_integral(const std::vector<double> a_integral,
                                std::string a_filename, const std::pair<int, int> a_mode) const
 {
     CH_TIME("YlmIntegration::write_integral");
+    pout() << "attempting to write integral" << std::endl;
     // open file for writing
     SmallDataIO integral_file(a_filename, m_dt, m_time, m_restart_time,
                               SmallDataIO::APPEND, m_first_step);
 
-    pout() << "attempting to write integral" << std::endl;
     // remove any duplicate data if this is a restart
     integral_file.remove_duplicate_time_data();
 

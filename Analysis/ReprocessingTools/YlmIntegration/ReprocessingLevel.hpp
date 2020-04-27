@@ -43,7 +43,7 @@ class ReprocessingLevel : public GRAMRLevel
             // Now refresh the interpolator and do the interpolation
             m_gr_amr.m_interpolator->refresh();
             YlmIntegration phi_integration(m_p.integration_params, m_dt, m_time,
-                                         m_first_step, m_p.data_subdir, m_p.output_rootdir, m_restart_time);
+                                         m_first_step, m_p.data_subdir, m_p.output_rootdir, m_p.start_number, m_p.end_number, m_restart_time);
             phi_integration.execute_query(m_gr_amr.m_interpolator); //! <--- This routine includes performing the integration and writing the output to a file
         }		
 
