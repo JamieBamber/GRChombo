@@ -10,7 +10,7 @@ start_time = time.time()
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/"
 file_name_roots = {}
 a_list = ["0.99"]
-file_name_roots["0.99"] = "run0002.2_KNL_l0_m0_a0.99_Al0_mu1_M1_phi_Ylm_integral_linear"
+file_name_roots["0.99"] = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild_phi_Ylm_integral"
 lm_list = [(0, 0), (2, 0), (4, 0)]
 true_lm = [0, 0]
 mu = 0.4
@@ -56,7 +56,7 @@ plt.legend(fontsize=8)
 plt.tight_layout()
 subdir = file_name_roots[a_list[0]]
 if use_r_star:
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/phi_Ylm_integral_r_star_{:s}_t={:.1f}.png".format(subdir, time)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/phi_Ylm_integral_r_star_{:s}_t={:.1f}_log.png".format(subdir, time)
 else:
 	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/phi_Ylm_integral_l={:d}_m={:d}_t={:.1f}_plot_v2.png".format(true_lm[0], true_lm[1], time)	
 print("saved " + save_name)
