@@ -22,7 +22,6 @@ log*
 *.ex
 *.swp
 *.out
-*.dat
 *.hdf5
 *.dSYM
 LB.txt
