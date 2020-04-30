@@ -52,7 +52,7 @@ plt.tight_layout()
 if log_x:
 	save_name = "../plots/" + subdir + "_phi_Ylm_integral_log10_t={:.1f}.png".format(time)
 else:
-	save_name =  "../plots/" + file_name_root + "_phi_Ylm_integral_t={:.1f}_plot.png".format(time)
+	save_name =  "../plots/" + subdir + "_phi_Ylm_integral_t={:.1f}_plot.png".format(time)
 print("saved " + save_name)
 plt.savefig(save_name, transparent=False)
 plt.clf()
