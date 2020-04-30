@@ -26,7 +26,7 @@ class KerrSchildFixedBG
     {
         double mass = 1.0;                      //!<< The mass of the BH
         std::array<double, CH_SPACEDIM> center; //!< The center of the BH
-        double spin = 0.0;                      //!< The spin param a = J / M
+        double spin = 0.0;                      //!< The dimensionless spin param a = J / M^2
     };
 
     template <class data_t> using Vars = ADMFixedBGVars::Vars<data_t>;
@@ -38,7 +38,7 @@ class KerrSchildFixedBG
         : m_params(a_params), m_dx(a_dx)
     {
         // check this spin param is sensible
-        if ((m_params.spin > m_params.mass) || (m_params.spin < -m_params.mass))
+        if ((m_params.spin > 1) || (m_params.spin < -1))
         {
             MayDay::Error(
                 "The dimensionless spin parameter must be in the range "
@@ -53,7 +53,7 @@ class KerrSchildFixedBG
         // get position and set vars
         const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
         Vars<data_t> metric_vars;
-        compute_metric_background(metric_vars, current_cell);
+        compute_metric_background(metric_vars, coords);
 
         // calculate and save chi
         data_t chi = TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
@@ -64,13 +64,11 @@ class KerrSchildFixedBG
     // Kerr Schild solution
     template <class data_t, template <typename> class vars_t>
     void compute_metric_background(vars_t<data_t> &vars,
-                                   const Cell<data_t> &current_cell) const
+                                   const Coordinates<data_t> coords) const
     {
-        const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
-
         // black hole params - mass M and spin a
         const double M = m_params.mass;
-        const double a = m_params.spin;
+        const double a = M*m_params.spin;
         const double a2 = a * a;
 
         // work out where we are on the grid including effect of spin
@@ -177,7 +175,7 @@ class KerrSchildFixedBG
     {
         // black hole params - mass M and boost v
         const double M = m_params.mass;
-        const double a = m_params.spin;
+        const double a = M*m_params.spin;
         const double a2 = a * a;
 
         // work out where we are on the grid, and useful quantities
@@ -247,15 +245,14 @@ class KerrSchildFixedBG
   public:
     // used to decide when to excise - ie when within the horizon of the BH
     // note that this is not templated over data_t
-    double excise(const Cell<double> &current_cell) const
+    double excise(const Coordinates<double> coords) const
     {
         // black hole params - mass M and spin a
         const double M = m_params.mass;
-        const double a = m_params.spin;
+        const double a = M*m_params.spin;
         const double a2 = a * a;
 
         // work out where we are on the grid
-        const Coordinates<double> coords(current_cell, m_dx, m_params.center);
         const double x = coords.x;
         const double y = coords.y;
         const double z = coords.z;
