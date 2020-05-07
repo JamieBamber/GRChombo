@@ -72,7 +72,7 @@ def get_data(a_str, number):
 
 def get_chombo_data(a_str):
 	file_name = a_dirs[a_str] + "_phi.dat"
-	chombo_data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/SphericalPhiData/"
+	chombo_data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 	dataset_path = chombo_data_root_path + file_name
 	data = np.genfromtxt(dataset_path, skip_header=1)
 	time = data[1, 0]
@@ -101,7 +101,6 @@ def HeunC(index, reality, a, omega, r):
         factor = 1
         for i in range(0, r.size):
                 sol[i] = factor*Kerrlib.Rfunc(M, mu, omega, 0, a, 0, 0, index, reality, r[i])
-        sol = sol/np.max(np.abs(sol))
         return sol
 
 ### plot phi profiles vs r_BS
@@ -127,13 +126,14 @@ for i in range(0, len(a_list)):
 	r_plot_2 = np.linspace(r_plot_1[-1],60,64)[1:]
 	r_plot = np.concatenate((r_plot_1,r_plot_2))
 	r_star_plot = r_star_func(r_plot)"""
-	A = np.max(np.abs(phi))*1.3
+	A = np.max(np.abs(phi))
 	def Stationary_sol_KS(r, phase):
 		omega = mu
 		HR = HeunC(0, 0, float(a), omega, r)
 		HI = HeunC(0, 1, float(a), omega, r)
 		r_factor = 2*M*(r_plus*np.log(r/r_plus - 1) - r_minus*np.log(r - r_minus))/(r_plus - r_minus) 
-		result = -A*(HR*np.sin(omega*(t-r_factor)-phase) - HI*np.cos(omega*(t-r_factor)-phase))
+		result = -(HR*np.sin(omega*(t-r_factor)-phase) - HI*np.cos(omega*(t-r_factor)-phase))
+		result = A*result/np.max(np.abs(result))
 		return result	
 	r_out = r[2:]
 	phi_out = phi[2:]
@@ -154,7 +154,7 @@ plt.grid(axis="both")
 plt.tight_layout()
 
 save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/" 
-save_name = "phi_profile_vs_r_compare_Heun_KS_t={:.2f}_rmax_100.png".format(t)
+save_name = "phi_profile_vs_r_compare_Heun_KS_t={:.2f}_rmax_100_v2.png".format(t)
 save_path = save_root_path + save_name
 plt.savefig(save_path, transparent=False)
 plt.clf()

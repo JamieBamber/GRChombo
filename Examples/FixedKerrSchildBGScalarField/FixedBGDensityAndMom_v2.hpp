@@ -82,7 +82,7 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 
         // J_azimuth = x * S_y - y * S_z
         // J_azimuth_prime = x(S_y cos(alignment) + S_z sin(alignment)) - yprime * S_x
-        data_t J_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]);
+        data_t J_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma) * metric_vars.lapse;
 
         // fine the inward radial momentum (i.e. radial mass flux density)
         // S_r = (x * S_x + y * S_y + z * S_z)/r
