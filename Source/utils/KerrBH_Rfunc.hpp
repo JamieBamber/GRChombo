@@ -46,7 +46,7 @@ public:
         	eta = 0.5 + 2*B;
 	}
 
-	double compute(double r, bool index, bool real_or_imag){
+	double compute(double r, bool index, bool real_or_imag, bool KS_or_BL){
 		double z = (r_plus - r)/(r_plus - r_minus);
 		std::complex<double> rootDelta = std::sqrt(static_cast<std::complex<double>>((r - r_plus)*(r - r_minus))); 
 		int sgn;
@@ -57,6 +57,16 @@ public:
 		}
 		std::complex<double> Rfunc = (M/rootDelta)*std::exp(sgn*0.5*alpha*z)*pow((z-1),0.5*(1+gamma))
 						*pow(z,0.5*(1-sgn*beta))*HC.compute(sgn*alpha, -sgn*beta, gamma, delta, eta, z).val;		
+		// Kerr Schild correction
+		if (KS_or_BL) {
+			if (r_minus > 0) {
+				double r_factor = mu * ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) - r_minus * std::log(r/r_minus - 1));
+			} else {
+				double r_factor = mu * ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) );
+			}
+			KS_correction = polar(1.0, -r_factor);
+			Rfunc = Rfunc * KS_correction;
+		}
 		if (real_or_imag==true){
 			return std::real(Rfunc);
 		} else if (real_or_imag==false){

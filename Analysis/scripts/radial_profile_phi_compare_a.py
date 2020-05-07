@@ -19,12 +19,12 @@ a_dirs["0.7"] = "run0028_KNL_l0_m0_a0.7_Al0_mu0.4_M1_correct_Ylm"
 a_dirs["0.99"] = "run0029_KNL_l0_m0_a0.99_Al0_mu0.4_M1_correct_Ylm"
 
 z_position = 0.001	# z position of slice
-number = 1550
+number = 1250
 dt = 0.25
 t = number*dt
 
 # choose a values to plot
-a_list = ["0", "0.7", "0.99"]
+a_list = ["0", "0.99"]
 
 # set centre
 center = [512.0, 512.0, 0]
