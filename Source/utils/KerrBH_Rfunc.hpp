@@ -7,19 +7,26 @@
 #include <cmath>
 #include "HeunC.hpp"
 
-class KerrBH_Rfunc {
+struct Rfunc_with_deriv {
+	double Rfunc;
+	double d_Rfunc_dt;
+	double d_Rfunc_dr;
+};
 
+class KerrBH_Rfunc {
 public:
 	double M;
 	double mu;
-	std::complex<double> omega;
+	double omega;
 	double a; 
 	double r_plus, r_minus;
 	int l, m;
 	std::complex<double> alpha, beta, gamma, delta, eta;
 	
 	//constructor
-	KerrBH_Rfunc(const double M_, const double mu_, const std::complex<double> omega_, double a_, int l_, int m_){
+	KerrBH_Rfunc(const double M_, const double mu_, const double omega_, double a_, int l_, int m_)
+	: ComplexI(0.0, 1.0)
+	{
 		if (std::abs(m_)>l_){
 			throw std::invalid_argument("|m| must be less than or equal to l");
 		}
@@ -32,12 +39,12 @@ public:
 		r_plus = M*(1 + std::sqrt(1 - a*a));
         	r_minus = M*(1 - std::sqrt(1 - a*a)); 
         	double d = std::sqrt(1 - a*a);
-        	std::complex<double> lambda = Lambda_func(l,m,(a*a)*(std::pow(omega,2) - mu*mu));
-        	std::complex<double> A = (std::pow((m*a),2) - 4*a*omega*m*r_plus + 4*std::pow((omega*r_plus),2) + d*d)/d*d;
-        	std::complex<double> B = (-std::pow((m*a),2) + 4*a*M*omega*m + 4*(2*d - 1)*std::pow((omega*r_plus),2) - 2*std::pow((mu*d*r_plus),2)
+        	double lambda = Lambda_func(l,m,(a*a)*(std::pow(omega,2) - mu*mu));
+        	double A = (std::pow((m*a),2) - 4*a*omega*m*r_plus + 4*std::pow((omega*r_plus),2) + d*d)/d*d;
+        	double B = (-std::pow((m*a),2) + 4*a*M*omega*m + 4*(2*d - 1)*std::pow((omega*r_plus),2) - 2*std::pow((mu*d*r_plus),2)
                         	-2*(d*d)*(std::pow((omega*a*M),2) + lambda) - d*d)/(2*d*d);
-        	std::complex<double> C = (std::pow((m*a),2) - 4*a*omega*m*r_minus + 4*std::pow((omega*r_minus),2) + d*d)/(d*d);
-        	std::complex<double> D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
+        	double C = (std::pow((m*a),2) - 4*a*omega*m*r_minus + 4*std::pow((omega*r_minus),2) + d*d)/(d*d);
+        	double D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
                         	+2*(d*d)*(std::pow((omega*a*M),2) + lambda) + d*d)/(2*d*d);
         	alpha = 4*d*M*std::sqrt(static_cast<std::complex<double>>(mu*mu - std::pow(omega,2)));
         	beta = std::sqrt(static_cast<std::complex<double>>(1 - A));
@@ -46,43 +53,83 @@ public:
         	eta = 0.5 + 2*B;
 	}
 
-	double compute(double r, bool index, bool real_or_imag, bool KS_or_BL){
-		double z = (r_plus - r)/(r_plus - r_minus);
-		std::complex<double> rootDelta = std::sqrt(static_cast<std::complex<double>>((r - r_plus)*(r - r_minus))); 
+	double compute(double r, double t, bool ingoing, bool KS_or_BL){
 		int sgn;
-		if (index==true){
+		if (ingoing==true){
 			sgn = 1;
-		} else if (index==false){
+		} else if (ingoing==false){
 			sgn = -1;
 		}
-		std::complex<double> Rfunc = (M/rootDelta)*std::exp(sgn*0.5*alpha*z)*pow((z-1),0.5*(1+gamma))
-						*pow(z,0.5*(1-sgn*beta))*HC.compute(sgn*alpha, -sgn*beta, gamma, delta, eta, z).val;		
+		const double small = 0.0001;
+		const std::complex<double> H0 = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
+		double z = (r_plus - r)/(r_plus - r_minus);
+		std::complex<double> H = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z).val/H0;
+		std::complex<double> Rfunc = std::polar(1.0, -omega*t) * std::exp(sgn*0.5*alpha*z)*std::pow(-(z-1),0.5*(gamma))
+						*std::pow(-z,0.5*(sgn*beta))*H;		
 		// Kerr Schild correction
-		if (KS_or_BL) {
-			if (r_minus > 0) {
-				double r_factor = mu * ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) - r_minus * std::log(r/r_minus - 1));
-			} else {
-				double r_factor = mu * ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) );
-			}
-			KS_correction = polar(1.0, -r_factor);
-			Rfunc = Rfunc * KS_correction;
+                if (KS_or_BL) {
+			double r_factor;
+                        if (r_minus > 0) {
+                                r_factor = ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) - r_minus * std::log(r/r_minus - 1));
+                        } else {
+                                r_factor = ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) );
+                        }
+                        std::complex<double> KS_correction = std::polar(1.0, omega*r_factor);
+                        Rfunc = Rfunc * KS_correction;
+                }
+		return std::real(Rfunc);
+	}
+
+	Rfunc_with_deriv compute_with_deriv(double r, double t, bool ingoing, bool KS_or_BL){
+		// assuming R(r, t) = exp(- i omega t) * HeunC solution
+		double z = (r_plus - r)/(r_plus - r_minus);
+		std::complex<double> Delta = static_cast<std::complex<double>>((r - r_plus)*(r - r_minus));
+		int sgn;
+		if (ingoing==true){
+			sgn = 1;
+		} else if (ingoing==false){
+			sgn = -1;
 		}
-		if (real_or_imag==true){
-			return std::real(Rfunc);
-		} else if (real_or_imag==false){
-			return std::imag(Rfunc);
-		}
+		const double small = 0.0001;
+		const std::complex<double> H0 = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
+		std::complex<double> prefactor = std::exp(0.5*alpha*z)*std::pow(-(z-1),0.5*(gamma))
+                                                *std::pow(-z,0.5*(sgn*beta));
+		HeunCspace::HeunCvars HC_result = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z);
+		std::complex<double> Rfunc = std::polar(1.0, -omega*t) * prefactor * HC_result.val/H0;
+		std::complex<double> d_Rfunc_dt = -omega * ComplexI * Rfunc;
+		std::complex<double> d_Rfunc_dr = (-1/(r_plus - r_minus))*prefactor*( (0.5*sgn*alpha + 0.5*gamma/(z-1) + 0.5*sgn*beta/z)*HC_result.val/H0 
+							+ HC_result.dval/H0);
+		// Kerr Schild correction
+                if (KS_or_BL) {
+			double r_factor;
+                        if (r_minus > 0) {
+                                r_factor = ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) - r_minus * std::log(r/r_minus - 1));
+                        } else {
+                                r_factor = ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) );
+                        }
+                        std::complex<double> KS_correction = std::polar(1.0, omega*r_factor);
+                        Rfunc = Rfunc * KS_correction;
+			d_Rfunc_dt = d_Rfunc_dt * KS_correction;
+			d_Rfunc_dr = d_Rfunc_dr * KS_correction + ComplexI * omega * (2*M*r/Delta) * Rfunc;
+                }
+		// output struct 
+		Rfunc_with_deriv output;
+		output.Rfunc = std::real(Rfunc);
+		output.d_Rfunc_dt = std::real(d_Rfunc_dt);
+		output.d_Rfunc_dr = std::real(d_Rfunc_dr);
+		return output;
 	}
 
 private:		
+	// complex i
+	const std::complex<double> ComplexI;	
 	HeunCspace::HeunC HC;
 
 	double h(int l, int m){
 		double h_ = (l*l - m*m)*l/(2*(l*l - 0.25));
         	return h_;
-	}
-	
-	std::complex<double> Lambda_func(int l,int m,std::complex<double> c2=0){
+	}	
+	double Lambda_func(int l,int m,double c2=0){
         	if (c2==0){
                 	return l*(l+1);
 		}

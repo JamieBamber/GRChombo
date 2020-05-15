@@ -8,28 +8,41 @@ from sys import exit
 # start
 print("starting visit run")
 
+""" files
+add_data_dir(data_dirs, 59, 1, 1, "0.7", "0.05")
+add_data_dir(data_dirs, 39, 1, 1, "0.7", "0.4")
+add_data_dir(data_dirs, 61, 1, 1, "0.7", "1")
+add_data_dir(data_dirs, 60, 1, 1, "0.7", "2")"""
+
 # file settings
-data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-subdir = "run0002_FlatScalar_mu0.4_G0"
+data_root_dir = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
+run_number=59
+mu="0.05"
+a="0.7"
+l=1
+m=1
+subdir = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu{:s}_M1_correct_Ylm_new_rho".format(run_number, l, m, a, mu)
 number = 100
-data_file_name = "BinaryBHSFPlot_%06d.3d.hdf5" % number
+L=1024
+width=
 
 # open datafile(s)
+data_file_name = "BinaryBHSFPlot_%06d.3d.hdf5" % number
 OpenDatabase(data_root_dir + subdir + "/" + data_file_name,0)
 
 # add plot
-AddPlot("Pseudocolor", "phi", 1, 1)
+AddPlot("Pseudocolor", "rho", 1, 1)
 PseudocolorAtts = PseudocolorAttributes()
 PseudocolorAtts.scaling = PseudocolorAtts.Linear  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = -4.0
+PseudocolorAtts.min = 0
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = 4.0
+PseudocolorAtts.max = 0.01
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-PseudocolorAtts.colorTableName = "RdBu"
-PseudocolorAtts.invertColorTable = 1
+PseudocolorAtts.colorTableName = "inferno"
+PseudocolorAtts.invertColorTable = 0
 PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 PseudocolorAtts.opacity = 1
 PseudocolorAtts.pointSize = 0.05
@@ -71,7 +84,7 @@ DrawPlots()
 
 # Set viewing attributes
 View2DAtts = View2DAttributes()
-View2DAtts.windowCoords = (240, 272, 240, 272)
+View2DAtts.windowCoords = (0.5*(L-width), 0.5*(L+width), 0.5*(L-width), 0.5*(L+width))
 View2DAtts.viewportCoords = (0.2, 0.95, 0.15, 0.95)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
@@ -81,8 +94,9 @@ View2DAtts.windowValid = 1
 SetView2D(View2DAtts)
 
 # save plot as png
-root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
-filename = "BBH_SF_phi_" + subdir + "_n%06d_" % number 
+root_plot_path = "/home/dc-bamb1/GRChombo/Analysis/plots/"
+#root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
+filename = "KerrSF_rho_" + subdir + "_n%06d" % number 
 s = SaveWindowAttributes()
 s.format = s.PNG
 s.progressive = 1

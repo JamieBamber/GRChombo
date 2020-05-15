@@ -38,6 +38,7 @@ data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/Kerr
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
 M = 1
 max_radius = 450
+phi0 = 0.1
 
 output_dir = "data/compare_mu_mass"
 
@@ -79,7 +80,6 @@ def calculate_mass_in_sphere(dd):
         	def _rho_E_eff(field, data):
                 	return data["rho"]
 		
-
 	dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_*.3d.hdf5"
 	ds = yt.load(dataset_path) # this loads a dataset time series
 	print("loaded data from ", dataset_path)
@@ -151,20 +151,25 @@ def plot_graph():
 	for dd in data_dirs:
 		line_data = data[dd.num]
 		t = line_data[:,0]
+		mu = float(dd.mu)
 		mass = line_data[:,1] #- line_data[0,1]
-		label_ = "l={:d} m={:d} a={:s} mu={:s}".format(dd.l, dd.m, str(dd.a), dd.mu)
+		E0 = 0.5*(mu**2)*(4*np.pi/3)*(max_radius**3)*phi0**2
+		delta_mass = (mass[1:] - mass[0])/E0
+		label_ = "l={:d} m={:d} a={:s} $\\mu$={:s}".format(dd.l, dd.m, str(dd.a), dd.mu)
 		if change_in_E:
-			plt.plot(t[1:], (line_data[1:,1] - line_data[0,1])/(float(dd.mu)**2), colours[i], label=label_)
+			plt.plot(t[1:], delta_mass, colours[i], label=label_)
 		else:
 			plt.plot(t, mass, colours[i], label=label_)
 		i = i + 1
-	plt.xlabel("time")
+	plt.xlabel("$t$")
 	if change_in_E:
-		plt.ylabel("$\\Delta E / \mu^2$ in $r < $" + str(max_radius))
+		plt.ylabel("$\\Delta E / E_0$ in $r < $" + str(max_radius))
 	else:
 		plt.ylabel("$E$ in $r < $" + str(max_radius))
 	plt.legend(loc='upper left', fontsize=8)
 	plt.title("scalar field energy inside a sphere vs time, $M=1$, different $\\mu$")
+#	plt.xlim((0, 450))
+	plt.ylim((-0.004, 0.004))
 	plt.tight_layout()
 	if change_in_E:
 		save_path = home_path + "plots/delta_mass_in_sphere_compare_mu_radius_" + str(max_radius) + ".png"

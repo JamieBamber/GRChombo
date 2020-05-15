@@ -1,8 +1,7 @@
 #include "KerrBH_Rfunc.hpp"
 
-extern "C" double Rfunc(double M, double mu, double real_omega, double imag_omega, double a, int l, int m, bool index, bool reality, double r){
-	std::complex<double> omega(real_omega, imag_omega);
+extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, bool ingoing, bool KS_or_BL, double t, double r){
 	KerrBH_Rfunc Rfunc(M, mu, omega, a, l, m);	
-	double result = Rfunc.compute(r, index, reality);
+	double result = Rfunc.compute(r, t, ingoing, KS_or_BL);
 	return result;
 }
