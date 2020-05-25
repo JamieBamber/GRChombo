@@ -1,4 +1,5 @@
 #!/bin/bash
+load $WORK_DIR/CSD3-Intel-modules.sh
 current_dir=$(pwd)
 utils_dir=/home/dc-bamb1/GRChombo/Source/utils
 cd ${utils_dir}

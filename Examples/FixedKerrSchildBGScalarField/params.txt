@@ -77,11 +77,11 @@ sigma = 0.5
 # for s = 0.99 omega_crit = m * 0.4338
 #	so m_crit = 2.30
 # SF Initial data
-scalar_mass = 1
+scalar_mass = 0.4
 scalar_amplitude = 0.1
-scalar_omega = 1
-scalar_l = 0
-scalar_m = 0
+scalar_omega = 0.4
+scalar_l = 1
+scalar_m = 1
 alignment = 0.0
 
 # BH initial data

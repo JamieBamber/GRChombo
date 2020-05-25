@@ -19,7 +19,7 @@ class data_dir:
 		self.m = m
 		self.a = float(a)
 		self.mu = mu
-		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu{:s}_M1_correct_Ylm_new_rho".format(num, l, m, a, mu)
+		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu{:s}_M1_correct_Ylm".format(num, l, m, a, mu)
 	filename = ""
 		
 def add_data_dir(list, num, l, m, a, mu):
@@ -28,10 +28,10 @@ def add_data_dir(list, num, l, m, a, mu):
 
 data_dirs = []
 # choose datasets to compare
-add_data_dir(data_dirs, 59, 1, 1, "0.7", "0.05")
-add_data_dir(data_dirs, 39, 1, 1, "0.7", "0.4")
-add_data_dir(data_dirs, 61, 1, 1, "0.7", "1")
-add_data_dir(data_dirs, 60, 1, 1, "0.7", "2")
+add_data_dir(data_dirs, 32, 1, 1, "0", "0.4")
+#add_data_dir(data_dirs, 39, 1, 1, "0.7", "0.4")
+add_data_dir(data_dirs, 37, 1, 1, "0.99", "0.4")
+add_data_dir(data_dirs, 49, 1, -1, "0.99", "0.4")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -40,17 +40,14 @@ M = 1
 max_radius = 450
 phi0 = 0.1
 
-output_dir = "data/compare_mu_mass"
+output_dir = "data/compare_almmu_mass"
 
 half_box = True
 
 change_in_E = True
 	
-"""@derived_field(name = "rho_J_eff", units = "")
-def _rho_J_eff(field, data):
-       	return data["S_azimuth"]*pow(data["chi"],-3)"""
-
-rho_v1_yes_no = False
+data_Eulerian_rho = True
+use_Eulerian_rho = True
 
 def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
@@ -62,19 +59,19 @@ def calculate_mass_in_sphere(dd):
 	
 	# load dataset time series
 	
-	if rho_v1_yes_no:
+	if (data_Eulerian_rho and not use_Eulerian_rho):
 		# derived fields
 		@derived_field(name = "rho_E_eff", units = "")
 		def _rho_E_eff(field, data):
 			r_BL = (data["spherical_radius"]/cm)*(1 + r_plus*cm/(4*data["spherical_radius"]))**2
-			Sigma2 = r_BL**2 + (data["z"]*a*M/(r_BL*cm))
+			Sigma2 = r_BL**2 + (data["z"]*a*M/(r_BL*cm))**2
 			Delta = r_BL**2 + (a*M)**2 - 2*M*r_BL
 			A = (r_BL**2 + (a*M)**2)**2 - ((a*M)**2)*Delta*(data["x"]**2 + data["y"]**2)/((cm**2)*r_BL)
 			alpha = pow(Delta*Sigma2/A, 0.5)
-			beta = 2*a*(M**2)*r_BL/A 
-			return (data["rho"]*alpha + beta*data["S_azimuth"])*pow(data["chi"],-3)
+			beta = -2*a*(M**2)*r_BL/A 
+			return (data["rho"]*alpha - beta*data["S_azimuth"])*pow(data["chi"],-3)
 
-	elif not rho_v1_yes_no:
+	elif ((data_Eulerian_rho and use_Eulerian_rho) or ((not data_Eulerian_rho) and (not use_Eulerian_rho))):
 		# derived fields
         	@derived_field(name = "rho_E_eff", units = "")
         	def _rho_E_eff(field, data):
@@ -122,7 +119,10 @@ def calculate_mass_in_sphere(dd):
 		# make data directory if it does not already exist
 		makedirs(home_path + output_dir, exist_ok=True)
 		# output to file
-		dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+		if use_Eulerian_rho:
+			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+		else:
+			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		f = open(output_path, "w+")
@@ -155,7 +155,12 @@ def plot_graph():
 		mass = line_data[:,1] #- line_data[0,1]
 		E0 = 0.5*(mu**2)*(4*np.pi/3)*(max_radius**3)*phi0**2
 		delta_mass = (mass[1:] - mass[0])/E0
-		label_ = "l={:d} m={:d} a={:s} $\\mu$={:s}".format(dd.l, dd.m, str(dd.a), dd.mu)
+		m = abs(dd.m)
+		if (dd.m < 0):
+			a = -dd.a
+		else:
+			a = dd.a
+		label_ = "l={:d} m={:d} a={:.2f}".format(dd.l, m, a)
 		if change_in_E:
 			plt.plot(t[1:], delta_mass, colours[i], label=label_)
 		else:
@@ -167,19 +172,19 @@ def plot_graph():
 	else:
 		plt.ylabel("$E$ in $r < $" + str(max_radius))
 	plt.legend(loc='upper left', fontsize=8)
-	plt.title("scalar field energy inside a sphere vs time, $M=1$, different $\\mu$")
-#	plt.xlim((0, 450))
-	plt.ylim((-0.004, 0.004))
+	plt.title("scalar field energy inside a sphere vs time, $M=1$, $\\mu=0.4$")
+	#plt.xlim((0, 450))
+	#plt.ylim((0, 0.004))
 	plt.tight_layout()
 	if change_in_E:
-		save_path = home_path + "plots/delta_mass_in_sphere_compare_mu_radius_" + str(max_radius) + ".png"
+		save_path = home_path + "plots/delta_mass_in_sphere_compare_a_l=m=1_radius_" + str(max_radius) + ".png"
 	else:
 		save_path = home_path + "plots/mass_in_sphere_compare_mu_radius_" + str(max_radius) + ".png"
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-#for dd in data_dirs:
-#	calculate_mass_in_sphere(dd)
+for dd in data_dirs:
+	calculate_mass_in_sphere(dd)
 
-plot_graph()
+#plot_graph()

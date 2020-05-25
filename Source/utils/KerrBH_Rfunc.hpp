@@ -64,19 +64,14 @@ public:
 		const std::complex<double> H0 = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
 		double z = (r_plus - r)/(r_plus - r_minus);
 		std::complex<double> H = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z).val/H0;
-		std::complex<double> Rfunc = std::polar(1.0, -omega*t) * std::exp(sgn*0.5*alpha*z)*std::pow(-(z-1),0.5*(gamma))
-						*std::pow(-z,0.5*(sgn*beta))*H;		
+		std::complex<double> zfactor;
 		// Kerr Schild correction
                 if (KS_or_BL) {
-			double r_factor;
-                        if (r_minus > 0) {
-                                r_factor = ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) - r_minus * std::log(r/r_minus - 1));
-                        } else {
-                                r_factor = ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) );
-                        }
-                        std::complex<double> KS_correction = std::polar(1.0, omega*r_factor);
-                        Rfunc = Rfunc * KS_correction;
-                }
+			zfactor = std::polar(1.0, -2*m*std::atan2(a, r))*std::pow(-(z-1),gamma)*std::pow(-z,0.5*(sgn-1)*beta);
+		} else {
+			zfactor = std::pow(-(z-1),0.5*gamma)*std::pow(-z,0.5*sgn*beta);
+		}
+		std::complex<double> Rfunc = std::polar(1.0, -omega*t)*std::exp(sgn*0.5*alpha*z)*zfactor*H;		
 		return std::real(Rfunc);
 	}
 
@@ -92,26 +87,23 @@ public:
 		}
 		const double small = 0.0001;
 		const std::complex<double> H0 = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
-		std::complex<double> prefactor = std::exp(0.5*alpha*z)*std::pow(-(z-1),0.5*(gamma))
-                                                *std::pow(-z,0.5*(sgn*beta));
+		std::complex<double> zfactor;
+		std::complex<double> dzfactor_z;
 		HeunCspace::HeunCvars HC_result = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z);
-		std::complex<double> Rfunc = std::polar(1.0, -omega*t) * prefactor * HC_result.val/H0;
-		std::complex<double> d_Rfunc_dt = -omega * ComplexI * Rfunc;
-		std::complex<double> d_Rfunc_dr = (-1/(r_plus - r_minus))*prefactor*( (0.5*sgn*alpha + 0.5*gamma/(z-1) + 0.5*sgn*beta/z)*HC_result.val/H0 
-							+ HC_result.dval/H0);
 		// Kerr Schild correction
                 if (KS_or_BL) {
-			double r_factor;
-                        if (r_minus > 0) {
-                                r_factor = ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) - r_minus * std::log(r/r_minus - 1));
-                        } else {
-                                r_factor = ((2*M)/(r_plus - r_minus)) * ( r_plus * std::log(r/r_plus - 1) );
-                        }
-                        std::complex<double> KS_correction = std::polar(1.0, omega*r_factor);
-                        Rfunc = Rfunc * KS_correction;
-			d_Rfunc_dt = d_Rfunc_dt * KS_correction;
-			d_Rfunc_dr = d_Rfunc_dr * KS_correction + ComplexI * omega * (2*M*r/Delta) * Rfunc;
-                }
+			zfactor = std::polar(1.0, -2*m*std::atan2(a, r))*std::pow(-(z-1),gamma)*std::pow(-z,0.5*(sgn-1)*beta);
+			dzfactor_z = (r_minus - r_plus)*2*ComplexI*m*a*M/(r*r + (a*M)*(a*M)) + gamma/(z-1) + 0.5*(sgn-1)*beta/z;
+		} else {
+			zfactor = std::pow(-(z-1),0.5*gamma)*std::pow(-z,0.5*sgn*beta);
+			dzfactor_z = 0.5*gamma/(z-1) + 0.5*sgn*beta/z;
+		}
+		
+		std::complex<double> prefactor = std::polar(1.0, -omega*t) * std::exp(0.5*alpha*z);
+		std::complex<double> Rfunc = prefactor * zfactor * HC_result.val/H0;
+		std::complex<double> d_Rfunc_dt = -omega * ComplexI * Rfunc;
+		std::complex<double> d_Rfunc_dr = (-1.0/(r_plus - r_minus))*prefactor*zfactor*( (0.5*sgn*alpha + dzfactor_z)*HC_result.val/H0 
+							+ HC_result.dval/H0);
 		// output struct 
 		Rfunc_with_deriv output;
 		output.Rfunc = std::real(Rfunc);
