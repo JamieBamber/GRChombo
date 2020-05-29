@@ -4,7 +4,7 @@ dependencies:
   - numpy
   - scipy
   - matplotlib
-  - yt
+  - yt=3.6
   - h5py
   - python=3.6
   - mpi4py
