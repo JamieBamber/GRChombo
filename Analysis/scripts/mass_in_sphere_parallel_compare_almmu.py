@@ -21,17 +21,29 @@ class data_dir:
 		self.mu = mu
 		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu{:s}_M1_correct_Ylm".format(num, l, m, a, mu)
 	filename = ""
-		
-def add_data_dir(list, num, l, m, a, mu):
-	x = data_dir(num, l, m, a, mu)
-	list.append(x)
 
-data_dirs = []
+data_dirs = []		
+def add_data_dir(num, l, m, a, mu):
+	x = data_dir(num, l, m, a, mu)
+	data_dirs.append(x)
+
 # choose datasets to compare
-add_data_dir(data_dirs, 32, 1, 1, "0", "0.4")
-#add_data_dir(data_dirs, 39, 1, 1, "0.7", "0.4")
-add_data_dir(data_dirs, 37, 1, 1, "0.99", "0.4")
-add_data_dir(data_dirs, 49, 1, -1, "0.99", "0.4")
+
+add_data_dir( 28, 0, 0, "0.7", "0.4")
+# add_data_dir( 39, 1, 1, "0.7", "0.4")
+add_data_dir( 42, 5, 1, "0.7", "0.4")
+add_data_dir( 55, 7, 1, "0.7", "0.4")
+
+#add_data_dir( 31, 0, 0, "0", "0.4")
+#add_data_dir( 29, 0, 0, "0.99", "0.4")
+
+#add_data_dir( 32, 1, 1, "0", "0.4")
+#add_data_dir( 32, 1, 1, "0", "0.4")
+#add_data_dir( 37, 1, 1, "0.99", "0.4")
+#add_data_dir( 46, 2, 2, "0", "0.4")
+#add_data_dir( 50, 2, -2, "0.99", "0.4")
+
+#add_data_dir( 49, 1, -1, "0.99", "0.4")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -47,7 +59,7 @@ half_box = True
 change_in_E = True
 	
 data_Eulerian_rho = True
-use_Eulerian_rho = True
+use_Eulerian_rho = False
 
 def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
@@ -120,9 +132,9 @@ def calculate_mass_in_sphere(dd):
 		makedirs(home_path + output_dir, exist_ok=True)
 		# output to file
 		if use_Eulerian_rho:
-			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_Eulerian_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
 		else:
-			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		f = open(output_path, "w+")
@@ -139,7 +151,10 @@ def load_data():
 	# load data from csv files
 	data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+		if use_Eulerian_rho:
+			file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_Eulerian_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+		else:
+			file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded data for " + dd.name)
 	return data 	
@@ -184,7 +199,7 @@ def plot_graph():
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-for dd in data_dirs:
-	calculate_mass_in_sphere(dd)
+#for dd in data_dirs:
+#	calculate_mass_in_sphere(dd)
 
-#plot_graph()
+plot_graph()

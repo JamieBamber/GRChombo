@@ -21,7 +21,7 @@
 
 #include "MatterConstraints.hpp"
 #include "MatterCCZ4.hpp"
-#include "DensityAndMom_v2.hpp"
+#include "DensityAndMom.hpp"
 #include "FlatScalar.hpp"
 #include "ScalarPotential.hpp"
 #include "ScalarField.hpp"
@@ -69,10 +69,6 @@ void BinaryBHLevel::initialData()
     // then calculate initial data
     BoxLoops::loop(make_compute_pack(SetValue(0.), binary), m_state_new,
                   m_state_new, INCLUDE_GHOST_CELLS);
-
-    // Initial conditions for scalar field - constant amplitude
-    /*BoxLoops::loop(SetValue(m_p.initial_params.field_amplitude, Interval(c_phi, c_phi)), m_state_new,
-                   m_state_new, FILL_GHOST_CELLS);*/
 
     // scalar field compute class
     FlatScalar initial_sf(m_p.initial_params, m_dx);
@@ -250,7 +246,7 @@ void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const
 {
     if (m_verbosity)
 	pout() << "starting BinaryBHLevel::specificWritePlotHeader()" << endl;
-    plot_states = {c_chi, c_phi, c_rho, c_S_azimuth, c_S_r};
+    plot_states = {c_chi, c_phi, c_Pi, c_rho, c_S_azimuth, c_S_r, c_S_Jr};
     if (m_verbosity)
 	pout() << "Done BinaryBHLevel::specificWritePlotHeader()" << endl;
 }

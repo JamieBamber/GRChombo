@@ -8,10 +8,9 @@
 
 #include "CCZ4Geometry.hpp"
 #include "Cell.hpp"
-#include "Constraints.hpp"
+#include "BSSNVars.hpp"
 #include "Coordinates.hpp"
 #include "FourthOrderDerivatives.hpp"
-#include "GRInterval.hpp"
 #include "Tensor.hpp"
 #include "UserVariables.hpp" //This files needs NUM_VARS - total number of components
 #include "VarsTools.hpp"
@@ -20,40 +19,42 @@
 
 //! Calculates the density rho with type matter_t and writes it to the grid
 template <class matter_t> 
-class DensityAndMom : public Constraints
+class DensityAndMom
 {
   public:
     // Use the variable definition in the matter class
     template <class data_t>
     using MatterVars = typename matter_t::template Vars<data_t>;
 
-    // Inherit the variable definitions from CCZ4 + matter_t
+    /// CCZ4 variables
+    template <class data_t> 
+    using MetricVars = BSSNVars::VarsNoGauge<data_t>;
+
+    // Inherit the variables from MatterVars and MetricVars
     template <class data_t>
-    struct Vars : public Constraints::Vars<data_t>, public MatterVars<data_t>
-    // setting up a struct DensityAndMom::Vars which inherits from the struct CCZ4::Vars
+    struct Vars : public MetricVars<data_t>, public MatterVars<data_t>
     {
         /// Defines the mapping between members of Vars and Chombo grid
         /// variables (enum in User_Variables)
-        template <typename mapping_function_t> // this is a template function
+        template <typename mapping_function_t>
         void enum_mapping(mapping_function_t mapping_function)
         {
-            Constraints::Vars<data_t>::enum_mapping(mapping_function);
+            MetricVars<data_t>::enum_mapping(mapping_function);
             MatterVars<data_t>::enum_mapping(mapping_function);
         }
     };
 
     DensityAndMom(matter_t a_matter, double a_dx, std::array<double, CH_SPACEDIM> a_center)
-        : Constraints(a_dx, 0.0 /*No cosmological constant*/), m_matter(a_matter), m_deriv(a_dx), 
-		m_dx(a_dx), m_center(a_center)
+        : m_matter(a_matter), m_deriv(a_dx), m_dx(a_dx), m_center(a_center)
     {
     }
 
     template <class data_t> void compute(Cell<data_t> current_cell) const
     {
+	CH_TIME("DensityAndMom::compute");
         // copy data from chombo gridpoint into local variables, and derivs
 	const auto vars = current_cell.template load_vars<Vars>();
         const auto d1 = m_deriv.template diff1<Vars>(current_cell);
-
         const auto h_UU = TensorAlgebra::compute_inverse_sym(vars.h);
 	const auto chris = TensorAlgebra::compute_christoffel(d1.h, h_UU);
 
@@ -68,11 +69,24 @@ class DensityAndMom : public Constraints
 	data_t x = coords.x;
         double y = coords.y;
         double z = coords.z;
+	data_t R = coords.get_radius();
+	// d x / d azimuth
+	Tensor<1, data_t> dx_daz;
+        dxdaz[0] = - y;
+        dxdaz[1] =   x;
+        dxdaz[2] = 0;
+	// outward radial vector
+	Tensor<1, data_t> Ni;
+	Ni[0] = x/R;
+	Ni[1] = y/R;
+	Ni[2] = z/R;
 	data_t S_azimuth = x * emtensor.Si[1] - y * emtensor.Si[0];
-	data_t r = coords.get_radius();
-	data_t S_r = -(x * emtensor.Si[0] + y * emtensor.Si[1] + z * emtensor.Si[2])/r;		
+	data_t S_r = (x * emtensor.Si[0] + y * emtensor.Si[1] + z * emtensor.Si[2])/R;		
+	data_t S_Jr = 0;
+	FOR2(i, j) { S_Jr += emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }
 	current_cell.store_vars(S_azimuth, c_S_azimuth);
 	current_cell.store_vars(S_r, c_S_r);
+	current_cell.store_vars(S_Jr, c_S_Jr);
      }
 
   protected:
