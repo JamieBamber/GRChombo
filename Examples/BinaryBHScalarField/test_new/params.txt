@@ -5,9 +5,10 @@
 
 # location / naming of output files (must give full path)
 verbosity = 0
-chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_2_nodes_4_OMP_Skylake_params_B/BinaryBHSFChk_
-plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_2_nodes_4_OMP_Skylake_params_B/BinaryBHSFPlot_
-#restart_file = BinaryBHChk_000000.3d.hdf5
+nan_check = 1
+chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_new/BinaryBHSFChk_
+plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_new/BinaryBHSFPlot_
+#restart_file = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_new/BinaryBHChk_000000.3d.hdf5
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
@@ -17,17 +18,18 @@ N3 = 32
 
 # scalar field parameters
 G_Newton = 0.0
-scalar_mass = 1.0
+scalar_mass = 0.081876
 field_amplitude = 1.0
+delay = 100
 
 # Length of the longest N side
 # (This sets dx in all directions)
 L = 512
 center = 256.0 256.0 0
 extraction_center = 256 256 0
-track_punctures = 0
+track_punctures = 1
 
-# BH params
+# raw BH params
 massA = 0.48847892320123
 offsetA = 0.0 6.10679 0.0
 momentumA = -0.0841746 -0.000510846 0.0
@@ -35,6 +37,10 @@ momentumA = -0.0841746 -0.000510846 0.0
 massB = 0.48847892320123
 offsetB = 0.0 -6.10679 0.0
 momentumB =  0.0841746  0.000510846 0.0
+
+# desired seperation
+## base seperation = 12.21358 
+# desired_seperation = 12.21358
 
 # regridding control, specify frequency on each level
 # so need max_level + 1 entries for interval
@@ -61,8 +67,8 @@ vars_parity            = 0 0 4 6 0 5 0    #chi and hij
                          0 0 4 6 0 5 0    #K and Aij
                          0 1 2 3          #Theta and Gamma
                          0 1 2 3 1 2 3    #lapse shift and B
-                         0 0              # phi and Pi
-                         0 0 0            # rho, S_azimuth, S_r
+                         0 0	          # phi and Pi
+			 0 0 0 0 	  # rho, S_azimuth, S_r, S_Jr
                          0 1 2 3          #Ham and Mom
                          0 0              #Weyl
 
@@ -72,9 +78,9 @@ vars_asymptotic_values = 1.0 1.0 0.0 0.0 1.0 0.0 1.0 #chi and hij
                          0.0 0.0 0.0 0.0 0.0 0.0 0.0 #K and Aij
                          0.0 0.0 0.0 0.0             #Theta and Gamma
                          1.0 0.0 0.0 0.0 0.0 0.0 0.0 #lapse shift and B
-                         0.0 0.0                     #phi and Pi
-                         0.0 0.0 0.0                 #rho, S_azimuth, S_r
-                         0.0 0.0 0.0 0.0             #Ham and Mom
+                         0.0 0.0		     #phi and Pi
+                         0.0 0.0 0.0 0.0	     #rho, S_azimuth, S_r, S_Jr
+			 0.0 0.0 0.0 0.0             #Ham and Mom
                          0.0 0.0                     #Weyl
 
 # Max and min box sizes
@@ -88,10 +94,11 @@ block_factor = 16
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
 plot_interval = 5
-dt_multiplier = 0.25 # 1/16 = 0.0625, 1/32 = 0.03125
-stop_time = 1200
-## base level 0 timestep = 8, min timestep = 1/16
-# period = 2pi/mu
+dt_multiplier = 0.4 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
+stop_time = 2300.0
+## dt_actual = 8*dt_multiplier = 3.2
+## 2*pi / mu =~ 6 / 0.4 = 15
+## 1 / mu = 2.5
 
 # Lapse evolution
 lapse_advec_coeff = 1.0
@@ -116,7 +123,7 @@ sigma = 1.0
 # extraction params
 # default of extraction_center is center, uncomment to change
 extraction_center = 256 256 0
-activate_extraction = 0
+activate_extraction = 1 # this needs to be 1 otherwise it breaks.
 write_extraction = 0
 num_extraction_radii = 2
 extraction_radii = 50.0 100.0
@@ -127,9 +134,9 @@ num_modes = 1
 modes = 2 0 # l m for spherical harmonics
         2 1
         2 2
-
         #4 0
         #4 1
         #4 2
         #4 3
         #4 4
+

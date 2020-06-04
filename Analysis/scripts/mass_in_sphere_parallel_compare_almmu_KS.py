@@ -32,7 +32,7 @@ data_dirs = []
 # choose datasets to compare
 add_data_dir(data_dirs, 71, 1, 1, "0.99", "0.4")
 add_data_dir(data_dirs, 72, 1, -1, "0.99", "0.4")
-add_data_dir(data_dirs, 73, 4, 4, "0.7", "0.4")
+add_data_dir(data_dirs, 74, 0, 0, "0.7", "0.4")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -171,7 +171,7 @@ def plot_graph():
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-#for dd in data_dirs:
-#	calculate_mass_in_sphere(dd)
+for dd in data_dirs:
+	calculate_mass_in_sphere(dd)
 
-plot_graph()
+#plot_graph()

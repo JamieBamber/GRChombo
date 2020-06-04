@@ -21,6 +21,7 @@
 
 #include "MatterConstraints.hpp"
 #include "MatterCCZ4.hpp"
+#include "MatterOnly.hpp"
 #include "DensityAndMom.hpp"
 #include "FlatScalar.hpp"
 #include "ScalarPotential.hpp"
@@ -127,13 +128,23 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     // ---> With Scalar Field
     ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
-    MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
-    	scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
-    	m_p.G_Newton);
-    BoxLoops::loop(
-        make_compute_pack(my_ccz4_matter,
+    if (a_time < m_p.delay){
+	    MatterOnly<ScalarFieldWithPotential> my_matter(
+                scalar_field, m_p.sigma, m_dx);
+    	    BoxLoops::loop(
+	        make_compute_pack(my_matter,
                           SetValue(0, Interval(c_rho, NUM_VARS - 1))),
-        a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+        	a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+
+    } else {
+	    MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
+    		scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
+    		m_p.G_Newton);
+	    BoxLoops::loop(
+	        make_compute_pack(my_ccz4_matter,
+                          SetValue(0, Interval(c_rho, NUM_VARS - 1))),
+       		 a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+    }
 
    if (m_verbosity)
       pout() << "Done BinaryBHLevel::specificEvalRHS() t = " << a_time << endl;

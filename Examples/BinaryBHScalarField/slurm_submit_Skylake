@@ -14,13 +14,13 @@
 #! Which project should be charged:
 #SBATCH -A DIRAC-DP131-CPU
 #! How many whole nodes should be allocated?
-#SBATCH --nodes=12
+#SBATCH --nodes=25
 #! How many (MPI) tasks will there be in total? (<= nodes*32)
 #! The skylake/skylake-himem nodes have 32 CPUs (cores) each.
-#SBATCH --ntasks=192
-#SBATCH --ntasks-per-node=16
+#SBATCH --ntasks=200
+#SBATCH --ntasks-per-node=8
 #! How much wallclock time will be required?
-#SBATCH --time=36:00:00
+#SBATCH --time=1-12:00:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -58,10 +58,10 @@ module load rhel7/default-peta4            # REQUIRED - loads the basic environm
 #! Insert additional module load commands after this line if needed:
 module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
 module load intel/bundles/complib/2018.4
-module load hdf5-1.10.4-intel-17.0.4-swn7n43
+module load hdf5/impi/1.8.16
 
 #! Full path to application executable: 
-application="/home/dc-bamb1/GRChombo/Examples/FixedKerrBGScalarField/Main_ScalarField3d.Linux.64.mpiicpc.ifort.DEBUG.OPT.MPI.OPENMPCC.Skylake.Intel.ex"
+application="/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/Main_BinaryBH3d.Linux.64.mpicxx.ifort.OPTHIGH.MPI.OPENMPCC.ex"
 
 #! Run options for the application:
 currentdir=$(pwd)
@@ -73,7 +73,7 @@ workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the
 
 #! Are you using OpenMP (NB this is unrelated to OpenMPI)? If so increase this
 #! safe value to no more than 32:
-export OMP_NUM_THREADS=2
+export OMP_NUM_THREADS=4
 
 #! Number of MPI tasks to be started by the application per node and in total (do not change):
 np=$[${numnodes}*${mpi_tasks_per_node}]

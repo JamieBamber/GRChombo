@@ -20,6 +20,7 @@ N3 = 32
 G_Newton = 0.0
 scalar_mass = 0.081876
 field_amplitude = 1.0
+delay = 100
 
 # Length of the longest N side
 # (This sets dx in all directions)
@@ -94,7 +95,7 @@ checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
 plot_interval = 5
 dt_multiplier = 0.4 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
-stop_time = 2200.0
+stop_time = 2300.0
 ## dt_actual = 8*dt_multiplier = 3.2
 ## 2*pi / mu =~ 6 / 0.4 = 15
 ## 1 / mu = 2.5

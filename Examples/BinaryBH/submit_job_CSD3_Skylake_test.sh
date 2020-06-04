@@ -9,8 +9,8 @@ work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH
 cd $work_dir
 #data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
-run_number=1 
-suffix=2_nodes_4_OMP_Skylake_params_A_mixed_bcs
+run_number=10 
+suffix=new
 
 params_file=params_test.txt
 

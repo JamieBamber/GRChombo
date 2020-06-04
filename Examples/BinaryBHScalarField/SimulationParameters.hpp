@@ -54,6 +54,9 @@ class SimulationParameters : public SimulationParametersBase
             bh2_params.center[idir] = centerB[idir] + offsetB[idir];
 	}
 
+	// Time allowed for the field to evolve without the metric evolving
+	pp.load("delay", delay, 0.0);
+
         // Do we want Weyl extraction and puncture tracking?
         pp.load("activate_extraction", activate_extraction, false);
         pp.load("track_punctures", track_punctures, false);
@@ -70,6 +73,7 @@ class SimulationParameters : public SimulationParametersBase
     bool activate_extraction, track_punctures;
     std::vector<std::array<double, CH_SPACEDIM>> initial_puncture_coords;
     double G_Newton;
+    double delay;
     FlatScalar::params_t initial_params;
     ScalarPotential::params_t potential_params;
     

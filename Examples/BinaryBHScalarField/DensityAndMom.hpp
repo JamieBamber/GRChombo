@@ -71,7 +71,7 @@ class DensityAndMom
         double z = coords.z;
 	data_t R = coords.get_radius();
 	// d x / d azimuth
-	Tensor<1, data_t> dx_daz;
+	Tensor<1, data_t> dxdaz;
         dxdaz[0] = - y;
         dxdaz[1] =   x;
         dxdaz[2] = 0;

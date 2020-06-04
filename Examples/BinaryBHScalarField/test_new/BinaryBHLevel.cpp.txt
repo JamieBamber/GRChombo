@@ -21,7 +21,8 @@
 
 #include "MatterConstraints.hpp"
 #include "MatterCCZ4.hpp"
-#include "DensityAndMom_v2.hpp"
+#include "MatterOnly.hpp"
+#include "DensityAndMom.hpp"
 #include "FlatScalar.hpp"
 #include "ScalarPotential.hpp"
 #include "ScalarField.hpp"
@@ -69,10 +70,6 @@ void BinaryBHLevel::initialData()
     // then calculate initial data
     BoxLoops::loop(make_compute_pack(SetValue(0.), binary), m_state_new,
                   m_state_new, INCLUDE_GHOST_CELLS);
-
-    // Initial conditions for scalar field - constant amplitude
-    /*BoxLoops::loop(SetValue(m_p.initial_params.field_amplitude, Interval(c_phi, c_phi)), m_state_new,
-                   m_state_new, FILL_GHOST_CELLS);*/
 
     // scalar field compute class
     FlatScalar initial_sf(m_p.initial_params, m_dx);
@@ -131,13 +128,23 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     // ---> With Scalar Field
     ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
-    MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
-    	scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
-    	m_p.G_Newton);
-    BoxLoops::loop(
-        make_compute_pack(my_ccz4_matter,
-                          SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
-        a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+    if (a_time < m_p.delay){
+	    MatterOnly<ScalarFieldWithPotential> my_matter(
+                scalar_field, m_p.sigma, m_dx);
+    	    BoxLoops::loop(
+	        make_compute_pack(my_matter,
+                          SetValue(0, Interval(c_rho, NUM_VARS - 1))),
+        	a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+
+    } else {
+	    MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
+    		scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
+    		m_p.G_Newton);
+	    BoxLoops::loop(
+	        make_compute_pack(my_ccz4_matter,
+                          SetValue(0, Interval(c_rho, NUM_VARS - 1))),
+       		 a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+    }
 
    if (m_verbosity)
       pout() << "Done BinaryBHLevel::specificEvalRHS() t = " << a_time << endl;
@@ -235,11 +242,11 @@ void BinaryBHLevel::prePlotLevel()
     }
     
     // Calculate and save ADM density and momentum
-    /*ScalarPotential potential(m_p.potential_params);
+    ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.center),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
 
     if (m_verbosity)
     	pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
@@ -250,7 +257,7 @@ void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const
 {
     if (m_verbosity)
 	pout() << "starting BinaryBHLevel::specificWritePlotHeader()" << endl;
-    plot_states = {c_chi, c_phi, c_rho, c_S_azimuth, c_S_r};
+    plot_states = {c_chi, c_phi, c_Pi, c_rho, c_S_azimuth, c_S_r, c_S_Jr};
     if (m_verbosity)
 	pout() << "Done BinaryBHLevel::specificWritePlotHeader()" << endl;
 }

@@ -89,10 +89,24 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         data_t r = coords.get_radius();
         data_t J_r = -(x * J[0] + y * J[1] + z * J[2])/r;
 
+	// d x / d azimuth
+        Tensor<1, data_t> dxdaz;
+        dxdaz[0] = - y;
+        dxdaz[1] =   x;
+        dxdaz[2] = 0;
+        // outward radial vector
+        Tensor<1, data_t> Ni;
+        Ni[0] = x/r;
+        Ni[1] = y/r;
+        Ni[2] = z/r;
+	data_t J_azimuth_r = 0;
+        FOR2(i, j) { J_azimuth_r += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }	
+
         // assign values of density in output box
         current_cell.store_vars(rho, c_rho);
         current_cell.store_vars(J_azimuth, c_J_azimuth);
         current_cell.store_vars(J_r, c_J_r);
+        current_cell.store_vars(J_azimuth_r, c_J_azimuth_r);
     }
 };
 
