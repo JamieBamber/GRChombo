@@ -34,7 +34,7 @@ integration_center = 512.0 512.0 0.0
 center = 512.0 512.0 0.0
 
 # radius parameters
-num_integration_radii = 513
+num_integration_radii = 128
 min_integration_radius = MINRADIUS #!< r_plus = 1 + sqrt(1 - a**2)
 max_integration_radius = 200
 linear_or_log = LINLOG		#!< use linear or log spacing for radii array. Linear = 1, Log = 0 

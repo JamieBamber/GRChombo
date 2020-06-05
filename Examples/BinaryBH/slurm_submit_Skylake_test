@@ -14,13 +14,13 @@
 #! Which project should be charged:
 #SBATCH -A DIRAC-DP131-CPU
 #! How many whole nodes should be allocated?
-#SBATCH --nodes=25
+#SBATCH --nodes=16
 #! How many (MPI) tasks will there be in total? (<= nodes*32)
 #! The skylake/skylake-himem nodes have 32 CPUs (cores) each.
-#SBATCH --ntasks=200
+#SBATCH --ntasks=128
 #SBATCH --ntasks-per-node=8
 #! How much wallclock time will be required?
-#SBATCH --time=0:15:00
+#SBATCH --time=0:20:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -60,7 +60,7 @@ module load intel/compilers/2017.4 intel/mkl/2017.4 intel/impi/2017.4/intel
 module load gcc/5 hdf5/impi/1.8.16
 
 #! Full path to application executable: 
-application="/home/dc-bamb1/GRChombo/Examples/BinaryBH/Main_BinaryBH3d.Linux.64.mpicxx.ifort.OPTHIGH.MPI.OPENMPCC.ex"
+application="/home/dc-bamb1/GRChombo/Examples/BinaryBH/Main_BinaryBH3d.Linux.64.mpicxx.ifort.DEBUG.OPT.MPI.OPENMPCC.ex"
 
 #! Run options for the application:
 currentdir=$(pwd)
