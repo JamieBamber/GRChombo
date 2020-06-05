@@ -12,8 +12,8 @@ start_time = time.time()
 # load dataset
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 #data_sub_dir = "run0031_KNL_l0_m0_a0_Al0_mu0.4_M1_correct_Ylm"
-data_sub_dir = "run0022_KNL_l0_m0_a0_Al0_mu1_M1"
-number = 1460
+data_sub_dir = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_correct_Ylm"
+number = 35
 dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(number)
 ds = yt.load(dataset_path) 
 print("loaded data from ", dataset_path)
@@ -67,9 +67,9 @@ print("made profile")
 
 ### plot profile
 
-def anzatz_phi(r_BL, r_star, A, B, C):
-	result = 0.1*(1 + A*r_plus/r_BL)*np.cos((np.exp(-0.1*(r_BL/r_plus))*(r_star + C) + 0)*mu*r_plus)
-	return result
+#def anzatz_phi(r_BL, r_star, A, B, C):
+#	result = 0.1*(1 + A*r_plus/r_BL)*np.cos((np.exp(-0.1*(r_BL/r_plus))*(r_star + C) + 0)*mu*r_plus)
+#	return result
 
 # plot phi
 R = rp.x.value
@@ -77,37 +77,34 @@ phi = rp["phi"].value
 r_BL = R*(1 + r_plus/(4*R))**2
 r_minus = M*(1 - np.sqrt(1 - a**2))
 r_star = r_BL/r_plus + np.log(r_BL/r_plus - 1)
+dt = 0.25
+t = number*dt
 
-r_type = "r_star"
-if (r_type == "r_tilde"):
-	r_tilde = np.log(r_BL/r_plus - 1)
-	x = r_tilde
-	x_label = "$\\tilde{r}$"
-elif (r_type == "r_sigma"):
-	r_sigma = 0.5*np.log((r_BL/r_plus)*(r_BL/r_plus - 1))
-	x = r_sigma
-	x_label ="$r_{\\sigma}$"
-elif (r_type == "r_star"):
+r_type = "r_BL"
+if (r_type == "r_star"):
 	x = r_star
 	x_label = "$r_*$"
+elif (r_type == "r_BL"):
+	x = r_BL
+	x_label = "$r_{BL}$"
 plt.plot(x, phi, 'r-', label="simulation phi")
-anzatz = anzatz_phi(r_BL, r_star, 5.5, 0.06, -1)
-plt.plot(x, anzatz, 'g--', label="anzatz phi")
+x0 = np.linspace(x[0],x[-1],50)
+plt.plot(x0,-0.1*np.sin(mu*t)*np.ones(50),'b-',label="$\\sin(\\mu t)$")
+#anzatz = anzatz_phi(r_BL, r_star, 5.5, 0.06, -1)
+#plt.plot(x, anzatz, 'g--', label="anzatz phi")
 plt.xlabel(x_label)
 plt.ylabel("$\\phi$")
 plt.grid(axis='both')
 #plt.ylim((-0.5, 0.5))
-plt.xlim((-10, 75))
+#plt.xlim((-10, 75))
 plt.legend()
 
-dt = 0.25
-t = number*dt
 title = data_sub_dir + " time = {:.1f}".format(t) 
 plt.title(title)
 plt.tight_layout()
 
 save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/"
-save_name = data_sub_dir + "_t={:.1f}_phi_profile_vs_anzatz".format(t) + r_type + ".png"
+save_name = data_sub_dir + "_t={:.1f}_phi_profile".format(t) + r_type + ".png"
 print("saved " + save_root_path + save_name)
 plt.savefig(save_root_path + save_name, transparent=False)
 plt.clf()

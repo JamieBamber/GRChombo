@@ -105,7 +105,7 @@ sigma = 1.0
 # extraction params
 # default of extraction_center is center, uncomment to change
 #extraction_center = 256 256 256
-activate_extraction = 0
+activate_extraction = 1
 num_extraction_radii = 2
 extraction_radii = 50.0 100.0
 extraction_levels = 2 1
