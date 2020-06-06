@@ -9,7 +9,7 @@ work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH
 cd $work_dir
 #data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
-run_number=10 
+run_number=11
 suffix=mainrep_2
 
 params_file=params_test.txt

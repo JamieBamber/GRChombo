@@ -10,8 +10,8 @@ yt.enable_parallelism()
 
 #start_time = time.time()
 
-run_number=68
-a_str="0.99"
+run_number=67
+a_str="0"
 mu_str="1"
 M=1
 

@@ -14,7 +14,7 @@ mu = 1
 M = 1
 time = 0
 n = 2
-subdir = "run0068_KNL_l0_m0_a0.99_Al0_mu1_M1"
+subdir = "run0067_KNL_l0_m0_a0_Al0_mu1_M1"
 linlog=True
 if linlog:
 	scale = "linear"
@@ -68,7 +68,7 @@ def find_freq(x, dt, n):
 out_ft, out_t, w_freq = find_freq(x, dt, 4)
 
 # plot graph
-cm = 'Reds'
+cm = 'Blues'
 fig, axs = plt.subplots(n, sharex=True)
 for i in range(0, n):
 	xy = out_ft[:,:,i]

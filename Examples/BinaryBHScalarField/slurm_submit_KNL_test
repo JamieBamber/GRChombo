@@ -14,12 +14,12 @@
 #! Which project should be charged (NB Peta4-KNL projects end in '-KNL'):
 #SBATCH -A DIRAC-DP131-SL4-KNL
 #! How many whole nodes should be allocated?
-#SBATCH --nodes=1
+#SBATCH --nodes=32
 #! How many (MPI) tasks will there be in total? (<=nodes*256)
 #SBATCH --ntasks=128
-#SBATCH --ntasks-per-node=128
+#SBATCH --ntasks-per-node=4
 #! How much wallclock time will be required?
-#SBATCH --time=0:10:00
+#SBATCH --time=0:30:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -75,7 +75,7 @@ np=$[${numnodes}*${mpi_tasks_per_node}]
 
 #! Are you using OpenMP (NB this is unrelated to OpenMPI)? If so increase this
 #! safe value to no more than 256:
-export OMP_NUM_THREADS=2
+export OMP_NUM_THREADS=16
 
 #! The following variables define a sensible pinning strategy for Intel MPI tasks -
 #! this should be suitable for both pure MPI and hybrid MPI/OpenMP jobs:
