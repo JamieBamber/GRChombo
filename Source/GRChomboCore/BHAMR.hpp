@@ -58,4 +58,3 @@ class BHAMR : public GRAMR
 };
 
 #endif /* BHAMR_HPP_ */
-

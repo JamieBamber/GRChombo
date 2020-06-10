@@ -60,6 +60,7 @@ class SimulationParameters : public SimulationParametersBase
         // Do we want Weyl extraction and puncture tracking?
         pp.load("activate_extraction", activate_extraction, false);
         pp.load("track_punctures", track_punctures, false);
+	pp.load("puncture_tracking_level", puncture_tracking_level, max_level);
 
         // hard code num punctures to 2 for now
         int num_punctures = 2;
@@ -71,6 +72,7 @@ class SimulationParameters : public SimulationParametersBase
 
     // Initial data
     bool activate_extraction, track_punctures;
+    int puncture_tracking_level;
     std::vector<std::array<double, CH_SPACEDIM>> initial_puncture_coords;
     double G_Newton;
     double delay;

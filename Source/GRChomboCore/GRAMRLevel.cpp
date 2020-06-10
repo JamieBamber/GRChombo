@@ -501,8 +501,6 @@ void GRAMRLevel::readCheckpointHeader(HDF5Handle &a_handle)
         MayDay::Error("GRAMRLevel::readCheckpointHeader: checkpoint file does "
                       "not have num_components");
     }
-    pout() << "header.m_int[num_components] = " << header.m_int["num_components"] << std::endl;
-    pout() << "NUM_VARS = " << NUM_VARS << std::endl;
     int num_comps = header.m_int["num_components"];
     if (num_comps != NUM_VARS)
     {
@@ -678,9 +676,10 @@ void GRAMRLevel::writePlotLevel(HDF5Handle &a_handle) const
     if (m_verbosity)
         pout() << "GRAMRLevel::writePlotLevel" << endl;
 
-    // number and index of states to print
-    std::vector<int> plot_states;
-    // to be specified in specific Level class
+    // number and index of states to print. first default to parameter
+    std::vector<int> plot_states = m_p.plot_vars;
+    // but call this which may defined in specific Level class for backwards
+    // compatibility
     specificWritePlotHeader(plot_states);
     int num_states = plot_states.size();
 
@@ -750,9 +749,10 @@ void GRAMRLevel::writePlotHeader(HDF5Handle &a_handle) const
     if (m_verbosity)
         pout() << "GRAMRLevel::writePlotHeader" << endl;
 
-    // number and index of states to print
-    std::vector<int> plot_states;
-    // to be specified in specific Level class
+    // number and index of states to print. first default to parameter
+    std::vector<int> plot_states = m_p.plot_vars;
+    // but call this which may defined in specific Level class for backwards
+    // compatibility
     specificWritePlotHeader(plot_states);
     int num_states = plot_states.size();
 
@@ -943,3 +943,4 @@ void GRAMRLevel::defineExchangeCopier(const DisjointBoxLayout &a_level_grids)
     IntVect iv_ghosts = m_num_ghosts * IntVect::Unit;
     m_exchange_copier.exchangeDefine(m_grown_grids, iv_ghosts);
 }
+

@@ -9,8 +9,7 @@ work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBH
 cd $work_dir
 #data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
-run_number=11
-suffix=mainrep_2
+suffix=new
 
 params_file=params_test.txt
 
@@ -26,7 +25,7 @@ echo ${new_dir}
 new_dir_path=${work_dir}/${new_dir}
 #
 mkdir -p ${new_dir_path}
-cp slurm_submit_Skylake_test ${new_dir_path}/slurm_submit
+cp jobscriptSKY ${new_dir_path}/slurm_submit
 cp ${params_file} ${new_dir_path}/params.txt
 cp BinaryBHLevel.cpp ${new_dir_path}/BinaryBHLevel.cpp.txt
 

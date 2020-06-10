@@ -28,19 +28,24 @@ def add_data_dir(num, l, m, a, mu):
 	data_dirs.append(x)
 
 # choose datasets to compare
-
-add_data_dir( 28, 0, 0, "0.7", "0.4")
-# add_data_dir( 39, 1, 1, "0.7", "0.4")
+"""add_data_dir( 28, 0, 0, "0.7", "0.4")
+add_data_dir( 39, 1, 1, "0.7", "0.4")
+add_data_dir( 54, 1, -1, "0.7", "0.4")
+add_data_dir( 48, 2, 2, "0.7", "0.4")
 add_data_dir( 42, 5, 1, "0.7", "0.4")
+add_data_dir( 58, 5, 5, "0.7", "0.4")
 add_data_dir( 55, 7, 1, "0.7", "0.4")
+add_data_dir( 45, 10, 10, "0.7", "0.4")"""
 
-#add_data_dir( 31, 0, 0, "0", "0.4")
-#add_data_dir( 29, 0, 0, "0.99", "0.4")
+add_data_dir( 31, 0, 0, "0", "0.4")
+add_data_dir( 28, 0, 0, "0.7", "0.4")
+add_data_dir( 29, 0, 0, "0.99", "0.4")
+
+#add_data_dir( 46, 2, 2, "0", "0.4")
 
 #add_data_dir( 32, 1, 1, "0", "0.4")
 #add_data_dir( 32, 1, 1, "0", "0.4")
 #add_data_dir( 37, 1, 1, "0.99", "0.4")
-#add_data_dir( 46, 2, 2, "0", "0.4")
 #add_data_dir( 50, 2, -2, "0.99", "0.4")
 
 #add_data_dir( 49, 1, -1, "0.99", "0.4")
@@ -161,7 +166,8 @@ def load_data():
 
 def plot_graph():
 	data = load_data()
-	colours = ['r-', 'b-', 'g-', 'm-']
+	#colours = ['r-', 'b-', 'b-.', 'g--', 'c-', 'c--', 'y-', 'k--']
+	colours = ['r-', 'b-', 'g-']
 	i = 0
 	for dd in data_dirs:
 		line_data = data[dd.num]
@@ -175,7 +181,7 @@ def plot_graph():
 			a = -dd.a
 		else:
 			a = dd.a
-		label_ = "l={:d} m={:d} a={:.2f}".format(dd.l, m, a)
+		label_ = "l={:d} m={:d} a={:.2f}".format(dd.l, dd.m, dd.a)
 		if change_in_E:
 			plt.plot(t[1:], delta_mass, colours[i], label=label_)
 		else:
@@ -192,7 +198,7 @@ def plot_graph():
 	#plt.ylim((0, 0.004))
 	plt.tight_layout()
 	if change_in_E:
-		save_path = home_path + "plots/delta_mass_in_sphere_compare_a_l=m=1_radius_" + str(max_radius) + ".png"
+		save_path = home_path + "plots/delta_mass_in_sphere_compare_a_l=m=0_conserved_rho_radius_" + str(max_radius) + ".png"
 	else:
 		save_path = home_path + "plots/mass_in_sphere_compare_mu_radius_" + str(max_radius) + ".png"
 	plt.savefig(save_path)

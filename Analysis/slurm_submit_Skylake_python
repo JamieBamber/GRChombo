@@ -14,13 +14,13 @@
 #! Which project should be charged:
 #SBATCH -A DIRAC-DP131-CPU
 #! How many whole nodes should be allocated?
-#SBATCH --nodes=32
+#SBATCH --nodes=1
 #! How many (MPI) tasks will there be in total? (<= nodes*32)
 #! The skylake/skylake-himem nodes have 32 CPUs (cores) each.
-#SBATCH --ntasks=128
-#SBATCH --ntasks-per-node=4
+#SBATCH --ntasks=32
+#SBATCH --ntasks-per-node=32
 #! How much wallclock time will be required?
-#SBATCH --time=0:20:00
+#SBATCH --time=1:00:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -58,14 +58,14 @@ module load rhel7/default-peta4            # REQUIRED - loads the basic environm
 #! Insert additional module load commands after this line if needed:
 module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
 module load intel/bundles/complib/2018.4
-module load hdf5/impi/1.8.16
+module load hdf5-1.10.4-intel-17.0.4-swn7n43
+module load miniconda3-4.5.4-gcc-5.4.0-hivczbz
 
 #! Full path to application executable: 
-application="/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/Main_BinaryBH3d.Linux.64.mpicxx.ifort.OPTHIGH.MPI.OPENMPCC.ex"
+python_ex="/home/dc-bamb1/GRChombo/Analysis/analysis_env/bin/python"
+script="/home/dc-bamb1/GRChombo/Analysis/scripts/PYTHON_SCRIPT"
 
 #! Run options for the application:
-currentdir=$(pwd)
-options="${currentdir}/params.txt"
 
 #! Work directory (i.e. where the job will run):
 workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory
@@ -73,7 +73,7 @@ workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the
 
 #! Are you using OpenMP (NB this is unrelated to OpenMPI)? If so increase this
 #! safe value to no more than 32:
-export OMP_NUM_THREADS=8
+export OMP_NUM_THREADS=1
 
 #! Number of MPI tasks to be started by the application per node and in total (do not change):
 np=$[${numnodes}*${mpi_tasks_per_node}]
@@ -88,11 +88,10 @@ export I_MPI_PIN_ORDER=scatter # Adjacent domains have minimal sharing of caches
 #! 3. I_MPI_PIN_PROCESSOR_LIST is ignored if I_MPI_PIN_DOMAIN is set.
 #! 4. If MPI tasks perform better when sharing caches/sockets, try I_MPI_PIN_ORDER=compact.
 
-
 #! Uncomment one choice for CMD below (add mpirun/mpiexec options if necessary):
 
 #! Choose this for a MPI code (possibly using OpenMP) using Intel MPI.
-CMD="mpirun -ppn $mpi_tasks_per_node -np $np $application $options"
+CMD="mpirun -ppn $mpi_tasks_per_node -np $np $python_ex $script"
 
 #! Choose this for a pure shared-memory OpenMP parallel program on a single node:
 #! (OMP_NUM_THREADS threads will be created):

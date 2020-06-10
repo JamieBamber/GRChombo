@@ -9,6 +9,9 @@ chk_prefix = DATADIR/BinaryBHChk_
 plot_prefix = DATADIR/BinaryBHPlot_
 #restart_file = DATADIR/BinaryBHChk_000000.3d.hdf5
 
+num_plot_vars = 1
+plot_vars = chi
+
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
 N1 = 64
@@ -74,14 +77,16 @@ vars_parity            = 0 0 4 6 0 5 0    #chi and hij
                          0 1 2 3          #Ham and Mom
                          0 0              #Weyl
 
-# if sommerfeld boundaries selected, must select
-# asymptotic values (in order given by UserVariables.hpp)
-vars_asymptotic_values = 1.0 1.0 0.0 0.0 1.0 0.0 1.0 #chi and hij
-                         0.0 0.0 0.0 0.0 0.0 0.0 0.0 #K and Aij
-                         0.0 0.0 0.0 0.0             #Theta and Gamma
-                         1.0 0.0 0.0 0.0 0.0 0.0 0.0 #lapse shift and B
-                         0.0 0.0 0.0 0.0             #Ham and Mom
-                         0.0 0.0                     #Weyl
+# if sommerfeld boundaries selected, must specify any nonzero
+# asymptotic values
+num_nonzero_asymptotic_vars = 5
+nonzero_asymptotic_vars = chi h11 h22 h33 lapse
+nonzero_asymptotic_values = 1.0 1.0 1.0 1.0 1.0
+
+# if mixed boundaries selected, must specify which are extrapolating
+# (the rest are assumed to be all sommerfeld)
+#num_extrapolating_vars = 1
+#extrapolating_vars = K
 
 # Lapse evolution
 lapse_advec_coeff = 1.0

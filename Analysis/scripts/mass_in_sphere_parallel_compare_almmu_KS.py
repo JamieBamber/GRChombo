@@ -10,7 +10,7 @@ import sys
 from matplotlib import pyplot as plt
 from os import makedirs
 
-print("yt version = ",yt.__version__)
+#print("yt version = ",yt.__version__)
 
 yt.enable_parallelism()
 
@@ -21,18 +21,28 @@ class data_dir:
 		self.m = m
 		self.a = float(a)
 		self.mu = mu
-		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu{:s}_M1_KerrSchild".format(num, l, m, a, mu)
-	filename = ""
-		
-def add_data_dir(list, num, l, m, a, mu):
-	x = data_dir(num, l, m, a, mu)
-	list.append(x)
+		self.Al = Al
+		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_KerrSchild".format(num, l, m, a, Al, mu)
 
-data_dirs = []
+data_dirs = []		
+def add_data_dir(num, l, m, a, mu, Al="0"):
+	x = data_dir(num, l, m, a, mu, Al)
+	data_dirs.append(x)
+
 # choose datasets to compare
-add_data_dir(data_dirs, 71, 1, 1, "0.99", "0.4")
-add_data_dir(data_dirs, 72, 1, -1, "0.99", "0.4")
-add_data_dir(data_dirs, 74, 0, 0, "0.7", "0.4")
+
+"""add_data_dir(74, 0, 0, "0.7", "0.4")
+add_data_dir(39, 1, 1, "0.7", "0.4")
+add_data_dir(73, 4, 4, "0.7", "0.4")
+add_data_dir(76, 5, 5, "0.7", "0.4")
+add_data_dir(77, 2, 2, "0.7", "0.4")"""
+
+add_data_dir(78, 1, -1, "0.7", "0.4")
+add_data_dir(75, 1, 1, "0.7", "0.4", "0.5")
+
+add_data_dir(67, 0, 0, "0", "1")
+add_data_dir(28, 0, 0, "0.7", "1")
+add_data_dir(68, 0, 0, "0.99", "1")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -46,6 +56,9 @@ output_dir = "data/compare_almmu_mass"
 half_box = True
 
 change_in_E = True
+
+start_num=0
+end_num=30
 	
 def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
@@ -67,11 +80,12 @@ def calculate_mass_in_sphere(dd):
 		return r_KS
 		
 	dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_*.3d.hdf5"
-	ds = yt.load(dataset_path) # this loads a dataset time series
+	ds_all = yt.load(dataset_path) # this loads a dataset time series
 	print("loaded data from ", dataset_path)
 	print("time = ", time.time() - start_time)
+	ds = ds_all[start_num:end_num]
 	N = len(ds)
-	
+
 	ds0 = ds[0] # get the first dataset 
 	
 	# set centre
@@ -81,9 +95,12 @@ def calculate_mass_in_sphere(dd):
 	data_storage = {}
 	# iterate through datasets (forcing each to go to a different processor)
 	for sto, dsi in ds.piter(storage=data_storage):
+		current_time = dsi.current_time 
+		dt = 2.5
+		i = int(current_time/dt)
+		#if (i % 2 == 0):
 		time_0 = time.time()
 		# store time
-		current_time = dsi.current_time 
 		output = [current_time]
 		
 		# make sphere (defined by r_KS)
@@ -101,19 +118,19 @@ def calculate_mass_in_sphere(dd):
 		# store output
 		sto.result = output
 		sto.result_id = str(dsi)
-		dt = 1.25
-		i = int(current_time/dt)
 		print("done {:d} of {:d} in {:.1f} s".format(i+1, N, time.time()-time_0), flush=True)
-	
+		
 	if yt.is_root():	
-		# make data directory if it does not already exist
-		makedirs(home_path + output_dir, exist_ok=True)
 		# output to file
 		dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_KerrSchild_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_r)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
-		f = open(output_path, "w+")
-		f.write("# t	mass in r<=" + str(max_r) + " #\n")
+		print("writing data")
+		if (start_num==0):
+			f = open(output_path, "w")
+			f.write("# t	mass in r<=" + str(max_r) + " #\n")
+		else:
+			f = open(output_path, "a")
 		# output data
 		for key in sorted(data_storage.keys()):
 			data = data_storage[key]
@@ -147,7 +164,7 @@ def plot_graph():
 			a = -dd.a
 		else:
 			a = dd.a
-		label_ = "$a=${:.2f} $l=${:d} $m=${:d}".format(dd.a, dd.l, dd.m)
+		label_ = "$l=${:d} $m=${:d}".format(dd.l, dd.m)
 		if change_in_E:
 			plt.plot(t[1:], delta_mass, colours[i], label=label_)
 		else:
@@ -159,7 +176,7 @@ def plot_graph():
 	else:
 		plt.ylabel("$E$ in $r < $" + str(max_r))
 	plt.legend(loc='upper left', fontsize=8)
-	plt.title("scalar field energy inside a sphere vs time, $M=1$, $\\mu=0.4$")
+	plt.title("scalar field energy inside a sphere vs time, $M=1$, $\\mu=0.4$, $a=0.7$")
 	#plt.xlim((0, 450))
 	#plt.ylim((0, 0.004))
 	plt.tight_layout()
