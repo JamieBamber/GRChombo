@@ -81,9 +81,9 @@ scalar_mass = 0.4
 scalar_amplitude = 0.1
 scalar_omega = 0.4
 scalar_l = 1
-scalar_m = -1
+scalar_m = 1
 alignment = 0.0
 
 # BH initial data
 bh_mass = 1
-bh_spin = 0.7
+bh_spin = 0

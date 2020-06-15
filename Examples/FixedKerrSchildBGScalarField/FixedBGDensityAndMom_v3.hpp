@@ -73,11 +73,18 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         data_t x = coords.x;
         double y = coords.y;
         double z = coords.z;    
+	data_t R = coords.get_radius();
+
+	// get KerrSchild r
+	double a = m_background.m_params.spin*m_background.m_params.mass;
+	data_t r2 = (R*R - a*a)/2 + sqrt((R*R - a*a)/4 + (a*z)*(a*z));
+	data_t r = sqrt(r2);
 
 	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] for the cartesian coordinates
         Tensor<1, data_t> Sbeta; 
         FOR2(i, j){ Sbeta[i] += metric_vars.shift[j]*emtensor.Sij[i][j]; }                      
         Tensor<1, data_t> J; 
+	// conserved 3-current linear momentum vector in the cartesian coordinates 
         FOR2(i, j){ J[i] += sqrt(det_gamma)*metric_vars.lapse*( gamma_UU[i][j]*(metric_vars.lapse*emtensor.Si[j] - Sbeta[j]) ); }                       
 
         // J_azimuth = x * S_y - y * S_z
@@ -86,27 +93,29 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 
         // fine the inward radial momentum (i.e. radial mass flux density)
         // S_r = (x * S_x + y * S_y + z * S_z)/r
-        data_t R = coords.get_radius();
-        data_t J_r = -(x * J[0] + y * J[1] + z * J[2])/R;
 
 	// d x / d azimuth
         Tensor<1, data_t> dxdaz;
         dxdaz[0] = - y;
         dxdaz[1] =   x;
         dxdaz[2] = 0;
-        // outward radial vector
+        // outward radial vector (Kerr Schild radius direction)
         Tensor<1, data_t> Ni;
-        Ni[0] = x/R;
-        Ni[1] = y/R;
-        Ni[2] = z/R;
-	data_t J_azimuth_r = 0;
-        FOR2(i, j) { J_azimuth_r += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }	
+        Ni[0] = (x*r - a*y)/(r*r + a*a);
+        Ni[1] = (y*r + a*x)/(r*r + a*a);
+        Ni[2] = z/r;
+
+	// cartesian projection of the 3-current momentum vector in the r_KS unit direction
+	data_t J_rKS = 0;
+	FOR1(j) { J_rKS += Ni[j]*J[j]; }
+	data_t J_azimuth_rKS = 0;
+        FOR2(i, j) { J_azimuth_rKS += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }	
 
         // assign values of density in output box
         current_cell.store_vars(rho, c_rho);
         current_cell.store_vars(J_azimuth, c_J_azimuth);
-        current_cell.store_vars(J_r, c_J_r);
-        current_cell.store_vars(J_azimuth_r, c_J_azimuth_r);
+        current_cell.store_vars(J_r, c_J_rKS);
+        current_cell.store_vars(J_azimuth_rKS, c_J_azimuth_rKS);
     }
 };
 

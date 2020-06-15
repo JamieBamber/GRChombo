@@ -4,8 +4,8 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 0
-nan_check = 0
+verbosity = 5
+nan_check = 1
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
 #restart_file = DATADIR/BinaryBHChk_000000.3d.hdf5

@@ -9,8 +9,7 @@ work_dir=/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField
 cd $work_dir
 #data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
-run_number=10 
-suffix=attempt_2_OMP8
+suffix=BC_pouts
 
 params_file=params_test.txt
 

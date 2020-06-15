@@ -3,6 +3,10 @@
  * Please refer to LICENSE in GRChombo's root directory.
  */
 
+#include "DebuggingTools.hpp"
+#include "UserVariables.hpp"
+#include <vector>
+
 #include "BoundaryConditions.hpp"
 #include "FArrayBox.H"
 #include "ProblemDomain.H"
@@ -225,6 +229,7 @@ void BoundaryConditions::fill_sommerfeld_cell(
     // Apply Sommerfeld BCs to each variable in sommerfeld_comps
     for (int icomp : sommerfeld_comps)
     {
+	vector<double> d1_vec;
         rhs_box(iv, icomp) = 0.0;
         FOR1(idir2)
         {
@@ -266,13 +271,44 @@ void BoundaryConditions::fill_sommerfeld_cell(
 
             // for each direction add dphidx * x^i / r
             rhs_box(iv, icomp) += -d1 * loc[idir2] / radius;
-        }
+            d1_vec.push_back(d1);
+	}
 
         // asymptotic values - these need to have been set in
         // the params file
         rhs_box(iv, icomp) +=
             (m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp)) /
             radius;
+	// debugging step
+	//if ((iv[0] == 0 && iv[1] == 0 && iv[2] == 0) || 
+	if (isnan(rhs_box(iv, icomp))) {
+		pout() << "In BoundaryConditions::fill_sommerfeld_cell()" << endl;
+        	pout() << "Integer position: " << iv << endl;
+        	pout() << UserVariables::variable_names[icomp] << " = " << rhs_box(iv, icomp) << endl;
+		pout() << "lo_local_offset = " << lo_local_offset << endl;
+		pout() << "hi_local_offset = " << hi_local_offset << endl;
+		pout() << "d1 vector = ";
+		FOR1(i) {pout() << d1_vec[i] << ", ";}
+		pout() << endl;
+		// test loc
+		//pout() << "loc " << loc << endl;
+		// test values of soln_box
+		IntVect iv_offset;
+		pout() << "soln_box(iv + offset, icomp) = " << endl;
+		pout() << "offset:	-2	-1	0	+1	+2" << endl;
+		FOR1(i){
+			pout() << "dir " << i;
+			for(int j=-2; j<=2; j++){
+				iv_offset = iv;
+				iv_offset[i] += j;
+				pout() << "	" << soln_box(iv_offset, icomp);
+			}
+			pout() << endl;
+		} 
+		pout() << "radius = " << radius << endl;
+		pout() << "m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp) = " << m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp) << endl;
+    		throw std::runtime_error("variable value is nan");
+	}
     }
 }
 
@@ -300,6 +336,12 @@ void BoundaryConditions::fill_reflective_cell(
     {
         int parity = get_vars_parity(icomp, dir);
         rhs_box(iv, icomp) = parity * rhs_box(iv_copy, icomp);
+	//if ((iv[0] == 0 && iv[1] == 0 && iv[2] == 0) || 
+        if (isnan(rhs_box(iv, icomp))) {
+        	pout() << "In BoundaryConditions::fill_reflective_cell()" << endl;
+        	pout() << "Integer position: " << iv << endl;
+        	pout() << UserVariables::variable_names[icomp] << " = " << rhs_box(iv, icomp) << endl;
+        }
     }
 }
 
@@ -308,6 +350,7 @@ void BoundaryConditions::fill_extrapolating_cell(
     const int dir, const std::vector<int> &extrapolating_comps,
     const int order) const
 {
+    //pout() << "BoundaryConditions::fill_extrapolating_cell()" << endl;
     for (int icomp : extrapolating_comps)
     {
         // current radius
@@ -350,6 +393,7 @@ void BoundaryConditions::fill_extrapolating_cell(
 
         // assume some radial dependence and fit it
         double analytic_change = 0.0;
+	double linear_change = 0.5 * units_from_edge * (value_at_point[0] - value_at_point[1]); 
         // comp = const
         if (order == 0)
         {
@@ -371,7 +415,25 @@ void BoundaryConditions::fill_extrapolating_cell(
         }
 
         // set the value here to the extrapolated value
-        rhs_box(iv, icomp) = value_at_point[0] + analytic_change;
+	if (abs(analytic_change) > abs(linear_change))
+        {
+            rhs_box(iv, icomp) = value_at_point[0] + linear_change;
+        }
+        else
+        {
+            rhs_box(iv, icomp) = value_at_point[0] + analytic_change;
+        }
+	
+	if (iv[0] == 0 && iv[1] == 0 && iv[2] == -3) {
+	// icomp for A11 = 8
+		pout() << " *** fill_extrapolating_cell()" << endl;
+		pout() << "RHS for A11 at [0,0,-3] = " << rhs_box(iv, 8) << endl;
+	}
+	if (isnan(rhs_box(iv, icomp))) {
+		pout() << "In BoundaryConditions::fill_extrapolating_cell()" << endl;
+		pout() << "Integer position: " << iv << endl;
+		pout() << UserVariables::variable_names[icomp] << " = " << rhs_box(iv, icomp) << endl;
+	}
     }
 }
 
@@ -383,6 +445,7 @@ void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
                                                  const int dir,
                                                  const bool filling_rhs)
 {
+    pout() << "BoundaryConditions::fill_boundary_cells_dir" << endl;
     // iterate through the boxes, shared amongst threads
     DataIterator dit = a_rhs.dataIterator();
     int nbox = dit.size();
@@ -441,13 +504,17 @@ void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
             }
             case MIXED_BC:
             {
-                fill_extrapolating_cell(rhs_box, iv, a_side, dir,
+		fill_extrapolating_cell(rhs_box, iv, a_side, dir,
                                         m_params.mixed_bc_extrapolating_vars,
                                         m_params.extrapolation_order);
                 if (filling_rhs)
                 {
                     fill_sommerfeld_cell(rhs_box, soln_box, iv,
                                          m_params.mixed_bc_sommerfeld_vars);
+                }
+		else
+                {
+                    for(int icomp : m_params.mixed_bc_sommerfeld_vars) {rhs_box(iv, icomp) = 0.0;}
                 }
                 break;
             }
@@ -519,6 +586,7 @@ void BoundaryConditions::enforce_solution_boundaries(
 {
     CH_assert(is_defined);
     CH_TIME("BoundaryConditions::enforce_solution_boundaries");
+    pout() << "@ enforce_solution_boundaries" << endl;
 
     // cycle through the directions
     FOR1(idir)
@@ -534,6 +602,7 @@ void BoundaryConditions::enforce_solution_boundaries(
                 boundary_condition == EXTRAPOLATING_BC ||
                 boundary_condition == MIXED_BC)
             {
+		pout() << "enforce solution boundaries: fill_boundary_cells_dir(a_side, a_state, a_state, idir, filling_rhs=false)" << endl;
                 const bool filling_rhs = false;
                 fill_boundary_cells_dir(a_side, a_state, a_state, idir,
                                         filling_rhs);

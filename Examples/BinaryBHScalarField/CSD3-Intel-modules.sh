@@ -5,8 +5,10 @@ module unload intel/bundles/complib/2019.3
 module unload hdf5/mpi/intel/2019.3/1.10.5
 # Load newer GCC version
 # module swap gcc/5.2.0 gcc-7.2.0-gcc-4.8.5-pqn7o2k
-module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
+
 # MR: I get MPI problems with 2019 so sticking with 2018 for now
-module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
+#module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
+#module load hdf5/impi/1.8.16
+module load gcc/7
 module load intel/bundles/complib/2018.4
-module load hdf5/impi/1.8.16
+module load hdf5-1.10.4-intel-17.0.4-swn7n43

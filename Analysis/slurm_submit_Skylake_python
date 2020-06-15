@@ -20,7 +20,7 @@
 #SBATCH --ntasks=32
 #SBATCH --ntasks-per-node=32
 #! How much wallclock time will be required?
-#SBATCH --time=1:00:00
+#SBATCH --time=0:30:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -63,7 +63,7 @@ module load miniconda3-4.5.4-gcc-5.4.0-hivczbz
 
 #! Full path to application executable: 
 python_ex="/home/dc-bamb1/GRChombo/Analysis/analysis_env/bin/python"
-script="/home/dc-bamb1/GRChombo/Analysis/scripts/PYTHON_SCRIPT"
+script="PYTHON_SCRIPT"
 
 #! Run options for the application:
 

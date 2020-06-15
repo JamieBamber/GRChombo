@@ -832,6 +832,9 @@ void GRAMRLevel::evalRHS(GRLevelData &rhs, GRLevelData &soln,
     specificEvalRHS(soln, rhs, time); // Call the problem specific rhs
 
     // evolution of the boundaries according to conditions
+    if (m_verbosity) {
+	pout() << "---> evolving boundaries according to conditions" << endl;
+    } 
     if (m_p.nonperiodic_boundaries_exist)
     {
         m_boundaries.fill_boundary_rhs(Side::Lo, soln, rhs);
