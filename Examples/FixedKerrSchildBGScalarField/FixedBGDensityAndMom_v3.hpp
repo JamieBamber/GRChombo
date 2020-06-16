@@ -89,7 +89,7 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 
         // J_azimuth = x * S_y - y * S_z
         // J_azimuth_prime = x(S_y cos(alignment) + S_z sin(alignment)) - yprime * S_x
-        data_t J_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma) * metric_vars.lapse;
+        data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma) * metric_vars.lapse;
 
         // fine the inward radial momentum (i.e. radial mass flux density)
         // S_r = (x * S_x + y * S_y + z * S_z)/r
@@ -103,19 +103,32 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         Tensor<1, data_t> Ni;
         Ni[0] = (x*r - a*y)/(r*r + a*a);
         Ni[1] = (y*r + a*x)/(r*r + a*a);
-        Ni[2] = z/r;
+        Ni[2] = z/r; 
+	// outward radial vector (cartesian radius direction)
+        Tensor<1, data_t> NRi;
+        NRi[0] = x/R;
+        NRi[1] = y/R;
+        NRi[2] = z/R;
 
 	// cartesian projection of the 3-current momentum vector in the r_KS unit direction
 	data_t J_rKS = 0;
 	FOR1(j) { J_rKS += Ni[j]*J[j]; }
 	data_t J_azimuth_rKS = 0;
         FOR2(i, j) { J_azimuth_rKS += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }	
+	
+	// cartesian projection of the 3-current momentum vector in the R unit direction
+	data_t J_R = 0;
+	FOR1(j) { J_R += NRi[j]*J[j]; }
+	data_t J_azimuth_R = 0;
+        FOR2(i, j) { J_azimuth_R += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*NRi[j]; }	
 
         // assign values of density in output box
         current_cell.store_vars(rho, c_rho);
-        current_cell.store_vars(J_azimuth, c_J_azimuth);
-        current_cell.store_vars(J_r, c_J_rKS);
+        current_cell.store_vars(rho_azimuth, c_rho_azimuth);
+        current_cell.store_vars(J_rKS, c_J_rKS);
         current_cell.store_vars(J_azimuth_rKS, c_J_azimuth_rKS);
+        current_cell.store_vars(J_R, c_J_R);
+        current_cell.store_vars(J_azimuth_R, c_J_azimuth_R);
     }
 };
 

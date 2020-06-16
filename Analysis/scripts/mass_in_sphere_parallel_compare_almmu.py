@@ -1,4 +1,4 @@
-import yt
+import yt 
 import numpy as np
 #from scipy.interpolate import interp1d
 #from scipy.optimize import fsolve
@@ -13,23 +13,22 @@ from os import makedirs
 yt.enable_parallelism()
 
 class data_dir:
-	def __init__(self, num, l, m, a, mu):
+	def __init__(self, num, l, m, a, mu, Al):
 		self.num = num
 		self.l = l
 		self.m = m
 		self.a = float(a)
 		self.mu = mu
-		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu{:s}_M1_correct_Ylm".format(num, l, m, a, mu)
-	filename = ""
+		self.Al = Al
+		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_correct_Ylm".format(num, l, m, a, Al, mu)
 
 data_dirs = []		
-def add_data_dir(num, l, m, a, mu):
-	x = data_dir(num, l, m, a, mu)
+def add_data_dir(num, l, m, a, mu, Al="0"):
+	x = data_dir(num, l, m, a, mu, Al)
 	data_dirs.append(x)
 
 # choose datasets to compare
 """add_data_dir( 28, 0, 0, "0.7", "0.4")
-add_data_dir( 39, 1, 1, "0.7", "0.4")
 add_data_dir( 54, 1, -1, "0.7", "0.4")
 add_data_dir( 48, 2, 2, "0.7", "0.4")
 add_data_dir( 42, 5, 1, "0.7", "0.4")
@@ -43,11 +42,11 @@ add_data_dir( 29, 0, 0, "0.99", "0.4")
 
 #add_data_dir( 46, 2, 2, "0", "0.4")
 
-#add_data_dir( 32, 1, 1, "0", "0.4")
-#add_data_dir( 32, 1, 1, "0", "0.4")
-#add_data_dir( 37, 1, 1, "0.99", "0.4")
-#add_data_dir( 50, 2, -2, "0.99", "0.4")
+add_data_dir( 32, 1, 1, "0", "0.4")
+add_data_dir( 39, 1, 1, "0.7", "0.4")
+add_data_dir( 37, 1, 1, "0.99", "0.4")
 
+#add_data_dir( 50, 2, -2, "0.99", "0.4")
 #add_data_dir( 49, 1, -1, "0.99", "0.4")
 
 # set up parameters
@@ -137,9 +136,9 @@ def calculate_mass_in_sphere(dd):
 		makedirs(home_path + output_dir, exist_ok=True)
 		# output to file
 		if use_Eulerian_rho:
-			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_Eulerian_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_in_r={:d}_Eulerian_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, max_radius)
 		else:
-			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+			dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, max_radius)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		f = open(output_path, "w+")
@@ -157,9 +156,9 @@ def load_data():
 	data = {}
 	for dd in data_dirs:
 		if use_Eulerian_rho:
-			file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_Eulerian_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+			file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_in_r={:d}_Eulerian_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, max_radius)
 		else:
-			file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_radius)
+			file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, max_radius)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded data for " + dd.name)
 	return data 	
@@ -167,7 +166,7 @@ def load_data():
 def plot_graph():
 	data = load_data()
 	#colours = ['r-', 'b-', 'b-.', 'g--', 'c-', 'c--', 'y-', 'k--']
-	colours = ['r-', 'b-', 'g-']
+	colours = ['r-', 'b-', 'g-', 'r--', 'b--', 'g--']
 	i = 0
 	for dd in data_dirs:
 		line_data = data[dd.num]
@@ -198,7 +197,7 @@ def plot_graph():
 	#plt.ylim((0, 0.004))
 	plt.tight_layout()
 	if change_in_E:
-		save_path = home_path + "plots/delta_mass_in_sphere_compare_a_l=m=0_conserved_rho_radius_" + str(max_radius) + ".png"
+		save_path = home_path + "plots/delta_mass_in_sphere_compare_a_conserved_rho_radius_" + str(max_radius) + ".png"
 	else:
 		save_path = home_path + "plots/mass_in_sphere_compare_mu_radius_" + str(max_radius) + ".png"
 	plt.savefig(save_path)

@@ -45,7 +45,6 @@ add_data_dir(80, 1, 1, "0", "0.4")
 #add_data_dir(71, 1, 1, "0.99", "0.4")
 #add_data_dir(72, 1, -1, "0.99", "0.4")
 
-
 #add_data_dir(67, 0, 0, "0", "1")
 #add_data_dir(79, 0, 0, "0.7", "1")
 #add_data_dir(68, 0, 0, "0.99", "1")
@@ -61,7 +60,14 @@ output_dir = "data/compare_almmu_flux"
 
 half_box = True
 
+KS_or_cartesian_r=True
 change_in_E = True
+
+if KS_or_cartesian_r:
+	# use the correct horizon but with cartesian radial projection
+	r_txt="KSr_v1"
+else:
+	r_txt="cartesian_R"
 
 def calculate_mass_flux_in_sphere(dd):
 	data_sub_dir = dd.name
@@ -82,7 +88,17 @@ def calculate_mass_flux_in_sphere(dd):
 	# set centre
 	center = [512.0, 512.0, 0]
 	L = 512.0	
-		
+
+	if KS_or_cartesian_r:
+		# derived fields
+        	@derived_field(name = "r_KS", units = "")
+        	def _r_KS(field, data):
+                	R = data["spherical_radius"]/cm
+                	z = data["z"]/cm
+                	aM = M*a
+                	r_KS = np.sqrt((R**2 - aM**2)/2 + np.sqrt((R**2 - aM**2)/4 + (aM*z)**2))
+                	return r_KS
+			
 	data_storage = {}
 	# iterate through datasets (forcing each to go to a different processor)
 	for sto, dsi in ds.piter(storage=data_storage):
@@ -95,7 +111,11 @@ def calculate_mass_flux_in_sphere(dd):
 		output = [current_time]
 		
 		# make sphere (defined by r_KS)
-		shell = dsi.sphere(center, min_R+dR) - dsi.sphere(center, min_R)		
+		if KS_or_cartesian_r:
+			ad = dsi.all_data()
+			shell = ad.cut_region(["(obj['r_KS'] < {:.3f}) & (obj['r_KS'] > {:.3f})".format(r_plus+dR, r_plus)])
+		else:
+			shell = dsi.sphere(center, min_R+dR) - dsi.sphere(center, min_R)		
 			
 		# calculate radial (in terms of cartesian radius R) momentum and angular momentum flux in shell
 		meanJ_R = shell.mean("J_r", weight="cell_volume")
@@ -112,7 +132,8 @@ def calculate_mass_flux_in_sphere(dd):
 		
 	if yt.is_root():	
 		# output to file
-		dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_ang_mom_flux_in_KerrSchild_cartesian_R.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al)
+
+		dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_ang_mom_flux_in_KerrSchild_{:s}.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, r_txt)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		print("writing data")
@@ -131,7 +152,7 @@ def load_data():
 	# load data from csv files
 	data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_ang_mom_flux_in_KerrSchild_cartesian_R.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al)
+		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_ang_mom_flux_in_KerrSchild_{:s}.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, r_txt)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded data for " + dd.name)
 	return data 	
@@ -166,17 +187,17 @@ def plot_graph():
 	ax2.set_ylabel("$\\rho$ flux into BH")
 	ax1.legend(loc='upper left', fontsize=8)
 	ax2.legend(loc='upper right', fontsize=8)
-	plt.title("Mass and Angular Mom. flux into $R=\\sqrt{2Mr_+}$, $M=1$, $\\mu=0.4$")
+	plt.title("Mass and Angular Mom. flux into horizon, $M=1$, $\\mu=0.4$")
 	#plt.xlim((0, 450))
 	#plt.ylim((0, 0.004))
 	plt.tight_layout()
-	save_path = home_path + "plots/mass_ang_mom_flux_into_BH_Kerr_Schild_cartesian_R.png"
+	save_path = home_path + "plots/mass_ang_mom_flux_into_BH_Kerr_Schild_{:s}.png".format(r_txt)
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-#for dd in data_dirs:
-#	calculate_mass_flux_in_sphere(dd)
+for dd in data_dirs:
+	calculate_mass_flux_in_sphere(dd)
 
 plot_graph()
 
