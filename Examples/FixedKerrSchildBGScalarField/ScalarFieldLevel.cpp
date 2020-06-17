@@ -25,6 +25,7 @@
 #include "Potential.hpp"
 #include "ScalarRotatingCloud.hpp"
 #include "SetValue.hpp"
+#include "KerrSchildFluxExtraction.hpp"
 
 // Things to do at each advance step, after the RK4 is calculated
 void ScalarFieldLevel::specificAdvance()
@@ -50,11 +51,40 @@ void ScalarFieldLevel::initialData()
                    m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
 }
 
+// Things to do after each timestep
+void ScalarFieldLevel::specificPostTimeStep()
+{
+    // At any level, but after the coarsest timestep
+    double coarsest_dt = m_p.coarsest_dx * m_p.dt_multiplier;
+    const double remainder = fmod(m_time, coarsest_dt);
+    if (min(abs(remainder), abs(remainder - coarsest_dt)) < 1.0e-8)
+    {    
+	// Calculate density and flux variables
+        fillAllGhosts();
+        Potential potential(m_p.potential_params);
+        ScalarFieldWithPotential scalar_field(potential);
+        KerrSchildFixedBG kerr_bg(m_p.bg_params, m_dx);
+        BoxLoops::loop(FixedBGDensityAndMom<ScalarFieldWithPotential, KerrSchildFixedBG>(
+                       scalar_field, kerr_bg, m_dx, m_p.center, m_p.initial_params.alignment),
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
+     }
+     
+     // write out the integral after each coarse timestep
+     if (m_level == 0)
+     {
+        // Refresh the interpolator and integrate the fluxes
+        m_gr_amr.m_interpolator->refresh();
+        KSFluxExtraction my_extraction(m_p.extraction_params, m_dt, m_time, m_p.flux_file_name,
+                                  	m_restart_time);
+        my_extraction.execute_query(m_gr_amr.m_interpolator);
+    }
+}
 
 // Things to do before outputting a plot file
 void ScalarFieldLevel::prePlotLevel()
-{
-    // Calculate matter density function
+{}
+
+/*    // Calculate matter density function
     fillAllGhosts();
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
@@ -62,7 +92,7 @@ void ScalarFieldLevel::prePlotLevel()
     BoxLoops::loop(FixedBGDensityAndMom<ScalarFieldWithPotential, KerrSchildFixedBG>(
                        scalar_field, kerr_bg, m_dx, m_p.center, m_p.initial_params.alignment),
                    m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
-}
+}*/
 
 // Things to do in RHS update, at each RK4 step
 void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,

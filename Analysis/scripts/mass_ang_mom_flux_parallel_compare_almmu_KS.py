@@ -6,7 +6,6 @@ from yt.units import cm
 import time
 import sys
 from matplotlib import pyplot as plt
-from os import makedirs
 
 #print("yt version = ",yt.__version__)
 
@@ -72,6 +71,7 @@ else:
 def calculate_mass_flux_in_sphere(dd):
 	data_sub_dir = dd.name
 	a = dd.a	
+	aM = a*M
 	r_plus = M*(1 + math.sqrt(1 - a**2))
 	min_R = np.sqrt(2*M*r_plus)
 
@@ -89,15 +89,14 @@ def calculate_mass_flux_in_sphere(dd):
 	center = [512.0, 512.0, 0]
 	L = 512.0	
 
-	if KS_or_cartesian_r:
-		# derived fields
-        	@derived_field(name = "r_KS", units = "")
-        	def _r_KS(field, data):
-                	R = data["spherical_radius"]/cm
-                	z = data["z"]/cm
-                	aM = M*a
-                	r_KS = np.sqrt((R**2 - aM**2)/2 + np.sqrt((R**2 - aM**2)/4 + (aM*z)**2))
-                	return r_KS
+	#if KS_or_cartesian_r:
+	# derived fields
+	@derived_field(name = "r_KS", units = "")
+	def _r_KS(field, data):
+		R = data["spherical_radius"]/cm
+		z = data["z"]/cm
+		r_KS = np.sqrt((R**2 - aM**2)/2 + np.sqrt((R**2 - aM**2)/4 + (aM*z)**2))
+		return r_KS
 			
 	data_storage = {}
 	# iterate through datasets (forcing each to go to a different processor)
@@ -113,17 +112,22 @@ def calculate_mass_flux_in_sphere(dd):
 		# make sphere (defined by r_KS)
 		if KS_or_cartesian_r:
 			ad = dsi.all_data()
-			shell = ad.cut_region(["(obj['r_KS'] < {:.3f}) & (obj['r_KS'] > {:.3f})".format(r_plus+dR, r_plus)])
+			print("r_plus = ", r_plus)
+			shell = ad.cut_region(["(obj['r_KS'] < {:.6f}) & (obj['r_KS'] > {:.6f})".format(r_plus+dR, r_plus)])
+			area = np.pi*( 2*M*r_plus + (r_plus**2)*np.sqrt(2*M*r_plus)*np.arcsinh(aM/r_plus)/aM )
 		else:
-			shell = dsi.sphere(center, min_R+dR) - dsi.sphere(center, min_R)		
+			shell = dsi.sphere(center, min_R+dR) - dsi.sphere(center, min_R)
+			area = 2*np.pi*min_R**2		
 			
 		# calculate radial (in terms of cartesian radius R) momentum and angular momentum flux in shell
-		meanJ_R = shell.mean("J_r", weight="cell_volume")
-		meanJ_azimuth_R = shell.mean("J_azimuth_r", weight="cell_volume")
-		J_R = meanJ_R*2*np.pi*(min_R**2)
-		J_azimuth_R = meanJ_azimuth_R*2*np.pi*(min_R**2)
-		output.append(J_R)
-		output.append(J_azimuth_R)
+		meanJ_r = shell.mean("J_r", weight="cell_volume")
+		meanJ_azimuth_r = shell.mean("J_azimuth_r", weight="cell_volume")
+		print("meanJ_r = ", meanJ_r)
+		print("meanJ_azimuth_r = ", meanJ_azimuth_r)
+		J_r = meanJ_r*area
+		J_azimuth_r = meanJ_azimuth_r*area
+		output.append(J_r)
+		output.append(J_azimuth_r)
 		
 		# store output
 		sto.result = output
@@ -199,5 +203,5 @@ def plot_graph():
 for dd in data_dirs:
 	calculate_mass_flux_in_sphere(dd)
 
-plot_graph()
+#plot_graph()
 

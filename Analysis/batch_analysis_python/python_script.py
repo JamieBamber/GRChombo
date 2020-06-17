@@ -199,5 +199,5 @@ def plot_graph():
 for dd in data_dirs:
 	calculate_mass_flux_in_sphere(dd)
 
-plot_graph()
+#plot_graph()
 

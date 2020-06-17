@@ -5,7 +5,7 @@
 
 # this copy is for the KNL nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Examples/FixedKerrBGScalarField
+work_dir=/home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField
 cd $work_dir
 # data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
@@ -13,7 +13,6 @@ run_number=1
 
 params_file=params_test.txt
 
-# extract parameters from params.txt
 cd $work_dir
 
 text_number=$(printf "%04d" ${run_number})
@@ -29,10 +28,9 @@ cp ${params_file} ${new_dir_path}/params.txt
 cd ${new_dir_path}
 # add the location of the new directory to the input files
 sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
+sed -i "s|DATASUBDIR|${new_dir}|" ${new_dir_path}/params.txt
 # 
-mkdir -p outputs
-cd outputs
-sbatch ../slurm_submit
+sbatch slurm_submit
 #
 cd ${work_dir}
 

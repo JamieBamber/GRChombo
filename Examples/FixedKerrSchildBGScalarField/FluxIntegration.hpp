@@ -24,14 +24,12 @@
 
 struct flux_integration_params_t
 {
-    std::vector<int> m_var_indices; // variable indices
     std::vector<double> integration_radii;
     int num_points_phi;
     int num_points_theta;
     std::vector<int> integration_levels;
     bool write_extraction;
     int min_integration_level;
-    int variable_index; // index of the variable to integrate in the array of User Variables	
 }
 class FluxIntegration
 {
@@ -74,7 +72,7 @@ class FluxIntegration
     ~FluxIntegration() {}
 
     //! Execute the query
-    void execute_query(AMRInterpolator<Lagrange<4>> *a_interpolator) const;
+    void execute_query(int var_index, AMRInterpolator<Lagrange<4>> *a_interpolator) const;
 
   private:
     //! integrate over a r_KS spherical shell for each

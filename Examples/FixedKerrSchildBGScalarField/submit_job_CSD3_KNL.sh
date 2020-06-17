@@ -15,7 +15,7 @@ data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF
 #run_number=$((run_number+1))
 #echo $run_number > run_number.txt
 
-run_number=101
+run_number=102
 
 params_file=params.txt
 
@@ -41,6 +41,7 @@ cp ${params_file} ${new_dir_path}/params.txt
 cd ${new_dir_path}
 # add the location of the new directory to the input files
 sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
+sed -i "s|DATASUBDIR|${new_dir}|" ${new_dir_path}/params.txt
 sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/slurm_submit
 # 
 mkdir -p outputs

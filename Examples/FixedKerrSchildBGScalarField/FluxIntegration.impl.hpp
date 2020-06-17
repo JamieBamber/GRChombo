@@ -11,7 +11,7 @@
 #define FLUXINTEGRATION_IMPL_HPP_
 
 //! Set up and execute the interpolation query
-inline void FluxIntegration::execute_query(
+inline void FluxIntegration::execute_query(int var_index,
     AMRInterpolator<Lagrange<4>> *a_interpolator) const
 {
     CH_TIME("FluxIntegration::execute_query");
@@ -51,7 +51,7 @@ inline void FluxIntegration::execute_query(
     query.setCoords(0, interp_x.data())
         .setCoords(1, interp_y.data())
         .setCoords(2, interp_z.data())
-        .addComp(m_re_comp, interp_data.data());
+        .addComp(var_index, interp_data.data());
 
     // submit the query
     a_interpolator->interp(query);

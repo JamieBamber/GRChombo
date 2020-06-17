@@ -185,4 +185,3 @@ class ExpandGridsToBoundaries : public BaseTransform
 };
 
 #endif /* BOUNDARYCONDITIONS_HPP_ */
-
