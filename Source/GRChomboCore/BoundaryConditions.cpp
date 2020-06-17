@@ -3,10 +3,6 @@
  * Please refer to LICENSE in GRChombo's root directory.
  */
 
-#include "DebuggingTools.hpp"
-#include "UserVariables.hpp"
-#include <vector>
-
 #include "BoundaryConditions.hpp"
 #include "FArrayBox.H"
 #include "ProblemDomain.H"
@@ -277,33 +273,6 @@ void BoundaryConditions::fill_sommerfeld_cell(
         rhs_box(iv, icomp) +=
             (m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp)) /
             radius;
-	// debugging step
-	if (isnan(rhs_box(iv, icomp))) {
-		pout() << "In BoundaryConditions::fill_sommerfeld_cell()" << endl;
-        	pout() << "Integer position: " << iv << endl;
-        	pout() << UserVariables::variable_names[icomp] << " = " << rhs_box(iv, icomp) << endl;
-		//pout() << "d1 vector = ";
-		//FOR1(i) {pout() << d1_vec[i] << ", ";}
-		//pout() << endl;
-		// test loc
-		//pout() << "loc " << loc << endl;
-		// test values of soln_box
-		IntVect iv_offset;
-		pout() << "soln_box(iv + offset, icomp) = " << endl;
-		pout() << "offset:	-2	-1	0	+1	+2" << endl;
-		FOR1(i){
-			pout() << "dir " << i;
-			for(int j=-2; j<=2; j++){
-				iv_offset = iv;
-				iv_offset[i] += j;
-				pout() << "	" << soln_box(iv_offset, icomp);
-			}
-			pout() << endl;
-		} 
-		pout() << "radius = " << radius << endl;
-		pout() << "m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp) = " << m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp) << endl;
-    		throw std::runtime_error("variable value is nan");
-	}
     }
 }
 
@@ -331,12 +300,6 @@ void BoundaryConditions::fill_reflective_cell(
     {
         int parity = get_vars_parity(icomp, dir);
         rhs_box(iv, icomp) = parity * rhs_box(iv_copy, icomp);
-	// debugging step
-        if (isnan(rhs_box(iv, icomp))) {
-        	pout() << "In BoundaryConditions::fill_reflective_cell()" << endl;
-        	pout() << "Integer position: " << iv << endl;
-        	pout() << UserVariables::variable_names[icomp] << " = " << rhs_box(iv, icomp) << endl;
-        }
     }
 }
 
@@ -418,12 +381,6 @@ void BoundaryConditions::fill_extrapolating_cell(
         {
             rhs_box(iv, icomp) = value_at_point[0] + analytic_change;
         }
-	// debugging step
-	if (isnan(rhs_box(iv, icomp))) {
-		pout() << "In BoundaryConditions::fill_extrapolating_cell()" << endl;
-		pout() << "Integer position: " << iv << endl;
-		pout() << UserVariables::variable_names[icomp] << " = " << rhs_box(iv, icomp) << endl;
-	}
     }
 }
 
@@ -500,10 +457,6 @@ void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
                 {
                     fill_sommerfeld_cell(rhs_box, soln_box, iv,
                                          m_params.mixed_bc_sommerfeld_vars);
-                }
-		else
-                {
-                    for(int icomp : m_params.mixed_bc_sommerfeld_vars) {rhs_box(iv, icomp) = 0.0;}
                 }
                 break;
             }
