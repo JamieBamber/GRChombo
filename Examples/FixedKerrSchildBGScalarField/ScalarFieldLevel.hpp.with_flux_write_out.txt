@@ -33,7 +33,7 @@ class ScalarFieldLevel : public GRAMRLevel
     virtual void initialData();
 
     //! Things to do after each timestep
-    //virtual void specificPostTimeStep();
+    virtual void specificPostTimeStep();
 
     //! routines to do before outputing plot file
     virtual void prePlotLevel();
