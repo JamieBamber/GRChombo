@@ -21,7 +21,7 @@ f
 .DS_Store
 log*
 *.ex
-*.swp
+.*.sw[n-p]
 *.out
 *.hdf5
 *.dSYM
@@ -31,5 +31,6 @@ Weyl_integral*
 time.table.*
 *.patch
 *.log
+ipo_out.optrpt
 
 Doxygen/html

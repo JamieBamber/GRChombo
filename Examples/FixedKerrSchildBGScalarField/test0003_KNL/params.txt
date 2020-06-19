@@ -1,9 +1,10 @@
 #Params for runtime inputs
 
-verbosity = 1
-chk_prefix = /home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField/test0001_KNL/KerrSF_
-plot_prefix = /home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField/test0001_KNL/KerrSFp_
-#restart_file = /home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField/test0001_KNL/KerrSF_000100.3d.hdf5
+verbosity = 5
+nan_check = 1
+chk_prefix = /home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField/test0003_KNL/KerrSF_
+plot_prefix = /home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField/test0003_KNL/KerrSFp_
+#restart_file = /home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField/test0003_KNL/KerrSF_000100.3d.hdf5
 
 # Set up grid spacings and regrid params
 # NB - the N values need to be multiples of block_factor
@@ -95,8 +96,3 @@ alignment = 0.0
 # BH initial data
 bh_mass = 1
 bh_spin = 0.7
-
-# extraction params
-outer_extraction_radius = 450.0
-flux_data_dir = /home/dc-bamb1/GRChombo/Analysis/data/compare_almmu_flux/
-data_subdir = test0001_KNL

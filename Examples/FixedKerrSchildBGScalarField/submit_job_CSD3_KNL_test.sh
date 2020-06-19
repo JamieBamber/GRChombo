@@ -9,7 +9,7 @@ work_dir=/home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField
 cd $work_dir
 # data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
-run_number=1
+run_number=3
 
 params_file=params_test.txt
 

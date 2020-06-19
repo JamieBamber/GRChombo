@@ -18,7 +18,7 @@ src_dirs := $(GRCHOMBO_SOURCE)/utils \
             $(GRCHOMBO_SOURCE)/CCZ4  \
             $(GRCHOMBO_SOURCE)/Matter  \
             $(GRCHOMBO_SOURCE)/BoxUtils  \
-            $(GRCHOMBO_SOURCE)/GRChomboCore_old \
+            $(GRCHOMBO_SOURCE)/GRChomboCore \
             $(GRCHOMBO_SOURCE)/TaggingCriteria  \
             $(GRCHOMBO_SOURCE)/AMRInterpolator  \
             $(GRCHOMBO_SOURCE)/InitialConditions/ScalarFields  \

@@ -29,10 +29,14 @@
 // Things to do at each advance step, after the RK4 is calculated
 void ScalarFieldLevel::specificAdvance()
 {
+    if (m_verbosity)
+        pout() << "starting ScalarFieldLevel::specificAdvance()" << endl;
     // Check for nan's
     if (m_p.nan_check)
         BoxLoops::loop(NanCheck(), m_state_new, m_state_new,
                        EXCLUDE_GHOST_CELLS, disable_simd());
+   if (m_verbosity)
+        pout() << "done ScalarFieldLevel::specificAdvance()" << endl;
 }
 
 // Initial data for field and metric variables
@@ -50,10 +54,11 @@ void ScalarFieldLevel::initialData()
                    m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
 }
 
-
 // Things to do before outputting a plot file
 void ScalarFieldLevel::prePlotLevel()
 {
+    if (m_verbosity)
+	pout() << "starting ScalarFieldLevel::prePlotLevel()" << endl;
     // Calculate matter density function
     fillAllGhosts();
     Potential potential(m_p.potential_params);
@@ -62,12 +67,16 @@ void ScalarFieldLevel::prePlotLevel()
     BoxLoops::loop(FixedBGDensityAndMom<ScalarFieldWithPotential, KerrSchildFixedBG>(
                        scalar_field, kerr_bg, m_dx, m_p.center, m_p.initial_params.alignment),
                    m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
+    if (m_verbosity)
+        pout() << "done ScalarFieldLevel::prePlotLevel()" << endl;
 }
 
 // Things to do in RHS update, at each RK4 step
 void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                                        const double a_time)
 {
+    if (m_verbosity)
+        pout() << "starting ScalarFieldLevel::specificEvalRHS()" << endl;
     // Calculate right hand side with matter_t = ScalarField
     // and background_t = IsotropicKerrBH
     // RHS for non evolution vars is zero, to prevent undefined values
@@ -84,13 +93,11 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     BoxLoops::loop(Excision<ScalarFieldWithPotential, KerrSchildFixedBG>(
                        m_dx, m_p.center, kerr_bg),
                    a_soln, a_rhs, EXCLUDE_GHOST_CELLS, disable_simd());
-}
-
-// Specify if you want any plot files to be written, with which vars
-void ScalarFieldLevel::specificWritePlotHeader(
-    std::vector<int> &plot_states) const
-{
-    plot_states = {c_phi, c_Pi, c_chi, c_rho, c_rho_azimuth, c_J_rKS, c_J_azimuth_rKS, c_J_R, c_J_azimuth_R};
+    if (m_verbosity)
+        pout() << "done ScalarFieldLevel::specificEvalRHS()" << endl;
+    if (m_p.nan_check)
+        BoxLoops::loop(NanCheck(), m_state_new, m_state_new,
+                       EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
 // Note that for the fixed grids this only happens on the initial timestep
@@ -101,3 +108,6 @@ void ScalarFieldLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     BoxLoops::loop(FixedGridsTaggingCriterion(m_dx, m_level, m_p.L, m_p.center),
                    current_state, tagging_criterion, disable_simd());
 }
+
+// Specify if you want any plot files to be written, with which vars
+void ScalarFieldLevel::specificWritePlotHeader(std::vector<int> &plot_states) const;

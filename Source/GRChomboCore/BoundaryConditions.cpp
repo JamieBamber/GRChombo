@@ -79,8 +79,8 @@ void BoundaryConditions::write_mixed_conditions(int idir, params_t a_params)
 
     // now do the write out
     pout()
-    << "The variables that use extrapolating bcs in this direction are : " 
-    << endl;
+        << "The variables that use extrapolating bcs in this direction are : "
+        << endl;
 
     for (int icomp = 0; icomp < NUM_VARS; icomp++)
     {
@@ -266,7 +266,7 @@ void BoundaryConditions::fill_sommerfeld_cell(
 
             // for each direction add dphidx * x^i / r
             rhs_box(iv, icomp) += -d1 * loc[idir2] / radius;
-	}
+        }
 
         // asymptotic values - these need to have been set in
         // the params file
@@ -308,7 +308,6 @@ void BoundaryConditions::fill_extrapolating_cell(
     const int dir, const std::vector<int> &extrapolating_comps,
     const int order) const
 {
-    //pout() << "BoundaryConditions::fill_extrapolating_cell()" << endl;
     for (int icomp : extrapolating_comps)
     {
         // current radius
@@ -351,7 +350,6 @@ void BoundaryConditions::fill_extrapolating_cell(
 
         // assume some radial dependence and fit it
         double analytic_change = 0.0;
-	double linear_change = 0.5 * units_from_edge * (value_at_point[0] - value_at_point[1]); 
         // comp = const
         if (order == 0)
         {
@@ -373,14 +371,7 @@ void BoundaryConditions::fill_extrapolating_cell(
         }
 
         // set the value here to the extrapolated value
-	if (abs(analytic_change) > abs(linear_change))
-        {
-            rhs_box(iv, icomp) = value_at_point[0] + linear_change;
-        }
-        else
-        {
-            rhs_box(iv, icomp) = value_at_point[0] + analytic_change;
-        }
+        rhs_box(iv, icomp) = value_at_point[0] + analytic_change;
     }
 }
 
@@ -450,7 +441,7 @@ void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
             }
             case MIXED_BC:
             {
-		fill_extrapolating_cell(rhs_box, iv, a_side, dir,
+                fill_extrapolating_cell(rhs_box, iv, a_side, dir,
                                         m_params.mixed_bc_extrapolating_vars,
                                         m_params.extrapolation_order);
                 if (filling_rhs)
@@ -844,4 +835,3 @@ void BoundaryConditions::expand_grids_to_boundaries(
     a_out_grids.transform(expand_grids_to_boundaries);
     a_out_grids.close();
 }
-
