@@ -14,6 +14,7 @@
 #include "KerrSchildFixedBG.hpp"
 #include "Potential.hpp"
 #include "ScalarRotatingCloud.hpp"
+#include "KerrSchildSpheroidalExtraction.hpp"
 
 class SimulationParameters : public ChomboParameters
 {
@@ -31,11 +32,6 @@ class SimulationParameters : public ChomboParameters
 
         // Initial and SF data
         pp.load("scalar_mass", potential_params.scalar_mass);
-	/* double raw_amplitude;				// Set the field amplitude such that for an input amplitude of 1
-        pp.load("scalar_amplitude", raw_amplitude); *		// 1/2 * mu^2 * phi^2 = e^-10
-	initial_params.amplitude = raw_amplitude *		//
-        sqrt(1e-10 / (0.5 * potential_params.scalar_mass *	//
-                      potential_params.scalar_mass));	     */	//
         pp.load("scalar_amplitude", initial_params.amplitude); 
         pp.load("center", initial_params.center, center);
 	pp.load("scalar_omega", initial_params.omega);
@@ -44,21 +40,40 @@ class SimulationParameters : public ChomboParameters
 	pp.load("alignment", initial_params.alignment);
         pp.load("sigma", sigma);
 	
-
         // Background boosted bh data
         pp.load("bh_mass", bg_params.mass);
 	pp.load("bh_spin", bg_params.spin);
         bg_params.center = initial_params.center;
+
+	// Flux Extraction params
+	extraction_params.num_extraction_radii = 2;
+	pp.load("num_points_phi", extraction_params.num_points_phi, 2);
+        pp.load("num_points_theta", extraction_params.num_points_theta, 5);
+	extraction_params.a = bg_params.mass*bg_params.spin;
+	pp.load("outer_extraction_radius", outer_extraction_radius);
+	double r_plus = bg_params.mass*(1 + sqrt(1 - bg_params.spin*bg_params.spin));
+	std::vector<double> flux_radii = {r_plus, outer_extraction_radius};
+	extraction_params.extraction_radii = flux_radii;
+	pp.load("extraction_center", extraction_params.center, center);
+	pp.load("write_extraction", extraction_params.write_extraction, false);
+	pp.load("flux_data_dir", flux_data_dir);
+	string data_subdir;
+	pp.load("data_subdir", data_subdir);
+	flux_file_name = flux_data_dir + data_subdir + "_mass_ang_mom_flux.csv";
     }
 
     // Problem specific parameters
     double sigma;
     int nan_check;
+    double outer_extraction_radius;
 
     // Initial data for matter, metric and potential
     KerrSchildFixedBG::params_t bg_params;
     ScalarRotatingCloud::params_t initial_params;
     Potential::params_t potential_params;
+    KSSpheroidalExtraction::params_t extraction_params;
+    string flux_data_dir;
+    string flux_file_name;
 };
 
 #endif /* SIMULATIONPARAMETERS_HPP_ */

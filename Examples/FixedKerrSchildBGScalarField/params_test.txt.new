@@ -1,6 +1,6 @@
 #Params for runtime inputs
 
-verbosity = 0
+verbosity = 1
 chk_prefix = DATADIR/KerrSF_
 plot_prefix = DATADIR/KerrSFp_
 #restart_file = DATADIR/KerrSF_000100.3d.hdf5
@@ -10,6 +10,9 @@ plot_prefix = DATADIR/KerrSFp_
 N1 = 128
 N2 = 128
 N3 = 64
+
+num_plot_vars = 9
+plot_vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
 
 # Length of longest box side, dx_coarsest = L/N(max)
 # NB if non cubic, this determines dx for all sides
@@ -50,8 +53,13 @@ lo_boundary = 3 3 2
 # 1,2,3 = odd x, y, z
 # 4,5,6 = odd xy, yz, xz
 # !!! If l+m = odd, for Al = 0 you need to set the parity of phi and Pi to be 3
-vars_parity = 0 0 0 0 0 0 0 0 0		#phi, Pi, chi, rho, rho_azimuth, J_rKS, J_azimuth_rKS, J_R, J_azimuth_R
-vars_asymptotic_values = 0 0 1 0 0 0 0 0 0  #phi, Pi, chi, rho, rho_azimuth, J_rKS, J_azimuth_rKS, J_R, J_azimuth_R
+vars_parity = 0 0 0 0 0 0 0 0 0         #phi, Pi, chi, rho, rho_azimuth, J_rKS, J_azimuth_rKS, J_R, J_azimuth_R
+
+# if sommerfeld boundaries selected, must specify any nonzero
+# asymptotic values
+#num_nonzero_asymptotic_vars = 1
+#nonzero_asymptotic_vars = chi
+#nonzero_asymptotic_values = 1.0
 
 # Set up time steps
 # dt will be dx*dt_multiplier on each grid level
@@ -87,3 +95,8 @@ alignment = 0.0
 # BH initial data
 bh_mass = 1
 bh_spin = 0.7
+
+# extraction params
+outer_extraction_radius = 450.0
+flux_data_dir = /home/dc-bamb1/GRChombo/Analysis/data/compare_almmu_flux/
+data_subdir = DATASUBDIR

@@ -32,15 +32,15 @@ class ScalarFieldLevel : public GRAMRLevel
     //! Initialize data for the field and metric variables
     virtual void initialData();
 
+    //! Things to do after each timestep
+    //virtual void specificPostTimeStep();
+
     //! routines to do before outputing plot file
     virtual void prePlotLevel();
 
     //! RHS routines used at each RK4 step
     virtual void specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                                  const double a_time);
-
-    //! Specify which variables to write at plot intervals
-    virtual void specificWritePlotHeader(std::vector<int> &plot_states) const;
 
     //! Tell Chombo how to tag cells for regridding
     virtual void computeTaggingCriterion(FArrayBox &tagging_criterion,
