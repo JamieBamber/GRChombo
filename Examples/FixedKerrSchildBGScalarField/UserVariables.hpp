@@ -24,8 +24,9 @@ enum
 namespace UserVariables
 {
 static constexpr char const *variable_names[NUM_VARS] = {"phi", "Pi", "chi",
-                                                         "rho", "rho_azimuth", "J_rKS", "J_azimuth_rKS", 
-							"J_R", "J_azimuth_R"};
+                                                         "rho", "rho_azimuth", 
+							"J_rKS", "J_azimuth_rKS","J_R", "J_azimuth_R"};
 }
+
 
 #endif /* USERVARIABLES_HPP */

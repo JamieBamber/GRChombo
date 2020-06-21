@@ -13,7 +13,7 @@ N2 = 128
 N3 = 64
 
 num_plot_vars = 9
-plot_vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
+plot_vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R 
 
 # Length of longest box side, dx_coarsest = L/N(max)
 # NB if non cubic, this determines dx for all sides

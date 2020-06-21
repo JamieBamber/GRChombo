@@ -77,7 +77,8 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 
 	// get KerrSchild r
 	double a = m_background.m_params.spin*m_background.m_params.mass;
-	data_t r2 = (R*R - a*a)/2 + sqrt((R*R - a*a)/4 + (a*z)*(a*z));
+	data_t disc = simd_max((R*R - a*a), 0.001);
+	data_t r2 = disc/2 + sqrt(disc*disc/4 + (a*z)*(a*z));
 	data_t r = sqrt(r2);
 
 	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] for the cartesian coordinates

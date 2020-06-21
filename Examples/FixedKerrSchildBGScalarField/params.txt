@@ -80,8 +80,8 @@ sigma = 0.5
 scalar_mass = 0.4
 scalar_amplitude = 0.1
 scalar_omega = 0.4
-scalar_l = 1
-scalar_m = 1
+scalar_l = 2
+scalar_m = 2
 alignment = 0.0
 
 # BH initial data

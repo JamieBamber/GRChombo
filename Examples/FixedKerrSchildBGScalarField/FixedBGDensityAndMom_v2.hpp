@@ -80,14 +80,14 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         Tensor<1, data_t> J; 
         FOR2(i, j){ J[i] += sqrt(det_gamma)*metric_vars.lapse*( gamma_UU[i][j]*(metric_vars.lapse*emtensor.Si[j] - Sbeta[j]) ); }                       
 
-        // J_azimuth = x * S_y - y * S_z
+        // rho_azimuth = x * S_y - y * S_z
         // J_azimuth_prime = x(S_y cos(alignment) + S_z sin(alignment)) - yprime * S_x
-        data_t J_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma) * metric_vars.lapse;
+        data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma) * metric_vars.lapse;
 
         // fine the inward radial momentum (i.e. radial mass flux density)
         // S_r = (x * S_x + y * S_y + z * S_z)/r
         data_t R = coords.get_radius();
-        data_t J_r = -(x * J[0] + y * J[1] + z * J[2])/R;
+        data_t J_R = -(x * J[0] + y * J[1] + z * J[2])/R;
 
 	// d x / d azimuth
         Tensor<1, data_t> dxdaz;
@@ -99,14 +99,14 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         Ni[0] = x/R;
         Ni[1] = y/R;
         Ni[2] = z/R;
-	data_t J_azimuth_r = 0;
-        FOR2(i, j) { J_azimuth_r += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }	
+	data_t J_azimuth_R = 0;
+        FOR2(i, j) { J_azimuth_R += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }	
 
         // assign values of density in output box
         current_cell.store_vars(rho, c_rho);
-        current_cell.store_vars(J_azimuth, c_J_azimuth);
-        current_cell.store_vars(J_r, c_J_r);
-        current_cell.store_vars(J_azimuth_r, c_J_azimuth_r);
+        current_cell.store_vars(rho_azimuth, c_rho_azimuth);
+        current_cell.store_vars(J_R, c_J_R);
+        current_cell.store_vars(J_azimuth_R, c_J_azimuth_R);
     }
 };
 
