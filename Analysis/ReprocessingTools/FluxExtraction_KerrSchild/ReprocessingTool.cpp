@@ -56,6 +56,10 @@ int runReprocessingTool(int argc, char *argv[])
         gr_amr, sim_params.origin, sim_params.dx, sim_params.verbosity);
     gr_amr.set_interpolator(&interpolator);
 
+    pout() << "start number = " << sim_params.start_number << endl;
+    pout() << "end number = " << sim_params.end_number << endl;
+    pout() << "plot interval = " << sim_params.plot_interval << endl;
+
     // get start and end index
     int start_index, end_index;
     if ((sim_params.start_number % sim_params.plot_interval != 0) || (sim_params.end_number % sim_params.plot_interval != 0)) 

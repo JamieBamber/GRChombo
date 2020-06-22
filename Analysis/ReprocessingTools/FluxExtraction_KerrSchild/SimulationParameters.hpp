@@ -36,6 +36,7 @@ class SimulationParameters : public ChomboParameters
         // Files setup
         pp.get("plot_interval", plot_interval);
 	pp.get("start_number", start_number);
+	pp.get("end_number", end_number);
         pp.get("plot_interval", plot_interval);
 
         // basic extraction params

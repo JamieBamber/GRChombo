@@ -4,13 +4,13 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration_KerrSchild
 
-subdir=run0068_KNL_l0_m0_a0.99_Al0_mu1_M1_KerrSchild
+subdir=run0071_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
 start_number=0
 end_number=1250
 lin_or_log=1 # note 0 = log, 1 = linear
 bh_spin=0.99
 bh_mass=1
-var_index=0
+var_index=5
 # note vars = {c_phi, c_Pi, c_chi, c_rho, c_J_azimuth, c_J_r}
 min_radius=$(echo "scale=5; 1.001 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
 echo "min_radius = " ${min_radius}

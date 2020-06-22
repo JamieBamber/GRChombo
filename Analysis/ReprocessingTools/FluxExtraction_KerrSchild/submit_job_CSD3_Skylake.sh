@@ -4,9 +4,9 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction_KerrSchild
 
-subdir=run0101_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
+subdir=run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
 start_number=0
-end_number=1250
+end_number=1005
 bh_spin=0.7
 bh_mass=1
 
@@ -27,9 +27,6 @@ sed -i "s|BHSPIN|${bh_spin}|" params.txt
 sed -i "s|BHMASS|${bh_mass}|" params.txt
 sed -i "s|SNUMBER|${start_number}|" params.txt
 sed -i "s|ENUMBER|${end_number}|" params.txt
-sed -i "s|VARINDEX|${var_index}|" params.txt
-sed -i "s|LINLOG|${lin_or_log}|" params.txt
-sed -i "s|MINRADIUS|${min_radius}|" params.txt
 sbatch slurm_submit
 #
 cd ${work_dir}

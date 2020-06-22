@@ -15,7 +15,7 @@ data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF
 #run_number=$((run_number+1))
 #echo $run_number > run_number.txt
 
-run_number=102
+run_number=104
 
 params_file=params.txt
 

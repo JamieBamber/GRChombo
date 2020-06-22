@@ -10,13 +10,13 @@ start_time = time.time()
 
 # set up parameters 
 data_root_path = "../data/Circular_Extraction_data/"
-run_number = "1"
+run_number = "5"
 mu_str = "1"
 mu = float(mu_str)
 subdir = "run000{:s}_FlatScalar_mu{:s}_G0".format(run_number, mu_str)
 variable = "phi"
 scale = "linear"
-number = 1004
+number = 2165
 file_name_root = subdir + "_" + variable + "_" + scale
 colours = ["r", "b", "b", "m"]
 styles = ["-", "--", "-."]
@@ -70,14 +70,12 @@ def a_func(a_param):
 	#return 1 - np.exp(-a_param)
 
 def M_func(M_param):
-	return M_initial*0.5*(1 + np.tanh(M_param))
-
-#A = 18
+	return M_initial*0.8*(1 + np.tanh(M_param))
 
 def Stationary_sol_KS_fit_ingoing(R, M_param, a_param, Ain, phase_in):
 	a = a_func(a_param)
 	M = M_func(M_param)
-	print("testing M, a, Ain, phase_in = {:.2f},{:.2f},{:.2f},{:.2f}".format(M, a, Ain, phase_in))
+	print("testing M, a, A, phase = {:.2f},{:.2f},{:.2f},{:.2f}".format(M, a, Ain, phase_in))
 	result = Stationary_sol_KS(R, Ain, M, a, phase_in, True) #+ out_factor*Stationary_sol_KS(R, Aout, M, a, phase_out, False)
 	return result
 
@@ -89,13 +87,13 @@ def Stationary_sol_KS_fit(R, M_param, a_param, Ain, Aout, phase_in, phase_out):
 	return result
 	
 # fit KS solution to data
-R_fit = R[5:]
-phi_fit = phi[5:]
-fit_ingoing_only=True
+R_fit = R
+phi_fit = phi
+fit_ingoing_only=False
 
 plt.plot(R, phi, 'r-', label="numerical results")
 if fit_ingoing_only:
-	popt, pconv = curve_fit(Stationary_sol_KS_fit_ingoing, R_fit, phi_fit, p0=(2, 1, 45, 4))
+	popt, pconv = curve_fit(Stationary_sol_KS_fit_ingoing, R_fit, phi_fit, p0=(0, 0.5, 45, 4))
 	M = M_func(popt[0])
 	a = a_func(popt[1])
 	Ain = popt[2]
@@ -103,7 +101,7 @@ if fit_ingoing_only:
 	phi_sol_in = Stationary_sol_KS(R, Ain, M, a, phase_in, True)
 	plt.plot(R, phi_sol_in, 'b--', label="fitted stat. solution (ingoing), A={:.2f}, M={:.2f}, a={:.2f}, phase={:.2f}".format(Ain, M, a, phase_in)) 
 else:
-	popt, pconv = curve_fit(Stationary_sol_KS_fit, R_fit, phi_fit, p0=(4, 2, 5, 10, 0, 0))
+	popt, pconv = curve_fit(Stationary_sol_KS_fit, R_fit, phi_fit, p0=(0, 1, 36, 0, 0, 0))
 	M = M_func(popt[0])
 	a = a_func(popt[1])
 	Ain = popt[2]
@@ -116,25 +114,25 @@ else:
 	print("max phi_sol_out = ", np.max(phi_sol_out))
 	plt.plot(R, phi_sol_out, 'c-', label="fitted stat. solution (outgoing), A={:.2f}, M={:.2f}, a={:.2f}, phase={:.2f}".format(Aout, M, a, phase_out)) 
 	phi_sol = Stationary_sol_KS_fit(R, popt[0], popt[1], Ain, Aout, phase_in, phase_out)
-	plt.plot(R, phi_sol, 'b--', label="fitted stat. solution") 
+	plt.plot(R, phi_sol, 'b--', label="fitted stat. solution")
 
-def phi_test(colour, M_, a_):
-	def Stationary_sol_KS_fit_ingoing_A_phase_only(R, Ain, phase_in):
+def phi_test(colour, Ain, M_, a_):
+	def Stationary_sol_KS_fit_ingoing_phase_only(R, phase_in):
 		print("M, a = {:.2f},{:.2f}, testing A, phase = {:.2f},{:.2f}".format(M_, a_, Ain, phase_in))
 		result = Stationary_sol_KS(R, Ain, M_, a_, phase_in, True)
 		return result
-	popt, pconv = curve_fit(Stationary_sol_KS_fit_ingoing_A_phase_only, R_fit, phi_fit, p0=(40, 0))
-	phi_test = Stationary_sol_KS(R, popt[0], M_, a_, popt[1], True)
-	plt.plot(R, phi_test, colour, label="stat. sol. (ingoing), A={:.2f}, M={:.2f}, a={:.2f}, phase={:.2f}".format(popt[0], M_, a_, popt[1]))
+	popt, pconv = curve_fit(Stationary_sol_KS_fit_ingoing_phase_only, R_fit, phi_fit, p0=(0))
+	phi_test = Stationary_sol_KS(R, Ain, M_, a_, popt[0], True)
+	plt.plot(R, phi_test, colour, label="stat. sol. (ingoing), A={:.2f}, M={:.2f}, a={:.2f}, phase={:.2f}".format(Ain, M_, a_, popt[0]))
 
-phi_test('c-.', M_initial, 0.82)
+phi_test('c-.', 36, 1.8*M_initial, 0)
 
 plt.legend(fontsize=8)
 plt.xlabel("$R$")
 plt.ylabel("$\\phi$")
 plt.grid(axis='both')
-plt.ylim((-30, 30))
-plt.xlim((0, 25))
+#plt.ylim((-30, 30))
+#plt.xlim((0, 25))
 dt = 0.5
 title = "Binary BH Scalar Field profile, z=0, $\\mu={:.2}$, time = {:.1f}".format(mu, time) 
 plt.title(title)
