@@ -64,12 +64,7 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 	const data_t det_gamma = 
             TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
 
-        // first rho. True rho = -sqrt(-g)T^0_0 = sqrt(det_gamma)*(alpha*rho_3+1 - beta^i * S_i)
-        data_t rho = metric_vars.lapse*emtensor.rho;
-        FOR1(k){ rho += -metric_vars.shift[k]*emtensor.Si[k];   }
-        rho = rho*sqrt(det_gamma);
-
-        // find angular momentum in Kerr BH direction and the cloud spin direction
+	// coordinates
         data_t x = coords.x;
         double y = coords.y;
         double z = coords.z;    
@@ -81,19 +76,20 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 	data_t r2 = disc/2 + sqrt(disc*disc/4 + (a*z)*(a*z));
 	data_t r = sqrt(r2);
 
-	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] for the cartesian coordinates
+        // conserved rho = -sqrt(-g)T^0_0 = sqrt(det_gamma)*(alpha*rho_3+1 - beta^i * S_i)
+        data_t rho = metric_vars.lapse*emtensor.rho;
+        FOR1(k){ rho += -metric_vars.shift[k]*emtensor.Si[k];   }
+        rho = rho*sqrt(det_gamma);
+	
+	// covarient conserved current j_i = -sqrt(-g)T_i_0 = det(gamma)*alpha*[ alpha * S_j - beta^k S_kj ] for the cartesian coordinates
         Tensor<1, data_t> Sbeta; 
         FOR2(i, j){ Sbeta[i] += metric_vars.shift[j]*emtensor.Sij[i][j]; }                      
         Tensor<1, data_t> J; 
-	// conserved 3-current linear momentum vector in the cartesian coordinates 
-        FOR2(i, j){ J[i] += sqrt(det_gamma)*metric_vars.lapse*( gamma_UU[i][j]*(metric_vars.lapse*emtensor.Si[j] - Sbeta[j]) ); }                       
+	// conserved 3-current linear momentum covector in the cartesian coordinates 
+        FOR1(i){ J[i] += sqrt(det_gamma)*metric_vars.lapse*(metric_vars.lapse*emtensor.Si[i] - Sbeta[i]); }                       
 
-        // J_azimuth = x * S_y - y * S_z
-        // J_azimuth_prime = x(S_y cos(alignment) + S_z sin(alignment)) - yprime * S_x
-        data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma) * metric_vars.lapse;
-
-        // fine the inward radial momentum (i.e. radial mass flux density)
-        // S_r = (x * S_x + y * S_y + z * S_z)/r
+        // conserved rho_azimuth = |gamma|(x * S_y - y * S_z)
+        data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma);
 
 	// d x / d azimuth
         Tensor<1, data_t> dxdaz;
@@ -111,13 +107,13 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         NRi[1] = y/R;
         NRi[2] = z/R;
 
-	// cartesian projection of the 3-current momentum vector in the r_KS unit direction
+	// cartesian projection of the 3-current momentum covectors in the r_KS unit direction
 	data_t J_rKS = 0;
 	FOR1(j) { J_rKS += Ni[j]*J[j]; }
 	data_t J_azimuth_rKS = 0;
         FOR2(i, j) { J_azimuth_rKS += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }	
 	
-	// cartesian projection of the 3-current momentum vector in the R unit direction
+	// cartesian projection of the 3-current momentum covectors in the R unit direction
 	data_t J_R = 0;
 	FOR1(j) { J_R += NRi[j]*J[j]; }
 	data_t J_azimuth_R = 0;
