@@ -23,7 +23,7 @@ plot_prefix = KerrSFp_
 # restart_file = KerrSFp_000000.3d.hdf5
 plot_interval = 5
 start_number = 0
-end_number = 1005
+end_number = 995
 
 # integration parameters
 num_points_phi = 64

@@ -238,6 +238,33 @@ void BoundaryConditions::fill_sommerfeld_cell(FArrayBox &rhs_box,
         rhs_box(iv, icomp) +=
             (m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp)) /
             radius;
+	// debugging step
+	if (isnan(rhs_box(iv, icomp))) {
+		pout() << "In BoundaryConditions::fill_sommerfeld_cell()" << endl;
+        	pout() << "Integer position: " << iv << endl;
+        	pout() << UserVariables::variable_names[icomp] << " = " << rhs_box(iv, icomp) << endl;
+		//pout() << "d1 vector = ";
+		//FOR1(i) {pout() << d1_vec[i] << ", ";}
+		//pout() << endl;
+		// test loc
+		//pout() << "loc " << loc << endl;
+		// test values of soln_box
+		IntVect iv_offset;
+		pout() << "soln_box(iv + offset, icomp) = " << endl;
+		pout() << "offset:	-2	-1	0	+1	+2" << endl;
+		FOR1(i){
+			pout() << "dir " << i;
+			for(int j=-2; j<=2; j++){
+				iv_offset = iv;
+				iv_offset[i] += j;
+				pout() << "	" << soln_box(iv_offset, icomp);
+			}
+			pout() << endl;
+		} 
+		pout() << "radius = " << radius << endl;
+		pout() << "m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp) = " << m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp) << endl;
+    		throw std::runtime_error("variable value is nan");
+	}
     }
 }
 

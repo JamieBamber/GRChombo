@@ -6,7 +6,7 @@ work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction_KerrS
 
 subdir=run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
 start_number=0
-end_number=1005
+end_number=995
 bh_spin=0.7
 bh_mass=1
 

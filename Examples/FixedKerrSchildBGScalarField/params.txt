@@ -11,8 +11,8 @@ N1 = 128
 N2 = 128
 N3 = 64
 
-num_plot_vars = 7
-plot_vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS
+num_plot_vars = 9
+plot_vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
 
 # Length of longest box side, dx_coarsest = L/N(max)
 # NB if non cubic, this determines dx for all sides
@@ -83,10 +83,10 @@ sigma = 0.5
 scalar_mass = 0.4
 scalar_amplitude = 0.1
 scalar_omega = 0.4
-scalar_l = 1
-scalar_m = -1
+scalar_l = 0
+scalar_m = 0
 alignment = 0.0
 
 # BH initial data
 bh_mass = 1
-bh_spin = 0.7
+bh_spin = 0.99
