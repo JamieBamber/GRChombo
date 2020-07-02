@@ -169,8 +169,8 @@ def load_data():
 
 def plot_graph():
 	data = load_data()
-	#colours = ['r-', 'b-', 'b-.', 'g--', 'c-', 'c--', 'y-', 'k--']
-	colours = ['r-', 'b-', 'g-', 'r--', 'b--', 'g--']
+	colours = ['r-', 'b-', 'g--', 'c-', 'c--', 'y-', 'k--']
+	#colours = ['r-', 'b-', 'g-', 'r--', 'b--', 'g--']
 	i = 0
 	for dd in data_dirs:
 		line_data = data[dd.num]
@@ -208,7 +208,7 @@ def plot_graph():
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-for dd in data_dirs:
-	calculate_mass_in_sphere(dd)
+#for dd in data_dirs:
+#	calculate_mass_in_sphere(dd)
 
-#plot_graph()
+plot_graph()
