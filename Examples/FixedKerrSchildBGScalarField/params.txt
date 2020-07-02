@@ -3,7 +3,7 @@
 verbosity = 0
 chk_prefix = DATADIR/KerrSF_
 plot_prefix = DATADIR/KerrSFp_
-#restart_file = DATADIR/KerrSF_000200.3d.hdf5
+restart_file = DATADIR/KerrSF_000200.3d.hdf5
 
 # Set up grid spacings and regrid params
 # NB - the N values need to be multiples of block_factor
@@ -62,8 +62,8 @@ vars_asymptotic_values = 0 0 1 0 0 0 0 0 0  #phi, Pi, chi, rho, rho_azimuth, J_r
 # L/N = 1024/128 = 8
 #
 checkpoint_interval = 100
-plot_interval = 5
-dt_multiplier = 0.0625 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
+plot_interval = 10
+dt_multiplier = 0.03125 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 2000.0
 ###
 # dt_raw = 8 * 1/16 = 0.5
@@ -80,13 +80,13 @@ sigma = 0.5
 # for s = 0.99 omega_crit = m * 0.4338
 #	so m_crit = 2.30
 # SF Initial data
-scalar_mass = 0.4
+scalar_mass = 0.8
 scalar_amplitude = 0.1
-scalar_omega = 0.4
-scalar_l = 0
-scalar_m = 0
+scalar_omega = 0.8
+scalar_l = 2
+scalar_m = 2
 alignment = 0.0
 
 # BH initial data
 bh_mass = 1
-bh_spin = 0.99
+bh_spin = 0.7

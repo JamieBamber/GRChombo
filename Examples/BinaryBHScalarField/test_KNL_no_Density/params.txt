@@ -4,14 +4,15 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 5
+verbosity = 1
 nan_check = 1
-chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_not_extrap_K/BinaryBHSFChk_
-plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_not_extrap_K/BinaryBHSFPlot_
-#restart_file = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_not_extrap_K/BinaryBHChk_000000.3d.hdf5
+chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_no_Density/BinaryBHSFChk_
+plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_no_Density/BinaryBHSFPlot_
+#restart_file = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_no_Density/BinaryBHChk_000000.3d.hdf5
 
-num_plot_vars = 7 
-plot_vars = chi phi Pi rho S_azimuth S_r S_Jr
+num_plot_vars = 3
+plot_vars = chi phi Pi 
+#rho S_azimuth S_r S_Jr
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
@@ -21,7 +22,7 @@ N3 = 32
 
 # scalar field parameters
 G_Newton = 0.0
-scalar_mass = 0.081876
+scalar_mass = 1.0
 field_amplitude = 1.0
 delay = 0
 
@@ -82,8 +83,8 @@ nonzero_asymptotic_values = 1.0 1.0 1.0 1.0 1.0
 
 # if mixed boundaries selected, must specify which are extrapolating
 # (the rest are assumed to be all sommerfeld)
-num_extrapolating_vars = 2
-extrapolating_vars = phi Pi 
+num_extrapolating_vars = 3
+extrapolating_vars = phi Pi K 
 
 # Max and min box sizes
 max_grid_size = 16
@@ -134,8 +135,8 @@ num_points_phi = 24
 num_points_theta = 36
 num_modes = 1
 modes = 2 0 # l m for spherical harmonics
-        2 1
-        2 2
+        #2 1
+        #2 2
         #4 0
         #4 1
         #4 2

@@ -8,7 +8,7 @@
 work_dir=~/GRChombo/Analysis
 
 script_dir=~/GRChombo/Analysis/scripts
-script=mass_ang_mom_flux_parallel_compare_almmu_KS.py
+script=mass_in_sphere_parallel_compare_almmu.py
 
 new_dir=batch_analysis_python
 echo ${new_dir}

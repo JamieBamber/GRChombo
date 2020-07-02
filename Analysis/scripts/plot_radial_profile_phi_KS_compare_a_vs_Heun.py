@@ -45,11 +45,13 @@ if (lin_or_log):
 else:
 	scale = "log"
 
+l=2
+m=0
 for i in range(0, len(a_list)):
 	a = float(a_list[i])
 	r_plus = M*(1 + np.sqrt(1 - a**2))
 	r_minus = M*(1 - np.sqrt(1 - a**2))
-	file_name = file_names[a_list[i]] + "_{:s}_{:s}_n{:06d}.dat"
+	file_name = file_names[a_list[i]] + "_{:s}_{:s}_n{:06d}"
 	dataset_path = data_root_path + file_name
 	# generate phi data
 	data = np.genfromtxt(dataset_path.format("phi", scale, number), skip_header=1)

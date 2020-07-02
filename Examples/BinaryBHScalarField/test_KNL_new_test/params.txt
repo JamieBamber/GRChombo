@@ -4,11 +4,11 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 5
+verbosity = 1
 nan_check = 1
-chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_BC_sommerfeld_and_reflecting/BinaryBHSFChk_
-plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_BC_sommerfeld_and_reflecting/BinaryBHSFPlot_
-#restart_file = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_BC_sommerfeld_and_reflecting/BinaryBHChk_000000.3d.hdf5
+chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_new_test/BinaryBHSFChk_
+plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_new_test/BinaryBHSFPlot_
+#restart_file = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_KNL_new_test/BinaryBHChk_000000.3d.hdf5
 
 num_plot_vars = 7 
 plot_vars = chi phi Pi rho S_azimuth S_r S_Jr
@@ -21,7 +21,7 @@ N3 = 32
 
 # scalar field parameters
 G_Newton = 0.0
-scalar_mass = 0.081876
+scalar_mass = 1.0
 field_amplitude = 1.0
 delay = 0
 
@@ -55,10 +55,10 @@ isPeriodic = 0 0 0
 # 0 = static, 1 = sommerfeld, 2 = reflective
 # 3 = extrapolating 4 = mixed
 # (see BoundaryConditions.hpp for details)
-#hi_boundary = 4 4 4
-#lo_boundary = 4 4 2
-hi_boundary = 1 1 1
-lo_boundary = 1 1 2
+hi_boundary = 4 4 4
+lo_boundary = 4 4 2
+#hi_boundary = 1 1 1
+#lo_boundary = 1 1 2
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
@@ -83,7 +83,7 @@ nonzero_asymptotic_values = 1.0 1.0 1.0 1.0 1.0
 # if mixed boundaries selected, must specify which are extrapolating
 # (the rest are assumed to be all sommerfeld)
 num_extrapolating_vars = 3
-extrapolating_vars = K phi Pi 
+extrapolating_vars = phi Pi K 
 
 # Max and min box sizes
 max_grid_size = 16

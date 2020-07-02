@@ -28,17 +28,17 @@ def add_data_dir(num, l, m, a, mu, Al="0"):
 	data_dirs.append(x)
 
 # choose datasets to compare
-"""add_data_dir( 28, 0, 0, "0.7", "0.4")
+add_data_dir( 28, 0, 0, "0.7", "0.4")
 add_data_dir( 54, 1, -1, "0.7", "0.4")
 add_data_dir( 48, 2, 2, "0.7", "0.4")
 add_data_dir( 42, 5, 1, "0.7", "0.4")
 add_data_dir( 58, 5, 5, "0.7", "0.4")
 add_data_dir( 55, 7, 1, "0.7", "0.4")
-add_data_dir( 45, 10, 10, "0.7", "0.4")"""
+add_data_dir( 45, 10, 10, "0.7", "0.4")
 
-add_data_dir( 31, 0, 0, "0", "0.4")
-add_data_dir( 28, 0, 0, "0.7", "0.4")
-add_data_dir( 29, 0, 0, "0.99", "0.4")
+#add_data_dir( 31, 0, 0, "0", "0.4")
+#add_data_dir( 28, 0, 0, "0.7", "0.4")
+#add_data_dir( 29, 0, 0, "0.99", "0.4")
 
 #add_data_dir( 46, 2, 2, "0", "0.4")
 
@@ -46,9 +46,9 @@ add_data_dir( 29, 0, 0, "0.99", "0.4")
 #add_data_dir( 39, 1, 1, "0.7", "0.4")
 #add_data_dir( 37, 1, 1, "0.99", "0.4")
 
-add_data_dir( 46, 2, 2, "0", "0.4")
-add_data_dir( 48, 2, 2, "0.7", "0.4")
-add_data_dir( 47, 2, 2, "0.99", "0.4")
+#add_data_dir( 46, 2, 2, "0", "0.4")
+#add_data_dir( 48, 2, 2, "0.7", "0.4")
+#add_data_dir( 47, 2, 2, "0.99", "0.4")
 
 #add_data_dir( 50, 2, -2, "0.99", "0.4")
 #add_data_dir( 49, 1, -1, "0.99", "0.4")
@@ -89,7 +89,7 @@ def calculate_mass_in_sphere(dd):
 			A = (r_BL**2 + (a*M)**2)**2 - ((a*M)**2)*Delta*(data["x"]**2 + data["y"]**2)/((cm**2)*r_BL)
 			alpha = pow(Delta*Sigma2/A, 0.5)
 			beta = -2*a*(M**2)*r_BL/A 
-			return (data["rho"]*alpha - beta*data["S_azimuth"])*pow(data["chi"],-3)
+			return (data["rho"]*alpha - beta*data["S_azimuth"])*pow(data["chi"],-3/2)
 
 	elif ((data_Eulerian_rho and use_Eulerian_rho) or ((not data_Eulerian_rho) and (not use_Eulerian_rho))):
 		# derived fields
@@ -208,7 +208,7 @@ def plot_graph():
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-#for dd in data_dirs:
-#	calculate_mass_in_sphere(dd)
+for dd in data_dirs:
+	calculate_mass_in_sphere(dd)
 
-plot_graph()
+#plot_graph()

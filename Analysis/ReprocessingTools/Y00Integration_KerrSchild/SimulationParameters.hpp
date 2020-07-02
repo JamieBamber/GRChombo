@@ -28,10 +28,12 @@ struct integration_params_t
     std::vector<int> integration_levels;
     bool write_extraction;
     int min_integration_level;
-    int variable_index; // index of the variable to integrate in the array of User Variables
+    int num_vars; // number of variables to integrate
+    std::vector<int> var_indices; // index of the variable to integrate in the array of User Variables
     double bh_a;	// dimensionfull BH spin = J/M
     bool linear_or_log;
     std::string suffix = "";
+    std::string output_rootdir;
 };
 
 class SimulationParameters : public ChomboParameters
@@ -48,7 +50,7 @@ class SimulationParameters : public ChomboParameters
     {
 	// get directories
 	pp.get("data_rootdir", data_rootdir);
-	pp.get("output_rootdir", output_rootdir);
+	pp.get("output_rootdir", integration_params.output_rootdir);
 	pp.get("data_subdir", data_subdir);
 
         // Files setup
@@ -61,7 +63,8 @@ class SimulationParameters : public ChomboParameters
         origin.fill(coarsest_dx / 2.0);
 
 	// integration parameters
-	pp.load("variable_index", integration_params.variable_index);
+	pp.load("num_vars", integration_params.num_vars);
+	pp.load("var_indices", integration_params.var_indices, integration_params.num_vars);
 	pp.load("num_points_phi", integration_params.num_points_phi, 2);
         pp.load("num_points_theta", integration_params.num_points_theta, 4);
 	pp.load("integration_center", integration_params.integration_center,

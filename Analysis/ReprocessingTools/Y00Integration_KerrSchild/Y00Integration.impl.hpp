@@ -20,12 +20,12 @@ inline void Y00Integration::execute_query(
         MayDay::Error("Interpolator has not been initialised in GRAMR class.");
     }
 
-    std::vector<double> interp_re_part(m_num_points *
-                                       m_params.num_integration_radii);
+    std::vector<double> interp_val(m_num_points * m_params.num_integration_radii);
     std::vector<double> interp_x(m_num_points * m_params.num_integration_radii);
     std::vector<double> interp_y(m_num_points * m_params.num_integration_radii);
     std::vector<double> interp_z(m_num_points * m_params.num_integration_radii);
 
+    double a = m_params.bh_a;
     // Work out the coordinates
     for (int iradius = 0; iradius < m_params.num_integration_radii; ++iradius)
     {
@@ -37,7 +37,6 @@ inline void Y00Integration::execute_query(
             double theta = (itheta + 0.5) * m_dtheta;
             double phi = iphi * m_dphi;
 	    double r = m_params.integration_radii[iradius];
-            double a = m_params.bh_a;
             interp_x[iradius * m_num_points + idx] =
                 m_params.integration_center[0] + sin(theta) * (r * cos(phi) + a * sin(phi));
             interp_y[iradius * m_num_points + idx] =
@@ -46,41 +45,44 @@ inline void Y00Integration::execute_query(
                 m_params.integration_center[2] + r * cos(theta);
         }
     }
-    // set up the query
-    InterpolationQuery query(m_num_points * m_params.num_integration_radii);
-    query.setCoords(0, interp_x.data())
-        .setCoords(1, interp_y.data())
-        .setCoords(2, interp_z.data())
-        .addComp(m_re_comp, interp_re_part.data());
-
-    // submit the query
-    a_interpolator->interp(query);
-
-    auto integral = integrate_surface(interp_re_part);
-
-    // linear or log label
-    std::string log_label;
-    if (m_params.linear_or_log){
-        log_label = "_linear_";
-    }
-    else {
-        log_label = "_log_";
-    }
-
-    // number label 
-    std::ostringstream nlabel;
-    nlabel << std::setw(6) << std::setfill('0') << m_start_number;
-    std::string nstring = "n" + nlabel.str();
-
-    std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] + log_label + nstring + 
-    m_params.suffix;
-
-    write_integral(integral, integral_filename);
-
-    if (m_params.write_extraction)
+    for (int ivar = 0; ivar < m_params.num_vars; ++ivar)
     {
-        write_extraction("ExtractionOut_", interp_re_part);
-    }
+	int var = m_params.var_indices[ivar];
+    	// set up the query
+    	InterpolationQuery query(m_num_points * m_params.num_integration_radii);
+    	query.setCoords(0, interp_x.data())
+        	.setCoords(1, interp_y.data())
+        	.setCoords(2, interp_z.data())
+        	.addComp(var, interp_val.data());
+	
+    	// submit the query
+    	a_interpolator->interp(query);
+    	auto integral = integrate_surface(interp_val);
+	
+    	// linear or log label
+    	std::string log_label;
+    	if (m_params.linear_or_log){
+        	log_label = "_linear_";
+    	}
+    	else {
+        	log_label = "_log_";
+    	}
+	
+    	// number label 
+    	std::ostringstream nlabel;
+    	nlabel << std::setw(6) << std::setfill('0') << m_start_number;
+    	std::string nstring = "n" + nlabel.str();
+	
+    	std::string integral_filename = m_params.output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[var] + log_label + nstring + 
+    	m_params.suffix;
+	
+    	write_integral(integral, integral_filename);
+	
+    	if (m_params.write_extraction)
+    	{
+        	write_extraction("ExtractionOut_", var, interp_val);
+    	}
+   }
 }
 
 //! integrate over a spherical shell with given harmonics for each integration
@@ -98,7 +100,6 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
     std::vector<double> integral(m_params.num_integration_radii, 0.);
 
     const int num_phi_points = m_params.num_points_phi;
-
     // only rank 0 does the integral, but use OMP threads if available
     if (rank == 0)
     {
@@ -121,6 +122,8 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
 	for (int iradius = 0; iradius < m_params.num_integration_radii;
      	iradius++)
         {
+	    double a = m_params.bh_a;
+	    double r = m_params.integration_radii[iradius];
 	    for (int iphi = 0; iphi < m_params.num_points_phi; ++iphi)
             {
                 double phi = iphi * 2 * M_PI / m_params.num_points_phi;
@@ -132,7 +135,9 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
                     int idx = iradius * m_num_points +
                               itheta * m_params.num_points_phi + iphi;
                     double integrand_re = a_re_part[idx];
-                    double f_theta_phi_re = integrand_re * sin(theta);
+		    // factor of dOmega
+		    double dS = sqrt((1 + (a/r)*(a/r))*(1 + pow(a*sin(theta)/r,2)));
+                    double f_theta_phi_re = integrand_re * dS;
 		    // note the normalisation by dividing by 2 pi here
                     inner_integral_re += m_dtheta * f_theta_phi_re / (2 * M_PI);
 		}
@@ -190,7 +195,7 @@ Y00Integration::write_integral(const std::vector<double> a_integral,
 //! Write out the result of the integration in phi and theta at each timestep for
 //! each integration radius
 inline void
-Y00Integration::write_extraction(std::string a_file_prefix,
+Y00Integration::write_extraction(std::string a_file_prefix, int var,
                                  const std::vector<double> a_re_part) const
 {
     CH_TIME("Y00Integration::write_integration");
@@ -204,7 +209,7 @@ Y00Integration::write_extraction(std::string a_file_prefix,
             "time = " + std::to_string(m_time) + ",",
             "r = " + std::to_string(m_params.integration_radii[iradius])};
         integration_file.write_header_line(header1_strings, "");
-        std::vector<std::string> components = {UserVariables::variable_names[m_re_comp]};
+        std::vector<std::string> components = {UserVariables::variable_names[var]};
         std::vector<std::string> coords = {"theta", "phi"};
         integration_file.write_header_line(components, coords);
 

@@ -6,7 +6,7 @@ N2 = 128
 N3 = 64
 L = 1024
 max_level = 7 # There are (max_level+1) grids, so min is zero
-dt_multiplier = 0.03125
+dt_multiplier = 0.0625
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
@@ -27,7 +27,8 @@ start_number = SNUMBER
 end_number = ENUMBER
 
 # integration parameters
-variable_index = VARINDEX
+num_vars = 1
+var_indices = 6
 num_points_phi = 64
 num_points_theta = 32
 integration_center = 512.0 512.0 0.0
@@ -40,7 +41,7 @@ max_integration_radius = 450
 linear_or_log = LINLOG		#!< use linear or log spacing for radii array. Linear = 1, Log = 0 
 
 # From here it is mostly dummy params
-verbosity = 0
+verbosity = 2
 regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
 max_grid_size = 16
 block_factor = 16

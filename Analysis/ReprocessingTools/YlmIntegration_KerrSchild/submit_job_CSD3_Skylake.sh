@@ -4,11 +4,11 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/YlmIntegration_KerrSchild
 
-subdir=run0067_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild
-start_number=1250
-end_number=1250
-lin_or_log=1 # note 0 = log, 1 = linear
-bh_spin=0
+subdir=run0079_KNL_l0_m0_a0.7_Al0_mu1_M1_KerrSchild
+start_number=825
+end_number=825
+lin_or_log=0 # note 0 = log, 1 = linear
+bh_spin=0.7
 bh_mass=1
 var_index=0
 # note vars = {c_phi, c_Pi, c_chi, c_rho, c_J_azimuth, c_J_r}

@@ -10,8 +10,9 @@ chk_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_BC_pouts/
 plot_prefix = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_BC_pouts/BinaryBHSFPlot_
 #restart_file = /home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/test_BC_pouts/BinaryBHChk_000000.3d.hdf5
 
-num_plot_vars = 7 
-plot_vars = chi phi Pi rho S_azimuth S_r S_Jr
+num_plot_vars = 3
+plot_vars = chi phi Pi 
+#rho S_azimuth S_r S_Jr
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
@@ -21,7 +22,7 @@ N3 = 32
 
 # scalar field parameters
 G_Newton = 0.0
-scalar_mass = 0.081876
+scalar_mass = 1.0
 field_amplitude = 1.0
 delay = 0
 
@@ -134,8 +135,8 @@ num_points_phi = 24
 num_points_theta = 36
 num_modes = 1
 modes = 2 0 # l m for spherical harmonics
-        2 1
-        2 2
+        #2 1
+        #2 2
         #4 0
         #4 1
         #4 2
