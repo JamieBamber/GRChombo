@@ -1,7 +1,7 @@
 #!/bin/bash
-load $WORK_DIR/CSD3-Intel-modules.sh
+load $WORK_DIR/SupermucNG_modules.sh
 current_dir=$(pwd)
-utils_dir=/home/dc-bamb1/GRChombo/Source/utils
+utils_dir=/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Source/utils
 cd ${utils_dir}
 rm KerrBH_Rfunc_lib.so KerrBH_Rfunc.o 
 mv KerrBH_Rfunc.cpp.txt KerrBH_Rfunc.cpp

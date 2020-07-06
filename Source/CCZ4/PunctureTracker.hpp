@@ -38,27 +38,27 @@ class PunctureTracker
     }
 
     //! set puncture locations on restart
-    void restart_punctures(BHAMR &a_bhamr,
+    void restart_punctures(BHAMR &a_gramr,
                            std::vector<std::array<double, CH_SPACEDIM>>
                                initial_puncture_coords) const;
 
     //! set and write initial puncture locations
-    void set_initial_punctures(BHAMR &a_bhamr,
+    void set_initial_punctures(BHAMR &a_gramr,
                                std::vector<std::array<double, CH_SPACEDIM>>
                                    initial_puncture_coords) const;
 
     //! Set punctures post restart if m_time > 0
-    void read_in_punctures(BHAMR &a_bhamr) const;
+    void read_in_punctures(BHAMR &a_gramr) const;
 
     //! Execute the tracking and write out
-    void execute_tracking(BHAMR &a_bhamr,
+    void execute_tracking(BHAMR &a_gramr,
                           const bool write_punctures = true) const;
 
     //! Use the interpolator to get the value of the shift at
     //! given coords
     void get_interp_shift(
         std::vector<std::array<double, CH_SPACEDIM>> &interp_shift,
-        BHAMR &a_bhamr,
+        BHAMR &a_gramr,
         std::vector<std::array<double, CH_SPACEDIM>> puncture_coords) const;
 
     //! Get a vector of the puncture coords - used for write out
@@ -69,3 +69,4 @@ class PunctureTracker
 #include "PunctureTracker.impl.hpp"
 
 #endif /* PUNCTURETRACKER_HPP_ */
+

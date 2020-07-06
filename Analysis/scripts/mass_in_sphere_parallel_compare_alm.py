@@ -30,8 +30,8 @@ data_dirs = []
 # choose datasets to compare
 """add_data_dir(data_dirs, 31, 0, 0, "0")
 add_data_dir(data_dirs, 28, 0, 0, "0.7")
-add_data_dir(data_dirs, 29, 0, 0, "0.99")"""
-add_data_dir(data_dirs, 32, 1, 1, "0")
+add_data_dir(data_dirs, 29, 0, 0, "0.99")
+add_data_dir(data_dirs, 32, 1, 1, "0")"""
 add_data_dir(data_dirs, 37, 1, 1, "0.99")
 """add_data_dir(data_dirs, 49, 1, -1, "0.99")
 add_data_dir(data_dirs, 42, 5, 1, "0.7")
@@ -45,17 +45,15 @@ add_data_dir(data_dirs, 50, 2, -2, "0.99")
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
-max_R = 450
+max_radius = 450
 M = 1
-phi0 = 0.1
-mu = 0.4
 
 output_dir = "data/compare_alm_mass"
 
 half_box = True
 
 change_in_E = True
-new_rho = False
+true_rho = True
 	
 """@derived_field(name = "rho_J_eff", units = "")
 def _rho_J_eff(field, data):
@@ -65,13 +63,13 @@ def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
 	a = dd.a	
 	r_plus = M*(1 + math.sqrt(1 - a**2))
-	min_R = r_plus/4
+	min_radius = r_plus
 
 	start_time = time.time()
 	
 	# load dataset time series
 	
-	if (new_rho == False):
+	if true_rho:
 		# derived fields
 		@derived_field(name = "rho_E_eff", units = "")
 		def _rho_E_eff(field, data):
@@ -83,11 +81,11 @@ def calculate_mass_in_sphere(dd):
 			beta = 2*a*(M**2)*r_BL/A 
 			return (data["rho"]*alpha - beta*data["S_azimuth"])*pow(data["chi"],-3)
 
-	elif new_rho:
+	elif not true_rho:
 		# derived fields
         	@derived_field(name = "rho_E_eff", units = "")
         	def _rho_E_eff(field, data):
-                	return data["rho"]
+                	return data["rho"]**pow(data["chi"],-3)
 		
 
 	dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_*.3d.hdf5"
@@ -111,7 +109,7 @@ def calculate_mass_in_sphere(dd):
 		output = [current_time]
 		
 		# make sphere
-		sphere = dsi.sphere(center, max_R) - dsi.sphere(center, min_R)
+		sphere = dsi.sphere(center, max_radius) - dsi.sphere(center, min_radius)
 		volume = sphere.sum("cell_volume")
 		if half_box:
 			volume = 2*volume
@@ -132,7 +130,8 @@ def calculate_mass_in_sphere(dd):
 		# make data directory if it does not already exist
 		makedirs(home_path + output_dir, exist_ok=True)
 		# output to file
-		dd.filename = "l={:d}_m={:d}_a={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), max_radius)
+		if true_rho:
+			dd.filename = "l={:d}_m={:d}_a={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), max_radius)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		f = open(output_path, "w+")
@@ -157,8 +156,7 @@ def load_data():
 
 def plot_graph():
 	old_data, data = load_data()
-	colours = ['r-', 'g-', 'b-']
-	#colours = ['r--', 'r-.', 'r-', 'b--', 'b-', 'c-', 'm-', 'k-', 'g-', 'g--', 'y-'] 
+	colours = ['r--', 'r-.', 'r-', 'b--', 'b-', 'c-', 'm-', 'k-', 'g-', 'g--', 'y-'] 
 	i = 0
 	for dd in data_dirs:
 		line_data = data[dd.num]
@@ -186,7 +184,7 @@ def plot_graph():
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-for dd in data_dirs:
-	calculate_mass_in_sphere(dd)
+#for dd in data_dirs:
+#	calculate_mass_in_sphere(dd)
 
-#plot_graph()
+plot_graph()

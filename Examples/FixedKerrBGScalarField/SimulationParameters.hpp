@@ -42,7 +42,6 @@ class SimulationParameters : public ChomboParameters
 	pp.load("scalar_l", initial_params.l);
 	pp.load("scalar_m", initial_params.m);
 	pp.load("alignment", initial_params.alignment);
-	pp.load("phase", initial_params.phase);
         pp.load("sigma", sigma);
 	
 
