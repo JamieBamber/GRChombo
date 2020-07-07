@@ -58,6 +58,10 @@ int runReprocessingTool(int argc, char *argv[])
 
     // get start and end index
     int start_index, end_index;
+    /*pout() << "start_number = " << sim_params.start_number << ", end_number = " << sim_params.end_number << endl;
+    pout() << "plot_interval = " << sim_params.plot_interval << endl; 
+    pout() << " start_number % plot_interval = " << sim_params.start_number % sim_params.plot_interval << endl;
+    pout() << " end_number % plot_interval = " << sim_params.end_number % sim_params.plot_interval << endl;*/
     if ((sim_params.start_number % sim_params.plot_interval != 0) || (sim_params.end_number % sim_params.plot_interval != 0)) 
     {
 	throw std::invalid_argument("invalid start or end number, or wrong plot interval");

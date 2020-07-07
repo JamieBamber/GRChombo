@@ -28,7 +28,8 @@ inline void YlmIntegration::execute_query(
     std::vector<double> interp_y(m_num_points * m_params.num_integration_radii);
     std::vector<double> interp_z(m_num_points * m_params.num_integration_radii);
 
-    // Work out the coordinates
+    // Work out the coordinates -- adjusted for BBH Kerr Schild coordinates
+    double a = m_params.final_bh_spin * m_params.final_bh_mass;
     for (int iradius = 0; iradius < m_params.num_integration_radii; ++iradius)
     {
         for (int idx = 0; idx < m_num_points; ++idx)
@@ -38,15 +39,13 @@ inline void YlmIntegration::execute_query(
             // don't put a point at z = 0
             double theta = (itheta + 0.5) * m_dtheta;
             double phi = iphi * m_dphi;
+	    double r = m_params.integration_radii[iradius];
             interp_x[iradius * m_num_points + idx] =
-                m_params.integration_center[0] +
-                m_params.integration_radii[iradius] * sin(theta) * cos(phi);
+                m_params.integration_center[0] + (r * cos(phi) + a * sin(phi)) * sin(theta);
             interp_y[iradius * m_num_points + idx] =
-                m_params.integration_center[1] +
-                m_params.integration_radii[iradius] * sin(theta) * sin(phi);
+                m_params.integration_center[1] + (r * sin(phi) - a * cos(phi)) * sin(theta);
             interp_z[iradius * m_num_points + idx] =
-                m_params.integration_center[2] +
-                m_params.integration_radii[iradius] * cos(theta);
+                m_params.integration_center[2] + r * cos(theta);
         }
     }
     // set up the query
@@ -71,7 +70,7 @@ inline void YlmIntegration::execute_query(
     // number label 
     std::ostringstream nlabel;
     nlabel << std::setw(6) << std::setfill('0') << m_start_number;
-    std::string nstring = "n" + nlabel.str() + "_";
+    std::string nstring = "n" + nlabel.str();
 
     for (int imode = 0; imode < m_params.num_modes; ++imode)
     {
@@ -79,7 +78,7 @@ inline void YlmIntegration::execute_query(
         auto integral = integrate_surface(0, mode.first, mode.second,
                                           interp_re_part);
         std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] +
-	"_Ylm_integral_" + log_label + nstring + m_params.suffix + "l=" + std::to_string(mode.first) + "_m=" + std::to_string(mode.second);
+	"_Ylm_integral_" + log_label + nstring + m_params.suffix + "_l=" + std::to_string(mode.first) + "_m=" + std::to_string(mode.second);
         write_integral(integral, integral_filename, mode);
     }
 
@@ -142,16 +141,19 @@ YlmIntegration::integrate_surface(int es, int el, int em,
                     double theta = (itheta + 0.5) * m_dtheta;
                     int idx = iradius * m_num_points +
                               itheta * m_params.num_points_phi + iphi;
-                    double x = m_params.integration_radii[iradius] * sin(theta) *
-                               cos(phi);
-                    double y = m_params.integration_radii[iradius] * sin(theta) *
-                               sin(phi);
+                    double x = m_params.integration_radii[iradius] * cos(phi) * sin(theta);
+                    double y = m_params.integration_radii[iradius] * sin(theta) * sin(phi);
                     double z = m_params.integration_radii[iradius] * cos(theta);
                     Y_lm_t<double> Y_lm = spin_Y_lm(x, y, z, es, el, em);
                     double integrand_re =
                         a_re_part[idx] * Y_lm.Real;
                     double integrand_im =
                         a_re_part[idx] * Y_lm.Im;
+		    // -------- need to put in det(gamma_ij - r_i r_j) --- #
+
+
+
+
                     // note the multiplication by radius here
 		    // radius = m_params.integration_radii[iradius]
                     double f_theta_phi_re = integrand_re * sin(theta);
@@ -187,7 +189,7 @@ YlmIntegration::write_integral(const std::vector<double> a_integral,
                               SmallDataIO::APPEND, m_first_step);
 
     // remove any duplicate data if this is a restart
-    integral_file.remove_duplicate_time_data();
+    // integral_file.remove_duplicate_time_data();
 
     // need to write headers if this is the first timestep
     if (m_first_step)
@@ -225,7 +227,7 @@ YlmIntegration::write_extraction(std::string a_file_prefix,
 {
     CH_TIME("YlmIntegration::write_integration");
     SmallDataIO integration_file(a_file_prefix, m_dt, m_time, m_restart_time,
-                                SmallDataIO::NEW, m_first_step);
+                                SmallDataIO::APPEND, m_first_step);
 
     for (int iradius = 0; iradius < m_params.num_integration_radii; ++iradius)
     {

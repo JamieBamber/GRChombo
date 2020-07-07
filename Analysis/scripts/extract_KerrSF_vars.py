@@ -10,7 +10,7 @@ start_time = time.time()
 
 # load dataset time series
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
-data_sub_dir = "run0022_KNL_l0_m0_a0_Al0_mu1_M1_correct_Ylm"
+data_sub_dir = "run1_l0_m-1_a0.99_Al0"
 
 dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_000000.3d.hdf5"
 ds = yt.load(dataset_path) # this loads a dataset time series

@@ -14,7 +14,7 @@
 #SBATCH --mail-user=james.bamber@physics.ox.ac.uk
 
 # Wall clock limit:
-#SBATCH --time=12:00:00
+#SBATCH --time=0:20:00
 #SBATCH --no-requeue
 
 #Setup of execution environment
@@ -44,7 +44,7 @@ application="/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarF
 
 #! Run options for the application:
 currentdir=$(pwd)
-options="${currentdir}/../params.txt"
+options="${currentdir}/params.txt"
 
 #Run the program:
 mpiexec -n $SLURM_NTASKS $application $options

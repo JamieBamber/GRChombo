@@ -14,17 +14,17 @@
 #SBATCH --mail-user=james.bamber@physics.ox.ac.uk
 
 # Wall clock limit:
-#SBATCH --time=0:20:00
+#SBATCH --time=24:00:00
 #SBATCH --no-requeue
 
 #Setup of execution environment
 #SBATCH --export=NONE
 #SBATCH --get-user-env
 #SBATCH --account=pn34tu
-#SBATCH --partition=test
+#SBATCH --partition=general
 
 #Number of nodes and MPI tasks per node:
-#SBATCH --nodes=2
+#SBATCH --nodes=21
 # There are 48 physical cores per node, so
 # the product of these numbers should be 48
 #SBATCH --ntasks-per-node=12

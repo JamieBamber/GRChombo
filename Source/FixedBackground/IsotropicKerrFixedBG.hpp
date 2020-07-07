@@ -283,7 +283,7 @@ class IsotropicKerrFixedBG
         // black hole params - mass M and boost v
         // "boost" is the gamma factor for the boost
         const double M = m_params.mass;
-        const double a = M*m_params.spin;
+        const double a = m_params.spin;
 
         // the quasi isotropic Kerr radius
         const double R = coords.get_radius();

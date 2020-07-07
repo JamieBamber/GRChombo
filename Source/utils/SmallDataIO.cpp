@@ -188,3 +188,4 @@ void SmallDataIO::get_specific_data_line(std::vector<double> &a_out_data,
     std::vector<double> coords(1, a_coord);
     get_specific_data_line(a_out_data, coords);
 }
+

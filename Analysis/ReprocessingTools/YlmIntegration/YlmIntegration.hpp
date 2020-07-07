@@ -32,8 +32,8 @@ class YlmIntegration
     const double m_dt;
     const double m_time;
     const bool m_first_step;
-    const double m_restart_time;
     const int m_start_number, m_end_number;
+    const double m_restart_time;
     const int m_num_points; // number of points per integration radius
     const double m_dphi;
     const double m_dtheta;
@@ -43,8 +43,7 @@ class YlmIntegration
   public:
     //! The constructor
     YlmIntegration(integration_params_t a_params, double a_dt, double a_time,
-                   bool a_first_step, std::string a_data_subdir, std::string a_output_rootdir, int a_start_number, int a_end_number, 
-       		   double a_restart_time = 0.0)
+                   bool a_first_step, std::string a_data_subdir, std::string a_output_rootdir, int a_start_number, int a_end_number, double a_restart_time)
         : m_params(a_params), m_dt(a_dt), m_time(a_time),
           m_first_step(a_first_step), m_data_subdir(a_data_subdir), m_output_rootdir(a_output_rootdir), 
 	  m_start_number(a_start_number), m_end_number(a_end_number), m_restart_time(a_restart_time),
@@ -57,7 +56,7 @@ class YlmIntegration
     //! The old constructor which assumes it is called in specificPostTimeStep
     //! so the first time step is when m_time == m_dt
     YlmIntegration(integration_params_t a_params, double a_dt, double a_time,
-                   std::string a_data_subdir, std::string a_output_rootdir, int a_start_number, int a_end_number, double a_restart_time = 0.0)
+                   std::string a_data_subdir, std::string a_output_rootdir, int a_start_number, int a_end_number, double a_restart_time)
        : YlmIntegration(a_params, a_dt, a_time, (a_dt == a_time),
                          a_data_subdir, a_output_rootdir, a_start_number, a_end_number, a_restart_time)
     {

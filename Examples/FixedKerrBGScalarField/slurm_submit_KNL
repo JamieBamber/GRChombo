@@ -59,6 +59,7 @@ module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
 module load intel/bundles/complib/2018.4
 module load hdf5-1.10.4-intel-17.0.4-swn7n43
 
+
 #! Full path to application executable: 
 application="/home/dc-bamb1/GRChombo/Examples/FixedKerrBGScalarField/Main_ScalarField3d.Linux.64.mpiicpc.ifort.OPTHIGH.MPI.OPENMPCC.KNL.Intel.ex"
 
