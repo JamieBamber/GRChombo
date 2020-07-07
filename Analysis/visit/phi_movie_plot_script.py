@@ -13,21 +13,12 @@ print("starting visit run")
 
 # file settings
 data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-run_number = 4
-subdir = "run{:04d}_FlatScalar_mu0.4_G0".format(run_number)
+subdir = "run0002_FlatScalar_mu0.4_G0"
+number = 100
 data_file_name = "BinaryBHSFPlot_*.3d.hdf5 database"
-# set basic save options
-root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
-frame_dir = "BBH_SF_phi_run{:04d}".format(run_number)
-try:
-        makedirs(root_plot_path + frame_dir)
-except:
-        pass
 
 # open datafile(s)
 OpenDatabase(data_root_dir + subdir + "/" + data_file_name, 0)
-
-abs_max = 16
 
 # add plot
 AddPlot("Pseudocolor", "phi")
@@ -36,11 +27,11 @@ PseudocolorAtts.scaling = PseudocolorAtts.Linear  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = -abs_max
+PseudocolorAtts.min = -4.0
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = abs_max
+PseudocolorAtts.max = 4.0
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-PseudocolorAtts.colorTableName = "PuOr" #"RdBu"
+PseudocolorAtts.colorTableName = "RdBu"
 PseudocolorAtts.invertColorTable = 1
 PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 PseudocolorAtts.opacity = 1
@@ -83,8 +74,7 @@ DrawPlots()
 
 # Set viewing attributes
 View2DAtts = View2DAttributes()
-width = 100
-View2DAtts.windowCoords = (256 - 0.5*width, 256+0.5*width, 256 - 0.5*width, 256+0.5*width)
+View2DAtts.windowCoords = (240, 272, 240, 272)
 View2DAtts.viewportCoords = (0.2, 0.95, 0.15, 0.95)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
@@ -96,6 +86,9 @@ SetView2D(View2DAtts)
 # get the number of timesteps
 nts = TimeSliderGetNStates()
 
+# set basic save options
+root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
+filename = "BBH_SF_phi_run0002_"
 # The 'family' option controls if visit automatically adds a frame number to 
 # the rendered files. 
 swatts = SaveWindowAttributes()
@@ -105,23 +98,23 @@ swatts.height = 1024
 # select PNG as the output file format
 swatts.format = swatts.PNG
 swatts.progressive = 1
+swatts.fileName = filename
 
 # make movie frames
 for ts in range(0, nts):
 	# Change to the next timestep
 	TimeSliderSetState(ts)
-	swatts.fileName = root_plot_path + frame_dir + "/BBH_SF_phi_movie_%06d.png" % ts
-	SetPlotOptions(PseudocolorAtts)
+	swatts.fileName = "BBH_SF_phi_movie_%06d.png" % ts
 	SetSaveWindowAttributes(swatts)
-	DrawPlots()
 	# render the image to a PNG file
 	SaveWindow()
 	print("made frame %d of %d" % (ts, nts))
 
 # make movie
-"""root_movie_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/movies/"
-input_pattern = frame_dir + "/BBH_SF_phi_movie_%06d.png"
-output_movie = root_movie_path + "BBH_SF_phi_" + subdir + "_movie.mpg"
+root_movie_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/movies/"
+input_pattern = "BBH_SF_phi_movie_%06d.png"
+output_movie = root_movie_path + "BBH_SF_phi_run0002_movie"
 encoding.encode(input_pattern,output_movie)
-print("saved as " + output_movie)"""
+
+print("saved as " + output_movie)
 exit()

@@ -5,5 +5,3 @@ extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int 
 	double result = Rfunc.compute(r, t, ingoing, KS_or_BL);
 	return result;
 }
-
-

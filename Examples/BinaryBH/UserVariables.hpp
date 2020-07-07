@@ -81,7 +81,8 @@ static constexpr char const *variable_names[NUM_VARS] = {
 
     "Mom1",     "Mom2",    "Mom3",
 
-    "Weyl4_Re", "Weyl4_Im"};
+    "Weyl4_Re", "Weyl4_Im"
+    };
 }
 
 #endif /* USERVARIABLES_HPP */

@@ -27,8 +27,6 @@ struct integration_params_t
     int num_points_theta;
     std::vector<int> integration_levels;
     bool write_extraction;
-    bool linear_or_log;
-    std::string suffix;
     int min_integration_level;
     int variable_index; // index of the variable to integrate in the array of User Variables
 };
@@ -87,7 +85,7 @@ class SimulationParameters : public ChomboParameters
         }
 	// -- make integration radius array
 	if (pp.contains("min_integration_radius") && pp.contains("max_integration_radius")) {
-		pp.load("linear_or_log", integration_params.linear_or_log, true);
+		pp.load("linear_or_log", linear_or_log, true);
 		pp.load("min_integration_radius", integration_params.min_integration_radius);
 		pp.load("max_integration_radius", integration_params.max_integration_radius);
 		if (linear_or_log) {
@@ -109,14 +107,6 @@ class SimulationParameters : public ChomboParameters
                     0.1);
         }
 	
-	// load suffix
-	if (pp.contains("suffix"))
-        {
-		pp.get("suffix", integration_params.suffix);
-	} else {
-		integration_params.suffix = "";
-	}
-
 	pp.load("write_extraction", integration_params.write_extraction, false);
 
         // Work out the minimum integration level

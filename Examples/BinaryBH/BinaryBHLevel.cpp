@@ -96,10 +96,10 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
 
     // Calculate CCZ4 right hand side and set constraints to zero to avoid
     // undefined values
-    BoxLoops::loop(
-        make_compute_pack(CCZ4(m_p.ccz4_params, m_dx, m_p.sigma),
-                          SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
-        a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+    BoxLoops::loop(make_compute_pack(
+                       CCZ4(m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation),
+                       SetValue(0, Interval(c_Ham, NUM_VARS - 1))),
+                   a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
 }
 
 // enforce trace removal during RK4 substeps
@@ -122,7 +122,11 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
             m_bh_amr.get_puncture_coords();
         BoxLoops::loop(ChiPunctureExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
+<<<<<<< HEAD
                            puncture_coords, 1,
+=======
+                           puncture_coords, m_p.activate_extraction,
+>>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60
                            m_p.track_punctures, puncture_masses),
                        current_state, tagging_criterion);
     }
@@ -130,7 +134,11 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     {
         BoxLoops::loop(ChiExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
+<<<<<<< HEAD
                            1),
+=======
+                           m_p.activate_extraction),
+>>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60
                        current_state, tagging_criterion);
     }
 }
@@ -142,11 +150,16 @@ void BinaryBHLevel::specificPostTimeStep()
     {
         // Populate the Weyl Scalar values on the grid
         fillAllGhosts();
-        BoxLoops::loop(Weyl4(m_p.extraction_params.extraction_center, m_dx),
+<<<<<<< HEAD
+        BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
+=======
+        BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS);
+>>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60
 
         // Do the extraction on the min extraction level
-        if (m_level == m_p.extraction_params.min_extraction_level)
+        if (m_level == m_p.extraction_params.min_extraction_level())
         {
             CH_TIME("WeylExtraction");
             // Now refresh the interpolator and do the interpolation
@@ -181,13 +194,17 @@ void BinaryBHLevel::prePlotLevel()
     fillAllGhosts();
     if (m_p.activate_extraction == 1)
     {
-        BoxLoops::loop(Weyl4(m_p.extraction_params.extraction_center, m_dx),
+<<<<<<< HEAD
+        BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
     }
 }
 
 // Specify if you want any plot files to be written, with which vars
-void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const
-{
-    plot_states = {c_chi, c_Weyl4_Re, c_Weyl4_Im};
+void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const;
+=======
+        BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx), m_state_new,
+                       m_state_new, EXCLUDE_GHOST_CELLS);
+    }
 }
+>>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60

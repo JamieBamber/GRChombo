@@ -10,15 +10,12 @@ print("starting visit run")
 
 # file settings
 data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-run_number = 2
-subdir = "run{:04d}_FlatScalar_mu0.4_G0".format(run_number)
-number = 300
+subdir = "run0002_FlatScalar_mu0.4_G0"
+number = 100
 data_file_name = "BinaryBHSFPlot_%06d.3d.hdf5" % number
 
 # open datafile(s)
-OpenDatabase(data_root_dir + "failures/" + subdir + "/" + data_file_name,0)
-
-abs_max = 20
+OpenDatabase(data_root_dir + subdir + "/" + data_file_name,0)
 
 # add plot
 AddPlot("Pseudocolor", "phi", 1, 1)
@@ -27,11 +24,11 @@ PseudocolorAtts.scaling = PseudocolorAtts.Linear  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = -abs_max
+PseudocolorAtts.min = -4.0
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = abs_max
+PseudocolorAtts.max = 4.0
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-PseudocolorAtts.colorTableName = "PuOr" # inferno 
+PseudocolorAtts.colorTableName = "RdBu"
 PseudocolorAtts.invertColorTable = 1
 PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 PseudocolorAtts.opacity = 1
@@ -74,9 +71,7 @@ DrawPlots()
 
 # Set viewing attributes
 View2DAtts = View2DAttributes()
-width=64
-View2DAtts.windowCoords = (256-0.5*width, 256+0.5*width, 
-256-0.5*width,256+0.5*width)
+View2DAtts.windowCoords = (240, 272, 240, 272)
 View2DAtts.viewportCoords = (0.2, 0.95, 0.15, 0.95)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
@@ -87,9 +82,8 @@ SetView2D(View2DAtts)
 
 # save plot as png
 root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
-filename = "BBH_SF_phi_failure" + subdir + "_n%06d" % number
+filename = "BBH_SF_phi_" + subdir + "_n%06d_" % number 
 s = SaveWindowAttributes()
-s.family=0
 s.format = s.PNG
 s.progressive = 1
 s.fileName = root_plot_path + filename

@@ -60,10 +60,10 @@ vars_asymptotic_values = 0 0 1 0 0 0 0  #phi, Pi, chi, rho, S_az, S_az_prime, S_
 #
 checkpoint_interval = 100
 plot_interval = 5
-dt_multiplier = 0.0625 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
+dt_multiplier = 0.03125 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 2000.0
 ###
-# dt_raw = 8 * 1/16 = 0.5
+# dt_raw = 8 * 1/32 = 0.25
 # dt_plot = 1.25
 #
 
@@ -77,13 +77,15 @@ sigma = 0.5
 # for s = 0.99 omega_crit = m * 0.4338
 #	so m_crit = 2.30
 # SF Initial data
-scalar_mass = 0.4
+scalar_mass = 1
 scalar_amplitude = 0.1
-scalar_omega = 0.4
-scalar_l = 5
-scalar_m = 5
+scalar_omega = 1
+scalar_l = 0
+scalar_m = 0
 alignment = 0.0
+phase = 0
+# "phase" initial extra phase term in units of pi
 
 # BH initial data
 bh_mass = 1
-bh_spin = 0.7
+bh_spin = 0.99

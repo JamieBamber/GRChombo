@@ -6,7 +6,7 @@
 #SBATCH -D ./
 
 # Wall clock limit:
-#SBATCH --time=00:30:00
+#SBATCH --time=00:10:00
 #SBATCH --no-requeue
 
 #Setup of execution environment
@@ -19,11 +19,10 @@
 ##SBATCH --mail-user=james.bamber@physics.ox.ac.uk 
 
 #Number of nodes and MPI tasks per node:
-#SBATCH --nodes=1
+#SBATCH --nodes=2
 # There are 48 physical cores per node, so
 # the product of these numbers should be 48
-#SBATCH --ntasks-per-node=6
-export OMP_NUM_THREADS=8
+#SBATCH --ntasks-per-node=4
 
 #Load modules
 module load slurm_setup
@@ -36,7 +35,7 @@ module list
 
 #! Run options for the application:
 currentdir=$(pwd)
-python_script=${currentdir}/python_script.py
+python_script=${currentdir}/phi_plot_script.py
 
 #Run the program:
 visit -cli -nowin -launchengine localhost -l mpiexec -np ${II} -ppn ${SLURM_NTASKS_PER_NODE} -s ${python_script} 

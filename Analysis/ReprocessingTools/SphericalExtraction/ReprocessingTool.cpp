@@ -56,17 +56,9 @@ int runReprocessingTool(int argc, char *argv[])
         gr_amr, sim_params.origin, sim_params.dx, sim_params.verbosity);
     gr_amr.set_interpolator(&interpolator);
 
-    // get start and end index
-    int start_index, end_index;
-    if ((sim_params.start_number % sim_params.plot_interval != 0) || (sim_params.end_number % sim_params.plot_interval != 0)) 
-    {
-        throw std::invalid_argument("invalid start or end number, or wrong plot interval");
-    } else {
-        start_index = sim_params.start_number / sim_params.plot_interval;
-        end_index = sim_params.end_number / sim_params.plot_interval;
-    }
+    
     // now loop over files
-    for (int ifile = start_index; ifile <= end_index;
+    for (int ifile = sim_params.start_number; ifile <= sim_params.end_number;
          ifile++)
     {
         // set up the file from next plot

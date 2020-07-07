@@ -23,8 +23,6 @@ struct integration_params_t
     double max_integration_radius;
     std::vector<double> integration_radii;
     std::array<double, CH_SPACEDIM> integration_center;
-    double final_bh_spin;
-    double final_bh_mass;
     int num_points_phi;
     int num_points_theta;
     int num_modes;
@@ -67,11 +65,8 @@ class SimulationParameters : public ChomboParameters
 	pp.load("variable_index", integration_params.variable_index);
 	pp.load("num_points_phi", integration_params.num_points_phi, 2);
         pp.load("num_points_theta", integration_params.num_points_theta, 4);
-	pp.load("integration_center", integration_params.integration_center,{0.5 * L, 0.5 * L, 0});
-
-	// final BH mass spin
-	pp.load("final_bh_spin", integration_params.final_bh_spin);
-	pp.load("final_bh_mass", integration_params.final_bh_mass);
+	pp.load("integration_center", integration_params.integration_center,
+                {0.5 * L, 0.5 * L, 0});
 
 	// radii parameters
         pp.load("num_integration_radii", integration_params.num_integration_radii,

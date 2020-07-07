@@ -9,17 +9,19 @@
 // assign an enum to each variable
 enum
 {
-    c_chi, // matter field added
-    c_phi,
-    c_rho, 
-    c_S_azimuth, 
-    c_S_r,
+    c_phi, // matter field added
+    c_Pi,  //(minus) conjugate momentum
+    c_chi,
+    c_rho,
+    c_J_azimuth, 
+    c_J_r,
     NUM_VARS
 };
 
 namespace UserVariables
 {
-static constexpr char const *variable_names[NUM_VARS] = {"chi", "phi", "rho", "S_azimuth", "S_r"};
+static constexpr char const *variable_names[NUM_VARS] = {"phi", "Pi", "chi",
+                                                         "rho", "J_azimuth", "J_r"};
 }
 
 #endif /* USERVARIABLES_HPP */

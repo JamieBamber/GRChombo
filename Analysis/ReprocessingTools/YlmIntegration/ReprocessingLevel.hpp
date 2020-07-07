@@ -28,17 +28,13 @@ class ReprocessingLevel : public GRAMRLevel
 
 	// what exactly is m_time ???
 	// what is m_restart_time ???
-	double m_restart_time_true = m_p.dt_multiplier*m_p.coarsest_dx*m_p.start_number;
+
 	bool m_first_step;
-	if (m_verbosity) {
-		pout() << "dt_multiplier = " << m_p.dt_multiplier << endl;	
-		pout() << "m_time = " << m_time << std::endl;
-		pout() << "m_restart_time_true = " << m_restart_time_true << endl;
-        }
-	if (m_time == m_restart_time_true){
+	
+	pout() << "m_time = " << m_time << std::endl;
+        pout() << "m_restart_time = " << m_restart_time << std::endl;
+        if (m_time == m_restart_time){
 		m_first_step = 1;
-	} else {
-		m_first_step = 0;
 	}
 
 	// Do the extraction on the min integration level
@@ -47,7 +43,7 @@ class ReprocessingLevel : public GRAMRLevel
             // Now refresh the interpolator and do the interpolation
             m_gr_amr.m_interpolator->refresh();
             YlmIntegration phi_integration(m_p.integration_params, m_dt, m_time,
-                                         m_first_step, m_p.data_subdir, m_p.output_rootdir, m_p.start_number, m_p.end_number, m_restart_time_true);
+                                         m_first_step, m_p.data_subdir, m_p.output_rootdir, m_p.start_number, m_p.end_number, m_restart_time);
             phi_integration.execute_query(m_gr_amr.m_interpolator); //! <--- This routine includes performing the integration and writing the output to a file
         }		
 

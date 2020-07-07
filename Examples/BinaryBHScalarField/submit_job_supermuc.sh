@@ -9,7 +9,7 @@ work_dir=/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField
 cd $work_dir
 data_directory=/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField
 
-run_number=6
+run_number=11
 
 params_file=params.txt
 
@@ -19,11 +19,10 @@ l=$(grep "scalar_l" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+')
 m=$(grep "scalar_m " ${params_file} | grep -v "scalar_mass" | tr -cd '(\-)?[0-9]+([.][0-9]+)?+')
 G_Newton=$(grep "G_Newton" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
 mu=$(grep "scalar_mass" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
-delay=$(grep "delay" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
 
 text_number=$(printf "%04d" ${run_number})
 
-new_dir=run${text_number}_FlatScalar_mu${mu}_G${G_Newton}_delay${delay}
+new_dir=run${text_number}_FlatScalar_mu${mu}_G${G_Newton}
 echo ${new_dir}
 new_dir_path=${data_directory}/${new_dir}
 #

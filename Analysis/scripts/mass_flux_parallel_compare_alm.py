@@ -19,8 +19,7 @@ class data_dir:
 		self.m = m
 		self.a = float(a)
 		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al0_mu0.4_M1_correct_Ylm".format(num, l, m, a)
-	filename = ""
-		
+	filename = ""		
 
 def add_data_dir(list, num, l, m, a):
 	x = data_dir(num, l, m, a)
