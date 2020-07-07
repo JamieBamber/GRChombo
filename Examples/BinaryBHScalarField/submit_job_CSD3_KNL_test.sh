@@ -10,7 +10,7 @@ cd $work_dir
 #data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
 #run_number=10 
-suffix=KNL_no_Density
+suffix=KNL
 
 params_file=params_test.txt
 

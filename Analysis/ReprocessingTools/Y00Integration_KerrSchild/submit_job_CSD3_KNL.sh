@@ -1,22 +1,18 @@
 #!/bin/bash
 #
-# this copy is for the Skylake nodes
+# this copy is for the KNL nodes
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration_KerrSchild
 
-start_number=0
-end_number=2000
+# new vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
+# old vars = phi Pi chi rho J_azimuth J_r
+var_index=1
+start_number=825
+end_number=825
 lin_or_log=1 # note 0 = log, 1 = linear
 
 subdirs=(
-	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild 
-	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild 
-	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild 
-	run0104_KNL_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild 
-	run0105_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild 
-	run0106_KNL_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild 
-	run0107_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild 
-	run0108_KNL_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
 )
 
 ## loop over subdirs
@@ -29,7 +25,7 @@ for subdir in "${subdirs[@]}"; do
 	echo "min_radius = " ${min_radius}
 	
 	# extract parameters from params.txt
-	name=${subdir}_var${var_index}_flux
+	name=${subdir}_linlog${lin_or_log}_var${var_index}_n${start_number}
 	echo ${name} "Y00 Integration"
 	new_dir_path=outputs/${name}
 	#

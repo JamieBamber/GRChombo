@@ -41,8 +41,13 @@ add_data_dir(101, 1, 1, "0.7", "0.4")
 add_data_dir(102, 2, 2, "0.7", "0.4")
 add_data_dir(103, 0, 0, "0.7", "0.4")
 add_data_dir(104, 1, -1, "0.7", "0.4")
-add_data_dir(105, 0, 0, "0.99", "0.4")
-add_data_dir(106, 1, 1, "0.99", "0.4")
+#add_data_dir(105, 0, 0, "0.99", "0.4")
+#add_data_dir(106, 1, 1, "0.99", "0.4")
+#add_data_dir(107, 4, 4, "0.7", "0.4")
+add_data_dir(109, 8, 8, "0.7", "0.4")
+
+#add_data_dir(110, 1, 1, "0.7", "0.05")
+#add_data_dir(111, 1, 1, "0.7", "1")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -94,16 +99,19 @@ def plot_graph():
 			inner_mass_flux = np.cumsum(inner_mass_flux)
 			outer_mass_flux = np.cumsum(outer_mass_flux)
 		net_flux = outer_mass_flux - inner_mass_flux
-		label_ = "$l=${:d} $m=${:d} $a=${:.2f}".format(dd.l, dd.m, dd.a)
+		#label_ = "$\\mu$={:.2f}".format(mu)
+		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
 		ax1.plot(t1,inner_mass_flux,colours[i]+"--", label="flux into BH " + label_)
 		ax1.plot(t1,outer_mass_flux,colours[i]+"-.", label="flux into r={:.1f} ".format(r_max)+label_)
 		ax1.plot(t1,net_flux,colours[i]+"-", label=label_)
 		i = i + 1
 	ax1.set_xlabel("$t$")
+	#ax1.set_xlim((0, 300))
+	#ax1.set_ylim((-0.0005, 0.0015))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$")
-		plt.title("Cumulative mass flux, $M=1$, $\\mu=0.4$")
-		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative.png"
+		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $\\mu=0.4$")
+		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative_compare_lm.png"
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$")

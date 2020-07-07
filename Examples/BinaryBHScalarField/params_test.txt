@@ -58,8 +58,6 @@ isPeriodic = 0 0 0
 # (see BoundaryConditions.hpp for details)
 hi_boundary = 4 4 4
 lo_boundary = 4 4 2
-#hi_boundary = 1 1 1
-#lo_boundary = 1 1 2
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
@@ -83,8 +81,8 @@ nonzero_asymptotic_values = 1.0 1.0 1.0 1.0 1.0
 
 # if mixed boundaries selected, must specify which are extrapolating
 # (the rest are assumed to be all sommerfeld)
-num_extrapolating_vars = 3
-extrapolating_vars = phi Pi K 
+num_extrapolating_vars = 2
+extrapolating_vars = phi Pi
 
 # Max and min box sizes
 max_grid_size = 16
@@ -96,9 +94,9 @@ block_factor = 16
 
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
-plot_interval = 5
-dt_multiplier = 0.4 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
-stop_time = 2300.0
+plot_interval = 1
+dt_multiplier = 0.125 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
+stop_time = 2200.0
 ## dt_actual = 8*dt_multiplier = 3.2
 ## 2*pi / mu =~ 6 / 0.4 = 15
 ## 1 / mu = 2.5

@@ -46,14 +46,16 @@ add_data_dir(77, 2, 2, "0.7", "0.4")"""
 #add_data_dir(79, 0, 0, "0.7", "1")
 #add_data_dir(68, 0, 0, "0.99", "1")
 
-add_data_dir(101, 1, 1, "0.7", "0.4")
-add_data_dir(102, 2, 2, "0.7", "0.4")
-add_data_dir(103, 0, 0, "0.7", "0.4")
-add_data_dir(104, 1, -1, "0.7", "0.4")
-add_data_dir(105, 1, 1, "0.99", "0.4")
-add_data_dir(106, 0, 0, "0.99", "0.4")
-add_data_dir(107, 4, 4, "0.7", "0.4")
+#add_data_dir(101, 1, 1, "0.7", "0.4")
+#add_data_dir(102, 2, 2, "0.7", "0.4")
+#add_data_dir(103, 0, 0, "0.7", "0.4")
+#add_data_dir(104, 1, -1, "0.7", "0.4")
+#add_data_dir(105, 1, 1, "0.99", "0.4")
+#add_data_dir(106, 0, 0, "0.99", "0.4")
+#add_data_dir(107, 4, 4, "0.7", "0.4")
 #add_data_dir(108, 8, 8, "0.7", "0.4")
+add_data_dir(110, 1, 1, "0.7", "0.05")
+add_data_dir(111, 1, 1, "0.7", "1")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -199,8 +201,8 @@ def plot_graph():
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-for dd in data_dirs:
-	calculate_mass_in_sphere(dd)
+#for dd in data_dirs:
+#	calculate_mass_in_sphere(dd)
 
-#plot_graph()
+plot_graph()
 

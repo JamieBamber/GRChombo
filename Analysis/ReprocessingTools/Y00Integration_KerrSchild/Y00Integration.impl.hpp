@@ -136,7 +136,7 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
                               itheta * m_params.num_points_phi + iphi;
                     double integrand_re = a_re_part[idx];
 		    // factor of dOmega
-		    double dS = sqrt((1 + (a/r)*(a/r))*(1 + pow(a*sin(theta)/r,2)));
+		    double dS = sin(theta);
                     double f_theta_phi_re = integrand_re * dS;
 		    // note the normalisation by dividing by 2 pi here
                     inner_integral_re += m_dtheta * f_theta_phi_re / (2 * M_PI);

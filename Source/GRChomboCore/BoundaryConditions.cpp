@@ -476,10 +476,10 @@ void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
                     fill_sommerfeld_cell(rhs_box, soln_box, iv,
                                          m_params.mixed_bc_sommerfeld_vars);
                 }
-		else
+		/*else
                 {
                     for(int icomp : m_params.mixed_bc_sommerfeld_vars) {rhs_box(iv, icomp) = 0.0;}
-                }
+                }*/
                 break;
             }
             default:

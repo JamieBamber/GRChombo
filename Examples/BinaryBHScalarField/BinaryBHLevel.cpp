@@ -35,7 +35,7 @@ void BinaryBHLevel::specificAdvance()
     
     // Enforce the trace free A_ij condition and positive chi and alpha
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
-                   m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
 
     // Check for nan's
     if (m_p.nan_check)
@@ -125,7 +125,7 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
        pout() << "starting BinaryBHLevel::specificEvalRHS()" << endl;
     // Enforce positive chi and alpha and trace free A
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
-                   a_soln, a_soln, INCLUDE_GHOST_CELLS);
+                   a_soln, a_soln, EXCLUDE_GHOST_CELLS);
 
     // Calculate CCZ4 right hand side and set constraints to zero to avoid
     // undefined values
@@ -169,7 +169,7 @@ void BinaryBHLevel::specificUpdateODE(GRLevelData &a_soln,
         BoxLoops::loop(NanCheck("NaNCheck before trace free A_ij enforcement in specific update ODE: "), m_state_new,
                        m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
     // Enforce the trace free A_ij condition
-    BoxLoops::loop(TraceARemoval(), a_soln, a_soln, INCLUDE_GHOST_CELLS);
+    BoxLoops::loop(TraceARemoval(), a_soln, a_soln, EXCLUDE_GHOST_CELLS);
     // Check for nan's
     if (m_p.nan_check)
         BoxLoops::loop(NanCheck("NaNCheck at end of specific update ODE: "), m_state_new,
@@ -260,9 +260,9 @@ void BinaryBHLevel::prePlotLevel()
     // Calculate and save ADM density and momentum
     ScalarPotential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
-    /*BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
+    BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.center),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
 
     // Check for nan's
     if (m_p.nan_check)
