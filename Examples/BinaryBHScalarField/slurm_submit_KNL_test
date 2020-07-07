@@ -14,12 +14,12 @@
 #! Which project should be charged (NB Peta4-KNL projects end in '-KNL'):
 #SBATCH -A DIRAC-DP131-SL4-KNL
 #! How many whole nodes should be allocated?
-#SBATCH --nodes=2
+#SBATCH --nodes=32
 #! How many (MPI) tasks will there be in total? (<=nodes*256)
-#SBATCH --ntasks=16
-#SBATCH --ntasks-per-node=8
+#SBATCH --ntasks=128
+#SBATCH --ntasks-per-node=4
 #! How much wallclock time will be required?
-#SBATCH --time=1:00:00
+#SBATCH --time=0:30:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -55,7 +55,7 @@ module load rhel7/default-peta4            # REQUIRED - loads the basic environm
 ## module load intel/compilers/2017.4 intel/mkl/2017.4 intel/impi/2017.4/intel
 ## module load gcc/5.3.0 hdf5/impi/1.8.16
 ## module load petsc/3.6.4 
-module load gcc/7
+module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
 module load intel/bundles/complib/2018.4
 module load hdf5-1.10.4-intel-17.0.4-swn7n43
 
@@ -64,7 +64,7 @@ application="/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/Main_BinaryBH3
 
 #! Run options for the application:
 currentdir=$(pwd)
-options="${currentdir}/params.txt"
+options="${currentdir}/../params.txt"
 
 #! Work directory (i.e. where the job will run):
 workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory
@@ -75,7 +75,7 @@ np=$[${numnodes}*${mpi_tasks_per_node}]
 
 #! Are you using OpenMP (NB this is unrelated to OpenMPI)? If so increase this
 #! safe value to no more than 256:
-export OMP_NUM_THREADS=8
+export OMP_NUM_THREADS=16
 
 #! The following variables define a sensible pinning strategy for Intel MPI tasks -
 #! this should be suitable for both pure MPI and hybrid MPI/OpenMP jobs:
