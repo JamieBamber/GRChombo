@@ -43,9 +43,9 @@ add_data_dir(103, 0, 0, "0.7", "0.4")
 add_data_dir(104, 1, -1, "0.7", "0.4")
 #add_data_dir(105, 0, 0, "0.99", "0.4")
 #add_data_dir(106, 1, 1, "0.99", "0.4")
-#add_data_dir(107, 4, 4, "0.7", "0.4")
+add_data_dir(107, 4, 4, "0.7", "0.4")
+#add_data_dir(108, 2, 2, "0.7", "0.8")
 add_data_dir(109, 8, 8, "0.7", "0.4")
-
 #add_data_dir(110, 1, 1, "0.7", "0.05")
 #add_data_dir(111, 1, 1, "0.7", "1")
 
@@ -53,7 +53,7 @@ add_data_dir(109, 8, 8, "0.7", "0.4")
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
 
-output_dir = "data/Y00_integration_data"
+output_dir = "data/flux_data"
 
 half_box = True
 

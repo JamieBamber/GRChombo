@@ -10,32 +10,39 @@ dt_multiplier = 0.0625
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
-data_subdir = SUBDIR
-bh_spin = BHSPIN
-bh_mass = BHMASS
+data_subdir = run0031_KNL_l0_m0_a0_Al0_mu0.4_M1_correct_Ylm
+bh_spin = 0
+bh_mass = 1
 
 # output directory 
-flux_data_dir = /home/dc-bamb1/GRChombo/Analysis/data/flux_data/
+output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/
+#/home/dc-bamb1/GRChombo/Analysis/data/SphericalPhiData
 
 # Files parameters
 chk_prefix = KerrSF_
 plot_prefix = KerrSFp_
 # restart_file = KerrSFp_000000.3d.hdf5
-plot_interval = 5
-start_number = SNUMBER
-end_number = ENUMBER
+plot_interval = 10
+start_number = 1550
+end_number = 1550
 
 # integration parameters
+num_vars = 1
+# old vars = {c_phi, c_Pi, c_chi, c_rho, c_J_azimuth, c_J_r}
+var_indices = 0
 num_points_phi = 64
-num_points_theta = 33
-extraction_center = 512.0 512.0 0.0
+num_points_theta = 32
+integration_center = 512.0 512.0 0.0
 center = 512.0 512.0 0.0
 
 # radius parameters
-outer_extraction_radius = 450
+num_integration_radii = 513
+min_integration_radius = 2.00 #!< r_plus = 1 + sqrt(1 - a**2)
+max_integration_radius = 450
+linear_or_log = 0		#!< use linear or log spacing for radii array. Linear = 1, Log = 0 
 
 # From here it is mostly dummy params
-verbosity = 1
+verbosity = 2
 regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
 max_grid_size = 16
 block_factor = 16

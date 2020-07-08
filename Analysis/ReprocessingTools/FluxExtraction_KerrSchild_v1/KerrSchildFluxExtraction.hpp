@@ -44,7 +44,9 @@ class KSFluxExtraction : public KSSpheroidalExtraction
     void execute_query(AMRInterpolator<Lagrange<4>> *a_interpolator)
     {
         // extract the values of the Flux scalars on the spheres
-        extract(a_interpolator);
+        pout() << "starting query" << endl;
+	extract(a_interpolator);
+	pout() << "done extraction from interpolator" << endl;
 
         // this would write out the values at every point on the sphere
         if (m_params.write_extraction)
@@ -54,15 +56,20 @@ class KSFluxExtraction : public KSSpheroidalExtraction
 
         // Setup to integrate J_rKS and J_azimuth_rKS
         std::vector<std::vector<double>> flux_integrals(2);
+	pout() << "made flux integrals vector" << endl;
+	pout() << "m_J_rKS = " << m_J_rKS << endl;
         add_var_integrand(m_J_rKS, flux_integrals[m_J_rKS], 
                                   IntegrationMethod::simpson);
         add_var_integrand(m_J_azimuth_rKS, flux_integrals[m_J_azimuth_rKS], 
                                   IntegrationMethod::simpson);
+	pout() << "added the integrand variables" << endl;
 
         // do the integration over the surface
         integrate();
+	pout() << "done integration" << endl;
 
         // write the integrals
+	pout() << "starting writing the integrals" << endl;
         std::vector<std::string> labels(2);
         labels[m_J_rKS] = "J_rKS";
         labels[m_J_azimuth_rKS] = "J_azimuth_rKS";

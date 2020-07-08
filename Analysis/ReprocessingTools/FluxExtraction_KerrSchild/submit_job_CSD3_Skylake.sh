@@ -2,7 +2,7 @@
 #
 # this copy is for the Skylake nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration_KerrSchild
+work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction_KerrSchild
 
 start_number=0
 end_number=2000

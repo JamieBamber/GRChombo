@@ -7,11 +7,12 @@ work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 var_index=0
 start_number=1550
 end_number=1550
-lin_or_log=1 # note 0 = log, 1 = linear
+lin_or_log=0 # note 0 = log, 1 = linear
 
 subdirs=(
 	run0028_KNL_l0_m0_a0.7_Al0_mu0.4_M1_correct_Ylm
 	run0029_KNL_l0_m0_a0.99_Al0_mu0.4_M1_correct_Ylm
+	run0031_KNL_l0_m0_a0_Al0_mu0.4_M1_correct_Ylm
 )
 
 ## loop over subdirs
@@ -20,7 +21,7 @@ for subdir in "${subdirs[@]}"; do
 	bh_mass=1
 	#var_index=5
 	# note vars = {chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
-	min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
+	min_radius=$(echo "scale=7; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
 	echo "min_radius = " ${min_radius}
 	
 	# extract parameters from params.txt

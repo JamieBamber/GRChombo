@@ -74,7 +74,7 @@ class SimulationParameters : public ChomboParameters
             pp.load("extraction_level", extraction_params.extraction_levels, 1,
                     0);
         }
-	flux_file_name = flux_data_dir + data_subdir + "_mass_ang_mom_flux.csv";
+	flux_file_name = flux_data_dir + data_subdir + "_flux_v1.dat";
     }
 
     int plot_interval, start_number, end_number;

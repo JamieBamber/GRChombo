@@ -14,12 +14,12 @@
 #! Which project should be charged (NB Peta4-KNL projects end in '-KNL'):
 #SBATCH -A DIRAC-DP131-SL4-KNL
 #! How many whole nodes should be allocated?
-#SBATCH --nodes=32
+#SBATCH --nodes=4
 #! How many (MPI) tasks will there be in total? (<=nodes*256)
-#SBATCH --ntasks=256
+#SBATCH --ntasks=32
 #SBATCH --ntasks-per-node=8
 #! How much wallclock time will be required?
-#SBATCH --time=12:00:00
+#SBATCH --time=2:00:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=FAIL
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -60,11 +60,11 @@ module load intel/bundles/complib/2018.4
 module load hdf5-1.10.4-intel-17.0.4-swn7n43
 
 #! Full path to application executable: 
-application="/home/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/Main_BinaryBH3d.Linux.64.mpiicpc.ifort.OPTHIGH.MPI.OPENMPCC.KNL.Intel.ex"
+application="/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration_KerrSchild/ReprocessingTool3d.Linux.64.mpiicpc.ifort.OPTHIGH.MPI.OPENMPCC.KNL.Intel.ex"
 
 #! Run options for the application:
 currentdir=$(pwd)
-options="${currentdir}/../params.txt"
+options="${currentdir}/params.txt"
 
 #! Work directory (i.e. where the job will run):
 workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory

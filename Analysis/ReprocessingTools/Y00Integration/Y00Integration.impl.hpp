@@ -39,7 +39,7 @@ inline void Y00Integration::execute_query(
             double theta = (itheta + 0.5) * m_dtheta;
             double phi = iphi * m_dphi;
 	    double r = m_params.integration_radii[iradius];
-            double R = 0.5 * (r + sqrt(r*(r-r_plus)) - r_plus/2);
+            double R = 0.5 * (r + sqrt(r*max(0.0,(r-r_plus))) - r_plus/2);
 	    interp_x[iradius * m_num_points + idx] =
                 m_params.integration_center[0] + sin(theta) * R * cos(phi);
             interp_y[iradius * m_num_points + idx] =
