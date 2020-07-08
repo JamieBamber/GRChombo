@@ -28,13 +28,12 @@ def add_data_dir(num, l, m, a, mu, Al="0"):
 	data_dirs.append(x)
 
 # choose datasets to compare
-add_data_dir( 28, 0, 0, "0.7", "0.4")
-add_data_dir( 54, 1, -1, "0.7", "0.4")
-add_data_dir( 48, 2, 2, "0.7", "0.4")
-add_data_dir( 42, 5, 1, "0.7", "0.4")
-add_data_dir( 58, 5, 5, "0.7", "0.4")
-add_data_dir( 55, 7, 1, "0.7", "0.4")
-add_data_dir( 45, 10, 10, "0.7", "0.4")
+#add_data_dir( 28, 0, 0, "0.7", "0.4")
+#add_data_dir( 48, 2, 2, "0.7", "0.4")
+#add_data_dir( 42, 5, 1, "0.7", "0.4")
+#add_data_dir( 58, 5, 5, "0.7", "0.4")
+#add_data_dir( 55, 7, 1, "0.7", "0.4")
+#add_data_dir( 45, 10, 10, "0.7", "0.4")
 
 #add_data_dir( 31, 0, 0, "0", "0.4")
 #add_data_dir( 28, 0, 0, "0.7", "0.4")
@@ -43,7 +42,6 @@ add_data_dir( 45, 10, 10, "0.7", "0.4")
 #add_data_dir( 46, 2, 2, "0", "0.4")
 
 #add_data_dir( 32, 1, 1, "0", "0.4")
-#add_data_dir( 39, 1, 1, "0.7", "0.4")
 #add_data_dir( 37, 1, 1, "0.99", "0.4")
 
 #add_data_dir( 46, 2, 2, "0", "0.4")
@@ -52,6 +50,10 @@ add_data_dir( 45, 10, 10, "0.7", "0.4")
 
 #add_data_dir( 50, 2, -2, "0.99", "0.4")
 #add_data_dir( 49, 1, -1, "0.99", "0.4")
+
+add_data_dir( 39, 1, 1, "0.7", "0.4")
+add_data_dir( 54, 1, -1, "0.7", "0.4")
+#add_data_dir( 81, 1, 1, "0.7", "0.4", "0.5")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"

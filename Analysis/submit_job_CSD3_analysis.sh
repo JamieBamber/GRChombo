@@ -11,11 +11,11 @@ script_dir=~/GRChombo/Analysis/scripts
 script=mass_in_sphere_parallel_compare_almmu_KS.py
 
 new_dir=batch_analysis_python
-echo ${new_dir}
+echo "running python ${script}"
 new_dir_path=$(pwd)/${new_dir}
 #
 mkdir -p ${new_dir_path}
-cp slurm_submit_KNL_python ${new_dir_path}/slurm_submit
+cp slurm_submit_Skylake_python ${new_dir_path}/slurm_submit
 cp ${script_dir}/${script} ${new_dir_path}/python_script.py
 
 cd ${new_dir_path}

@@ -39,15 +39,20 @@ class ReprocessingLevel : public GRAMRLevel
 		m_first_step = 0;
 	}
 	
+	pout() << "m_level = " << m_level << endl;
+	pout() << "m_p.extraction_params.min_extraction_level() = " << m_p.extraction_params.min_extraction_level() << endl;
 	// Do the extraction on the min extraction level
         if (m_level == m_p.extraction_params.min_extraction_level())
         {
 	 
             // Now refresh the interpolator and do the interpolation
             m_gr_amr.m_interpolator->refresh();
+	    pout() << "refreshed interpolator" << endl;
             KSFluxExtraction my_extraction(m_p.extraction_params, m_dt, m_time, m_p.flux_file_name,
                                         m_restart_time);
-            my_extraction.execute_query(m_gr_amr.m_interpolator); 
+	    pout() << "made extraction class instance" << endl;
+            my_extraction.execute_query(m_gr_amr.m_interpolator);
+	    pout() << "executed query" << endl; 
         }		
 
     }

@@ -14,7 +14,7 @@
 #include "FixedBGEvolution.hpp"
 
 // For density calculation
-#include "FixedBGDensityAndMom_v2.hpp"
+#include "FixedBGDensityAndMom_v3.hpp"
 
 // For tag cells
 #include "FixedGridsTaggingCriterion.hpp"
@@ -86,13 +86,6 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                    a_soln, a_rhs, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
-// Specify if you want any plot files to be written, with which vars
-void ScalarFieldLevel::specificWritePlotHeader(
-    std::vector<int> &plot_states) const
-{
-    plot_states = {c_phi, c_Pi, c_chi, c_rho, c_J_azimuth, c_J_r};
-}
-
 // Note that for the fixed grids this only happens on the initial timestep
 // simd is disabled to allow simpler use of logical operators
 void ScalarFieldLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
@@ -101,3 +94,6 @@ void ScalarFieldLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     BoxLoops::loop(FixedGridsTaggingCriterion(m_dx, m_level, m_p.L, m_p.center),
                    current_state, tagging_criterion, disable_simd());
 }
+
+// Specify if you want any plot files to be written, with which vars
+void ScalarFieldLevel::specificWritePlotHeader(std::vector<int> &plot_states) const;

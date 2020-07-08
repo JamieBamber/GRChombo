@@ -125,7 +125,9 @@ void SurfaceExtraction<SurfaceGeometry>::extract(
     }
 
     // submit the query
+    pout() << "SurfaceExtraction.impl.hpp:extract(): have set up the query" << endl;
     a_interpolator->interp(query);
+    pout() << "done a_interpolator->interp(query)" << endl;
     m_done_extraction = true;
 }
 
