@@ -33,10 +33,10 @@ add_data_dir(39, 1, 1, "0.7", "0.4")
 add_data_dir(76, 5, 5, "0.7", "0.4")
 add_data_dir(77, 2, 2, "0.7", "0.4")"""
 
-add_data_dir(78, 1, -1, "0.7", "0.4")
+#add_data_dir(78, 1, -1, "0.7", "0.4")
 #add_data_dir(75, 1, 1, "0.7", "0.4", "0.5")
-add_data_dir(77, 2, 2, "0.7", "0.4")
-add_data_dir(80, 1, 1, "0", "0.4")
+#add_data_dir(77, 2, 2, "0.7", "0.4")
+#add_data_dir(80, 1, 1, "0", "0.4")
 
 #add_data_dir(39, 1, 1, "0.7", "0.4")
 #add_data_dir(73, 4, 4, "0.7", "0.4")
@@ -48,11 +48,23 @@ add_data_dir(80, 1, 1, "0", "0.4")
 #add_data_dir(79, 0, 0, "0.7", "1")
 #add_data_dir(68, 0, 0, "0.99", "1")
 
+add_data_dir(101, 1, 1, "0.7", "0.4")
+"""add_data_dir(102, 2, 2, "0.7", "0.4")
+add_data_dir(103, 0, 0, "0.7", "0.4")
+add_data_dir(104, 1, -1, "0.7", "0.4")
+add_data_dir(105, 0, 0, "0.99", "0.4")
+add_data_dir(106, 1, 1, "0.99", "0.4")
+add_data_dir(107, 4, 4, "0.7", "0.4")
+add_data_dir(108, 2, 2, "0.7", "0.8")
+add_data_dir(109, 8, 8, "0.7", "0.4")
+add_data_dir(110, 1, 1, "0.7", "0.05")
+add_data_dir(111, 1, 1, "0.7", "1")"""
+
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
 M = 1
-dR = 0.01
+dR = 0.2
 phi0 = 0.1
 
 output_dir = "data/compare_almmu_flux"
@@ -120,8 +132,8 @@ def calculate_mass_flux_in_sphere(dd):
 			area = 2*np.pi*min_R**2		
 			
 		# calculate radial (in terms of cartesian radius R) momentum and angular momentum flux in shell
-		meanJ_r = shell.mean("J_r", weight="cell_volume")
-		meanJ_azimuth_r = shell.mean("J_azimuth_r", weight="cell_volume")
+		meanJ_r = shell.mean("J_rKS", weight="cell_volume")
+		meanJ_azimuth_r = shell.mean("J_azimuth_rKS", weight="cell_volume")
 		print("meanJ_r = ", meanJ_r)
 		print("meanJ_azimuth_r = ", meanJ_azimuth_r)
 		J_r = meanJ_r*area
@@ -136,13 +148,12 @@ def calculate_mass_flux_in_sphere(dd):
 		
 	if yt.is_root():	
 		# output to file
-
-		dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_ang_mom_flux_in_KerrSchild_{:s}.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, r_txt)
+		dd.filename = dd.name + "_flux_{:s}_v1.csv".format(r_txt)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		print("writing data")
 		f = open(output_path, "w")
-		f.write("# t	J_R	J_azimuth_R #\n")
+		f.write("# t	J_rKS	J_azimuth_rKS #\n")
 		# output data
 		for key in sorted(data_storage.keys()):
 			data = data_storage[key]
@@ -156,7 +167,7 @@ def load_data():
 	# load data from csv files
 	data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_ang_mom_flux_in_KerrSchild_{:s}.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, r_txt)
+		file_name = home_path + output_dir + "/" + dd.name + "_flux_{:s}_v1.csv".format(r_txt)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded data for " + dd.name)
 	return data 	
@@ -175,10 +186,6 @@ def plot_graph():
 		ang_mom_flux = line_data[:,2]
 		F0 = (mu**2)*phi0
 		m = abs(dd.m)
-		if (dd.m < 0):
-			a = -dd.a
-		else:
-			a = dd.a
 		label_ = "ang. mom. flux $l=${:d} $m=${:d} $a=${:.2f}".format(dd.l, dd.m, dd.a)
 		#label_ = "ang. mom. flux $l=${:d} $m=${:d} $a=${:.2f} Al={:s}".format(dd.l, dd.m, dd.a, dd.Al)
 		ax1.plot(t,ang_mom_flux,colours[i]+"-", label=label_)

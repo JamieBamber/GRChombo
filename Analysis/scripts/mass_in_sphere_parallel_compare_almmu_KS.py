@@ -44,16 +44,16 @@ add_data_dir(77, 2, 2, "0.7", "0.4")"""
 #add_data_dir(79, 0, 0, "0.7", "1")
 #add_data_dir(68, 0, 0, "0.99", "1")
 
-add_data_dir(103, 0, 0, "0.7", "0.4")
-add_data_dir(101, 1, 1, "0.7", "0.4")
-add_data_dir(104, 1, -1, "0.7", "0.4")
-add_data_dir(102, 2, 2, "0.7", "0.4")
+#add_data_dir(103, 0, 0, "0.7", "0.4")
+#add_data_dir(101, 1, 1, "0.7", "0.4")
+#add_data_dir(104, 1, -1, "0.7", "0.4")
+#add_data_dir(102, 2, 2, "0.7", "0.4")
 #add_data_dir(105, 1, 1, "0.99", "0.4")
 #add_data_dir(106, 0, 0, "0.99", "0.4")
-add_data_dir(107, 4, 4, "0.7", "0.4")
-add_data_dir(76, 5, 5, "0.7", "0.4")
-#add_data_dir(108, 2, 2, "0.7", "0.8")
-add_data_dir(109, 8, 8, "0.7", "0.4")
+#add_data_dir(107, 4, 4, "0.7", "0.4")
+#add_data_dir(76, 5, 5, "0.7", "0.4")
+add_data_dir(108, 2, 2, "0.7", "0.8")
+#add_data_dir(109, 8, 8, "0.7", "0.4")
 #add_data_dir(110, 1, 1, "0.7", "0.05")
 #add_data_dir(111, 1, 1, "0.7", "1")
 
@@ -182,7 +182,7 @@ def plot_graph():
 		else:
 			a = dd.a
 		#label_ = "$a=${:2f}".format(dd.a)
-		label_ = "$l=${:d} $m=${:d}".format(dd.l, dd.m)
+		label_ = "$l=${:d} $m=${:d} $\\mu$={:.1f}".format(dd.l, dd.m, mu)
 		#label_ = "$l=${:d} $m=${:d} align. angle={:s}$\pi$".format(dd.l, dd.m, dd.Al)
 		if change_in_E:
 			plt.plot(t[1:], delta_mass, colours[i], label=label_)
@@ -195,20 +195,20 @@ def plot_graph():
 	else:
 		plt.ylabel("$E$ in $r < $" + str(max_r))
 	plt.legend(loc='upper left', fontsize=8)
-	plt.title("scalar field energy inside $r_{KS}<$" + "{:.0f} vs time, $M=1$, $\\mu=0.4$, $a=0.7$".format(max_r))
+	plt.title("scalar field energy inside $r_{KS}<$" + "{:.0f} vs time, $M=1$, $a=0.7$".format(max_r))
 	#plt.xlim((0, 450))
 	#plt.ylim((0, 0.004))
 	plt.tight_layout()
 	if change_in_E:
-		save_path = home_path + "plots/delta_mass_in_sphere_compare_lm_Kerr_Schild_v2_radius_" + str(max_r) + ".png"
+		save_path = home_path + "plots/delta_mass_in_sphere_compare_l_over_mu_Kerr_Schild_radius_" + str(max_r) + ".png"
 	else:
 		save_path = home_path + "plots/mass_in_sphere_compare_mu_radius_" + str(max_r) + ".png"
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
 	plt.clf()
 
-#for dd in data_dirs:
-#	calculate_mass_in_sphere(dd)
+for dd in data_dirs:
+	calculate_mass_in_sphere(dd)
 
-plot_graph()
+#plot_graph()
 
