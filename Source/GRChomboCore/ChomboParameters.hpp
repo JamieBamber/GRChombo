@@ -201,27 +201,27 @@ class ChomboParameters
                 {
                     // only read in these params once, even if specified in
                     // several directions. They must be the same for all.
-                    if (boundary_params.mixed_bc_extrapolating_vars.size() > 0)
-                        break;
-
-                    // if not yet done, read in the mixed conditions
-                    int num_extrapolating_vars = 0;
-                    load_vars_to_vector(
-                        pp, "extrapolating_vars", "num_extrapolating_vars",
-                        boundary_params.mixed_bc_extrapolating_vars,
-                        num_extrapolating_vars);
-                    for (int icomp = 0; icomp < NUM_VARS; icomp++)
-                    {
-                        // if the variable is not in extrapolating vars, it is
-                        // assumed to be sommerfeld by default
-                        std::vector<int> v =
-                            boundary_params.mixed_bc_extrapolating_vars;
-                        if (!(std::binary_search(v.begin(), v.end(), icomp)))
-                        {
-                            boundary_params.mixed_bc_sommerfeld_vars.push_back(
-                                icomp);
-                        }
-                    }
+		    if (boundary_params.mixed_bc_extrapolating_vars.size() == 0)
+		    {
+                    	// if not yet done, read in the mixed conditions
+                    	int num_extrapolating_vars = 0;
+                    	load_vars_to_vector(
+                        	pp, "extrapolating_vars", "num_extrapolating_vars",
+                        	boundary_params.mixed_bc_extrapolating_vars,
+                        	num_extrapolating_vars);
+                    	for (int icomp = 0; icomp < NUM_VARS; icomp++)
+                    	{
+                        	// if the variable is not in extrapolating vars, it is
+                        	// assumed to be sommerfeld by default
+                        	std::vector<int> v =
+                            	boundary_params.mixed_bc_extrapolating_vars;
+                        	if (!(std::binary_search(v.begin(), v.end(), icomp)))
+                        	{
+                            	boundary_params.mixed_bc_sommerfeld_vars.push_back(
+                                	icomp);
+                        	}
+                    	}
+		    }
                 }
             }
         }
