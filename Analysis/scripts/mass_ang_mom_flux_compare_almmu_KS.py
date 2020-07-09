@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 
 #print("yt version = ",yt.__version__)
 
-yt.enable_parallelism()
+#yt.enable_parallelism()
 
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al):
@@ -64,8 +64,9 @@ add_data_dir(111, 1, 1, "0.7", "1")"""
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
 M = 1
-dR = 0.2
+dr = 0.1
 phi0 = 0.1
+number = 950
 
 output_dir = "data/compare_almmu_flux"
 
@@ -73,6 +74,7 @@ half_box = True
 
 KS_or_cartesian_r=True
 change_in_E = True
+r_max = 450
 
 if KS_or_cartesian_r:
 	# use the correct horizon but with cartesian radial projection
@@ -81,8 +83,8 @@ else:
 	r_txt="cartesian_R"
 
 def spheroid_area(r, a, M):
-        area = np.pi*( 2*M*r + (r**2)*np.sqrt(2*M*r)*np.arcsinh(a*M/r)/(a*M) )
-        return area
+	area = np.pi*( 2*M*r + (r**2)*np.sqrt(2*M*r)*np.arcsinh(a*M/r)/(a*M) )
+	return area
 
 def calculate_mass_flux_in_sphere(dd):
 	data_sub_dir = dd.name
@@ -90,16 +92,16 @@ def calculate_mass_flux_in_sphere(dd):
 	aM = a*M
 	r_plus = M*(1 + math.sqrt(1 - a**2))
 	min_R = np.sqrt(2*M*r_plus)
+	r_min = r_plus
 
 	start_time = time.time()
 	
 	# load dataset time series
 	
-	dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_*.3d.hdf5"
-	ds = yt.load(dataset_path) # this loads a dataset time series
+	dataset_path = data_root_path + "/" + data_sub_dir + "/KerrSFp_{:06d}.3d.hdf5".format(number)
+	dsi = yt.load(dataset_path) # this loads a dataset time series
 	print("loaded data from ", dataset_path)
 	print("time = ", time.time() - start_time)
-	N = len(ds)
 
 	# set centre
 	center = [512.0, 512.0, 0]
@@ -111,63 +113,50 @@ def calculate_mass_flux_in_sphere(dd):
 	def _r_KS(field, data):
 		R = data["spherical_radius"]/cm
 		z = data["z"]/cm
-		r_KS = np.sqrt((R**2 - aM**2)/2 + np.sqrt(((R**2 - aM**2)**2)/4 + (aM*z)**2))
+		r_KS_sqrd = (R**2 - aM**2)/2 + np.sqrt(((R**2 - aM**2)**2)/4 + (aM*z)**2)
+		r_KS = np.sqrt(r_KS_sqrd)
 		return r_KS
 			
-	data_storage = {}
-	# iterate through datasets (forcing each to go to a different processor)
-	for sto, dsi in ds.piter(storage=data_storage):
-		current_time = dsi.current_time 
-		dt = 2.5
-		i = int(current_time/dt)
-		#if (i % 2 == 0):
-		time_0 = time.time()
-		# store time
-		output = [current_time]
-		
-		for r in [r_min, r_max]:
-			# make sphere (defined by r_KS)
-			if KS_or_cartesian_r:
-				ad = dsi.all_data()
-				print("r_plus = ", r_plus)
-				shell = ad.cut_region(["(obj['r_KS'] < {:.6f}) & (obj['r_KS'] > {:.6f})".format(r+dR, r)])
-				area = np.pi*( 2*M*r_plus + (r_plus**2)*np.sqrt(2*M*r_plus)*np.arcsinh(aM/r_plus)/aM )
-			else:
-				shell = dsi.sphere(center, min_R+dR) - dsi.sphere(center, min_R)
-				area = 2*np.pi*min_R**2		
-				
-			# calculate radial (in terms of cartesian radius R) momentum and angular momentum flux in shell
-			meanJ_r = shell.mean("J_rKS", weight="cell_volume")
-			meanJ_azimuth_r = shell.mean("J_azimuth_rKS", weight="cell_volume")
-			print("meanJ_r = ", meanJ_r)
-			print("meanJ_azimuth_r = ", meanJ_azimuth_r)
-			J_r = meanJ_r*area
-			J_azimuth_r = meanJ_azimuth_r*area
-			output.append(J_r)
-			output.append(J_azimuth_r)
-			
-			# store output
-			sto.result = output
-			sto.result_id = str(dsi)
-			print("done {:d} of {:d} in {:.1f} s".format(i+1, N, time.time()-time_0), flush=True)
-			
-	if yt.is_root():	
-		# output to file
-		dd.filename = dd.name + "_flux_{:s}_v1.csv".format(r_txt)
-		output_path = home_path + output_dir + "/" + dd.filename 
-		# output header to file
-		print("writing data")
-		f = open(output_path, "w")
-		f.write("# t	J_rKS	J_azimuth_rKS #\n")
-		# output data
-		for key in sorted(data_storage.keys()):
-			data = data_storage[key]
-			f.write("{:.3f}	".format(data[0]))
-			f.write("{:.4f}	".format(data[1]))
-			f.write("{:.4f}\n".format(data[2]))
-		f.close()
-		print("saved data to file " + str(output_path))
-		
+	current_time = dsi.current_time 
+	dt = 2.5
+	i = int(current_time/dt)
+	#if (i % 2 == 0):
+	time_0 = time.time()
+	# store time
+	
+	# make sphere (defined by r_KS)
+	ad = dsi.all_data()
+	r = r_min
+	shell = ad.cut_region(["(obj['r_KS'] < {:.7f}) & (obj['r_KS'] > {:.7f})".format(r+dr, r)])
+	area = spheroid_area(r, a, M)
+	shell_mass = shell.sum("cell_volume")
+	print("shell_mass = ", shell_mass)
+	#
+	"""shell = dsi.sphere(center, min_R+dR) - dsi.sphere(center, min_R)
+	area = 2*np.pi*min_R**2"""		
+	# calculate radial (in terms of cartesian radius R) momentum and angular momentum flux in shell
+	meanJ_r = shell.mean("J_rKS", weight="cell_volume")
+	meanJ_azimuth_r = shell.mean("J_azimuth_rKS", weight="cell_volume")
+	print("time = ", current_time)
+	print("r = ", r)
+	print("meanJ_r = ", meanJ_r)
+	print("meanJ_azimuth_r = ", meanJ_azimuth_r)
+	print("area = ", area)
+	J_r = meanJ_r*area
+	J_azimuth_r = meanJ_azimuth_r*area
+
+	width=5.0
+	#slice = dsi.r[:,512.0,:] # slice through xz axis
+	p = yt.SlicePlot(shell, 'y', 'r_KS', center=[512.0, 512.0, 0.25*width])
+	p.set_width((0.5*width, width))
+	#p.set_zlim('r_KS', 0.01, 0.75*width)
+	p.show_colorbar()
+	p.set_minorticks('all', True)
+	p.set_cbar_minorticks('r_KS', True)
+	test_plot_name = "test_r_KS_plot"
+	p.save(test_plot_name)
+	plt.clf()
+	
 def load_data():
 	# load data from csv files
 	data = {}
