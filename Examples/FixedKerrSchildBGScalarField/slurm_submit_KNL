@@ -10,7 +10,7 @@
 
 #! sbatch directives begin here ###############################
 #! Name of the job:
-#SBATCH -J KerrSF_job
+#SBATCH -J KerrSchildSF
 #! Which project should be charged (NB Peta4-KNL projects end in '-KNL'):
 #SBATCH -A DIRAC-DP131-SL4-KNL
 #! How many whole nodes should be allocated?

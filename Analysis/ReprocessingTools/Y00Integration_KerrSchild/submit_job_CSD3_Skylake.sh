@@ -6,14 +6,18 @@ work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration_KerrS
 
 # new vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
 # old vars = phi Pi chi rho J_azimuth J_r	or possibly 	phi Pi chi rho J_azimuth J_r J_azimuth_r
-var_index=0
-start_number=825
-end_number=825
+var_index=1
+start_number=1250
+end_number=1250
 lin_or_log=1 # note 0 = log, 1 = linear
 
 subdirs=(
-	run0079_KNL_l0_m0_a0.7_Al0_mu1_M1_KerrSchild
+	 run0079_KNL_l0_m0_a0.7_Al0_mu1_M1_KerrSchild
 )
+
+#	run0068_KNL_l0_m0_a0.99_Al0_mu1_M1_KerrSchild
+#	run0067_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild
+
 
 ## loop over subdirs
 for subdir in "${subdirs[@]}"; do

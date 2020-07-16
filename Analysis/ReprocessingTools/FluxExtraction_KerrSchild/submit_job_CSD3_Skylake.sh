@@ -8,15 +8,23 @@ start_number=0
 end_number=2000
 lin_or_log=1 # note 0 = log, 1 = linear
 
+nphi=8
+ntheta=8
+
 subdirs=(
 	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
-	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
-	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
-	run0104_KNL_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
-	run0105_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
-	run0106_KNL_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
-	run0107_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
 )
+
+#	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
+#	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
+#	run0104_KNL_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
+#	run0105_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
+#	run0106_KNL_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
+#	run0107_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
+#	run0108_KNL_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
+#	run0109_KNL_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
+#	run0110_KNL_l1_m1_a0.7_Al0_mu0.05_M1_KerrSchild
+#	run0111_KNL_l1_m1_a0.7_Al0_mu1_M1_KerrSchild
 
 ## loop over subdirs
 for subdir in "${subdirs[@]}"; do
@@ -28,14 +36,15 @@ for subdir in "${subdirs[@]}"; do
 	echo "min_radius = " ${min_radius}
 	
 	# extract parameters from params.txt
-	name=${subdir}_var${var_index}_flux
-	echo ${name} "Y00 Integration"
+	suffix=_nphi${nphi}_ntheta${ntheta}
+	name=${subdir}_var${var_index}_flux${suffix}
+	echo ${name} "flux extraction"
 	new_dir_path=outputs/${name}
 	#
 	mkdir -p ${new_dir_path}
 	
-	cp slurm_submit_KNL ${new_dir_path}/slurm_submit
-	cp params_flux.txt ${new_dir_path}
+	cp slurm_submit_Skylake ${new_dir_path}/slurm_submit
+	cp params.txt ${new_dir_path}
 	
 	cd ${new_dir_path}
 	# add the location of the new directory to the params file
@@ -47,6 +56,9 @@ for subdir in "${subdirs[@]}"; do
 	sed -i "s|VARINDEX|${var_index}|" params.txt
 	sed -i "s|LINLOG|${lin_or_log}|" params.txt
 	sed -i "s|MINRADIUS|${min_radius}|" params.txt
+	sed -i "s|NPHI|${nphi}|" params.txt
+	sed -i "s|NTHETA|${ntheta}|" params.txt
+	sed -i "s|SUFFIX|${suffix}|" params.txt
 	sbatch slurm_submit
 	#
 	cd ${work_dir}

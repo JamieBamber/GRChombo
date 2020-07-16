@@ -52,6 +52,7 @@ class SimulationParameters : public ChomboParameters
 	pp.get("data_rootdir", data_rootdir);
 	pp.get("output_rootdir", integration_params.output_rootdir);
 	pp.get("data_subdir", data_subdir);
+	pp.get("suffix", integration_params.suffix);
 
         // Files setup
         pp.get("end_number", end_number);
@@ -96,13 +97,15 @@ class SimulationParameters : public ChomboParameters
                     integration_params.num_integration_radii);
         }
 	// -- make integration radius array
+	pp.load("linear_or_log", integration_params.linear_or_log, true);
 	if (pp.contains("min_integration_radius") && pp.contains("max_integration_radius")) {
-		pp.load("linear_or_log", integration_params.linear_or_log, true);
 		pp.load("min_integration_radius", integration_params.min_integration_radius);
 		pp.load("max_integration_radius", integration_params.max_integration_radius);
 		if (integration_params.linear_or_log) {
-			integration_params.integration_radii = 
-			NumpyTools::linspace(integration_params.min_integration_radius, integration_params.max_integration_radius, integration_params.num_integration_radii);
+			std::vector<double> v={integration_params.min_integration_radius, integration_params.min_integration_radius+0.005,
+						integration_params.max_integration_radius-5, integration_params.max_integration_radius, integration_params.max_integration_radius+5};
+			integration_params.integration_radii = v;
+			//NumpyTools::linspace(integration_params.min_integration_radius, integration_params.max_integration_radius, integration_params.num_integration_radii);
 		} else {
 			integration_params.integration_radii = 
                         NumpyTools::logspace(integration_params.min_integration_radius, integration_params.max_integration_radius, integration_params.num_integration_radii);

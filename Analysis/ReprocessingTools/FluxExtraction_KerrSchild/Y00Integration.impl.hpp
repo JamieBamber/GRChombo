@@ -40,7 +40,7 @@ inline void Y00Integration::execute_query(
             interp_x[iradius * m_num_points + idx] =
                 m_params.integration_center[0] + sin(theta) * (r * cos(phi) + a * sin(phi));
             interp_y[iradius * m_num_points + idx] =
-                m_params.integration_center[1] + + sin(theta) * (r * sin(phi) - a * cos(phi));
+                m_params.integration_center[1] + sin(theta) * (r * sin(phi) - a * cos(phi));
             interp_z[iradius * m_num_points + idx] =
                 m_params.integration_center[2] + r * cos(theta);
         }
@@ -72,7 +72,7 @@ inline void Y00Integration::execute_query(
     	std::ostringstream nlabel;
     	nlabel << std::setw(6) << std::setfill('0') << m_start_number;
     	std::string nstring = "n" + nlabel.str();
-	
+
     	std::string integral_filename = m_params.output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[var] + log_label + nstring + 
     	m_params.suffix;
 	
@@ -136,8 +136,9 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
                               itheta * m_params.num_points_phi + iphi;
                     double integrand_re = a_re_part[idx];
 		    // factor of dOmega
-		    double dS = sqrt((1 + (a/r)*(a/r))*(1 + pow(a*sin(theta)/r,2))) * sin(theta);
-                    double f_theta_phi_re = integrand_re * dS;
+		    double dS = sqrt((1 + (a/r)*(a/r))*(1 + pow(a*sin(theta)/r,2))) * sin(theta) * r * r;
+                    // double dS = sin(theta)*r*r;
+		    double f_theta_phi_re = integrand_re * dS;
 		    // note the normalisation by dividing by 2 pi here
                     inner_integral_re += m_dtheta * f_theta_phi_re / (2 * M_PI);
 		}

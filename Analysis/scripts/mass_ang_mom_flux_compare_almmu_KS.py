@@ -64,7 +64,7 @@ add_data_dir(111, 1, 1, "0.7", "1")"""
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
 M = 1
-dr = 0.1
+dr = 1
 phi0 = 0.1
 number = 950
 
@@ -104,17 +104,28 @@ def calculate_mass_flux_in_sphere(dd):
 	print("time = ", time.time() - start_time)
 
 	# set centre
-	center = [512.0, 512.0, 0]
+	center_ = [512.0, 512.0, 0]
 	L = 512.0	
-
+	
+	# derived fields
+	@derived_field(name = "weighting_field", units="code_length**3", force_override=True)
+	def _weighting(field, data):
+		R = data["spherical_radius"]/cm
+		z = data["z"]/cm
+		aM = M*a
+		r_KS = np.sqrt((R**2 - aM**2)/2 + np.sqrt((R**2 - aM**2)/4 + (aM*z)**2))
+		mask = np.less(r_KS, r_max)*np.greater(r_KS, r_min)
+		return mask*data['cell_volume']
+		
 	#if KS_or_cartesian_r:
 	# derived fields
 	@derived_field(name = "r_KS", units = "")
 	def _r_KS(field, data):
 		R = data["spherical_radius"]/cm
 		z = data["z"]/cm
-		r_KS_sqrd = (R**2 - aM**2)/2 + np.sqrt(((R**2 - aM**2)**2)/4 + (aM*z)**2)
-		r_KS = np.sqrt(r_KS_sqrd)
+		#r_KS_sqrd = (R**2 - aM**2)/2 + np.sqrt(((R**2 - aM**2)**2)/4 + (aM*z)**2)
+		#r_KS = np.sqrt(r_KS_sqrd)
+		r_KS = R
 		return r_KS
 			
 	current_time = dsi.current_time 
@@ -125,17 +136,18 @@ def calculate_mass_flux_in_sphere(dd):
 	# store time
 	
 	# make sphere (defined by r_KS)
-	ad = dsi.all_data()
+	"""ad = dsi.all_data()
 	r = r_min
-	shell = ad.cut_region(["(obj['r_KS'] < {:.7f}) & (obj['r_KS'] > {:.7f})".format(r+dr, r)])
+	#shell = ad.cut_region(["obj['r_KS'] < {:"])
+	shell = ad.cut_region(["(obj['r_KS'] < {:.3f}) & (obj['r_KS'] > {:.3f})".format(5.0, r_min)])
 	area = spheroid_area(r, a, M)
 	shell_mass = shell.sum("cell_volume")
 	print("shell_mass = ", shell_mass)
 	#
-	"""shell = dsi.sphere(center, min_R+dR) - dsi.sphere(center, min_R)
+	shell = dsi.sphere(center, min_R+dR) - dsi.sphere(center, min_R)
 	area = 2*np.pi*min_R**2"""		
 	# calculate radial (in terms of cartesian radius R) momentum and angular momentum flux in shell
-	meanJ_r = shell.mean("J_rKS", weight="cell_volume")
+	"""meanJ_r = shell.mean("J_rKS", weight="cell_volume")
 	meanJ_azimuth_r = shell.mean("J_azimuth_rKS", weight="cell_volume")
 	print("time = ", current_time)
 	print("r = ", r)
@@ -143,18 +155,31 @@ def calculate_mass_flux_in_sphere(dd):
 	print("meanJ_azimuth_r = ", meanJ_azimuth_r)
 	print("area = ", area)
 	J_r = meanJ_r*area
-	J_azimuth_r = meanJ_azimuth_r*area
+	J_azimuth_r = meanJ_azimuth_r*area"""
 
-	width=5.0
 	#slice = dsi.r[:,512.0,:] # slice through xz axis
-	p = yt.SlicePlot(shell, 'y', 'r_KS', center=[512.0, 512.0, 0.25*width])
-	p.set_width((0.5*width, width))
+	#p = yt.SlicePlot(dsi, 'y', 'J_rKS', center=[512.0, 512.0, 0.25*width], data_source=shell)
+	#p.set_width((0.5*width, width))
 	#p.set_zlim('r_KS', 0.01, 0.75*width)
-	p.show_colorbar()
-	p.set_minorticks('all', True)
-	p.set_cbar_minorticks('r_KS', True)
-	test_plot_name = "test_r_KS_plot"
-	p.save(test_plot_name)
+	#p.show_colorbar()
+	#p.set_minorticks('all', True)
+	#p.set_cbar_minorticks('J_rKS', True)
+
+	test_plot_name = "test_weighting_plot"
+	width=10.0	
+	N=64
+	slice = dsi.slice('y', 512.0, center=center_)
+	frb = slice.to_frb(width, N, center=center_)
+	arr = np.array(frb['weighting_field'])
+	x_pos = np.linspace(center_[0]-0.5*width,center_[0]+0.5*width,N) 
+	z_pos = np.linspace(center_[2]-0.5*width,center_[2]+0.5*width,N)
+	cmap1 = 'viridis'
+	fig, ax = plt.subplots()
+	mesh = ax.pcolormesh(z_pos, x_pos, arr,cmap=cmap1, vmin=0, vmax=10) 
+	fig.colorbar(mesh)
+	fig.tight_layout()
+	plt.savefig(test_plot_name + ".png")
+	print("saved plot as " + test_plot_name + ".png")
 	plt.clf()
 	
 def load_data():

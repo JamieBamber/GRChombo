@@ -15,7 +15,7 @@ a_dirs["0"] = "run0067_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild"
 a_dirs["0.7"] = "run0079_KNL_l0_m0_a0.7_Al0_mu1_M1_KerrSchild"
 a_dirs["0.99"] = "run0068_KNL_l0_m0_a0.99_Al0_mu1_M1_KerrSchild"
 
-number = 825
+number = 1250
 dt = 0.5
 t = number*dt
 lin_or_log=True
@@ -82,14 +82,16 @@ for i in range(0, len(a_list)):
 	plt.plot(x, phi, colours[i], markersize=2, label="a = " + a_list[i])
 	###
 	# --- fit stationary solution(s)
-	if (a==0):
-		A = 7.9
-		def Stationary_sol_KS_fit(r, phase):
+	if (a<0.9):
+		A0 = 7.9
+		def Stationary_sol_KS_fit(r, A, phase):
 			print("testing A={:.2f} phase={:.2f}".format(A, phase))
 			return Stationary_sol_KS(r, A, a, phase, True, t)
-		popt, pconv = curve_fit(Stationary_sol_KS_fit, r, phi, p0=(0))
-		phi_fitted = Stationary_sol_KS_fit(r, popt[0])		
-		plt.plot(x, phi_fitted, 'k--', linewidth=1, label="KS stat. sol., a=0, amplitude={:.2f} phase={:.2}".format(A, popt[0]))		
+		popt, pconv = curve_fit(Stationary_sol_KS_fit, r, phi, p0=(A0, 0))
+		phi_fitted = Stationary_sol_KS_fit(r, popt[0], popt[1])
+		A = popt[0]
+		phase = popt[1]		
+		plt.plot(x, phi_fitted, colours2[i], linewidth=1, label="KS stat. sol., a={:.2f}, amplitude={:.2f} phase={:.2}".format(a, A, phase))		
 plt.ylabel("$\\phi_{00}/\\phi_0$")
 plt.legend(fontsize=8)
 plt.xlim((0, 100))
