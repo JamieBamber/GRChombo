@@ -39,7 +39,8 @@ def time_average(x, n):
 # choose datasets to compare
 
 #add_data_dir(101, 1, 1, "0.7", "0.4", 75, 63)
-add_data_dir(101, 1, 1, "0.7", "0.4", 123, 123)
+#add_data_dir(101, 1, 1, "0.7", "0.4", 123, 123)
+add_data_dir(101, 1, 1, "0.7", "0.4", 8, 8)
 #add_data_dir(102, 2, 2, "0.7", "0.4")
 #add_data_dir(103, 0, 0, "0.7", "0.4")
 #add_data_dir(104, 1, -1, "0.7", "0.4")
