@@ -44,7 +44,7 @@ class ReprocessingLevel : public GRAMRLevel
 	// set densities to zero outside the integration region
 	BoxLoops::loop(
             BoundedDensities(m_p.integration_params, m_dx, m_p.center),
-            m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);	
+            m_state_new, m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());	
 	
 	// Do the extraction on the min integration level
         if (m_level == 7)
@@ -54,9 +54,9 @@ class ReprocessingLevel : public GRAMRLevel
 	    double rho_sum = m_gr_amr.compute_sum(c_rho, m_p.coarsest_dx);
             double rho_J_sum = m_gr_amr.compute_sum(c_rho_azimuth, m_p.coarsest_dx);
 
-	    int r_max = (int)(m_p.integration_params.max_integration_radius+0.5);
-	    std::string mass_filename = m_p.output_rootdir + m_p.data_subdir + "_mass_in_r=" + std::to_string(r_max) + "_chombo";
-	    std::string J_filename = m_p.output_rootdir + m_p.data_subdir + "_ang_mom_in_r=" + std::to_string(r_max) + "_chombo";
+	    //int r_max = (int)(m_p.integration_params.max_integration_radius+0.5);
+	    std::string mass_filename = m_p.output_rootdir + m_p.data_subdir + "_mass" + m_p.suffix; 
+	    std::string J_filename = m_p.output_rootdir + m_p.data_subdir + "_ang_mom" + m_p.suffix;
             
 	    // write out the integrals
 	    write_integral(rho_sum, mass_filename, m_first_step);

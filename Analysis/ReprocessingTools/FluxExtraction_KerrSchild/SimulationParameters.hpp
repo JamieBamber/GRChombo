@@ -25,6 +25,7 @@ struct integration_params_t
     std::array<double, CH_SPACEDIM> integration_center;
     int num_points_phi;
     int num_points_theta;
+    double theta_min, theta_max; // min and max theta values in units of pi/2
     std::vector<int> integration_levels;
     bool write_extraction;
     int min_integration_level;
@@ -68,6 +69,8 @@ class SimulationParameters : public ChomboParameters
 	pp.load("var_indices", integration_params.var_indices, integration_params.num_vars);
 	pp.load("num_points_phi", integration_params.num_points_phi, 2);
         pp.load("num_points_theta", integration_params.num_points_theta, 4);
+	pp.load("theta_min", integration_params.theta_min);
+	pp.load("theta_max", integration_params.theta_max);
 	pp.load("integration_center", integration_params.integration_center,
                 {0.5 * L, 0.5 * L, 0});
 
@@ -102,8 +105,7 @@ class SimulationParameters : public ChomboParameters
 		pp.load("min_integration_radius", integration_params.min_integration_radius);
 		pp.load("max_integration_radius", integration_params.max_integration_radius);
 		if (integration_params.linear_or_log) {
-			std::vector<double> v={integration_params.min_integration_radius, integration_params.min_integration_radius+0.005,
-						integration_params.max_integration_radius-5, integration_params.max_integration_radius, integration_params.max_integration_radius+5};
+			std::vector<double> v={integration_params.min_integration_radius, integration_params.max_integration_radius};
 			integration_params.integration_radii = v;
 			//NumpyTools::linspace(integration_params.min_integration_radius, integration_params.max_integration_radius, integration_params.num_integration_radii);
 		} else {

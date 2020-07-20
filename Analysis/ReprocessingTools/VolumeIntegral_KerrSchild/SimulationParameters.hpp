@@ -21,7 +21,6 @@ struct integration_params_t
     std::vector<int> integration_levels;
     int min_integration_level;
     double bh_a;	// dimensionfull BH spin = J/M
-    std::string suffix = "";
 };
 
 class SimulationParameters : public ChomboParameters
@@ -40,6 +39,7 @@ class SimulationParameters : public ChomboParameters
 	pp.get("data_rootdir", data_rootdir);
 	pp.get("output_rootdir", output_rootdir);
 	pp.get("data_subdir", data_subdir);
+	pp.get("suffix", suffix);
 
         // Files setup
         pp.get("end_number", end_number);
@@ -76,6 +76,7 @@ class SimulationParameters : public ChomboParameters
     std::string data_subdir;
     std::string data_rootdir;
     std::string output_rootdir;
+    std::string suffix;
 
    integration_params_t integration_params;
 };

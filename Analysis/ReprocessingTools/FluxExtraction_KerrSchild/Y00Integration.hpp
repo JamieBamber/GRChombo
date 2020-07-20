@@ -34,6 +34,7 @@ class Y00Integration
     const int m_num_points; // number of points per integration radius
     const double m_dphi;
     const double m_dtheta;
+    //const double m_dtheta;
     const double m_start_number, m_end_number;
     const std::string m_data_subdir; // subdirectory containing the data
 
@@ -46,8 +47,7 @@ class Y00Integration
           m_first_step(a_first_step), m_data_subdir(a_data_subdir), m_restart_time(a_restart_time),
 	  m_start_number(a_start_number), m_end_number(a_end_number),
           m_num_points(m_params.num_points_phi * m_params.num_points_theta),
-          m_dphi(2.0 * M_PI / m_params.num_points_phi),
-          m_dtheta(0.5 * M_PI / m_params.num_points_theta)
+          m_dphi(2.0 * M_PI / m_params.num_points_phi), m_dtheta(0.5 * M_PI * (m_params.theta_max-m_params.theta_min) / m_params.num_points_theta)
     {
     }
 

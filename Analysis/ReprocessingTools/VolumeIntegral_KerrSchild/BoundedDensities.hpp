@@ -50,7 +50,8 @@ class BoundedDensities
 	rho_azimuth = current_cell.load_vars(c_rho_azimuth);
 
 	//
-	data_t inside = simd_compare_lt(r,m_params.max_integration_radius)*simd_compare_gt(r,m_params.min_integration_radius);
+	// data_t inside = simd_compare_lt(r,m_params.max_integration_radius)*simd_compare_gt(r,m_params.min_integration_radius);
+	data_t inside = (r < m_params.max_integration_radius) && (r > m_params.min_integration_radius);
 	//pout() << "inside = " << inside << endl;
 	
         // assign values of density in output box

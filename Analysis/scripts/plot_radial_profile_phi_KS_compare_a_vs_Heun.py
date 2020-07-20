@@ -15,7 +15,7 @@ a_dirs["0"] = "run0067_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild"
 a_dirs["0.7"] = "run0079_KNL_l0_m0_a0.7_Al0_mu1_M1_KerrSchild"
 a_dirs["0.99"] = "run0068_KNL_l0_m0_a0.99_Al0_mu1_M1_KerrSchild"
 
-number = 1250
+number = 1530
 dt = 0.5
 t = number*dt
 lin_or_log=True

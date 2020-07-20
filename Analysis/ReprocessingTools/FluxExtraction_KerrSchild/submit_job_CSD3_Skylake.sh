@@ -9,10 +9,17 @@ end_number=2000
 lin_or_log=1 # note 0 = log, 1 = linear
 
 nphi=8
-ntheta=8
+ntheta=32
+theta_max=0.98
 
 subdirs=(
 	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0104_KNL_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0105_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
+	run0106_KNL_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
+	run0107_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
 )
 
 #	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
@@ -36,7 +43,7 @@ for subdir in "${subdirs[@]}"; do
 	echo "min_radius = " ${min_radius}
 	
 	# extract parameters from params.txt
-	suffix=_nphi${nphi}_ntheta${ntheta}
+	suffix=_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
 	name=${subdir}_var${var_index}_flux${suffix}
 	echo ${name} "flux extraction"
 	new_dir_path=outputs/${name}
@@ -59,6 +66,7 @@ for subdir in "${subdirs[@]}"; do
 	sed -i "s|NPHI|${nphi}|" params.txt
 	sed -i "s|NTHETA|${ntheta}|" params.txt
 	sed -i "s|SUFFIX|${suffix}|" params.txt
+	sed -i "s|THETAMAX|${theta_max}|" params.txt
 	sbatch slurm_submit
 	#
 	cd ${work_dir}

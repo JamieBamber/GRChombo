@@ -24,6 +24,7 @@ plot_prefix = KerrSFp_
 plot_interval = 5
 start_number = 0
 end_number = 2000
+suffix = _in_r=0_to_1.71414
 
 # integration parameters
 num_vars = 2

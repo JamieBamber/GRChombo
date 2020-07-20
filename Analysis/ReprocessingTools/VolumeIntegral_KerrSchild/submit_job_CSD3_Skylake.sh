@@ -8,7 +8,7 @@ start_number=0
 end_number=2000
 lin_or_log=1 # note 0 = log, 1 = linear
 plot_interval=5
-max_radius=450
+max_radius=2.5
 
 subdirs=(
 	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
@@ -32,8 +32,12 @@ for subdir in "${subdirs[@]}"; do
 	bh_mass=$(echo $subdir | sed -e 's/.*_M\(.*\)_Kerr.*/\1/')
 	#var_index=5
 	# note vars = {chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
-	min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
+	#min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
+	min_radius=0
 	echo "min_radius = " ${min_radius}
+
+	# suffix
+	suffix=_in_r\=${max_radius}
 
 	# extract parameters from params.txt
 	name=${subdir}_mass_ang_mom_integral_r_between_${min_radius}_${max_radius}
@@ -55,6 +59,7 @@ for subdir in "${subdirs[@]}"; do
 	sed -i "s|MINRADIUS|${min_radius}|" params.txt
 	sed -i "s|MAXRADIUS|${max_radius}|" params.txt
 	sed -i "s|PLOTINTERVAL|${plot_interval}|" params.txt
+	sed -i "s|SUFFIX|${suffix}|" params.txt
 	sbatch slurm_submit
 	#
 	cd ${work_dir}

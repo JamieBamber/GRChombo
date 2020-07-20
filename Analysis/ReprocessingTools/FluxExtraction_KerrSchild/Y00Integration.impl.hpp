@@ -34,7 +34,7 @@ inline void Y00Integration::execute_query(
             int itheta = idx / m_params.num_points_phi;
             int iphi = idx % m_params.num_points_phi;
             // don't put a point at z = 0
-            double theta = (itheta + 0.5) * m_dtheta;
+            double theta = m_params.theta_min + (itheta + 0.5) * m_dtheta;
             double phi = iphi * m_dphi;
 	    double r = m_params.integration_radii[iradius];
             interp_x[iradius * m_num_points + idx] =
@@ -131,7 +131,7 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
                 for (int itheta = 0; itheta < m_params.num_points_theta;
                      itheta++)
                 {
-                    double theta = (itheta + 0.5) * m_dtheta;
+	            double theta = m_params.theta_min + (itheta + 0.5) * m_dtheta;
                     int idx = iradius * m_num_points +
                               itheta * m_params.num_points_phi + iphi;
                     double integrand_re = a_re_part[idx];
