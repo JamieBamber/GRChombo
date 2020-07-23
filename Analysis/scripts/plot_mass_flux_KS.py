@@ -41,7 +41,7 @@ def time_average(x, n):
 
 #add_data_dir(101, 1, 1, "0.7", "0.4", 75, 63)
 #add_data_dir(101, 1, 1, "0.7", "0.4", 123, 123)
-add_data_dir(101, 1, 1, "0.7", "0.4", 8, 32, "_theta_max0.98")
+add_data_dir(103, 0, 0, "0.7", "0.4", 16, 32, "_theta_max1.0")
 #add_data_dir(102, 2, 2, "0.7", "0.4")
 #add_data_dir(103, 0, 0, "0.7", "0.4")
 #add_data_dir(104, 1, -1, "0.7", "0.4")
@@ -66,10 +66,8 @@ phi0 = 0.1
 r_max = 450
 average_time = False
 av_n = 1
-cumulative=True
-
-def analytic_outer_flux(t):
-	
+cumulative=False
+plot_mass=False
 
 def load_flux_data():
 	# load data from csv files
@@ -78,8 +76,8 @@ def load_flux_data():
 	for dd in data_dirs:
 		file_name = home_path + output_dir + "/" + dd.name + "_J_rKS_linear_n000000_nphi{:d}_ntheta{:d}{:s}.dat".format(dd.nphi, dd.ntheta, dd.suffix)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
-		file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_rKS_linear_n000000.dat"
-		ang_flux_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
+		#file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_rKS_linear_n000000.dat"
+		#ang_flux_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded flux data for " + dd.name)
 	return data 	
 
@@ -96,7 +94,8 @@ def load_mass_data():
 
 def plot_graph():
 	flux_data = load_flux_data()
-	mass_data = load_mass_data()
+	if plot_mass:
+		mass_data = load_mass_data()
 	colours = ['r', 'b', 'g', 'm', 'y', 'c']
 	i = 0
 	fig, ax1 = plt.subplots()
@@ -124,10 +123,11 @@ def plot_graph():
 		ax1.plot(tflux,outer_mass_flux,colours[i]+"-.", label="flux into r={:.1f} ".format(r_max)+label_)
 		ax1.plot(tflux,net_flux,colours[i]+"-", label="net flux " + label_)
 		#
-		mass_line_data = mass_data[dd.num]
-		delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
-		tmass = mass_line_data[1:,0]
-		ax1.plot(tmass,delta_mass/E0,colours[i+1]+"-", label="change in mass $r_+<r<$"+str(r_max)+" "+label_)
+		if plot_mass:
+			mass_line_data = mass_data[dd.num]
+			delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
+			tmass = mass_line_data[1:,0]
+			ax1.plot(tmass,delta_mass/E0,colours[i+1]+"-", label="change in mass $r_+<r<$"+str(r_max)+" "+label_)
 		i = i + 1
 	ax1.set_xlabel("$t$")
 	#ax1.set_xlim((0, 300))

@@ -61,12 +61,12 @@ void ScalarFieldLevel::prePlotLevel()
 	pout() << "starting ScalarFieldLevel::prePlotLevel()" << endl;
     // Calculate matter density function
     fillAllGhosts();
-    /*Potential potential(m_p.potential_params);
+    Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     KerrSchildFixedBG kerr_bg(m_p.bg_params, m_dx);
     BoxLoops::loop(FixedBGDensityAndMom<ScalarFieldWithPotential, KerrSchildFixedBG>(
                        scalar_field, kerr_bg, m_dx, m_p.center, m_p.initial_params.alignment),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
     if (m_verbosity)
         pout() << "done ScalarFieldLevel::prePlotLevel()" << endl;
 }

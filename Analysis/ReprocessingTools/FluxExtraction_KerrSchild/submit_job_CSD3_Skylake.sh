@@ -8,30 +8,28 @@ start_number=0
 end_number=2000
 lin_or_log=1 # note 0 = log, 1 = linear
 
-nphi=8
+nphi=32
 ntheta=32
 theta_max=0.98
 
 subdirs=(
-	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
-	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
 	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
-	run0104_KNL_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
-	run0105_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
-	run0106_KNL_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
-	run0107_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
 )
 
+#	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
 #	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
 #	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
 #	run0104_KNL_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0105_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
-#	run0106_KNL_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
-#	run0107_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0108_KNL_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
-#	run0109_KNL_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0110_KNL_l1_m1_a0.7_Al0_mu0.05_M1_KerrSchild
-#	run0111_KNL_l1_m1_a0.7_Al0_mu1_M1_KerrSchild
+#	run0105_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
+#	run0106_KNL_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
+#	run0107_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
+#	run0108_KNL_l1_m1_a0_Al0_mu0.4_M1_KerrSchild
+#	run0109_KNL_l4_m4_a0.7_Al0_mu1.6_M1_KerrSchild
+#	run0110_KNL_l1_m1_a0.7_Al0_mu0.1_M1_KerrSchild
+#	run0111_KNL_l1_m1_a0.7_Al0_mu0.8_M1_KerrSchild
+#	run0111_KNL_l1_m1_a0.7_Al0_mu1.6_M1_KerrSchild
+#	run0112_KNL_l1_m1_a0.7_Al0.5_mu0.4_M1_KerrSchild
+#	run0113_KNL_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
 
 ## loop over subdirs
 for subdir in "${subdirs[@]}"; do

@@ -58,10 +58,10 @@ module load rhel7/default-peta4            # REQUIRED - loads the basic environm
 #! Insert additional module load commands after this line if needed:
 module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
 module load intel/bundles/complib/2018.4
-module load hdf5/impi/1.8.16
+module load hdf5-1.10.4-intel-17.0.4-swn7n43
 
 #! Full path to application executable: 
-application="/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/YlmIntegration_KerrSchild/ReprocessingTool3d.Linux.64.mpicxx.ifort.OPTHIGH.MPI.OPENMPCC.ex"
+application="/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/YlmIntegration_KerrSchild/ReprocessingTool3d.Linux.64.mpiicpc.ifort.OPTHIGH.MPI.OPENMPCC.Skylake.Intel.ex"
 
 #! Run options for the application:
 currentdir=$(pwd)

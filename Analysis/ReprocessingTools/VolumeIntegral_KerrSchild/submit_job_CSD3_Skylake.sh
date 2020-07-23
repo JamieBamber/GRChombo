@@ -7,24 +7,12 @@ work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/VolumeIntegral_KerrS
 start_number=0
 end_number=2000
 lin_or_log=1 # note 0 = log, 1 = linear
-plot_interval=5
-max_radius=2.5
+plot_interval=10
+max_radius=450
 
 subdirs=(
-	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
+        run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
 )
-
-#	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0104_KNL_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0105_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
-#	run0106_KNL_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
-#	run0107_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
-
-#	run0108_KNL_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
-#	run0109_KNL_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0110_KNL_l1_m1_a0.7_Al0_mu0.05_M1_KerrSchild
-#	run0111_KNL_l1_m1_a0.7_Al0_mu1_M1_KerrSchild
 
 ## loop over subdirs
 for subdir in "${subdirs[@]}"; do
@@ -32,8 +20,7 @@ for subdir in "${subdirs[@]}"; do
 	bh_mass=$(echo $subdir | sed -e 's/.*_M\(.*\)_Kerr.*/\1/')
 	#var_index=5
 	# note vars = {chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
-	#min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
-	min_radius=0
+	min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
 	echo "min_radius = " ${min_radius}
 
 	# suffix
@@ -59,7 +46,7 @@ for subdir in "${subdirs[@]}"; do
 	sed -i "s|MINRADIUS|${min_radius}|" params.txt
 	sed -i "s|MAXRADIUS|${max_radius}|" params.txt
 	sed -i "s|PLOTINTERVAL|${plot_interval}|" params.txt
-	sed -i "s|SUFFIX|${suffix}|" params.txt
+	sed -i "s|SFIX|${suffix}|" params.txt
 	sbatch slurm_submit
 	#
 	cd ${work_dir}

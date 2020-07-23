@@ -16,6 +16,7 @@
 #include "UserVariables.hpp" //This files needs NUM_VARS - total number of components
 #include "VarsTools.hpp"
 #include "simd.hpp"
+#include "parstream.H"
 
 //! Calculates the density rho with type matter_t and writes it to the grid
 template <class matter_t, class background_t> class FixedBGDensityAndMom
@@ -97,12 +98,12 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         dxdaz[2] = 0;
         // outward radial unit normal vector (Kerr Schild radius direction)
         Tensor<1, data_t> Ni;
-        Ni[0] = x/R;
-        Ni[1] = y/R;
-        Ni[2] = (z/R)*(1+a*a/(r*r)); 
+        Ni[0] = x;
+        Ni[1] = y;
+        Ni[2] = z*(1+a*a/(r*r)); 
 	data_t N2 = 0;
 	FOR1(j){ N2 += Ni[j]*Ni[j]; }
-	FOR1(j){ Ni[j] = Ni[j]/sqrt(N2); }	
+	FOR1(j){ Ni[j] *= 1.0/sqrt(N2); }	
 	// outward radial vector (cartesian radius direction)
         Tensor<1, data_t> NRi;
         NRi[0] = x/R;
@@ -112,7 +113,7 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 	Tensor<1, data_t> J_azimuth_co;
         FOR2(i, j) { J_azimuth_co[i] += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[j]; }	
 	Tensor<1, data_t> J_azimuth;
-	FOR2(i, j) { J_azimuth[i] += (gamma_UU[i][j] - vars.shift[i]*vars.shift[j]/(vars.lapse*vars.lapse))*J_azimuth_co[j]; }
+	FOR2(i, j) { J_azimuth[i] += (gamma_UU[i][j] - metric_vars.shift[i]*metric_vars.shift[j]/(metric_vars.lapse*metric_vars.lapse))*J_azimuth_co[j]; }
 
 	// cartesian projection of the 3-current momentum vectors in the r_KS unit direction
 	data_t J_rKS = 0;
