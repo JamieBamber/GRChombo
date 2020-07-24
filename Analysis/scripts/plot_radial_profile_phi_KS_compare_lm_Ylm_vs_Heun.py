@@ -10,16 +10,16 @@ start_time = time.time()
 # set up parameters 
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/"
 file_names = {}
-a_list = ["0", "0.7"]
-file_names["0"] = "run0067_KNL_l0_m0_a0_Al0_mu1_M1_KerrSchild"
+a_list = ["0", "0.99"]
+file_names["0"] = "run0080_KNL_l1_m1_a0_Al0_mu0.4_M1_KerrSchild"
 file_names["0.99"] = "run0071_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild"
 #lm_list = [(0, 0), (1, 1) (2, 0), (2, 2), (3, 1), (3, 3), (4, 0)]
 lm_list = [(1, 1)]
-number = 825
+number = 1085
 mu = 1
 M = 1
 phi0 = 0.1
-lin_or_log = False
+lin_or_log = True
 colours = ["r", "b", "g", "c", "m", "y", "k"]
 styles = ["-", "--"]
 time = 0
@@ -43,7 +43,7 @@ def Stationary_sol_KS(r, A, a, l, m, phase, ingoing):
                         sol[i] = 0
                 else:
                      	sol[i] = Kerrlib.Rfunc(M, mu, omega, a, l, m, ingoing, True, t - 2*np.pi*phase/omega, r[i])
-        sol = np.abs(A)*sol
+        sol = np.abs(A)*np.abs(sol)
         return sol
 
 ### get data and plot profile for each a and each lm
@@ -75,24 +75,26 @@ for i in range(0, len(a_list)):
 			y = np.log10(phi/phi0)
 		else:
 			y = phi/phi0
-		plt.plot(x, y, colours[j] + styles[i], label="l={:d} m={:d} mode a={:.2f}".format(l, m, a))
+		plt.plot(x, y, colours[i] + styles[j], label="l={:d} m={:d} mode a={:.2f}".format(l, m, a))
 		### fit stationary solution to the a=0.99 case 
-		if (a!=0.0):
+		if (a==0.0):
 			def Stationary_sol_KS_fit(r, A, phase):
 				print("testing A={:.2f} phase={:.2f}".format(A, phase))
 				return Stationary_sol_KS(r, A, a, l, m, phase, True)
 			popt, pconv = curve_fit(Stationary_sol_KS_fit, r*M, phi, p0=(10, 0))
-			phi_fitted = Stationary_sol_KS_fit(r, popt[0], popt[1])
+			A = popt[0]
+			phase = popt[1]
+			phi_fitted = Stationary_sol_KS_fit(r, A, phase)
 			if log_y:
         			y = np.log10(phi_fitted/phi0)
 			else:
         			y = phi_fitted/phi0
-			plt.plot(x, y, colours[j] + "-.", label="fitted Heun sol. A={:.2f} phase={:.2f} l={:d} m={:d} a={:.2f}".format(popt[0], popt[1], l, m, a))	
+			plt.plot(x, y, "k--", label="fitted Heun sol. A={:.2f} phase={:.2f} l={:d} m={:d} a={:.2f}".format(A, phase, l, m, a))	
 plt.legend(fontsize=8)
 if log_y:
 	plt.ylabel("$\\log_{10}(\\phi_{lm}/\\phi_0)$")
 else:
-	plt.ylabel("$\\phi_{lm}/\\phi_0$")
+	plt.ylabel("$|\\phi_{lm}|/\\phi_0$")
 if (lin_or_log):
 	xlabel_ = "$r_{KS}/M$"
 else:
@@ -110,7 +112,7 @@ title = "$\\phi_{lm}$" + " profile KerrSchild M=1 $\\mu$={:.1f}, time = {:.1f}".
 plt.title(title)
 plt.legend(fontsize=8)
 plt.tight_layout()
-save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/KerrSchild_M{:.1f}_mu{:.1f}_Ylm_m=0_phi_{:s}_t={:.1f}_plot_vs_Heun.png".format(M, mu, scale, time)
+save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/KerrSchild_M{:.1f}_mu{:.1f}_Ylm_l=m=1_phi_{:s}_t={:.1f}_plot_vs_Heun.png".format(M, mu, scale, time)
 print("saved " + save_name)
 plt.savefig(save_name, transparent=False)
 plt.clf()
