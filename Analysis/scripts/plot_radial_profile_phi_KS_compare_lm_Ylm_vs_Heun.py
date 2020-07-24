@@ -21,6 +21,7 @@ M = 1
 phi0 = 0.1
 lin_or_log = True
 colours = ["r", "b", "g", "c", "m", "y", "k"]
+colours2 = ["k", "m"]
 styles = ["-", "--"]
 time = 0
 
@@ -77,7 +78,7 @@ for i in range(0, len(a_list)):
 			y = phi/phi0
 		plt.plot(x, y, colours[i] + styles[j], label="l={:d} m={:d} mode a={:.2f}".format(l, m, a))
 		### fit stationary solution to the a=0.99 case 
-		if (a==0.0):
+		if (True):
 			def Stationary_sol_KS_fit(r, A, phase):
 				print("testing A={:.2f} phase={:.2f}".format(A, phase))
 				return Stationary_sol_KS(r, A, a, l, m, phase, True)
@@ -89,7 +90,7 @@ for i in range(0, len(a_list)):
         			y = np.log10(phi_fitted/phi0)
 			else:
         			y = phi_fitted/phi0
-			plt.plot(x, y, "k--", label="fitted Heun sol. A={:.2f} phase={:.2f} l={:d} m={:d} a={:.2f}".format(A, phase, l, m, a))	
+			plt.plot(x, y, colours2[i] + "--", label="fitted Heun sol. A={:.2f} phase={:.2f} l={:d} m={:d} a={:.2f}".format(A, phase, l, m, a))	
 plt.legend(fontsize=8)
 if log_y:
 	plt.ylabel("$\\log_{10}(\\phi_{lm}/\\phi_0)$")
