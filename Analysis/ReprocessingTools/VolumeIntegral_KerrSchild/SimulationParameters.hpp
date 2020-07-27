@@ -40,6 +40,7 @@ class SimulationParameters : public ChomboParameters
 	pp.get("output_rootdir", output_rootdir);
 	pp.get("data_subdir", data_subdir);
 	pp.get("suffix", suffix);
+	suffix = "_in_r=450";
 
         // Files setup
         pp.get("end_number", end_number);

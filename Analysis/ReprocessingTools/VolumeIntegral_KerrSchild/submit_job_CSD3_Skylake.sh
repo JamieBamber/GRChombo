@@ -24,7 +24,7 @@ for subdir in "${subdirs[@]}"; do
 	echo "min_radius = " ${min_radius}
 
 	# suffix
-	suffix=_in_r\=${max_radius}
+	suffix=_in_r${max_radius}
 
 	# extract parameters from params.txt
 	name=${subdir}_mass_ang_mom_integral_r_between_${min_radius}_${max_radius}
@@ -34,7 +34,7 @@ for subdir in "${subdirs[@]}"; do
 	mkdir -p ${new_dir_path}
 	
 	cp slurm_submit_Skylake ${new_dir_path}/slurm_submit
-	cp params.txt ${new_dir_path}
+	cp params.txt ${new_dir_path}/params.txt
 	
 	cd ${new_dir_path}
 	# add the location of the new directory to the params file

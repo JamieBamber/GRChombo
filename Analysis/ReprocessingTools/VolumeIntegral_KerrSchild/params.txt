@@ -24,7 +24,6 @@ plot_prefix = KerrSFp_
 plot_interval = PLOTINTERVAL
 start_number = SNUMBER
 end_number = ENUMBER
-
 suffix = SFIX
 
 # integration parameters
