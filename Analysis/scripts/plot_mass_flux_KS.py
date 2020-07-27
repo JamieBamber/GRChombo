@@ -117,7 +117,7 @@ r_max = 450
 average_time = False
 av_n = 1
 cumulative=True
-plot_mass=False
+plot_mass=True
 
 def load_flux_data():
 	# load data from csv files
@@ -136,7 +136,7 @@ def load_mass_data():
         data = {}
         print(data_dirs)
         for dd in data_dirs:
-                file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_in_r={:d}_chombo.dat".format(dd.name, r_max)
+                file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_in_r={:d}.dat".format(dd.name, r_max)
                 data_line = np.genfromtxt(file_name, skip_header=1)
                 data[dd.num] = data_line
                 print("loaded mass data for " + file_name)
