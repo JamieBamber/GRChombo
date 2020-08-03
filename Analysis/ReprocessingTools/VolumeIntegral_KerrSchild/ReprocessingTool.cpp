@@ -58,12 +58,12 @@ int runReprocessingTool(int argc, char *argv[])
 
     // get start and end index
     int start_index, end_index;
-    if ((sim_params.start_number % sim_params.plot_interval != 0) || (sim_params.end_number % sim_params.plot_interval != 0)) 
+    if ((sim_params.start_number % sim_params.input_plot_interval != 0) || (sim_params.end_number % sim_params.input_plot_interval != 0)) 
     {
         throw std::invalid_argument("invalid start or end number, or wrong plot interval");
     } else {
-	start_index = sim_params.start_number / sim_params.plot_interval;
-        end_index = sim_params.end_number / sim_params.plot_interval;
+	start_index = sim_params.start_number / sim_params.input_plot_interval;
+        end_index = sim_params.end_number / sim_params.input_plot_interval;
     }
 
     // now loop over files
@@ -73,7 +73,7 @@ int runReprocessingTool(int argc, char *argv[])
         // set up the file from next plot
         std::ostringstream current_file;
         current_file << std::setw(6) << std::setfill('0')
-                     << ifile * sim_params.plot_interval;
+                     << ifile * sim_params.input_plot_interval;
         std::string restart_file = sim_params.data_rootdir + sim_params.data_subdir + "/" + sim_params.plot_prefix + current_file.str() +
                                  ".3d.hdf5";
 	std::cout << current_file.str() << std::endl;

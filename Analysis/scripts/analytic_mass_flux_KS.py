@@ -75,8 +75,8 @@ def analytic_flux(t, r, l, m, a, mu, cumulative):
 			F2 = (-4*mu*np.sin(2*tau)-1/3)*tau**3+1/4*(-mu*a**2-3*mu*cos2theta*a**2+32*mu+((6*L)/mu+16*mu)*np.cos(2*tau)+6*np.sin(2*tau))*tau**2+1/8*(-6*mu*np.sin(2*tau)*cos2theta*a**2-2*mu*np.sin(2*tau)*a**2-12*np.cos(2*tau)-48*mu*np.sin(2*tau)-(24*L*np.sin(2*tau))/mu-8)*tau+(np.sin(tau)*(20*mu*np.cos(tau)+6*(a**2*mu**2+3*a**2*cos2theta*mu**2+6*L)*np.sin(tau)))/(8*mu)
 			F3 = (16/3*mu*np.cos(2*tau)-1/(3*mu))*tau**4+((18*mu**2+2*(36*mu**2+6*L-1)*np.sin(2*tau)*mu+L+1)*tau**3)/(3*mu**2)+(1/(4*mu**3))*(8*(a**2-16)*mu**4+a**2*cos2theta*(16*np.cos(2*tau)*mu**2+16*mu**2+L)*mu**2-28*mu**2+2*(1-22*mu**2)*np.sin(2*tau)*mu+(L-3)*L+(8*(a**2-4)*mu**4+4*(4*L-1)*mu**2-(L-1)*L)*np.cos(2*tau))*tau**2+(1/(4*mu**3))*(2*mu*(12*mu**2+L+(-a**2*cos2theta*mu**2+14*mu**2+L+2)*np.cos(2*tau))+(-8*(a**2-10)*mu**4-4*(2*L+5)*mu**2+a**2*(L-16*mu**2)*cos2theta*mu**2+L*(3*L-4))*np.sin(2*tau))*tau+(np.sin(tau)*(2*mu*(a**2*mu**2*cos2theta-2*(13*mu**2+L+1))*np.cos(tau)+(-3*a**2*L*cos2theta*mu**2+72*mu**2+2*(5-3*L)*L)*np.sin(tau)))/(4*mu**3)
 			F4 = -((mu*tau**6)/9)+(5*mu*np.sin(2*tau)-4/3)*tau**5+(1/(96*mu**3))*(40*(74-3*a**2)*mu**4+20*(16*L+5)*mu**2+8*(-15*a**2*cos2theta*mu**2+40*np.sin(2*tau)*mu+(-518*mu**2-70*L+20)*np.cos(2*tau))*mu**2+3*L*(5*L-6))*tau**4+(1/(24*mu**3))*(4*a**2*cos2theta*(45*mu*np.sin(2*tau)+2)*mu**3-8*(128*mu**2+8*L+3)*mu+2*((272*mu**2-15)*np.cos(2*tau)+mu*((42*a**2-832)*mu**2-60*L-47)*np.sin(2*tau))*mu+15*(2-3*L)*L*np.cos(tau)*np.sin(tau))*tau**3+(1/(32*mu**3))*(-24*(a**4+6*a**2-124)*mu**4+8*(87-5*(a**2-2)*L)*mu**2-8*a**2*cos2theta*((3*a**2+50)*mu**2+10*np.sin(2*tau)*mu+5*L+5*(L-mu**2)*np.cos(2*tau))*mu**2+4*(-8*(a**2-58)*mu**2+32*L+23)*np.sin(2*tau)*mu+2*(26-15*L)*L+(8*(21*a**2-232)*mu**4+4*(2*(a**2-40)*L+53)*mu**2+(86-85*L)*L)*np.cos(2*tau))*tau**2+(1/(32*mu**3))*(8*a**2*cos2theta*(-10*np.cos(2*tau)*mu+8*mu+(10*L-3*(a**2-15)*mu**2)*np.sin(2*tau))*mu**2+16*(2*(a**2-32)*mu**2-2*L-1)*mu+4*(-32*(a**2-14)*mu**2+28*L+19)*np.cos(2*tau)*mu+(-8*(3*(a**2-7)*a**2+140)*mu**4-4*(4*(a**2-15)*L+227)*mu**2+23*L*(5*L-6))*np.sin(2*tau))*tau+(1/(32*mu**3))*np.sin(tau)*(4*mu*(24*(a**2-8)*mu**2+4*a**2*cos2theta*mu**2-5*(4*L+3))*np.cos(tau)+(8*(9*(a**2-5)*a**2+140)*mu**4+4*(16*L*a**2-60*L+227)*mu**2+8*a**2*(9*(a**2-5)*mu**2-10*L)*cos2theta*mu**2+23*(6-5*L)*L)*np.sin(tau))
-	Flux = F0 + F1/r + F2/r**2 + F3/r**3 + F4/r**4 
-	return Flux
+	Fluxes = [F0, F1/r, F2/r**2, F3/r**3, F4/r**4]
+	return Fluxes
 
 def time_average(x, n):
 	N = len(x)
@@ -117,7 +117,7 @@ r_max = 450
 average_time = False
 av_n = 1
 cumulative=True
-plot_mass=True
+plot_mass=False
 
 def load_flux_data():
 	# load data from csv files
@@ -136,7 +136,7 @@ def load_mass_data():
         data = {}
         print(data_dirs)
         for dd in data_dirs:
-                file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_in_r4_to_{:d}.dat".format(dd.name, r_max)
+                file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_in_r={:d}.dat".format(dd.name, r_max)
                 data_line = np.genfromtxt(file_name, skip_header=1)
                 data[dd.num] = data_line
                 print("loaded mass data for " + file_name)
@@ -147,7 +147,7 @@ def plot_graph():
 	if plot_mass:
 		mass_data = load_mass_data()
 	colours = ['r', 'b', 'g', 'm', 'y', 'c']
-	colours2 = ['k', 'm', 'c']
+	colours2 = ['b', 'g', 'c', 'y', 'k']
 	i = 0
 	fig, ax1 = plt.subplots()
 	#ax2 = ax1.twinx()	
@@ -168,23 +168,23 @@ def plot_graph():
 			dt = tflux[2] - tflux[1]
 			inner_mass_flux = np.cumsum(inner_mass_flux)*dt
 			outer_mass_flux = np.cumsum(outer_mass_flux)*dt
-			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, True)*(4*np.pi)*phi0**2/E0
+			analytic_outer_fluxes = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, True)
 		elif not cumulative:
-			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, False)*(4*np.pi)*phi0**2/E0
+			analytic_outer_fluxes = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, False)
 		net_flux = outer_mass_flux - inner_mass_flux
 		#label_ = "$\\mu$={:.2f}".format(mu)
 		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
-		ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into BH " + label_)
+		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into BH " + label_)
 		ax1.plot(tflux,outer_mass_flux,colours[i]+"-.", label="flux into r={:.1f} ".format(r_max)+label_)
-		ax1.plot(tflux,analytic_outer_flux,colours2[i]+"-.", label="analytic flux into r={:.1f} ".format(r_max)+label_)
-		ax1.plot(tflux,net_flux,colours[i]+"-", label="net flux " + label_)
+		for j in range(0, 4):
+			ax1.plot(tflux,analytic_outer_fluxes[j]*(4*np.pi)*phi0**2/E0,colours2[j]+"-", label="{:d}th order analytic flux into r={:.1f} ".format(j, r_max)+label_)
+		#ax1.plot(tflux,net_flux,colours[i]+"-", label="net flux " + label_)
 		#
 		if plot_mass:
 			mass_line_data = mass_data[dd.num]
-			print(mass_line_data[0:,1])
-			delta_mass = mass_line_data[1:,1] #- mass_line_data[0,1]
+			delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
 			tmass = mass_line_data[1:,0]
-			ax1.plot(tmass,delta_mass/E0,colours[i+1]+"-", label="change in mass $4<r<$"+str(r_max)+" "+label_)
+			ax1.plot(tmass,delta_mass/E0,colours[i+1]+"-", label="change in mass $r_+<r<$"+str(r_max)+" "+label_)
 		i = i + 1
 	ax1.set_xlabel("$t$")
 	#ax1.set_xlim((0, 300))
@@ -193,11 +193,11 @@ def plot_graph():
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$")
 		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $\\mu=0.4$")
-		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative_nphi{:d}_ntheta{:d}{:s}.png".format(dd.nphi, dd.ntheta, dd.suffix)
+		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative_test_analytic.png".format(dd.nphi, dd.ntheta, dd.suffix)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$ $n_{\\phi}=$"+str(dd.nphi)+" $n_{\\theta}=$"+str(dd.ntheta))
-		save_path = home_path + "plots/mass_flux_Kerr_Schild_nphi{:d}_ntheta{:d}{:s}.png".format(dd.nphi, dd.ntheta, dd.suffix)
+		save_path = home_path + "plots/mass_flux_Kerr_Schild_test_analytic.png".format(dd.nphi, dd.ntheta, dd.suffix)
 	ax1.legend(loc='upper left', fontsize=8)
 	plt.tight_layout()
 	plt.savefig(save_path)

@@ -106,6 +106,9 @@ class ReprocessingLevel : public GRAMRLevel
 	//! Tell Chombo how to tag cells for regridding
     virtual void computeTaggingCriterion(FArrayBox &tagging_criterion,
                                          const FArrayBox &current_state){};
+
+    // Specify if you want any plot files to be written, with which vars
+    // void specificWritePlotHeader(std::vector<int> &plot_states) const;
 };
 
 #endif /* REPROCESSINGLEVEL_HPP_ */

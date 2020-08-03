@@ -40,12 +40,11 @@ class SimulationParameters : public ChomboParameters
 	pp.get("output_rootdir", output_rootdir);
 	pp.get("data_subdir", data_subdir);
 	pp.get("suffix", suffix);
-	suffix = "_in_r=450";
 
         // Files setup
         pp.get("end_number", end_number);
         pp.get("start_number", start_number);
-        pp.get("plot_interval", plot_interval);
+        pp.get("input_plot_interval", input_plot_interval);
 
         // basic integration params
         dx.fill(coarsest_dx);
@@ -71,7 +70,7 @@ class SimulationParameters : public ChomboParameters
         integration_params.min_integration_level = *(min_integration_level_it);
     }
 
-    int start_number, end_number, plot_interval;
+    int start_number, end_number, input_plot_interval;
     std::array<double, CH_SPACEDIM> origin,
         dx; // location of coarsest origin and dx
     std::string data_subdir;

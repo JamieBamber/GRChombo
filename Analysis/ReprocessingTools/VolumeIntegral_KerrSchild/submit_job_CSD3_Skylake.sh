@@ -4,8 +4,8 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/VolumeIntegral_KerrSchild
 
-start_number=0
-end_number=2000
+start_number=100
+end_number=100
 lin_or_log=1 # note 0 = log, 1 = linear
 plot_interval=10
 max_radius=450
@@ -20,11 +20,12 @@ for subdir in "${subdirs[@]}"; do
 	bh_mass=$(echo $subdir | sed -e 's/.*_M\(.*\)_Kerr.*/\1/')
 	#var_index=5
 	# note vars = {chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
-	min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
+	#min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
+	min_radius=2.1
 	echo "min_radius = " ${min_radius}
 
 	# suffix
-	suffix=_in_r${max_radius}
+	suffix=_in_r${min_radius}_to_${max_radius}
 
 	# extract parameters from params.txt
 	name=${subdir}_mass_ang_mom_integral_r_between_${min_radius}_${max_radius}
