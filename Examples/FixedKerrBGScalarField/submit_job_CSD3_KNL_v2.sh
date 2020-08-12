@@ -5,32 +5,32 @@
 
 # this copy is for the KNL nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField
+work_dir=/home/dc-bamb1/GRChombo/Examples/FixedKerrBGScalarField
 cd $work_dir
 data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
-run0101=(1 1 0.7 0 0.4 0.0625)
-run0102=(2 2 0.7 0 0.4 0.0625)
-run0103=(0 0 0.7 0 0.4 0.0625)
-run0104=(4 4 0.7 0 0.4 0.0625)
-run0105=(1 -1 0.7 0 0.4 0.0625)
-run0106=(8 8 0.7 0 0.4 0.0625)
-run0107=(1 1 0.99 0 0.4 0.0625)
-run0108=(1 1 0 0 0.4 0.0625)
-run0109=(2 2 0.7 0 0.8 0.03125)
-run0110=(4 4 0.7 0 1.6 0.03125)
-run0111=(1 1 0.7 0 0.2 0.125)
-run0112=(1 1 0.7 0 0.8 0.03125)
+run0001=(1 1 0.7 0 0.4 0.0625)
+run0002=(2 2 0.7 0 0.4 0.0625)
+run0003=(0 0 0.7 0 0.4 0.0625)
+run0004=(4 4 0.7 0 0.4 0.0625)
+run0005=(1 -1 0.7 0 0.4 0.0625)
+run0006=(8 8 0.7 0 0.4 0.0625)
+run0007=(1 1 0.99 0 0.4 0.0625)
+run0008=(1 1 0 0 0.4 0.0625)
+run0009=(2 2 0.7 0 0.8 0.03125)
+run0010=(4 4 0.7 0 1.6 0.03125)
+run0011=(1 1 0.7 0 0.2 0.125)
+run0012=(1 1 0.7 0 0.8 0.03125)
 
 # specify runs to submit
 run_list=(
-	run0101
-	run0103
-	run0105
-	run0109
-	run0102
+	run0001
+	run0002
+	run0003
+	run0004
+	run0005
 )
 
 params_file=params_v2.txt
@@ -50,7 +50,7 @@ do
 
 	# text_number=$(printf "%04d" ${run_number})
 	
-	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_KerrSchild
+	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
 	echo ${new_dir}
 	new_dir_path=${data_directory}/${new_dir}
 	#

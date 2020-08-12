@@ -76,7 +76,7 @@ void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     IsotropicKerrFixedBG kerr_bg(m_p.bg_params, m_dx);
     FixedBGEvolution<ScalarFieldWithPotential, IsotropicKerrFixedBG> my_evolution(
         scalar_field, kerr_bg, m_p.sigma, m_dx, m_p.center);
-    SetValue set_static_rhs_zero(0.0, Interval(c_chi, c_J_r));
+    SetValue set_static_rhs_zero(0.0, Interval(c_chi, NUM_VARS-1));
     auto compute_pack = make_compute_pack(my_evolution, set_static_rhs_zero);
     BoxLoops::loop(compute_pack, a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
 

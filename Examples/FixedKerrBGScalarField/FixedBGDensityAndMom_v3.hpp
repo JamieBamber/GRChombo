@@ -16,6 +16,7 @@
 #include "UserVariables.hpp" //This files needs NUM_VARS - total number of components
 #include "VarsTools.hpp"
 #include "simd.hpp"
+#include "parstream.H"
 
 //! Calculates the density rho with type matter_t and writes it to the grid
 template <class matter_t, class background_t> class FixedBGDensityAndMom
@@ -74,14 +75,14 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         data_t rho = metric_vars.lapse*emtensor.rho;
         FOR1(k){ rho += -metric_vars.shift[k]*emtensor.Si[k];   }
         rho = rho*sqrt(det_gamma);
-	
-	// covarient conserved current j_i = -sqrt(-g)T_i_0 = det(gamma)*alpha*[ alpha * S_j - beta^k S_kj ] for the cartesian coordinates
+
+	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] - beta^i rho_E for the cartesian coordinates
         Tensor<1, data_t> Sbeta; 
         FOR2(i, j){ Sbeta[i] += metric_vars.shift[j]*emtensor.Sij[i][j]; }                      
         Tensor<1, data_t> J; 
-	// conserved 3-current linear momentum covector in the cartesian coordinates 
-        FOR1(i){ J[i] += sqrt(det_gamma)*metric_vars.lapse*(metric_vars.lapse*emtensor.Si[i] - Sbeta[i]); }                       
-
+        FOR2(i, j){ J[i] += sqrt(det_gamma)*metric_vars.lapse*( gamma_UU[i][j]*(metric_vars.lapse*emtensor.Si[j] - Sbeta[j]) ); }
+	FOR1(i){ J[i] += -metric_vars.shift[i]*rho; }
+	
         // conserved rho_azimuth = |gamma|(x * S_y - y * S_z)
         data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma);
 
@@ -91,23 +92,27 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         dxdaz[1] =   x;
         dxdaz[2] = 0;
 	// outward radial vector (cartesian radius direction)
-        Tensor<1, data_t> Ni;
-        Ni[0] = x/R;
-        Ni[1] = y/R;
-        Ni[2] = z/R;
+        Tensor<1, data_t> NRi;
+        NRi[0] = x/R;
+        NRi[1] = y/R;
+        NRi[2] = z/R;
 
-	// cartesian projection of the 3-current momentum covectors in the r unit direction
-	data_t J_r = 0;
-	FOR1(j) { J_r += Ni[j]*J[j]; }
-	data_t J_azimuth_r = 0;
-        FOR2(i, j) { J_azimuth_r += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }	
+	Tensor<1, data_t> J_azimuth_co;
+        FOR2(i, j) { J_azimuth_co[i] += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[j]; }	
+	Tensor<1, data_t> J_azimuth;
+	FOR2(i, j) { J_azimuth[i] += (gamma_UU[i][j] - metric_vars.shift[i]*metric_vars.shift[j]/(metric_vars.lapse*metric_vars.lapse))*J_azimuth_co[j]; }
+
+	// cartesian projection of the 3-current momentum vectors in the R unit direction
+	data_t J_R = 0;
+	FOR1(j) { J_R += NRi[j]*J[j]; }
+	data_t J_azimuth_R = 0;
+        FOR1(i) { J_azimuth_R += J_azimuth_co[i] * NRi[i]; }
 
         // assign values of density in output box
         current_cell.store_vars(rho, c_rho);
-        current_cell.store_vars(emtensor.rho, c_rho_Eulerian);
         current_cell.store_vars(rho_azimuth, c_rho_azimuth);
-        current_cell.store_vars(J_r, c_J_r);
-        current_cell.store_vars(J_azimuth_r, c_J_azimuth_r);
+        current_cell.store_vars(J_R, c_J_R);
+        current_cell.store_vars(J_azimuth_R, c_J_azimuth_R);
     }
 };
 
