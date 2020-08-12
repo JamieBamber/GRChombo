@@ -12,21 +12,19 @@ from matplotlib import pyplot as plt
 yt.enable_parallelism()
 
 class data_dir:
-	def __init__(self, num, l, m, a, mu, nphi, ntheta, suffix):
-		self.num = num
-		self.l = l
-		self.m = m
-		self.a = float(a)
-		self.mu = mu
-		self.nphi = nphi
-		self.ntheta = ntheta
-		self.suffix = suffix
-		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_KerrSchild".format(num, l, m, a, "0", mu)
+        def __init__(self, num, l, m, a, mu, Al):
+                self.num = num
+                self.l = l
+                self.m = m
+                self.a = float(a)
+                self.mu = mu
+                self.Al = Al
+                self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_correct_Ylm".format(num, l, m, a, Al, mu)
 
-data_dirs = []		
-def add_data_dir(num, l, m, a, mu, nphi, ntheta, suffix=""):
-	x = data_dir(num, l, m, a, mu, nphi, ntheta, suffix)
-	data_dirs.append(x)
+data_dirs = []
+def add_data_dir(num, l, m, a, mu, Al="0"):
+        x = data_dir(num, l, m, a, mu, Al)
+        data_dirs.append(x)
 
 # appropriate \int Ylm Ylm^* cos(2 theta) dtheta dphi factor for 0 <= l <= 10
 cos2theta_integrals = [[-(1/3)],[1/5,-(3/5)],[1/21,-(1/7),-(5/7)],\
@@ -113,19 +111,32 @@ def time_average(x, n):
 
 # choose datasets to compare
 
-#add_data_dir(101, 1, 1, "0.7", "0.4", 75, 63)
-#add_data_dir(101, 1, 1, "0.7", "0.4", 123, 123)
-add_data_dir(103, 0, 0, "0.7", "0.4", 32, 32, "_theta_max0.98")
-#add_data_dir(102, 2, 2, "0.7", "0.4")
-#add_data_dir(103, 0, 0, "0.7", "0.4")
-#add_data_dir(104, 1, -1, "0.7", "0.4")
-#add_data_dir(105, 0, 0, "0.99", "0.4")
-#add_data_dir(106, 1, 1, "0.99", "0.4")
-#add_data_dir(107, 4, 4, "0.7", "0.4")
-#add_data_dir(108, 2, 2, "0.7", "0.8")
-#add_data_dir(109, 8, 8, "0.7", "0.4")
-#add_data_dir(110, 1, 1, "0.7", "0.05")
-#add_data_dir(111, 1, 1, "0.7", "1")
+add_data_dir( 28, 0, 0, "0.7", "0.4")
+#add_data_dir( 39, 1, 1, "0.7", "0.4")
+#add_data_dir( 54, 1, -1, "0.7", "0.4")
+add_data_dir( 48, 2, 2, "0.7", "0.4")
+#add_data_dir( 42, 5, 1, "0.7", "0.4")
+#add_data_dir( 58, 5, 5, "0.7", "0.4")
+#add_data_dir( 55, 7, 1, "0.7", "0.4")
+#add_data_dir( 45, 10, 10, "0.7", "0.4")
+
+#add_data_dir( 31, 0, 0, "0", "0.4")
+#add_data_dir( 28, 0, 0, "0.7", "0.4")
+#add_data_dir( 29, 0, 0, "0.99", "0.4")
+
+#add_data_dir( 46, 2, 2, "0", "0.4")
+
+#add_data_dir( 32, 1, 1, "0", "0.4")
+#add_data_dir( 37, 1, 1, "0.99", "0.4")
+
+#add_data_dir( 46, 2, 2, "0", "0.4")
+#add_data_dir( 48, 2, 2, "0.7", "0.4")
+#add_data_dir( 47, 2, 2, "0.99", "0.4")
+
+#add_data_dir( 50, 2, -2, "0.99", "0.4")
+#add_data_dir( 49, 1, -1, "0.99", "0.4")
+
+#add_data_dir( 81, 1, 1, "0.7", "0.4", "0.5")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -137,11 +148,10 @@ half_box = True
 
 KS_or_cartesian_r=True
 phi0 = 0.1
-r_max = 450
+R_max = 450
 average_time = False
 av_n = 1
-cumulative=False
-plot_mass=False
+plot_flux=False
 
 def load_flux_data():
 	# load data from csv files
@@ -156,70 +166,56 @@ def load_flux_data():
 	return data 	
 
 def load_mass_data():
-        # load data from csv files
-        data = {}
-        print(data_dirs)
-        for dd in data_dirs:
-                file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_in_r={:d}_chombo.dat".format(dd.name, r_max)
-                data_line = np.genfromtxt(file_name, skip_header=1)
-                data[dd.num] = data_line
-                print("loaded mass data for " + file_name)
-        return data
+	# load data from csv files
+	data = {}
+	print(data_dirs)
+	for dd in data_dirs:
+		file_name = home_path + "data/mass_data/" + "{:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.name, R_max)
+		#file_name = home_path + "data/mass_data" + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, R_max)
+		data_line = np.genfromtxt(file_name, skip_header=1)
+		data[dd.num] = data_line
+		print("loaded mass data for " + file_name)
+	return data
 
 def plot_graph():
-	flux_data = load_flux_data()
-	if plot_mass:
-		mass_data = load_mass_data()
-	colours = ['r', 'b', 'g', 'm', 'y', 'c']
-	colours2 = ['k', 'm', 'c']
+	mass_data = load_mass_data()
+	if plot_flux:
+		flux_data = load_flux_data()
+	colours = ['r', 'b', 'g', 'm', 'y', 'c', 'k']
 	i = 0
 	fig, ax1 = plt.subplots()
 	#ax2 = ax1.twinx()	
 	for dd in data_dirs:
-		flux_line_data = flux_data[dd.num]
+		# plot mass data
 		mu = float(dd.mu)
-		tflux = flux_line_data[1:,0]
-		#r_min = line_data[0,1]
-		r_max = flux_line_data[0,2]
-		E0 = 0.5*(4*np.pi*(r_max**3)/3)*(phi0*mu)**2
-		inner_mass_flux = -flux_line_data[1:,1]*(4*np.pi)/E0
-		outer_mass_flux = -flux_line_data[1:,2]*(4*np.pi)/E0
-		if average_time:
-			t1 = time_average(t1, av_n)
-			inner_mass_flux = time_average(inner_mass_flux, av_n)
-			outer_mass_flux = time_average(outer_mass_flux, av_n)
-		if cumulative:
-			inner_mass_flux = np.cumsum(inner_mass_flux)
-			outer_mass_flux = np.cumsum(outer_mass_flux)
-			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, True)*(2*np.pi)*phi0**2/E0
-		elif not cumulative:
-			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, False)*(2*np.pi)*phi0**2/E0
-		net_flux = outer_mass_flux - inner_mass_flux
-		#label_ = "$\\mu$={:.2f}".format(mu)
+		E0 = 0.5*(4*np.pi*(R_max**3)/3)*(phi0*mu)**2
+		mass_line_data = mass_data[dd.num]
+		delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
+		tmass = mass_line_data[1:,0]
 		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
-		ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into BH " + label_)
-		ax1.plot(tflux,outer_mass_flux,colours[i]+"-.", label="flux into r={:.1f} ".format(r_max)+label_)
-		ax1.plot(tflux,analytic_outer_flux,colours2[i]+"-.", label="flux into r={:.1f} ".format(r_max)+label_)
-		ax1.plot(tflux,net_flux,colours[i]+"-", label="net flux " + label_)
+		ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass $R_+<R<$"+str(R_max)+" "+label_)
+		analytic_outer_flux = analytic_flux(tmass, R_max, dd.l, dd.m, dd.a, mu, True)*(2*np.pi)*phi0**2/E0
+		#label_ = "$\\mu$={:.2f}".format(mu)
+		ax1.plot(tmass,analytic_outer_flux,colours[i]+"--", label="analytic flux into R={:.1f} ".format(R_max)+label_)
 		#
-		if plot_mass:
-			mass_line_data = mass_data[dd.num]
-			delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
-			tmass = mass_line_data[1:,0]
-			ax1.plot(tmass,delta_mass/E0,colours[i+1]+"-", label="change in mass $r_+<r<$"+str(r_max)+" "+label_)
+		if plot_flux:
+			flux_line_data = flux_data[dd.num]
+			tflux = flux_line_data[1:,0]
+			#r_min = line_data[0,1]
+			outer_mass_flux = -flux_line_data[1:,2]*(4*np.pi)/E0
+			outer_mass_flux = np.cumsum(outer_mass_flux)
+			if average_time:
+				tflux = time_average(t1, av_n)
+				outer_mass_flux = time_average(outer_mass_flux, av_n)
+			ax1.plot(tflux,outer_mass_flux,colours[i]+"-.", label="flux into R={:.1f}".format(R_max)+label_)			
 		i = i + 1
 	ax1.set_xlabel("$t$")
 	#ax1.set_xlim((0, 300))
 	#ax1.set_ylim((-0.0005, 0.0015))
-	dd0 = data_dirs[0]
-	if cumulative:
-		ax1.set_ylabel("cumulative flux / $E_0$")
-		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $\\mu=0.4$")
-		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative_nphi{:d}_ntheta{:d}{:s}.png".format(dd.nphi, dd.ntheta, dd.suffix)
-	else:
-		ax1.set_ylabel("flux / $E_0$")
-		plt.title("Mass flux, $M=1$, $\\mu=0.4$ $n_{\\phi}=$"+str(dd.nphi)+" $n_{\\theta}=$"+str(dd.ntheta))
-		save_path = home_path + "plots/mass_flux_Kerr_Schild_nphi{:d}_ntheta{:d}{:s}.png".format(dd.nphi, dd.ntheta, dd.suffix)
+	ax1.set_ylabel("$\\Delta$E / $E_0$")
+	plt.title("Change in mass, $M=1$, $a=0.7$, $\\mu=0.4$")
+	save_path = home_path + "plots/mass_in_R={:d}_vs_analytic_flux_compare_lm.png".format(R_max)
+	#
 	ax1.legend(loc='upper left', fontsize=8)
 	plt.tight_layout()
 	plt.savefig(save_path)
