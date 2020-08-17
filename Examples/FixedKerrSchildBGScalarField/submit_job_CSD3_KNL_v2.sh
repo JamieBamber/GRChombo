@@ -63,7 +63,7 @@ do
 	sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
 	sed -i "s|DATASUBDIR|${new_dir}|" ${new_dir_path}/params.txt
 	sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/slurm_submit
-	sed -i "s|JOBNAME|KS${run}|" ${new_dir_path}/slurm_submit
+	sed -i "s|JOBNAME|${run}KS|" ${new_dir_path}/slurm_submit
 	sed -i "s|SCALARL|${l}|" ${new_dir_path}/params.txt
 	sed -i "s|SCALARM|${l}|" ${new_dir_path}/params.txt
 	sed -i "s|BHSPIN|${a}|" ${new_dir_path}/params.txt

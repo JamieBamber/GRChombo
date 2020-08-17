@@ -13,7 +13,11 @@ ntheta=32
 theta_max=0.98
 
 subdirs=(
-	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0101_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0102_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0103_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0105_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0109_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
 )
 
 #	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
@@ -42,6 +46,7 @@ for subdir in "${subdirs[@]}"; do
 	
 	# extract parameters from params.txt
 	suffix=_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
+	var_index=6
 	name=${subdir}_var${var_index}_flux${suffix}
 	echo ${name} "flux extraction"
 	new_dir_path=outputs/${name}

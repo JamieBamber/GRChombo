@@ -80,6 +80,7 @@ sigma = 0.5
 # for s = 0.99 omega_crit = m * 0.4338
 #	so m_crit = 2.30
 # SF Initial data
+phase = 0
 scalar_mass = MUVAL
 scalar_amplitude = 0.1
 scalar_omega = MUVAL
