@@ -89,7 +89,7 @@ def time_average(x, n):
 
 # choose datasets to compare
 
-add_data_dir(101, 1, 1, "0.7", "0.4", 32, 32, "_theta_max0.98")
+#add_data_dir(101, 1, 1, "0.7", "0.4", 32, 32, "_theta_max0.98")
 #add_data_dir(102, 2, 2, "0.7", "0.4", 32, 32, "_theta_max0.98")
 #add_data_dir(103, 0, 0, "0.7", "0.4", 32, 32, "_theta_max0.98")
 #add_data_dir(104, 4, 4, "0.7", "0.4", 32, 32, "_theta_max0.98")
@@ -98,6 +98,7 @@ add_data_dir(101, 1, 1, "0.7", "0.4", 32, 32, "_theta_max0.98")
 #add_data_dir(107, 1, 1, "0.99", "0.4", 32, 32, "_theta_max0.98")
 #add_data_dir(108, 1, 1, "0", "0.4", 32, 32, "_theta_max0.98")
 #add_data_dir(109, 2, 2, "0.7", "0.8", 32, 32, "_theta_max0.98")
+add_data_dir(111, 0, 0, "0.0", "0.05", 32, 32, "_theta_max0.98")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -109,7 +110,8 @@ half_box = True
 
 KS_or_cartesian_r=True
 phi0 = 0.1
-r_max = 450
+r_min = 5
+r_max = 500
 average_time = False
 av_n = 1
 cumulative=True
@@ -120,7 +122,7 @@ def load_flux_data():
 	data = {}
 	ang_flux_data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + dd.name + "_J_rKS_linear_n000000_nphi{:d}_ntheta{:d}{:s}.dat".format(dd.nphi, dd.ntheta, dd.suffix)
+		file_name = home_path + output_dir + "/" + dd.name + "_J_rKS_linear_n000000min_r{:d}_max_r{:d}_nphi{:d}_ntheta{:d}{:s}.dat".format(r_min, r_max, dd.nphi, dd.ntheta, dd.suffix)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		#file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_rKS_linear_n000000.dat"
 		#ang_flux_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
@@ -132,7 +134,7 @@ def load_mass_data():
         data = {}
         print(data_dirs)
         for dd in data_dirs:
-                file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_in_r_plus_to_{:d}.dat".format(dd.name, r_max)
+                file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_in_{:d}_to_{:d}.dat".format(dd.name, r_min, r_max)
                 data_line = np.genfromtxt(file_name, skip_header=1)
                 data[dd.num] = data_line
                 print("loaded mass data for " + file_name)
@@ -151,7 +153,7 @@ def plot_graph():
 		flux_line_data = flux_data[dd.num]
 		mu = float(dd.mu)
 		tflux = flux_line_data[1:,0]
-		#r_min = line_data[0,1]
+		r_min = flux_line_data[0,1]
 		r_max = flux_line_data[0,2]
 		E0 = 0.5*(4*np.pi*(r_max**3)/3)*(phi0*mu)**2
 		inner_mass_flux = -flux_line_data[1:,1]*(4*np.pi)/E0
@@ -170,9 +172,9 @@ def plot_graph():
 		net_flux = outer_mass_flux - inner_mass_flux
 		#label_ = "$\\mu$={:.2f}".format(mu)
 		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
-		ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into BH " + label_)
+		ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into r={:.1f} ".format(r_min)+label_)
 		ax1.plot(tflux,outer_mass_flux,colours[i]+"-.", label="flux into r={:.1f} ".format(r_max)+label_)
-		ax1.plot(tflux,analytic_outer_flux,colours2[i]+"-.", label="analytic flux into r={:.1f} ".format(r_max)+label_)
+		ax1.plot(tflux,analytic_outer_flux,colours2[i]+"-.", label="4th order t$\\mu$/r analytic flux into r={:.1f} ".format(r_max)+label_)
 		ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
@@ -180,7 +182,7 @@ def plot_graph():
 			#print(mass_line_data[0:,1])
 			delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
 			tmass = mass_line_data[1:,0]
-			ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass $r_+<r<$"+str(r_max)+" "+label_)
+			ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass {:.1f}$<r<${:.1f} ".format(r_min,r_max)+label_)
 		i = i + 1
 	ax1.set_xlabel("$t$")
 	#ax1.set_xlim((0, 300))
@@ -188,8 +190,8 @@ def plot_graph():
 	dd0 = data_dirs[0]
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$")
-		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $\\mu=0.4$")
-		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative_compare_lm.png"
+		plt.title("Cumulative mass flux, $M=1$, $a=0.0$, $\\mu=0.05$")
+		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative_test_Schwarzchild.png"
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$ $n_{\\phi}=$"+str(dd.nphi)+" $n_{\\theta}=$"+str(dd.ntheta))

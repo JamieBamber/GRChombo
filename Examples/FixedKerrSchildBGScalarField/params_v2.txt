@@ -62,7 +62,7 @@ vars_asymptotic_values = 0 0 1 0 0 0 0 0 0  #phi, Pi, chi, rho, rho_azimuth, J_r
 # L/N = 1024/128 = 8
 #
 checkpoint_interval = 100
-plot_interval = 10
+plot_interval = PLOTINTERVAL
 dt_multiplier = DTMULT # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 2000.0
 ###

@@ -14,9 +14,6 @@
 #include "SmallDataIO.hpp"
 #include "BoundedDensities.hpp"
 
-#include "FixedBGScalarField.hpp"
-#include "Potential.hpp"
-
 class ReprocessingLevel : public GRAMRLevel
 {
     friend class DefaultLevelFactory<ReprocessingLevel>;
@@ -45,9 +42,6 @@ class ReprocessingLevel : public GRAMRLevel
 
 	fillAllGhosts();
 	// set densities to zero outside the integration region
-	Potential potential(m_p.potential_params);
-        ScalarFieldWithPotential scalar_field(potential);
-        KerrSchildFixedBG kerr_bg(m_p.bg_params, m_dx);
 	BoxLoops::loop(
             BoundedDensities(m_p.integration_params, m_dx, m_p.center),
             m_state_new, m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());	
@@ -87,7 +81,7 @@ class ReprocessingLevel : public GRAMRLevel
      		pout() << "making headers ... " << std::endl;
 		// r header string        	
 	        std::ostringstream r_header;
-        	r_header << "integral inside " << m_p.integration_params.min_integration_radius << " < r < " << m_p.integration_params.max_integration_radius;
+        	r_header << "integral inside " << m_p.integration_params.min_integration_radius << " < R < " << m_p.integration_params.max_integration_radius;
 
 		// make header strings
         	std::vector<std::string> headers = {r_header.str()};

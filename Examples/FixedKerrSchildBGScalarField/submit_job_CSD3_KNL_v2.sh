@@ -20,20 +20,18 @@ run0106=(8 8 0.7 0 0.4 0.0625)
 run0107=(1 1 0.99 0 0.4 0.0625)
 run0108=(1 1 0 0 0.4 0.0625)
 run0109=(2 2 0.7 0 0.8 0.03125)
-run0110=(4 4 0.7 0 1.6 0.03125)
-run0111=(1 1 0.7 0 0.2 0.125)
-run0112=(1 1 0.7 0 0.8 0.03125)
+run0110=(0 0 0.0 0 0.4 0.0625)
+run0111=(0 0 0.0 0 0.05 0.4)
+run0112=(1 1 0.7 0 0.2 0.125)
+run0113=(1 1 0.7 0 0.8 0.03125)
 
 # specify runs to submit
 run_list=(
-	run0101
-	run0103
-	run0105
-	run0109
-	run0102
+	run0111
 )
 
 params_file=params_v2.txt
+plot_interval=1
 
 for run in "${run_list[@]}"
 do
@@ -70,6 +68,7 @@ do
 	sed -i "s|ALANGLE|${Al}|" ${new_dir_path}/params.txt
 	sed -i "s|MUVAL|${mu}|" ${new_dir_path}/params.txt
 	sed -i "s|DTMULT|${dt}|" ${new_dir_path}/params.txt
+	sed -i "s|PLOTINTERVAL|${plot_interval}|" ${new_dir_path}/params.txt
 	# 
 	mkdir -p outputs
 	cd outputs

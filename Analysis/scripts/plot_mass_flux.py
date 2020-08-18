@@ -12,18 +12,20 @@ from matplotlib import pyplot as plt
 yt.enable_parallelism()
 
 class data_dir:
-        def __init__(self, num, l, m, a, mu, Al):
+        def __init__(self, num, l, m, a, mu, nphi, ntheta, suffix):
                 self.num = num
                 self.l = l
                 self.m = m
                 self.a = float(a)
                 self.mu = mu
-                self.Al = Al
-                self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_correct_Ylm".format(num, l, m, a, Al, mu)
+                self.nphi = nphi
+                self.ntheta = ntheta
+                self.suffix = suffix
+                self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_KerrSchild".format(num, l, m, a, "0", mu)
 
 data_dirs = []
-def add_data_dir(num, l, m, a, mu, Al="0"):
-        x = data_dir(num, l, m, a, mu, Al)
+def add_data_dir(num, l, m, a, mu, nphi, ntheta, suffix=""):
+        x = data_dir(num, l, m, a, mu, nphi, ntheta, suffix)
         data_dirs.append(x)
 
 # appropriate \int Ylm Ylm^* cos(2 theta) dtheta dphi factor for 0 <= l <= 10
@@ -111,32 +113,7 @@ def time_average(x, n):
 
 # choose datasets to compare
 
-add_data_dir( 28, 0, 0, "0.7", "0.4")
-#add_data_dir( 39, 1, 1, "0.7", "0.4")
-#add_data_dir( 54, 1, -1, "0.7", "0.4")
-add_data_dir( 48, 2, 2, "0.7", "0.4")
-#add_data_dir( 42, 5, 1, "0.7", "0.4")
-#add_data_dir( 58, 5, 5, "0.7", "0.4")
-#add_data_dir( 55, 7, 1, "0.7", "0.4")
-#add_data_dir( 45, 10, 10, "0.7", "0.4")
-
-#add_data_dir( 31, 0, 0, "0", "0.4")
-#add_data_dir( 28, 0, 0, "0.7", "0.4")
-#add_data_dir( 29, 0, 0, "0.99", "0.4")
-
-#add_data_dir( 46, 2, 2, "0", "0.4")
-
-#add_data_dir( 32, 1, 1, "0", "0.4")
-#add_data_dir( 37, 1, 1, "0.99", "0.4")
-
-#add_data_dir( 46, 2, 2, "0", "0.4")
-#add_data_dir( 48, 2, 2, "0.7", "0.4")
-#add_data_dir( 47, 2, 2, "0.99", "0.4")
-
-#add_data_dir( 50, 2, -2, "0.99", "0.4")
-#add_data_dir( 49, 1, -1, "0.99", "0.4")
-
-#add_data_dir( 81, 1, 1, "0.7", "0.4", "0.5")
+add_data_dir(1, 1, 1, "0.7", "0.4", 32, 32, "_theta_max0.98")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -158,9 +135,9 @@ def load_flux_data():
 	data = {}
 	ang_flux_data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + dd.name + "_J_rKS_linear_n000000_nphi{:d}_ntheta{:d}{:s}.dat".format(dd.nphi, dd.ntheta, dd.suffix)
+		file_name = home_path + output_dir + "/" + dd.name + "_J_R_linear_n000000_nphi{:d}_ntheta{:d}{:s}.dat".format(dd.nphi, dd.ntheta, dd.suffix)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
-		#file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_rKS_linear_n000000.dat"
+		#file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_R_linear_n000000.dat"
 		#ang_flux_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded flux data for " + dd.name)
 	return data 	
