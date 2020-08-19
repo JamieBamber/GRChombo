@@ -15,6 +15,7 @@ template <class data_t> struct P_lm
 };
 
 // calculate the associated legendre polynomials with coefficients suitable for the spherical harmonics
+// normalised to integrate over a sphere to 4 PI
 // c = cos(theta)
 // s = sin(theta) 
 template <class data_t> 
