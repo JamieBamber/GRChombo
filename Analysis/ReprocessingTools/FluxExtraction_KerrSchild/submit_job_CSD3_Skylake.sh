@@ -10,7 +10,7 @@ lin_or_log=1 # note 0 = log, 1 = linear
 
 nphi=64
 ntheta=64
-theta_max=0.98
+theta_max=1.0
 max_radius=500
 plot_interval=1
 

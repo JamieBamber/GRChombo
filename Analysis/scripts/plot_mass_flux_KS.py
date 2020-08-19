@@ -103,7 +103,7 @@ def time_average(x, n):
 #add_data_dir(108, 1, 1, "0", "0.4", 32, 32, "_theta_max0.98")
 #add_data_dir(109, 2, 2, "0.7", "0.8", 32, 32, "_theta_max0.98")
 #add_data_dir(110, 0, 0, "0.0", "0.4", 32, 32, "_theta_max0.98")
-add_data_dir(111, 0, 0, "0.0", "0.05", 64, 64, "_theta_max0.98")
+add_data_dir(111, 0, 0, "0.0", "0.05", 64, 64, "_theta_max1.0")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -131,7 +131,7 @@ def load_flux_data():
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		#file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_rKS_linear_n000000.dat"
 		#ang_flux_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
-		print("loaded flux data for " + dd.name)
+		print("loaded flux data for " + file_name)
 	return data 	
 
 def load_mass_data():
@@ -171,7 +171,7 @@ def plot_graph():
 			dt = tflux[2] - tflux[1]
 			inner_mass_flux = np.cumsum(inner_mass_flux)*dt
 			outer_mass_flux = np.cumsum(outer_mass_flux)*dt
-			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, True)*(4*np.pi)*phi0**2/(E0)*(4*np.pi)
+			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, True)*(4*np.pi)*phi0**2/(E0*mu)
 		elif not cumulative:
 			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, False)*(4*np.pi)*phi0**2/(E0)
 		net_flux = outer_mass_flux - inner_mass_flux
@@ -179,9 +179,9 @@ def plot_graph():
 		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
 		ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into r={:.1f} ".format(r_min)+label_)
 		ax1.plot(tflux,outer_mass_flux,colours[i]+"-.", label="flux into r={:.1f} ".format(r_max)+label_)
-		ax1.plot(tflux,analytic_outer_flux,colours2[i]+"-.", label="4th order t$\\mu$/r analytic flux into r={:.1f} ".format(r_max)+label_+" times 4$\\pi$")
+		ax1.plot(tflux,analytic_outer_flux,colours2[i]+"-.", label="4th order t$\\mu$/r analytic flux into r={:.1f} ".format(r_max)+label_) #+" times 4$\\pi$")
 		ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
-		ax1.plot(tflux,tflux*(r_max-2)*(mu**3)*(4*np.pi)*phi0**2/(E0)*(4*np.pi),color="0.5",linestyle="dashed",label="$t(r_{max}-2)\\mu^3 (4\\pi)^2 \\varphi^2_0$")
+		ax1.plot(tflux,tflux*(r_max-2)*(mu**2)*(4*np.pi)*phi0**2/(E0),color="0.5",linestyle="dashed",label="$t(r_{max}-2)\\mu^2 4\\pi \\varphi^2_0$")
 		#
 		if plot_mass:
 			mass_line_data = mass_data[dd.num]
