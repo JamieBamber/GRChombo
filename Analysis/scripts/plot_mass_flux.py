@@ -21,7 +21,7 @@ class data_dir:
                 self.nphi = nphi
                 self.ntheta = ntheta
                 self.suffix = suffix
-                self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_KerrSchild".format(num, l, m, a, "0", mu)
+                self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, "0", mu)
 
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, nphi, ntheta, suffix=""):
@@ -38,7 +38,11 @@ cos2theta_integrals = [[-(1/3)],[1/5,-(3/5)],[1/21,-(1/7),-(5/7)],\
 [1/357,-(1/119),-(5/119),-(5/51),-(3/17),-(33/119),-(143/357),-(65/119),-(5/7),-(19/21)],\
 [1/437,-(3/437),-(15/437),-(35/437),-(63/437),-(99/437),-(143/437),-(195/437),-(255/437),-(17/23),-(21/23)]]
 
-def analytic_flux(t, r, l, m, a, mu, cumulative):	
+def analytic_flux(t, R, l, m, a, mu, cumulative):	
+	## calculate the Boyer Lindquist r
+	## assume M = 1
+	r_plus = 1 + np.sqrt(1 - a*a)
+	r = R*(1 + r_plus/(4.0*R))**2 
 	## calculate the perturbative flux at large radius to order 
 	cos2theta = cos2theta_integrals[l][int(np.abs(m))]
 	L = l*(l+1)
@@ -125,17 +129,19 @@ half_box = True
 
 KS_or_cartesian_r=True
 phi0 = 0.1
-R_max = 450
+R_min = 5
+R_max = 500
 average_time = False
 av_n = 1
-plot_flux=False
+plot_mass=True
+cumulative=True
 
 def load_flux_data():
 	# load data from csv files
 	data = {}
 	ang_flux_data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + dd.name + "_J_R_linear_n000000_nphi{:d}_ntheta{:d}{:s}.dat".format(dd.nphi, dd.ntheta, dd.suffix)
+		file_name = home_path + output_dir + "/" + dd.name + "_J_R_linear_n000000min_R{:d}_max_R{:d}_nphi{:d}_ntheta{:d}{:s}.dat".format(R_min, R_max, dd.nphi, dd.ntheta, dd.suffix)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		#file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_R_linear_n000000.dat"
 		#ang_flux_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
@@ -147,57 +153,69 @@ def load_mass_data():
 	data = {}
 	print(data_dirs)
 	for dd in data_dirs:
-		file_name = home_path + "data/mass_data/" + "{:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.name, R_max)
-		#file_name = home_path + "data/mass_data" + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, R_max)
+		file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_in_{:d}_to_{:d}.dat".format(dd.name, R_min, R_max)
 		data_line = np.genfromtxt(file_name, skip_header=1)
 		data[dd.num] = data_line
 		print("loaded mass data for " + file_name)
 	return data
 
 def plot_graph():
-	mass_data = load_mass_data()
-	if plot_flux:
-		flux_data = load_flux_data()
-	colours = ['r', 'b', 'g', 'm', 'y', 'c', 'k']
+	flux_data = load_flux_data()
+	if plot_mass:
+		mass_data = load_mass_data()
+	colours = ['r', 'b', 'g', 'm', 'y', 'c']
+	colours2 = ['k', 'm', 'c']
 	i = 0
 	fig, ax1 = plt.subplots()
-	#ax2 = ax1.twinx()	
+	#ax2 = ax1.twinx()      
 	for dd in data_dirs:
-		# plot mass data
+		flux_line_data = flux_data[dd.num]
 		mu = float(dd.mu)
-		E0 = 0.5*(4*np.pi*(R_max**3)/3)*(phi0*mu)**2
-		mass_line_data = mass_data[dd.num]
-		delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
-		tmass = mass_line_data[1:,0]
-		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
-		ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass $R_+<R<$"+str(R_max)+" "+label_)
-		analytic_outer_flux = analytic_flux(tmass, R_max, dd.l, dd.m, dd.a, mu, True)*(2*np.pi)*phi0**2/E0
+		tflux = flux_line_data[1:,0]
+		r_min = flux_line_data[0,1]
+		r_max = flux_line_data[0,2]
+		E0 = 0.5*(4*np.pi*(r_max**3)/3)*(phi0*mu)**2
+		inner_mass_flux = -flux_line_data[1:,1]/E0
+		outer_mass_flux = -flux_line_data[1:,2]/E0
+		if average_time:
+			tflux = time_average(tflux, av_n)
+			inner_mass_flux = time_average(inner_mass_flux, av_n)
+			outer_mass_flux = time_average(outer_mass_flux, av_n)
+		if cumulative:
+			dt = tflux[2] - tflux[1]
+			inner_mass_flux = np.cumsum(inner_mass_flux)*dt
+			outer_mass_flux = np.cumsum(outer_mass_flux)*dt
+			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, True)*(4*np.pi)*phi0**2*2/E0
+		elif not cumulative:
+			analytic_outer_flux = analytic_flux(tflux, r_max, dd.l, dd.m, dd.a, mu, False)*(4*np.pi)*phi0**2*2/E0
+		net_flux = outer_mass_flux - inner_mass_flux
 		#label_ = "$\\mu$={:.2f}".format(mu)
-		ax1.plot(tmass,analytic_outer_flux,colours[i]+"--", label="analytic flux into R={:.1f} ".format(R_max)+label_)
+		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
+		ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
+		ax1.plot(tflux,outer_mass_flux,colours[i]+"-.", label="flux into R={:.1f} ".format(r_max)+label_)
+		ax1.plot(tflux,analytic_outer_flux,colours2[i]+"-.", label="4th order t$\\mu$/r analytic flux into R={:.1f} ".format(r_max)+label_)
+		ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
-		if plot_flux:
-			flux_line_data = flux_data[dd.num]
-			tflux = flux_line_data[1:,0]
-			#r_min = line_data[0,1]
-			outer_mass_flux = -flux_line_data[1:,2]*(4*np.pi)/E0
-			outer_mass_flux = np.cumsum(outer_mass_flux)
-			if average_time:
-				tflux = time_average(t1, av_n)
-				outer_mass_flux = time_average(outer_mass_flux, av_n)
-			ax1.plot(tflux,outer_mass_flux,colours[i]+"-.", label="flux into R={:.1f}".format(R_max)+label_)			
+		if plot_mass:
+			mass_line_data = mass_data[dd.num]
+			delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
+			tmass = mass_line_data[1:,0]
+			ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass {:.1f}$<R<${:.1f} ".format(r_min,r_max)+label_)
 		i = i + 1
 	ax1.set_xlabel("$t$")
-	#ax1.set_xlim((0, 300))
-	#ax1.set_ylim((-0.0005, 0.0015))
-	ax1.set_ylabel("$\\Delta$E / $E_0$")
-	plt.title("Change in mass, $M=1$, $a=0.7$, $\\mu=0.4$")
-	save_path = home_path + "plots/mass_in_R={:d}_vs_analytic_flux_compare_lm.png".format(R_max)
-	#
+	if cumulative:
+		ax1.set_ylabel("cumulative flux / $E_0$")
+		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $\\mu=0.4$")
+		save_path = home_path + "plots/mass_in_R={:d}_vs_analytic_flux_IsoKerr_run0001.png".format(R_max)
+	else:
+		ax1.set_ylabel("flux / $E_0$")
+		plt.title("Mass flux, $M=1$, $\\mu=0.4$ $n_{\\phi}=$"+str(dd.nphi)+" $n_{\\theta}=$"+str(dd.ntheta))
+		save_path = home_path + "plots/mass_flux_Kerr_Schild_nphi{:d}_ntheta{:d}{:s}.png".format(dd.nphi, dd.ntheta, dd.suffix)
 	ax1.legend(loc='upper left', fontsize=8)
 	plt.tight_layout()
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
 	plt.clf()
-
+	
 plot_graph()
 

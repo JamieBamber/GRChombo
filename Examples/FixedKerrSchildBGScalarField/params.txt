@@ -9,7 +9,7 @@ plot_prefix = DATADIR/KerrSFp_
 # NB - the N values need to be multiples of block_factor
 N1 = 128
 N2 = 128
-N3 = 64
+N3 = 128
 
 num_plot_vars = 9
 plot_vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
@@ -17,7 +17,7 @@ plot_vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
 # Length of longest box side, dx_coarsest = L/N(max)
 # NB if non cubic, this determines dx for all sides
 L =  1024
-center = 512.0 512.0 0.0
+center = 512.0 512.0 512.0
 # symmetry_dir = 0 0 1
 # this tells it which axes are symmetric
 

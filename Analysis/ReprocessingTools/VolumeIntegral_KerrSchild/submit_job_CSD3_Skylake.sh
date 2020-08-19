@@ -6,7 +6,7 @@ work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/VolumeIntegral_KerrS
 
 start_number=0
 end_number=2000
-plot_interval=10
+plot_interval=1
 max_radius=500
 
 subdirs=(
@@ -36,14 +36,15 @@ for subdir in "${subdirs[@]}"; do
 	# suffix
 	suffix=_in_${min_radius}_to_${max_radius}
 	#_in_r${min_radius}_to_${max_radius}
-	dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
+	#dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
+	dt_mult=0.4
 	echo "dt_multiplier = " ${dt_mult}
 
 	name=${subdir}_mass_ang_mom_integral_r_between_${min_radius}_${max_radius}
 	echo ${name} "volume integral"
 	new_dir_path=outputs/${name}
 	#
-	#mkdir -p ${new_dir_path}
+	mkdir -p ${new_dir_path}
 	
 	cp slurm_submit_Skylake ${new_dir_path}/slurm_submit
 	cp params.txt ${new_dir_path}/params.txt

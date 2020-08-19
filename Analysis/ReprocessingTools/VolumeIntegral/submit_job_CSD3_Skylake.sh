@@ -22,8 +22,9 @@ subdirs=(
 ## loop over subdirs
 for subdir in "${subdirs[@]}"; do
 	bh_spin=$(echo $subdir | sed -e 's/.*_a\(.*\)_Al.*/\1/')
-	bh_mass=$(echo $subdir | sed -e 's/.*_M\(.*\)_Kerr.*/\1/')
+	bh_mass=$(echo $subdir | sed -e 's/.*_M\(.*\)_Iso.*/\1/')
 	mu=$(echo $subdir | sed -e 's/.*_mu\(.*\)_M.*/\1/')
+	echo "bh_mass = " ${bh_mass}
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	#min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)

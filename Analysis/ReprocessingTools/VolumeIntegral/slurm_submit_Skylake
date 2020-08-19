@@ -10,7 +10,7 @@
 
 #! sbatch directives begin here ###############################
 #! Name of the job:
-#SBATCH -J VolInt_KS
+#SBATCH -J VolInt
 #! Which project should be charged:
 #SBATCH -A DIRAC-DP131-CPU
 #! How many whole nodes should be allocated?

@@ -35,6 +35,7 @@ class ScalarRotatingCloud
 	int l; //!< axial number
 	int m; //!< azimuthal number
 	double alignment; //!< angle between Kerr BH spin and cloud spin in units of PI
+	double phase; //!< phase shift in units of PI
     };
 
     //! The constructor for the class
@@ -109,16 +110,16 @@ class ScalarRotatingCloud
 	// r dependence of phi
 	data_t r_function = m_params.amplitude; 
 	//angular dependence of phi
-	data_t angular_function = sin(m_params.m * azimuth_prime) * g_function;
+	data_t angular_function = cos(m_params.m * azimuth_prime + M_PI * m_params.phase) * g_function;
         // set the field vars 
 	// phi
         vars.phi = r_function * angular_function;
 	
 	// dphi
-	data_t dphidt = - r_function * g_function * m_params.omega*cos(m_params.m*azimuth_prime);
+	data_t dphidt = r_function * g_function * m_params.omega*sin(m_params.m*azimuth_prime+ M_PI * m_params.phase);
 	//!< derivative of phi w.r.t the azimuthal angle and theta
-	data_t dphid_azimuth_prime = r_function * g_function * m_params.m*cos(m_params.m*azimuth_prime);
- 	data_t dphid_theta_prime = r_function * g_function_prime * sin(m_params.m*azimuth_prime);
+	data_t dphid_azimuth_prime = - r_function * g_function * m_params.m*sin(m_params.m*azimuth_prime + M_PI * m_params.phase);
+ 	data_t dphid_theta_prime = r_function * g_function_prime * cos(m_params.m*azimuth_prime + M_PI * m_params.phase);
 	
 	// shift 
 	data_t Sigma = r2 + a2*cos_theta*cos_theta;

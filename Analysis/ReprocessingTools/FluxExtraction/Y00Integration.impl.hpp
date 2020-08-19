@@ -137,8 +137,8 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
 		    // factor of dOmega
                     double dS = sin(theta)*r*r;
 		    double f_theta_phi_re = integrand_re * dS;
-		    // note the normalisation by dividing by 2 pi here
-                    inner_integral_re += m_dtheta * f_theta_phi_re / (2 * M_PI);
+		    // account for the half box by multiplying by 2 here and divide through by theta range
+                    inner_integral_re += m_dtheta * f_theta_phi_re / ((m_params.theta_max - m_params.theta_min) * 0.5);
 		}
 		#ifdef _OPENMP
 			#pragma omp atomic

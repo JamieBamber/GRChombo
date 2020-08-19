@@ -86,6 +86,7 @@ scalar_omega = MUVAL
 scalar_l = SCALARL
 scalar_m = SCALARM
 alignment = ALANGLE
+phase = 0
 
 # BH initial data
 bh_mass = 1

@@ -6,12 +6,12 @@ N2 = 128
 N3 = 64
 L = 1024
 max_level = 7 # There are (max_level+1) grids, so min is zero
-dt_multiplier = 0.06250
+dt_multiplier = 0.4
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
-data_subdir = run0001_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr
-bh_spin = 0.7
+data_subdir = run0111_l0_m0_a0.0_Al0_mu0.05_M1_KerrSchild
+bh_spin = 0.0
 bh_mass = 1
 
 # output directory 
@@ -22,17 +22,17 @@ output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/flux_data/
 chk_prefix = KerrSF_
 plot_prefix = KerrSFp_
 # restart_file = KerrSFp_000000.3d.hdf5
-plot_interval = 10
+plot_interval = 1
 start_number = 0
 end_number = 2000
-suffix = min_R5_max_R500_nphi32_ntheta32_theta_max0.98
+suffix = min_r5_max_r500_nphi64_ntheta64_theta_max0.98
 
 # integration parameters
 num_vars = 1
-# vars = phi Pi chi rho rho_azimuth J_R J_azimuth_R
+# vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
 var_indices = 5 6
-num_points_phi = 32
-num_points_theta = 32
+num_points_phi = 64
+num_points_theta = 64
 theta_min = 0
 theta_max = 0.98
 integration_center = 512.0 512.0 0.0

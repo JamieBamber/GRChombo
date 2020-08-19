@@ -82,17 +82,17 @@ class ScalarRotatingCloud
 	// r dependence of phi
 	data_t r_function = m_params.amplitude; 
 	//angular dependence of phi
-	data_t angular_function = sin(m_params.m * azimuth_prime + M_PI*m_params.phase) * g_function;
+	data_t angular_function = cos(m_params.m * azimuth_prime + M_PI*m_params.phase) * g_function;
         // set the field vars 
 	// phi
         vars.phi = r_function * angular_function;
 	
 	// dphi
-	data_t dphidt = - r_function * g_function *m_params.omega*cos(m_params.m*azimuth_prime + M_PI*m_params.phase);
+	data_t dphidt = r_function * g_function *m_params.omega*sin(m_params.m*azimuth_prime + M_PI*m_params.phase);
 	//!< derivative of phi w.r.t the cloud azimuthal angle
-	data_t dphid_azimuth_prime = r_function * g_function *m_params.m*cos(m_params.m*azimuth_prime + M_PI*m_params.phase);
+	data_t dphid_azimuth_prime = - r_function * g_function *m_params.m*sin(m_params.m*azimuth_prime + M_PI*m_params.phase);
 	//!< derivative of phi w.r.t the cloud theta angle
- 	data_t dphid_theta_prime = r_function * g_function_prime * sin(m_params.m*azimuth_prime + M_PI*m_params.phase);
+ 	data_t dphid_theta_prime = r_function * g_function_prime * cos(m_params.m*azimuth_prime + M_PI*m_params.phase);
 
 	data_t dphid_azimuth = - sin_alignment * (x / rho_prime) * dphid_theta_prime + (rho2 * cos_alignment - y*z*sin_alignment)*dphid_azimuth_prime/rho_prime2;
 	

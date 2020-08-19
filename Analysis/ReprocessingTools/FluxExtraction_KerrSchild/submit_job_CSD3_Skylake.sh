@@ -8,10 +8,11 @@ start_number=0
 end_number=2000
 lin_or_log=1 # note 0 = log, 1 = linear
 
-nphi=32
-ntheta=32
+nphi=64
+ntheta=64
 theta_max=0.98
 max_radius=500
+plot_interval=1
 
 subdirs=(
 	run0111_l0_m0_a0.0_Al0_mu0.05_M1_KerrSchild
@@ -46,8 +47,9 @@ for subdir in "${subdirs[@]}"; do
 	
 	suffix=min_r${min_radius}_max_r${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
 
-	dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
-        echo "dt_multiplier = " ${dt_mult}
+	#dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
+        dt_mult=0.4
+	echo "dt_multiplier = " ${dt_mult}
 
 	name=${subdir}_var${var_index}_flux${suffix}
 	echo ${name} "flux extraction"
@@ -68,6 +70,7 @@ for subdir in "${subdirs[@]}"; do
 	sed -i "s|ENUMBER|${end_number}|" params.txt
 	sed -i "s|VARINDEX|${var_index}|" params.txt
 	sed -i "s|LINLOG|${lin_or_log}|" params.txt
+	sed -i "s|PLOTINTERVAL|${plot_interval}|" params.txt
 	sed -i "s|MINRADIUS|${min_radius}|" params.txt
 	sed -i "s|MAXRADIUS|${max_radius}|" params.txt
 	sed -i "s|NPHI|${nphi}|" params.txt

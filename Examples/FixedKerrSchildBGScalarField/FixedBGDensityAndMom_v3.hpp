@@ -82,12 +82,13 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         FOR1(k){ rho += -metric_vars.shift[k]*emtensor.Si[k];   }
         rho = rho*sqrt(det_gamma);
 
-	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] - for the cartesian coordinates
+	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] - beta^i rho   for the cartesian coordinates
         Tensor<1, data_t> Sbeta; 
         FOR2(i, j){ Sbeta[i] += metric_vars.shift[j]*emtensor.Sij[i][j]; }                      
         Tensor<1, data_t> J; 
         FOR2(i, j){ J[i] += sqrt(det_gamma)*metric_vars.lapse*( gamma_UU[i][j]*(metric_vars.lapse*emtensor.Si[j] - Sbeta[j]) ); }
-	
+	FOR1(i) { J[i] += - metric_vars.shift[i] * rho; }	
+
         // conserved rho_azimuth = |gamma|(x * S_y - y * S_z)
         data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma);
 
