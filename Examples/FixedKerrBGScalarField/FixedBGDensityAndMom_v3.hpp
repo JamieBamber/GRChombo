@@ -97,16 +97,17 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         NRi[1] = y/R;
         NRi[2] = z/R;
 
-	Tensor<1, data_t> J_azimuth_co;
-        FOR2(i, j) { J_azimuth_co[i] += sqrt(det_gamma) * metric_vars.lapse * emtensor.Sij[i][j]*dxdaz[j]; }	
-	Tensor<1, data_t> J_azimuth;
-	FOR2(i, j) { J_azimuth[i] += (gamma_UU[i][j] - metric_vars.shift[i]*metric_vars.shift[j]/(metric_vars.lapse*metric_vars.lapse))*J_azimuth_co[j]; }
+	Tensor<1, data_t> Siaz;
+        FOR2(i,j) { Siaz[i] += emtensor.Sij[i][j]*dxdaz[j]; }
+        Tensor<1, data_t> J_azimuth;
+        FOR2(i, j) { J_azimuth[i] += sqrt(det_gamma)*metric_vars.lapse*gamma_UU[i][j]*Siaz[j]; } 
+        FOR1(i) { J_azimuth[i] += - metric_vars.shift[i] * rho_azimuth; } 
 
 	// cartesian projection of the 3-current momentum vectors in the R unit direction
 	data_t J_R = 0;
 	FOR1(j) { J_R += NRi[j]*J[j]; }
 	data_t J_azimuth_R = 0;
-        FOR1(i) { J_azimuth_R += J_azimuth_co[i] * NRi[i]; }
+        FOR1(i) { J_azimuth_R += J_azimuth[i] * NRi[i]; }
 
         // assign values of density in output box
         current_cell.store_vars(rho, c_rho);

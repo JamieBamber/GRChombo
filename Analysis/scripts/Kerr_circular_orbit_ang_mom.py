@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 # the particle J / mass for a circular orbit in the z = 0 plane
 def particle_Lz(q, a):
-	result = np.sqrt((q**2 + a**2 - 2*a*np.sqrt(q))/(q*(q**2 - 3*q + 2*a*np.sqrt(q))))
+	result = (q**2 + a**2 - 2*a*np.sqrt(q))/np.sqrt(q*(q**2 - 3*q + 2*a*np.sqrt(q)))
 	return result
 
 """ estimate expected initial angular momentum per unit mass
@@ -17,14 +17,14 @@ Take J_phi  = sqrt(g)*T^0_phi
 """
 # the field J / mass we expect for a field Phi = e^-i[mu]t Yml(theta, phi)
 def field_Lz(q, Mmu, a, m):
-	numerator = 2*m*( Mmu*((a**2)*(q + 2) + q**3) - 2*a*m)
-	denominator = 2*(Mmu**2)*((a**2)*(q+1) + (q-1)*q**2) + (m**2)*(q-2)
+	numerator = 2*m*(2*a*(a*Mmu-m)+ Mmu*q*(a**2 + q**2))
+	denominator = 2*Mmu**2*((a**2 - q**2) + q*(a**2+q**2))+m**2*(q-2)   
 	result = numerator / denominator
 	return result
 
 a = 0.7
 r_plus = 1 + np.sqrt(1 - a**2)
-Mmu_list = [0.05, 0.4, 1, 2]
+Mmu_list = [0.2, 0.4, 0.8, 1.6]
 colours = ['b--', 'g--', 'c--', 'm--']
 q0 = np.linspace(r_plus, 15, 256)
 L = particle_Lz(q0, a)

@@ -5,33 +5,39 @@
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction_KerrSchild
 
 start_number=0
-end_number=2000
+end_number=20000
 lin_or_log=1 # note 0 = log, 1 = linear
 
 nphi=64
 ntheta=64
-theta_max=1.0
+theta_max=0.99
 max_radius=500
-plot_interval=1
+plot_interval=5
+var_index=6
 
 subdirs=(
-	run0111_l0_m0_a0.0_Al0_mu0.05_M1_KerrSchild
+	run0104_l1_m1_a0.0_Al0_mu0.4_M1_KerrSchild
 )
 
-#	run0101_KNL_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0102_KNL_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0103_KNL_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0104_KNL_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0105_KNL_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
-#	run0106_KNL_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
-#	run0107_KNL_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
-#	run0108_KNL_l1_m1_a0_Al0_mu0.4_M1_KerrSchild
-#	run0109_KNL_l4_m4_a0.7_Al0_mu1.6_M1_KerrSchild
-#	run0110_KNL_l1_m1_a0.7_Al0_mu0.1_M1_KerrSchild
-#	run0111_KNL_l1_m1_a0.7_Al0_mu0.8_M1_KerrSchild
-#	run0111_KNL_l1_m1_a0.7_Al0_mu1.6_M1_KerrSchild
-#	run0112_KNL_l1_m1_a0.7_Al0.5_mu0.4_M1_KerrSchild
-#	run0113_KNL_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
+#run0101_l0_m0_a0.0_Al0_mu0.4_M1_KerrSchild
+#run0102_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
+#run0103_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
+#run0104_l1_m1_a0.0_Al0_mu0.4_M1_KerrSchild
+#run0105_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
+#run0106_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
+#run0107_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
+#run0108_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
+#run0109_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
+#run0110_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
+#run0111_l0_m0_a0.0_Al0_mu0.05_M1_KerrSchild
+#run0112_l1_m1_a0.7_Al0_mu0.2_M1_KerrSchild
+#run0113_l1_m1_a0.7_Al0_mu0.8_M1_KerrSchild
+#run0114_l1_m1_a0.7_Al0_mu0.1_M1_KerrSchild
+#run0115_l8_m8_a0.7_Al0_mu3.2_M1_KerrSchild
+#run0116_l1_m1_a0.7_Al0.5_mu0.4_M1_KerrSchild
+#run0117_l1_m-1_a0.99_Al0_mu0.4_M1_KerrSchild
+#run0118_l1_m1_a0.99_Al0.5_mu0.4_M1_KerrSchild
+#run0119_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
 
 ## loop over subdirs
 for subdir in "${subdirs[@]}"; do
@@ -40,15 +46,16 @@ for subdir in "${subdirs[@]}"; do
 	mu=$(echo $subdir | sed -e 's/.*_mu\(.*\)_M.*/\1/')
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
-	#min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
-	min_radius=5
+	min_radius=$(echo "scale=5; 1.00 + sqrt(1 - ${bh_spin} * ${bh_spin})" | bc)
+	#min_radius=5
 	echo "mu = " ${mu}
 	echo "min_radius = " ${min_radius}
 	
-	suffix=min_r${min_radius}_max_r${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
+	suffix=_r_plus_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
+	#suffix=_${min_radius}_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
 
-	#dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
-        dt_mult=0.4
+	dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
+        #dt_mult=0.4
 	echo "dt_multiplier = " ${dt_mult}
 
 	name=${subdir}_var${var_index}_flux${suffix}
