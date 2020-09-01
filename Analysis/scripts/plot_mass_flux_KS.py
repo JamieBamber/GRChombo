@@ -205,7 +205,7 @@ def plot_graph():
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux")
 		save_path = home_path + "plots/mass_flux_Kerr_Schild_compare_lm_r_plus_to_500.png"
-	ax1.legend(loc='best', fontsize=7)
+	ax1.legend(loc='lower left', bbox_to_anchor=(0.0,0.2), fontsize=7)
 	plt.tight_layout()
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
