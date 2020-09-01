@@ -132,7 +132,7 @@ R_min = 5
 R_max = 500
 average_time = False
 av_n = 1
-plot_mass=False
+plot_mass=True
 cumulative=True
 
 def load_flux_data():
@@ -209,7 +209,7 @@ def plot_graph():
 			mass_line_data = mass_data[dd.num]
 			delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
 			tmass = mass_line_data[1:,0]
-			ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass {:.1f}$<R<${:.1f} ".format(r_min,r_max)+label_)
+			ax1.plot(tmass,delta_mass/E0,colours[i]+"-.", label="_change in mass {:.1f}$<R<${:.1f} ".format(r_min,r_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$t$")
 	if cumulative:
