@@ -32,6 +32,7 @@ struct integration_params_t
     int num_vars; // number of variables to integrate
     std::vector<int> var_indices; // index of the variable to integrate in the array of User Variables
     double bh_a;	// dimensionfull BH spin = J/M
+    double bh_mass;	// dimensionfull BH spin = J/M
     bool linear_or_log;
     std::string suffix = "";
     std::string output_rootdir;
@@ -75,10 +76,10 @@ class SimulationParameters : public ChomboParameters
                 {0.5 * L, 0.5 * L, 0});
 
 	// BH parameters
-	double bh_spin, bh_mass;
+	double bh_spin;
         pp.load("bh_spin", bh_spin);
-        pp.load("bh_mass", bh_mass);
-        integration_params.bh_a = bh_mass * bh_spin;
+        pp.load("bh_mass", integration_params.bh_mass);
+        integration_params.bh_a = integration_params.bh_mass * bh_spin;
 
 	// radii parameters
         pp.load("num_integration_radii", integration_params.num_integration_radii,

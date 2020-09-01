@@ -59,8 +59,8 @@ class ReprocessingLevel : public GRAMRLevel
 	    std::string J_filename = m_p.output_rootdir + m_p.data_subdir + "_ang_mom" + m_p.suffix;
             
 	    // write out the integrals
-	    write_integral(2*rho_sum, mass_filename, m_first_step);
-	    write_integral(2*rho_J_sum, J_filename, m_first_step);
+	    write_integral((1+m_p.half_box)*rho_sum, mass_filename, m_first_step);
+	    write_integral((1+m_p.half_box)*rho_J_sum, J_filename, m_first_step);
         }		
 
     }

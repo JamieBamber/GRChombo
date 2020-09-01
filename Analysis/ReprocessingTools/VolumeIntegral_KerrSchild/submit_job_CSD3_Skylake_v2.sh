@@ -104,7 +104,7 @@ do
 	sed -i "s|PLOTINTERVAL|${plot_interval}|" params.txt
 	sed -i "s|MINRADIUS|${min_radius}|" params.txt
 	sed -i "s|MAXRADIUS|${max_radius}|" params.txt
-	sed -i "s|SUFFIX|${suffix}|" params.txt
+	sed -i "s|SFIX|${suffix}|" params.txt
 	sbatch slurm_submit
 	#
 	cd ${work_dir}

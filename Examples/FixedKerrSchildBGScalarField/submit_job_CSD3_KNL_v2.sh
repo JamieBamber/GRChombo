@@ -39,21 +39,7 @@ run0118=(1 1 0.99 0.5 0.4 0.0625)
 
 # specify runs to submit
 run_list=(
-       run0104
        run0105
-       run0106
-       run0107
-       run0108
-       run0109
-       run0110
-       run0112
-       run0113
-       run0114
-       run0115
-       run0116
-       run0117 
-       run0118
-       run0119
 )
 
 #	run0101

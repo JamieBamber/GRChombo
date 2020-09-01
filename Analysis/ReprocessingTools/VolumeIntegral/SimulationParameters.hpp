@@ -53,6 +53,7 @@ class SimulationParameters : public ChomboParameters
 	// integration parameters
 	pp.load("integration_center", integration_params.integration_center,
                 {0.5 * L, 0.5 * L, 0});
+	pp.load("half_box", half_box);
 
 	// BH parameters
 	double bh_spin, bh_mass;
@@ -69,6 +70,8 @@ class SimulationParameters : public ChomboParameters
                              integration_params.integration_levels.end());
         integration_params.min_integration_level = *(min_integration_level_it);
     }
+
+    bool half_box; // are we using a half box ?
 
     int start_number, end_number, input_plot_interval;
     std::array<double, CH_SPACEDIM> origin,

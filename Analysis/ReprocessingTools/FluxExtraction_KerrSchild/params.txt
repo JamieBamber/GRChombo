@@ -3,7 +3,7 @@
 #Params for runtime inputs
 N1 = 128
 N2 = 128
-N3 = 64
+N3 = NSPACE3
 L = 1024
 max_level = 7 # There are (max_level+1) grids, so min is zero
 dt_multiplier = DTMULT
@@ -35,8 +35,8 @@ num_points_phi = NPHI
 num_points_theta = NTHETA
 theta_min = 0
 theta_max = THETAMAX
-integration_center = 512.0 512.0 0.0
-center = 512.0 512.0 0.0
+integration_center = 512.0 512.0 CENTERZ
+center = 512.0 512.0 CENTERZ
 
 # radius parameters
 num_integration_radii = 2
@@ -45,7 +45,8 @@ max_integration_radius = MAXRADIUS
 linear_or_log = LINLOG		#!< use linear or log spacing for radii array. Linear = 1, Log = 0 
 
 # From here it is mostly dummy params
-verbosity = 2
+verbosity = 0
+nan_check = 0
 regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
 max_grid_size = 16
 block_factor = 16

@@ -13,31 +13,30 @@ ntheta=64
 theta_max=0.99
 max_radius=500
 plot_interval=5
-var_index=6
+var_index=
 
 subdirs=(
 	run0104_l1_m1_a0.0_Al0_mu0.4_M1_KerrSchild
+	run0101_l0_m0_a0.0_Al0_mu0.4_M1_KerrSchild
+	run0102_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0103_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
+	run0104_l1_m1_a0.0_Al0_mu0.4_M1_KerrSchild
+	run0105_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0106_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
+	run0107_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0108_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0109_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0110_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
+	run0111_l0_m0_a0.0_Al0_mu0.05_M1_KerrSchild
+	run0112_l1_m1_a0.7_Al0_mu0.2_M1_KerrSchild
+	run0113_l1_m1_a0.7_Al0_mu0.8_M1_KerrSchild
+	run0114_l1_m1_a0.7_Al0_mu0.1_M1_KerrSchild
+	run0115_l8_m8_a0.7_Al0_mu3.2_M1_KerrSchild
+	run0116_l1_m1_a0.7_Al0.5_mu0.4_M1_KerrSchild
+	run0117_l1_m-1_a0.99_Al0_mu0.4_M1_KerrSchild
+	run0118_l1_m1_a0.99_Al0.5_mu0.4_M1_KerrSchild
+	run0119_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
 )
-
-#run0101_l0_m0_a0.0_Al0_mu0.4_M1_KerrSchild
-#run0102_l0_m0_a0.7_Al0_mu0.4_M1_KerrSchild
-#run0103_l0_m0_a0.99_Al0_mu0.4_M1_KerrSchild
-#run0104_l1_m1_a0.0_Al0_mu0.4_M1_KerrSchild
-#run0105_l1_m1_a0.7_Al0_mu0.4_M1_KerrSchild
-#run0106_l1_m1_a0.99_Al0_mu0.4_M1_KerrSchild
-#run0107_l2_m2_a0.7_Al0_mu0.4_M1_KerrSchild
-#run0108_l4_m4_a0.7_Al0_mu0.4_M1_KerrSchild
-#run0109_l1_m-1_a0.7_Al0_mu0.4_M1_KerrSchild
-#run0110_l8_m8_a0.7_Al0_mu0.4_M1_KerrSchild
-#run0111_l0_m0_a0.0_Al0_mu0.05_M1_KerrSchild
-#run0112_l1_m1_a0.7_Al0_mu0.2_M1_KerrSchild
-#run0113_l1_m1_a0.7_Al0_mu0.8_M1_KerrSchild
-#run0114_l1_m1_a0.7_Al0_mu0.1_M1_KerrSchild
-#run0115_l8_m8_a0.7_Al0_mu3.2_M1_KerrSchild
-#run0116_l1_m1_a0.7_Al0.5_mu0.4_M1_KerrSchild
-#run0117_l1_m-1_a0.99_Al0_mu0.4_M1_KerrSchild
-#run0118_l1_m1_a0.99_Al0.5_mu0.4_M1_KerrSchild
-#run0119_l2_m2_a0.7_Al0_mu0.8_M1_KerrSchild
 
 ## loop over subdirs
 for subdir in "${subdirs[@]}"; do

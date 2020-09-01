@@ -123,6 +123,7 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
      	iradius++)
         {
 	    double a = m_params.bh_a;
+	    double M = m_params.bh_mass;
 	    double r = m_params.integration_radii[iradius];
 	    for (int iphi = 0; iphi < m_params.num_points_phi; ++iphi)
             {
@@ -137,6 +138,11 @@ Y00Integration::integrate_surface(const std::vector<double> a_re_part) const
                     double integrand_re = a_re_part[idx];
 		    // factor of dOmega
 		    double dS = sqrt((1 + (a/r)*(a/r))*(1 + pow(a*cos(theta)/r,2))) * sin(theta) * r * r;
+		    // --- convert to Katy's normalisation
+		    /*	double Delta = a*a + r*r - 2*M*r;
+			double A = pow(a*a+r*r,2)-Delta*(a*sin(theta))*(a*sin(theta));
+			double norm_factor = A/(A - 4*M*M*r*r);*/
+		    // ---
                     // double dS = sin(theta)*r*r;
 		    double f_theta_phi_re = integrand_re * dS;
 		    // account for the half box by multiplying by 2 here and divide through by theta range

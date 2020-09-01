@@ -2,7 +2,7 @@
 #
 # this copy is for the Skylake nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction_KerrSchild
+work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction
 
 start_number=0
 end_number=20000
@@ -54,9 +54,15 @@ run_list=(
        run0106
        run0107
        run0108
-       run0109
        run0110
        run0112
+       run0113
+       run0114
+       run0115
+       run0116
+       run0117
+       run0118
+       run0119
 )
 
 ## loop over subdirs
@@ -99,6 +105,7 @@ do
 	
 	cd ${new_dir_path}
 	# add the location of the new directory to the params file
+	sed -i "s|JOBNAME|${run}FE|" slurm_submit
 	sed -i "s|DTMULT|${dt_mult}|" params.txt
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
@@ -113,7 +120,21 @@ do
 	sed -i "s|NPHI|${nphi}|" params.txt
 	sed -i "s|NTHETA|${ntheta}|" params.txt
 	sed -i "s|SUFFIX|${suffix}|" params.txt
-	sed -i "s|THETAMAX|${theta_max}|" params.txt
+
+	# half box or full box?
+        if (( $(echo "$Al > 0.0" |bc -l) )); then
+                echo "Al = $Al so full box"
+                sed -i "s|NSPACE3|128|" params.txt
+                sed -i "s|CENTERZ|512.0|" params.txt
+                sed -i "s|ZBOUND|3|" params.txt
+		sed -i "s|THETAMAX|2.0|" params.txt
+        else
+            	echo "Al = $Al so half box"
+                sed -i "s|NSPACE3|64|" params.txt
+                sed -i "s|CENTERZ|0.0|" params.txt
+                sed -i "s|ZBOUND|2|" params.txt
+		sed -i "s|THETAMAX|${theta_max}|" params.txt
+        fi
 	sbatch slurm_submit
 	#
 	cd ${work_dir}
