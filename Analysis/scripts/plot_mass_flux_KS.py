@@ -116,7 +116,7 @@ r_min = 5
 r_max = 500
 average_time = False
 av_n = 1
-cumulative=False
+cumulative=True
 plot_mass=True
 
 def load_flux_data():
@@ -182,16 +182,17 @@ def plot_graph():
 		if plot_mass:
 			mass_line_data = mass_data[dd.num]
 			#print(mass_line_data[0:,1])
-			delta_mass = (mass_line_data[1:,1] - mass_line_data[0,1])/E0
-			tmass = mass_line_data[1:,0]
 			#ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass {:.1f}$<r<${:.1f} ".format(r_min,r_max)+label_)
 			if cumulative:
+				tmass = mass_line_data[1:,0]
+				delta_mass = (mass_line_data[1:,1] - mass_line_data[0,1])/E0
 				ax1.plot(tmass,delta_mass,colours[i]+"-", label="change in mass $r_+<r<${:.1f} ".format(r_max)+label_)
 			elif not cumulative:
+				tmass = mass_line_data[:-1,0]
 				dt = tmass[1] - tmass[0]
 				tmass_mean = 0.5*(tmass[1:]+tmass[:-1])
-				dmass_dt = (delta_mass[1:] - delta_mass[0:-1])/dt
-				ax1.plot(tmass_mean,dmass_dt,colours[i]+"-", label="rate of change in mass $r_+<r<${:.1f} ".format(r_max)+label_)
+				dmass_dt = (mass_line_data[1:,1] - mass_line_data[:-1,1])/(E0*dt)
+				ax1.plot(tmass,dmass_dt,colours[i]+"-", label="rate of change in mass $r_+<r<${:.1f} ".format(r_max)+label_)
 		i = i + 1
 	ax1.set_xlabel("$t$")
 	#ax1.set_xlim((0, 300))
@@ -201,11 +202,12 @@ def plot_graph():
 		ax1.set_ylabel("cumulative flux / $E_0$")
 		plt.title("Cumulative mass flux")
 		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative_compare_lm_r_plus_to_500.png"
+		ax1.legend(loc='best', fontsize=7)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux")
 		save_path = home_path + "plots/mass_flux_Kerr_Schild_compare_lm_r_plus_to_500.png"
-	ax1.legend(loc='lower left', bbox_to_anchor=(0.0,0.2), fontsize=7)
+		ax1.legend(loc='lower left', bbox_to_anchor=(0.0,0.2), fontsize=7)
 	plt.tight_layout()
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
