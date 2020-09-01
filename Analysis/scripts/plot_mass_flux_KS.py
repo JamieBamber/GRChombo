@@ -116,7 +116,7 @@ r_min = 5
 r_max = 500
 average_time = False
 av_n = 1
-cumulative=True
+cumulative=False
 plot_mass=True
 
 def load_flux_data():
@@ -200,12 +200,12 @@ def plot_graph():
 	dd0 = data_dirs[0]
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$")
-		plt.title("Cumulative mass flux")
+		plt.title("Cumulative mass flux $a=0.7$, $\\mu=0.4$, $M=1$")
 		save_path = home_path + "plots/mass_flux_Kerr_Schild_cumulative_compare_lm_r_plus_to_500.png"
 		ax1.legend(loc='best', fontsize=7)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
-		plt.title("Mass flux")
+		plt.title("Mass flux $a=0.7$, $\\mu=0.4$, $M=1$")
 		save_path = home_path + "plots/mass_flux_Kerr_Schild_compare_lm_r_plus_to_500.png"
 		ax1.legend(loc='lower left', bbox_to_anchor=(0.0,0.2), fontsize=7)
 	plt.tight_layout()
