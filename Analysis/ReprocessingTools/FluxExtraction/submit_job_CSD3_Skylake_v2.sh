@@ -46,11 +46,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0003
-	run0004
 	run0012
-	run0017
-	run0018
 )
 
 ## loop over subdirs

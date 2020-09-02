@@ -3,18 +3,18 @@
 #Params for runtime inputs
 N1 = 128
 N2 = 128
-N3 = 64
+N3 = 128
 L = 1024
 max_level = 7 # There are (max_level+1) grids, so min is zero
 dt_multiplier = 0.0625
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
-data_subdir = run0003_l0_m0_a0.99_Al0_mu0.4_M1_IsoKerr
+data_subdir = run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 bh_spin = 0.99
 bh_mass = 1
 
-half_box = 1
+half_box = 0
 
 # output directory 
 output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/mass_data/
@@ -32,8 +32,8 @@ suffix = _in_r_plus_to_500
 # integration parameters
 # num_vars = 2
 # vars = phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
-integration_center = 512.0 512.0 0.0
-center = 512.0 512.0 0.0
+integration_center = 512.0 512.0 512.0
+center = 512.0 512.0 512.0
 
 # radius parameters
 min_integration_radius = 1.14106 #!< r_plus = 1 + sqrt(1 - a**2)

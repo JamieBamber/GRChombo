@@ -27,7 +27,7 @@ plot_prefix = KerrSFp_
 input_plot_interval = 10
 start_number = 0
 end_number = 20000
-suffix = SFIX
+suffix = _in_r_plus_to_500
 
 # integration parameters
 # num_vars = 2

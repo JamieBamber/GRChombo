@@ -55,32 +55,18 @@ def analytic_flux(t, R, l, m, a, mu, cumulative):
 	assuming the spherical harmonics are normalised so that 
 		\int Ylm Ylm^* cos(2 theta) dtheta dphi = 1 
 	# """
-	if (m!=0):
-		if not cumulative:
-			F0=(mu*tau)/2-1/2*mu*np.sin(tau)*np.cos(tau)
-			F1=1/4*(L-1)*mu*np.sin(2*tau)-1/2*mu*tau*(L-2*np.cos(2*tau)+1)
-			F2=1/4*tau*(-3*a**2*mu*cos2theta-7*a**2*mu-12*a*m+3*(1-2*L)*mu*np.cos(2*tau)+7*L*mu)+1/8*np.sin(2*tau)*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m-(L+3)*mu)+3*mu*tau**2*np.sin(tau)*np.cos(tau)
-			F3=1/4*tau*(2*a**2*mu*cos2theta*(5-2*np.cos(2*tau))-mu*(2*a**2*(L-16)+L*(L+4)+20)+np.cos(2*tau)*(-8*a**2*mu-16*a*m+(L*(L+10)-10)*mu)+40*a*m)-1/4*np.sin(2*tau)*(3*a**2*mu*cos2theta+a**2*(-(L-12))*mu+12*a*m+3*(L-5)*mu)-1/6*mu*tau**3*(3*L+7*np.cos(2*tau)-4)+1/4*(1-9*L)*mu*tau**2*np.sin(2*tau)
-			F4=1/24*tau**3*(3*a**2*mu*cos2theta+mu*(9*a**2+L*(3*L+35)-59)+12*a*m+5*(8*L+1)*mu*np.cos(2*tau))-1/16*tau**2*np.sin(2*tau)*(15*a**2*mu*cos2theta+mu*(21*a**2-L*(15*L+41)+52)+60*a*m)+3/8*a**2*np.sin(2*tau)*(a**2*mu*cos2theta+mu*(3*a**2+L-5)+4*a*m)+1/8*tau*(a**2*mu*cos2theta*(-6*a**2+(5*L+9)*np.cos(2*tau)-5*L-9)+np.cos(2*tau)*(mu*(a**2*(3*L+49)-6*L**2+L-35)+4*a*(5*L+9)*m)-4*a*m*(6*a**2+5*L+9)-mu*(18*a**4+a**2*(9*L+19)-6*L**2+L-35))+(mu*tau**5)/24-25/48*mu*tau**4*np.sin(2*tau)
-		elif cumulative:
-			F0=(tau**2)/4-1/4*(np.sin(tau)**2)
-			F1=-1/4*(L+1)*tau**2+1/4*(L-3)*(np.sin(tau)**2)+tau*np.sin(tau)*np.cos(tau)
-			F2=1/8*tau**2*(-3*a**2*cos2theta-7*a**2-12*a*m+7*L-6*np.cos(2*tau))+1/8*(np.sin(tau)**2)*(3*a**2*cos2theta+(7*a**2+5*L-12)+12*a*m)+3/8*(3-2*L)*tau*np.sin(2*tau)
-			F3=-1/8*tau*np.sin(2*tau)*(4*a**2*cos2theta+8*a**2+16*a*m-(L**2+L-2))+1/8*tau**2*(10*a**2*cos2theta-(2*a**2*(L-16)+L*(L+4)+20)+40*a*m+(9*L-8)*np.cos(2*tau))-1/8*(np.sin(tau)**2)*(2*a**2*cos2theta-2*a**2*(L-8)+8*a*m+(L*(L+7)-32))+1/24*(4-3*L)*tau**4-7/6*tau**3*np.sin(tau)*np.cos(tau)
-			F4=1/32*tau*np.sin(2*tau)*(a**2*(10*L+3)*cos2theta+a**2*(6*L+77)+4*a*(10*L+3)*m+3*(L**2+L-34))+1/96*tau**4*(3*a**2*cos2theta+(9*a**2+L*(3*L+35)-59)+12*a*m+25*np.cos(2*tau))+1/32*tau**2*(a**2*(-mu)*cos2theta*(2*(6*a**2+5*L+9)-15*np.cos(2*tau))+np.cos(2*tau)*((21*a**2-L*(15*L+1)+32)+60*a*m)-8*a*m*(6*a**2+5*L+9)-2*(18*a**4+a**2*(9*L+19)-6*L**2+L-35))+1/32*(np.sin(tau)**2)*(36*a**4+48*a**3*m+a**2*(12*a**2-10*L-3)*cos2theta+a**2*(6*L-137)-4*a*(10*L+3)*m-3*(L**2+L-34))+5/6*(2*L-1)*tau**3*np.sin(tau)*np.cos(tau)+(tau**6)/144
-	elif (m==0):
-		if not cumulative:
-			F0=mu*tau*(np.sin(tau)**2)
-			F1=-(L+2)*mu*tau*(np.sin(tau)**2)-mu*tau**2*np.sin(2*tau)
-			F2=-1/2*mu*tau*(np.sin(tau)**2)*(3*a**2*cos2theta+7*a**2-10*L)-6*a**2*mu*np.sin(tau)*(np.cos(tau)-1)+3*(L+1)*mu*tau**2*np.sin(tau)*np.cos(tau)+mu*tau**3*np.cos(2*tau)
-			F3=1/4*mu*tau**2*np.sin(2*tau)*(4*a**2*cos2theta+8*a**2-L*(L+22)+7)-mu*tau*(np.sin(tau/2)**2)*(-10*a**2*cos2theta*(np.cos(tau)+1)+(2*a**2*(L-7)+L*(L+14)+5)*np.cos(tau)+2*a**2*(L-13)+L*(L+14)+5)+9*a**2*mu*(np.sin(2*tau)-2*np.sin(tau))-1/2*mu*tau**3*(3*(L+1)*np.cos(2*tau)+L-1)+7/6*mu*tau**4*np.sin(tau)*np.cos(tau)
-			F4=1/8*mu*tau**3*(a**2*cos2theta*(1-5*np.cos(2*tau))+(-7*a**2+L*(5*L+32)-11)*np.cos(2*tau)+3*a**2+L*(L+12)-15)-1/4*mu*tau**2*np.sin(tau)*(np.cos(tau)*(a**2*(5*L+19)*cos2theta+a**2*(3*L+41)-2*L*(8*L+17)+2)+12*a**2)+6*a**2*mu*(2*a**2+L+3)*(np.sin(tau/2)**2)*np.sin(tau)+1/2*mu*tau*(np.sin(tau/2)**2)*(-18*a**4-2*a**2*(6*a**2+5*L+11)*cos2theta*(np.cos(tau/2)**2)+5*a**2*(L-5)+(-18*a**4+a**2*(17*L+35)+L*(9*L+8)+15)*np.cos(tau)+L*(9*L+8)+15)-5/6*(L+1)*mu*tau**4*np.sin(2*tau)+1/24*tau**5*(mu-5*mu*np.cos(2*tau))
-		elif cumulative:
-			F0=tau**2/4+(np.sin(tau)**2)/4-1/4*tau*np.sin(2*tau)
-			F1=1/4*tau**2*(-L+2*np.cos(2*tau)-2)-1/4*L*(np.sin(tau)**2)+1/4*L*tau*np.sin(2*tau)
-			F2=1/8*tau**2*(-3*a**2*cos2theta-7*a**2-6*L*np.cos(2*tau)+10*L)+1/8*((np.sin(tau/2)**2)*((8*L-62*a**2)*np.cos(tau)+34*a**2+8*L)-3*a**2*cos2theta*(np.sin(tau)**2))+1/8*tau*np.sin(2*tau)*(3*a**2*cos2theta+7*a**2-4*L)+tau**3*np.sin(tau)*np.cos(tau)
-			F3=1/8*tau**2*(2*a**2*cos2theta*(5-2*np.cos(2*tau))+(-8*a**2+L*(L+13)-9)*np.cos(2*tau)-2*a**2*(L-19)-L*(L+14)-5)+tau*(1/8*np.sin(2*tau)*(-6*a**2*cos2theta+2*a**2*(L-3)+L+14)-6*a**2*np.sin(tau))+3/4*a**2*cos2theta*(np.sin(tau)**2)-1/4*(np.sin(tau/2)**2)*((2*a**2*(L-39)+L+14)*np.cos(tau)+2*a**2*(L+9)+L+14)+1/24*tau**4*(-3*L-7*np.cos(2*tau)+3)-1/6*(9*L+2)*tau**3*np.sin(tau)*np.cos(tau)
-			F4=1/96*tau**4*(3*a**2*cos2theta+9*a**2+5*(8*L+3)*np.cos(2*tau)+3*L*(L+12)-45)-1/48*tau**3*np.sin(2*tau)*(15*a**2*cos2theta+21*a**2-L*(15*L+56)+48)+1/32*tau**2*(-36*a**4+a**2*cos2theta*((10*L+23)*np.cos(2*tau)-2*(6*a**2+5*L+11))+(a**2*(6*L+61)-L*(17*L+12)-44)*np.cos(2*tau)-2*a**2*(7*L+85)+96*a**2*np.cos(tau)+2*L*(9*L+8)+30)+1/16*(np.sin(tau/2)**2)*(60*a**4+2*(1-12*a**2)*a**2*cos2theta*(np.cos(tau/2)**2)-a**2*(8*L+13)+(-132*a**4-a**2*(8*L+13)+L*(L+4)-14)*np.cos(tau)+L*(L+4)-14)+1/16*tau*np.sin(tau)*(48*a**2*(L+3)+np.cos(tau)*(36*a**4+(12*a**2-1)*a**2*cos2theta-a**2*(40*L+131)-L*(L+4)+14))+tau**6/144-5/48*tau**5*np.sin(2*tau)
+	if not cumulative:
+		F0=(m*tau)/2+1/2*m*np.sin(tau)*np.cos(tau)
+		F1=1/2*m*tau*(L-np.cos(2*tau))-1/4*(L-1)*m*np.sin(2*tau)
+		F2=(m*tau*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m+3*(L-1)*mu*np.cos(2*tau)-4*L*mu))/(4*mu)+(m*np.sin(2*tau)*(-3*a**2*mu*cos2theta-7*a**2*mu-12*a*m+(L+3)*mu))/(8*mu)-m*tau**2*np.sin(tau)*np.cos(tau)
+		F3=(1/(2*mu))*m*tau*(-3*a**2*mu*cos2theta-mu*(a**2+2*L-5)*np.cos(2*tau)+mu*(a**2*(L-11)-L+10)-12*a*m)+(m*np.sin(2*tau)*(3*a**2*mu*cos2theta+a**2*(-(L-12))*mu+12*a*m+3*(L-5)*mu))/(4*mu)+1/6*m*tau**3*(3*L+np.cos(2*tau)-4)+1/4*(L+1)*m*tau**2*np.sin(2*tau)
+		F4=-(1/(24*mu))*m*tau**3*(3*a**2*mu*cos2theta+mu*(9*a**2+L*(3*L+14)-35)+12*a*m+(L+5)*mu*np.cos(2*tau))-(m*tau**2*np.sin(2*tau)*(a**2*mu*cos2theta+mu*(11*a**2+L*(L+3)-20)+4*a*m))/(16*mu)+(1/(4*mu))*tau*(a**2*m*(3*a**2*mu*cos2theta+9*a**2*mu+12*a*m+(3*L-7)*mu*np.cos(2*tau)-8*mu)+m*(np.sin(tau)**2)*(a**2*mu*cos2theta+mu*(3*a**2+L*(L+4)-15)+4*a*m))-(3*a**2*m*np.sin(tau)*np.cos(tau)*(a**2*mu*cos2theta+mu*(3*a**2+L-5)+4*a*m))/(4*mu)-(m*tau**5)/24+1/48*m*tau**4*np.sin(2*tau)
+	elif cumulative:
+		F0=(m*tau**2)/(4*mu)+(m*(np.sin(tau)**2))/(4*mu)
+		F1=(L*m*tau**2)/(4*mu)-((L-2)*m*(np.sin(tau)**2))/(4*mu)-(m*tau*np.sin(tau)*np.cos(tau))/(2*mu)
+		F2=(m*tau**2*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m-4*L*mu+2*mu*np.cos(2*tau)))/(8*mu**2)-(m*(np.sin(tau)**2)*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m+2*(L-4)*mu))/(8*mu**2)+((3*L-5)*m*tau*np.sin(2*tau))/(8*mu)
+		F3=-((m*tau**2*(6*a**2*mu*cos2theta+2*mu*(a**2*(-(L-11))+L-10)+24*a*m+L*mu*np.cos(2*tau)))/(8*mu**2))+(m*(np.sin(tau)**2)*(6*a**2*mu*cos2theta-2*a**2*(L-13)*mu+24*a*m+(9*L-40)*mu))/(8*mu**2)-(m*tau*(2*a**2+3*L-10)*np.sin(2*tau))/(8*mu)+((3*L-4)*m*tau**4)/(24*mu)+(m*tau**3*np.sin(tau)*np.cos(tau))/(6*mu)
+		F4=-((m*tau**4*(3*a**2*mu*cos2theta+mu*(9*a**2+L*(3*L+14)-35)+12*a*m+mu*np.cos(2*tau)))/(96*mu**2))-(m*tau*np.sin(2*tau)*(3*a**2*mu*cos2theta+3*a**2*(15-4*L)*mu+12*a*m+(L*(3*L+10)-54)*mu))/(32*mu**2)+(1/(32*mu**2))*m*tau**2*(8*(6*a**3+a)*m+a**2*mu*cos2theta*(12*a**2+np.cos(2*tau)+2)+np.cos(2*tau)*(11*a**2*mu+4*a*m+(L-4)*(L+6)*mu)+2*mu*(18*a**4-13*a**2+L*(L+4)-15))+(1/(32*mu**2))*m*(np.sin(tau)**2)*(-36*a**4*mu-48*a**3*m+3*(1-4*a**2)*a**2*mu*cos2theta+3*a**2*(35-8*L)*mu+12*a*m+(L*(3*L+10)-54)*mu)-((L+4)*m*tau**3*np.sin(2*tau))/(48*mu)-(m*tau**6)/(144*mu)
 	Flux = F0 + F1/r + F2/r**2 + F3/r**3 + F4/r**4 
 	return Flux
 
@@ -111,7 +97,7 @@ run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
-add_data_dir(2, 0, 0, "0.7", "0.4", 64, 64, "_theta_max0.99")
+#add_data_dir(2, 0, 0, "0.7", "0.4", 64, 64, "_theta_max0.99")
 add_data_dir(5, 1, 1, "0.7", "0.4", 64, 64, "_theta_max0.99")
 add_data_dir(7, 2, 2, "0.7", "0.4", 64, 64, "_theta_max0.99")
 add_data_dir(8, 4, 4, "0.7", "0.4", 64, 64, "_theta_max0.99")
@@ -132,7 +118,7 @@ R_min = 5
 R_max = 500
 average_time = False
 av_n = 1
-plot_mass=True
+plot_mass=False
 cumulative=True
 
 def load_flux_data():
@@ -140,10 +126,8 @@ def load_flux_data():
 	data = {}
 	ang_flux_data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + dd.name + "_J_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}{:s}.dat".format(R_max, dd.nphi, dd.ntheta, dd.suffix)
+		file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}{:s}.dat".format(R_max, dd.nphi, dd.ntheta, dd.suffix)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
-		#file_name = home_path + output_dir + "/" + dd.name + "_J_azimuth_R_linear_n000000.dat"
-		#ang_flux_data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded flux data for " + dd.name)
 	return data 	
 
@@ -152,7 +136,7 @@ def load_mass_data():
 	data = {}
 	print(data_dirs)
 	for dd in data_dirs:
-		file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_r_plus_to_{:d}.dat".format(dd.name, R_max)
+		file_name = home_path + "data/mass_data" + "/" + "{:s}_ang_mom_r_plus_to_{:d}.dat".format(dd.name, R_max)
 		data_line = np.genfromtxt(file_name, skip_header=1)
 		data[dd.num] = data_line
 		print("loaded mass data for " + file_name)
@@ -214,12 +198,12 @@ def plot_graph():
 	ax1.set_xlabel("$t$")
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$")
-		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $\\mu=0.4$")
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative_with_mass.png".format(R_max)
+		plt.title("Cumulative ang. mom. flux, $M=1$, $a=0.7$, $\\mu=0.4$")
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative_with_mass.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
-		plt.title("Mass flux, $M=1$, $a=0.7$, $\\mu=0.4$")
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
+		plt.title("Ang. mom. flux, $M=1$, $a=0.7$, $\\mu=0.4$")
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
 	ax1.legend(loc='upper left', fontsize=8)
 	plt.tight_layout()
 	plt.savefig(save_path)
