@@ -99,10 +99,10 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 #add_data_dir(2, 0, 0, "0.7", "0.4", 64, 64, "_theta_max0.99")
 add_data_dir(5, 1, 1, "0.7", "0.4", 64, 64, "_theta_max0.99")
-add_data_dir(7, 2, 2, "0.7", "0.4", 64, 64, "_theta_max0.99")
+#add_data_dir(7, 2, 2, "0.7", "0.4", 64, 64, "_theta_max0.99")
 add_data_dir(8, 4, 4, "0.7", "0.4", 64, 64, "_theta_max0.99")
-add_data_dir(9, 1, -1, "0.7", "0.4", 64, 64, "_theta_max0.99")
-add_data_dir(10, 8, 8, "0.7", "0.4", 64, 64, "_theta_max0.99")
+#add_data_dir(9, 1, -1, "0.7", "0.4", 64, 64, "_theta_max0.99")
+#add_data_dir(10, 8, 8, "0.7", "0.4", 64, 64, "_theta_max0.99")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -118,7 +118,7 @@ R_min = 5
 R_max = 500
 average_time = False
 av_n = 1
-plot_mass=False
+plot_mass=True
 cumulative=True
 
 def load_flux_data():
@@ -186,25 +186,34 @@ def plot_graph():
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
 		ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(tflux,analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(r_max)+label_, linewidth=1)
+		ax1.plot(tflux,analytic_outer_flux,colours[i]+"--", label="4th order t$\\mu$/r analytic flux into R={:.1f} ".format(r_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
 			mass_line_data = mass_data[dd.num]
-			delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
-			tmass = mass_line_data[1:,0]
-			ax1.plot(tmass,delta_mass/E0,colours[i]+"-.", label="_change in mass {:.1f}$<R<${:.1f} ".format(r_min,r_max)+label_, linewidth=1)
+			#print(mass_line_data[0:,1])
+			#ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass {:.1f}$<r<${:.1f} ".format(r_min,r_max)+label_)
+			if cumulative:
+				tmass = mass_line_data[1:,0]
+				delta_mass = (mass_line_data[1:,1] - mass_line_data[0,1])/E0
+				ax1.plot(tmass,delta_mass,colours[i]+"-.", label="change in mass $r_+<r<${:.1f} ".format(r_max)+label_, linewidth=1)
+			elif not cumulative:
+				tmass = mass_line_data[:-1,0]
+				dt = tmass[1] - tmass[0]
+				tmass_mean = 0.5*(tmass[1:]+tmass[:-1])
+				dmass_dt = (mass_line_data[1:,1] - mass_line_data[:-1,1])/(E0*dt)
+				ax1.plot(tmass,dmass_dt,colours[i]+"-.", label="_rate of change in mass $r_+<r<${:.1f} ".format(r_max)+label_, linewidth=1)
 		i = i + 1
-	ax1.set_xlabel("$t$")
+	ax1.set_xlabel("$t$", fontsize=label_size)
 	if cumulative:
-		ax1.set_ylabel("cumulative flux / $E_0$")
-		plt.title("Cumulative ang. mom. flux, $M=1$, $a=0.7$, $\\mu=0.4$")
-		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative_with_mass.png".format(R_max)
+		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
+		plt.title("Cumulative ang. mom. flux, $M=1$, $a=0.7$, $\\mu=0.4$", fontsize=title_font_size)
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative.png".format(R_max)
 	else:
-		ax1.set_ylabel("flux / $E_0$")
-		plt.title("Ang. mom. flux, $M=1$, $a=0.7$, $\\mu=0.4$")
+		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
+		plt.title("Ang. mom. flux, $M=1$, $a=0.7$, $\\mu=0.4$", fontsize=title_font_size)
 		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
-	ax1.legend(loc='upper left', fontsize=8)
+	ax1.legend(loc='upper left', fontsize=legend_font_size)
 	plt.tight_layout()
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))

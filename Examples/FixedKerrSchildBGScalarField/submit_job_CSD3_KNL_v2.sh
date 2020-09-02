@@ -77,7 +77,7 @@ do
 	val="$run[5]"; dt="${!val}"
 
 	# text_number=$(printf "%04d" ${run_number})
-	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_KerrSchild
+	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_KerrSchild_N256
 	echo ${new_dir}
 	new_dir_path=${data_directory}/${new_dir}
 	#
@@ -101,12 +101,12 @@ do
 	# half box or full box?
 	if (( $(echo "$Al > 0.0" |bc -l) )); then
 		echo "Al = $Al so full box"
-		sed -i "s|NSPACE3|128|" ${new_dir_path}/params.txt
+		sed -i "s|NSPACE3|256|" ${new_dir_path}/params.txt
 		sed -i "s|CENTERZ|512.0|" ${new_dir_path}/params.txt
 		sed -i "s|ZBOUND|3|" ${new_dir_path}/params.txt
 	else
 		echo "Al = $Al so half box"
-		sed -i "s|NSPACE3|64|" ${new_dir_path}/params.txt
+		sed -i "s|NSPACE3|128|" ${new_dir_path}/params.txt
                 sed -i "s|CENTERZ|0.0|" ${new_dir_path}/params.txt
                 sed -i "s|ZBOUND|2|" ${new_dir_path}/params.txt
 	fi

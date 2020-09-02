@@ -7,8 +7,8 @@ plot_prefix = DATADIR/KerrSFp_
 
 # Set up grid spacings and regrid params
 # NB - the N values need to be multiples of block_factor
-N1 = 128
-N2 = 128
+N1 = 256
+N2 = 256
 N3 = NSPACE3
 
 num_plot_vars = 9
