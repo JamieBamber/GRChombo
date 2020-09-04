@@ -25,12 +25,13 @@ struct integration_params_t
     std::array<double, CH_SPACEDIM> integration_center;
     int num_points_phi;
     int num_points_theta;
+    double theta_min, theta_max; // min and max theta values in units of pi/2
     int num_modes;
     std::vector<std::pair<int, int>> modes; // l = first, m = second
     std::vector<int> integration_levels;
     bool write_extraction;
     bool linear_or_log;
-    std::string suffix;
+    std::string suffix = "";
     int min_integration_level;
     int variable_index; // index of the variable to integrate in the array of User Variables
 };
@@ -65,6 +66,8 @@ class SimulationParameters : public ChomboParameters
 	pp.load("variable_index", integration_params.variable_index);
 	pp.load("num_points_phi", integration_params.num_points_phi, 2);
         pp.load("num_points_theta", integration_params.num_points_theta, 4);
+	pp.load("theta_min", integration_params.theta_min);
+        pp.load("theta_max", integration_params.theta_max);
 	pp.load("integration_center", integration_params.integration_center,
                 {0.5 * L, 0.5 * L, 0});
 

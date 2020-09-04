@@ -36,16 +36,14 @@ run0015=(1 1 0.7 0.5 0.4 0.0625)
 run0016=(1 -1 0.99 0 0.4 0.0625)
 run0017=(1 1 0.99 0.5 0.4 0.0625)
 run0018=(1 1 0.99 0.25 0.4 0.0625)
+run0019=(1 1 0.7 0 0.01 2.5)
 
 plot_interval=10
 #var_index=6
 
 # specify runs to submit
 run_list=(
-	run0003
-	run0004
-	run0012
-	run0017
+	run0019
 )
 
 ## loop over subdirs

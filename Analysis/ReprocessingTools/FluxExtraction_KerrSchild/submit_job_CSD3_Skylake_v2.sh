@@ -2,7 +2,7 @@
 #
 # this copy is for the Skylake nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction
+work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction_KerrSchild
 
 start_number=0
 end_number=20000
@@ -46,23 +46,7 @@ plot_interval=5
 
 # specify runs to submit
 run_list=(
-       run0101
-       run0102
-       run0103
-       run0104
        run0105
-       run0106
-       run0107
-       run0108
-       run0110
-       run0112
-       run0113
-       run0114
-       run0115
-       run0116
-       run0117
-       run0118
-       run0119
 )
 
 ## loop over subdirs
@@ -80,7 +64,7 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_KerrSchild
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_KerrSchild_N256
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)
@@ -124,13 +108,13 @@ do
 	# half box or full box?
         if (( $(echo "$Al > 0.0" |bc -l) )); then
                 echo "Al = $Al so full box"
-                sed -i "s|NSPACE3|128|" params.txt
+                sed -i "s|NSPACE3|256|" params.txt
                 sed -i "s|CENTERZ|512.0|" params.txt
                 sed -i "s|ZBOUND|3|" params.txt
 		sed -i "s|THETAMAX|2.0|" params.txt
         else
             	echo "Al = $Al so half box"
-                sed -i "s|NSPACE3|64|" params.txt
+                sed -i "s|NSPACE3|128|" params.txt
                 sed -i "s|CENTERZ|0.0|" params.txt
                 sed -i "s|ZBOUND|2|" params.txt
 		sed -i "s|THETAMAX|${theta_max}|" params.txt

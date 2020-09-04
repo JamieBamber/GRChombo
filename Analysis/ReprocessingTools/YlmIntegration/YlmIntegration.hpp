@@ -28,7 +28,6 @@ class YlmIntegration
   private:
     //! Params for integration
     const integration_params_t m_params;
-    const int m_re_comp; // c_phi
     const double m_dt;
     const double m_time;
     const bool m_first_step;
@@ -50,7 +49,7 @@ class YlmIntegration
 	  m_start_number(a_start_number), m_end_number(a_end_number), m_restart_time(a_restart_time),
           m_num_points(m_params.num_points_phi * m_params.num_points_theta),
           m_dphi(2.0 * M_PI / m_params.num_points_phi),
-          m_dtheta(0.5 * M_PI / m_params.num_points_theta), m_re_comp(m_params.variable_index)
+          m_dtheta(0.5 * M_PI * (m_params.theta_max-m_params.theta_min) / m_params.num_points_theta)
     {
     }
 

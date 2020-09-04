@@ -42,17 +42,7 @@ plot_interval=5
 
 # specify runs to submit
 run_list=(
-       run0101
-       run0102
-       run0103
-       run0104
        run0105
-       run0106
-       run0107
-       run0108
-       run0109
-       run0110
-       run0112
 )
 
 ## loop over subdirs
@@ -70,7 +60,7 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_KerrSchild
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_KerrSchild_N256
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)

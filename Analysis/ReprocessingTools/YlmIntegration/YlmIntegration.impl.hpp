@@ -36,7 +36,7 @@ inline void YlmIntegration::execute_query(
             int itheta = idx / m_params.num_points_phi;
             int iphi = idx % m_params.num_points_phi;
             // don't put a point at z = 0
-            double theta = (itheta + 0.5) * m_dtheta;
+            double theta = m_params.theta_min + (itheta + 0.5) * m_dtheta;
             double phi = iphi * m_dphi;
             interp_x[iradius * m_num_points + idx] =
                 m_params.integration_center[0] +
@@ -54,7 +54,7 @@ inline void YlmIntegration::execute_query(
     query.setCoords(0, interp_x.data())
         .setCoords(1, interp_y.data())
         .setCoords(2, interp_z.data())
-        .addComp(m_re_comp, interp_re_part.data());
+        .addComp(m_params.variable_index, interp_re_part.data());
 
     // submit the query
     a_interpolator->interp(query);
@@ -62,16 +62,16 @@ inline void YlmIntegration::execute_query(
     // linear or log label
     std::string log_label;
     if (m_params.linear_or_log){
-	log_label = "linear_";
+	log_label = "linear";
     }
     else {
-	log_label = "log_";
+	log_label = "log";
     }
 
     // number label 
-    std::ostringstream nlabel;
-    nlabel << std::setw(6) << std::setfill('0') << m_start_number;
-    std::string nstring = "n" + nlabel.str() + "_";
+    //std::ostringstream nlabel;
+    //nlabel << std::setw(6) << std::setfill('0') << m_start_number;
+    //std::string nstring = "n" + nlabel.str() + "_";
 
     for (int imode = 0; imode < m_params.num_modes; ++imode)
     {
@@ -79,7 +79,7 @@ inline void YlmIntegration::execute_query(
         auto integral = integrate_surface(0, mode.first, mode.second,
                                           interp_re_part);
         std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] +
-	"_Ylm_integral_" + log_label + nstring + m_params.suffix + "l=" + std::to_string(mode.first) + "_m=" + std::to_string(mode.second);
+	"_Ylm_integral_" + log_label + m_params.suffix + "_l=" + std::to_string(mode.first) + "_m=" + std::to_string(mode.second);
         write_integral(integral, integral_filename, mode);
     }
 
@@ -139,7 +139,7 @@ YlmIntegration::integrate_surface(int es, int el, int em,
                      itheta++)
                 {
                     using namespace SphericalHarmonics;
-                    double theta = (itheta + 0.5) * m_dtheta;
+                    double theta = m_params.theta_min + (itheta + 0.5) * m_dtheta;
                     int idx = iradius * m_num_points +
                               itheta * m_params.num_points_phi + iphi;
                     double x = m_params.integration_radii[iradius] * sin(theta) *
@@ -169,7 +169,7 @@ YlmIntegration::integrate_surface(int es, int el, int em,
        		integral_im[iradius] += m_dphi * inner_integral_im;
 		//! inner_re = Sum [ r * Re{a_[idx] * Ylm} * dphi * sin(theta) * dtheta ]
             }
-	    integral[iradius] = sqrt(integral_re[iradius]*integral_re[iradius] + integral_im[iradius]*integral_im[iradius]);
+	    integral[iradius] = sqrt(integral_re[iradius]*integral_re[iradius] + integral_im[iradius]*integral_im[iradius]) / ((m_params.theta_max - m_params.theta_min) * 0.5);
         }
     }
     return integral;
@@ -234,7 +234,7 @@ YlmIntegration::write_extraction(std::string a_file_prefix,
             "time = " + std::to_string(m_time) + ",",
             "r = " + std::to_string(m_params.integration_radii[iradius])};
         integration_file.write_header_line(header1_strings, "");
-        std::vector<std::string> components = {UserVariables::variable_names[m_re_comp]};
+        std::vector<std::string> components = {UserVariables::variable_names[m_params.variable_index]};
         std::vector<std::string> coords = {"theta", "phi"};
         integration_file.write_header_line(components, coords);
 

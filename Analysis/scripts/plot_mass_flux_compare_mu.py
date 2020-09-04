@@ -185,7 +185,7 @@ def plot_graph():
 		tflux = flux_line_data[1:,0]
 		r_min = flux_line_data[0,1]
 		r_max = flux_line_data[0,2]
-		E0 = 0.5*(4*np.pi*(r_max**3)/3)*(phi0*mu)**2
+		E0 = 0.5*(4*np.pi*(r_max**3)/3)*(phi0)**2
 		#inner_mass_flux = -flux_line_data[1:,1]/E0
 		outer_mass_flux = -2*flux_line_data[1:,2]/E0
 		if average_time:
@@ -204,26 +204,26 @@ def plot_graph():
 		#label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
-		ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(tflux,analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(r_max)+label_, linewidth=1)
+		ax1.plot(tflux*mu,outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
+		ax1.plot(tflux*mu,analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(r_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
 			mass_line_data = mass_data[dd.num]
 			delta_mass = mass_line_data[1:,1] - mass_line_data[0,1]
 			tmass = mass_line_data[1:,0]
-			ax1.plot(tmass,delta_mass/E0,colours[i]+"-.", label="_change in mass {:.1f}$<R<${:.1f} ".format(r_min,r_max)+label_, linewidth=1)
+			ax1.plot(tmass*mu,delta_mass/E0,colours[i]+"-.", label="_change in mass {:.1f}$<R<${:.1f} ".format(r_min,r_max)+label_, linewidth=1)
 		i = i + 1
-	ax1.set_xlabel("$t$")
+	ax1.set_xlabel("$\\tau$")
 	if cumulative:
-		ax1.set_ylabel("cumulative flux / $E_0$")
-		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $l=m=1$")
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative_with_mass.png".format(R_max)
+		ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
+		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
+		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
-		plt.title("Mass flux, $M=1$, $a=0.7$, $l=m=1$")
+		plt.title("Mass flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu.png".format(R_max)
-	ax1.legend(loc='upper left', fontsize=8)
+	ax1.legend(loc='upper left', fontsize=legend_font_size)
 	plt.tight_layout()
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))

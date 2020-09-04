@@ -60,11 +60,12 @@ int runReprocessingTool(int argc, char *argv[])
     int start_index, end_index;
     if ((sim_params.start_number % sim_params.plot_interval != 0) || (sim_params.end_number % sim_params.plot_interval != 0)) 
     {
-	throw std::invalid_argument("invalid start or end number, or wrong plot interval");
+        throw std::invalid_argument("invalid start or end number, or wrong plot interval");
     } else {
 	start_index = sim_params.start_number / sim_params.plot_interval;
         end_index = sim_params.end_number / sim_params.plot_interval;
     }
+
     // now loop over files
     for (int ifile = start_index; ifile <= end_index;
          ifile++)
