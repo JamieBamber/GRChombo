@@ -4,8 +4,8 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 
-start_number=2200
-end_number=2200
+start_number=0
+end_number=10000
 lin_or_log=0 # note 0 = log, 1 = linear
 
 nphi=64

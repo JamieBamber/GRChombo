@@ -8,8 +8,8 @@ start_number=0
 end_number=20000
 lin_or_log=1 # note 0 = log, 1 = linear
 
-nphi=64
-ntheta=64
+nphi=264
+ntheta=264
 theta_max=0.99
 max_radius=500
 
@@ -41,13 +41,14 @@ run0016=(1 -1 0.99 0 0.4 0.0625)
 run0017=(1 1 0.99 0.5 0.4 0.0625)
 run0018=(1 1 0.99 0.25 0.4 0.0625)
 run0019=(1 1 0.7 0 0.01 2.5)
+run0020=(1 1 0.7 0 0.1 0.25)
 
 plot_interval=10
 #var_index=6
 
 # specify runs to submit
 run_list=(
-	run0016
+	run0010
 )
 
 ## loop over subdirs

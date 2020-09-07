@@ -62,11 +62,12 @@ run0020=(1 1 0.7 0 0.1 0.25)
 
 
 run_list=(
-	run0017
+	run0005
 )
 
 params_file=params_v2.txt
 plot_interval=5
+N1=128
 
 for run in "${run_list[@]}"
 do
@@ -102,11 +103,12 @@ do
 	sed -i "s|ALANGLE|${Al}|" ${new_dir_path}/params.txt
 	sed -i "s|MUVAL|${mu}|" ${new_dir_path}/params.txt
 	sed -i "s|DTMULT|${dt}|" ${new_dir_path}/params.txt
+	sed -i "s|NBASIC|${N1}|" ${new_dir_path}/params.txt
 	sed -i "s|PLOTINTERVAL|${plot_interval}|" ${new_dir_path}/params.txt
 	# half box or full box?
 	if (( $(echo "$Al > 0.0" |bc -l) )); then
 		echo "Al = $Al so full box"
-		sed -i "s|NSPACE3|128|" ${new_dir_path}/params.txt
+		sed -i "s|NSPACE3|${N1}|" ${new_dir_path}/params.txt
 		sed -i "s|CENTERZ|512.0|" ${new_dir_path}/params.txt
 		sed -i "s|ZBOUND|3|" ${new_dir_path}/params.txt
 	else

@@ -118,7 +118,8 @@ add_data_dir(5, 1, 1, "0.7", "0.4", 64, 64, "_theta_max0.99")
 #add_data_dir(9, 1, -1, "0.7", "0.4", 64, 64, "_theta_max0.99")
 add_data_dir(11, 1, 1, "0.7", "2.0", 64, 64, "_theta_max0.99")
 #add_data_dir(12, 1, 1, "0.7", "0.01", 64, 64, "_theta_max0.99")
-add_data_dir(19, 1, 1, "0.7", "0.01", 64, 64, "_theta_max0.99")
+#add_data_dir(19, 1, 1, "0.7", "0.01", 64, 64, "_theta_max0.99")
+add_data_dir(20, 1, 1, "0.7", "0.1", 64, 64, "_theta_max0.99")
 #add_data_dir(10, 8, 8, "0.7", "0.4", 64, 64, "_theta_max0.99")
 #add_data_dir(10, 8, 8, "0.7", "0.4", 64, 64, "_theta_max0.99")
 
@@ -167,10 +168,10 @@ def plot_graph():
 	ax1 = plt.axes()
 	fig = plt.gcf()
 	fig.set_size_inches(3.8,3)
-	font_size = 6
-	title_font_size = 7
-	label_size = 9
-	legend_font_size = 7
+	font_size = 10
+	title_font_size = 10
+	label_size = 10
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
@@ -225,6 +226,8 @@ def plot_graph():
 		plt.title("Mass flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu.png".format(R_max)
 	ax1.legend(loc='upper left', fontsize=legend_font_size)
+	plt.xticks(fontsize=font_size)
+	plt.yticks(fontsize=font_size)
 	plt.tight_layout()
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
