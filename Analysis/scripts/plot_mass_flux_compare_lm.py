@@ -163,10 +163,10 @@ def plot_graph():
 	ax1 = plt.axes()
 	fig = plt.gcf()
 	fig.set_size_inches(3.8,3)
-	font_size = 8
-	title_font_size = 8
-	label_size = 8
-	legend_font_size = 8
+	font_size = 10
+	title_font_size = 10
+	label_size = 10
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#

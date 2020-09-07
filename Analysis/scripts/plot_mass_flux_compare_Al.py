@@ -169,10 +169,10 @@ def plot_graph():
 	ax1 = plt.axes()
 	fig = plt.gcf()
 	fig.set_size_inches(3.8,3)
-	font_size = 5
-	title_font_size = 7
-	label_size = 9
-	legend_font_size = 8
+	font_size = 10
+	title_font_size = 10
+	label_size = 10
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
@@ -183,14 +183,15 @@ def plot_graph():
 	dd0.load_data()
 	for dd in data_dirs:
 		dd.load_data()
+		mu = float(dd.mu)
 		#net_flux = outer_mass_flux - inner_mass_flux
 		#label_ = "$\\mu$={:.2f}".format(mu)
 		#label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
 		label_ = "$m$={:d} $\\alpha$={:s}".format(dd.m, dd.Al)
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
-		ax1.plot(dd.tflux,(10**5)*(dd.outer_mass_flux-dd0.outer_mass_flux[:len(dd.outer_mass_flux)]),colours[i]+"-", label=label_, linewidth=1)
-		#ax1.plot(dd.tflux,dd.analytic_outer_flux-dd0.analytic_outer_flux[:len(dd.outer_mass_flux)],colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+		ax1.plot(dd.tflux*mu,(10**5)*(dd.outer_mass_flux-dd0.outer_mass_flux[:len(dd.outer_mass_flux)]),colours[i]+"-", label=label_, linewidth=1)
+		#ax1.plot(dd.tflux*mu,dd.analytic_outer_flux-dd0.analytic_outer_flux[:len(dd.outer_mass_flux)],colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
@@ -198,16 +199,16 @@ def plot_graph():
 			#print(mass_line_data[0:,1])
 			#ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass {:.1f}$<r<${:.1f} ".format(r_min,r_max)+label_)
 			if cumulative:
-				ax1.plot(dd.tmass,dd.dmass,colours[i]+"-.", label="_change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
+				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+"-.", label="_change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 			elif not cumulative:
-				ax1.plot(dd.tmass,dd.dmass,colours[i]+"-.", label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
+				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+"-.", label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
-	ax1.set_xlabel("$t$", fontsize=label_size)
+	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	ax1.set_xlim((0, 300))
 	ax1.set_ylim((-0.1, 1.5))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0 \\times 10^{-5}$", fontsize=label_size)
-		ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
+		ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, \n $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
