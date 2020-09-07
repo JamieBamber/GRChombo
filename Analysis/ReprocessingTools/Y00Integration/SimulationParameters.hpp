@@ -25,16 +25,13 @@ struct integration_params_t
     std::array<double, CH_SPACEDIM> integration_center;
     int num_points_phi;
     int num_points_theta;
+    double theta_min, theta_max; // min and max theta values in units of pi/2
     std::vector<int> integration_levels;
     bool write_extraction;
-    int min_integration_level;
-    int num_vars; // number of variables to integrate
-    std::vector<int> var_indices; // index of the variable to integrate in the array of User Variables
-    double bh_a;	// dimensionfull BH spin = J/M
-    double bh_M;	// BH mass
     bool linear_or_log;
     std::string suffix = "";
-    std::string output_rootdir;
+    int min_integration_level;
+    int variable_index; // index of the variable to integrate in the array of User Variables
 };
 
 class SimulationParameters : public ChomboParameters
@@ -51,7 +48,7 @@ class SimulationParameters : public ChomboParameters
     {
 	// get directories
 	pp.get("data_rootdir", data_rootdir);
-	pp.get("output_rootdir", integration_params.output_rootdir);
+	pp.get("output_rootdir", output_rootdir);
 	pp.get("data_subdir", data_subdir);
 
         // Files setup
@@ -64,18 +61,13 @@ class SimulationParameters : public ChomboParameters
         origin.fill(coarsest_dx / 2.0);
 
 	// integration parameters
-	pp.load("num_vars", integration_params.num_vars);
-	pp.load("var_indices", integration_params.var_indices, integration_params.num_vars);
+	pp.load("variable_index", integration_params.variable_index);
 	pp.load("num_points_phi", integration_params.num_points_phi, 2);
         pp.load("num_points_theta", integration_params.num_points_theta, 4);
+	pp.load("theta_min", integration_params.theta_min);
+        pp.load("theta_max", integration_params.theta_max);
 	pp.load("integration_center", integration_params.integration_center,
                 {0.5 * L, 0.5 * L, 0});
-
-	// BH parameters
-	double bh_spin, bh_mass;
-        pp.load("bh_spin", bh_spin);
-        pp.load("bh_mass", integration_params.bh_M);
-        integration_params.bh_a = integration_params.bh_M * bh_spin;
 
 	// radii parameters
         pp.load("num_integration_radii", integration_params.num_integration_radii,
@@ -120,6 +112,14 @@ class SimulationParameters : public ChomboParameters
                     0.1);
         }
 	
+	// load suffix
+        if (pp.contains("suffix"))
+        {
+                pp.get("suffix", integration_params.suffix);
+        } else {
+                integration_params.suffix = "";
+        }
+
 	pp.load("write_extraction", integration_params.write_extraction, false);
 
         // Work out the minimum integration level
@@ -135,6 +135,8 @@ class SimulationParameters : public ChomboParameters
     std::string data_subdir;
     std::string data_rootdir;
     std::string output_rootdir;
+
+    bool linear_or_log;
 
    integration_params_t integration_params;
 };

@@ -28,7 +28,7 @@ r_max = 500
 average_time = False
 av_n = 1
 cumulative=False
-plot_mass=True
+plot_mass=False
 
 # appropriate \int Ylm Ylm*** np.np.cos(2 theta) dtheta dphi factor for 0 <= l <= 10
 cos2theta_integrals = [[-(1/3)],[1/5,-(3/5)],[1/21,-(1/7),-(5/7)],\
@@ -107,15 +107,15 @@ class data_dir:
                 self.r_min = flux_data[0,1]
                 self.r_max = flux_data[0,2]
                 E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
-                self.inner_mass_flux = -2*flux_data[1:,1]/E0
-                self.outer_mass_flux = -2*flux_data[1:,2]/E0
+                self.inner_mass_flux = -flux_data[1:,1]/E0
+                self.outer_mass_flux = -flux_data[1:,2]/E0
                 if cumulative:
                         dt = self.tflux[2] - self.tflux[1]
                         #inner_mass_flux = np.cumsum(inner_mass_flux)*dt
                         self.outer_mass_flux = np.cumsum(self.outer_mass_flux)*dt
-                        self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, True)*(4*np.pi)*phi0**2*2/E0
+                        self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, True)*(4*np.pi)*phi0**2/E0
                 elif not cumulative:
-                        self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, False)*(4*np.pi)*phi0**2*2/E0
+                        self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, False)*(4*np.pi)*phi0**2/E0
                 if plot_mass:
                         file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_r_plus_to_{:d}.dat".format(self.name, r_max)
                         mass_data = np.genfromtxt(file_name, skip_header=1)

@@ -69,9 +69,9 @@ inline void YlmIntegration::execute_query(
     }
 
     // number label 
-    //std::ostringstream nlabel;
-    //nlabel << std::setw(6) << std::setfill('0') << m_start_number;
-    //std::string nstring = "n" + nlabel.str() + "_";
+    std::ostringstream nlabel;
+    nlabel << std::setw(6) << std::setfill('0') << m_start_number;
+    std::string nstring = "_n" + nlabel.str();
 
     for (int imode = 0; imode < m_params.num_modes; ++imode)
     {
@@ -79,7 +79,7 @@ inline void YlmIntegration::execute_query(
         auto integral = integrate_surface(0, mode.first, mode.second,
                                           interp_re_part);
         std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] +
-	"_Ylm_integral_" + log_label + m_params.suffix + "_l=" + std::to_string(mode.first) + "_m=" + std::to_string(mode.second);
+	"_Ylm_integral_" + log_label + nstring + m_params.suffix + "_l=" + std::to_string(mode.first) + "_m=" + std::to_string(mode.second);
         write_integral(integral, integral_filename, mode);
     }
 

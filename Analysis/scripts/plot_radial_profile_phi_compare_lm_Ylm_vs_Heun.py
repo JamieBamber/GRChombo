@@ -15,11 +15,11 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/"
 lm_list = [(1, 1)]
-number = 290
+number = 2200
 plot_interval = 10
 M = 1
 phi0 = 0.1
-lin_or_log = True
+lin_or_log = False
 colours = ["r", "b", "g", "c"]
 colours2 = ["k", "m", "y"]
 styles = ["-", "--"]
@@ -45,13 +45,13 @@ class data_dir:
 		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, Al, mu)
 	#
 	def load_data(self, number, l_, m_):
-		file_name = self.name+"_phi_Ylm_integral_{:s}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:.2f}_l={:d}_m={:d}.dat".format(scale, R_max, self.nphi, self.ntheta, self.theta_max, l_, m_)
+		file_name = self.name+"_phi_Ylm_integral_{:s}_n{:06d}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:.2f}_l={:d}_m={:d}.dat".format(scale, number, R_max, self.nphi, self.ntheta, self.theta_max, l_, m_)
 		dataset_path = data_root_path + file_name
 		data = np.genfromtxt(dataset_path, skip_header=1)
 		R = data[0,1:]
 		r_plus = M*(1 + np.sqrt(1 - self.a**2))
 		self.r = R*(1 + r_plus/(4*R))**2
-		row = 1+int(number/plot_interval)
+		row = 1
 		self.time = data[row,0]
 		phi = data[row,1:]
 		self.phi = phi/phi0
@@ -105,15 +105,18 @@ def Stationary_sol(r, t, a, mu, l, m, ingoing, A, phase):
 			sol[i] = 0
 		else:
      			sol[i] = Kerrlib.Rfunc(M, mu, omega, a, l, m, ingoing, False, t - 2*np.pi*phase/omega, r[i])
-	sol = np.abs(A)*np.abs(sol)
+	sol = A*sol
 	return sol
 
 ### get data and plot profile for each 
 
-def fit_solution(ax, dd, p0_, colour):
+def fit_ingoing_solution(ax, dd, p0_, colour):
 	def Stationary_sol_fit(r, A, phase):
+		phase_in = 0
+		phase_out = 0
 		print("testing A={:.2f} phase={:.2f}".format(A, phase))
-		return Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, True, A, phase)
+		ingoing_phi = Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, True, A, phase)
+		return np.abs(ingoing_phi)
 	popt, pconv = curve_fit(Stationary_sol_fit, dd.r, dd.phi, p0=p0_)
 	A = popt[0]
 	phase = popt[1]
@@ -126,17 +129,62 @@ def fit_solution(ax, dd, p0_, colour):
 		y = np.log10(phi_fitted)
 	else:
 		y = phi_fitted
-	ax.plot(x, y, colour + "--", label="fitted Heun sol. ampl.={:.2f} phase={:.2f} l={:d} m={:d} a={:.2f}".format(A, phase, dd.l, dd.m, dd.a))
-	
+	ax.plot(x, y, colour + "--", label="fitted Heun sol. ampl.={:.2f} phase={:.2f} l={:d} m={:d} a={:.2f}".format(A, phase, dd.l, dd.m, dd.a), linewidth=1)
+
+def fit_comb_solution(ax, dd, p0_, colour):
+	def Stationary_sol_fit(r, A_in, A_out, phase):
+		phase_in = phase
+		phase_out = phase
+		print("testing A_in={:.2f} A_out={:.2f} phase={:.2f}".format(A_in, A_out, phase))
+		ingoing_phi = Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, True, A_in, phase)
+		outgoing_phi = Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, False, A_out, phase)
+		return np.abs(ingoing_phi + outgoing_phi)
+	popt, pconv = curve_fit(Stationary_sol_fit, dd.r, dd.phi, p0=p0_)
+	A_in = popt[0]
+	A_out = popt[1]
+	phase = popt[2]
+	phi_fitted = Stationary_sol_fit(dd.r, A_in, A_out, phase)
+	if (lin_or_log):
+		x = dd.r/M
+	else:
+		x = np.log10(dd.r/M)
+	if log_y:
+		y = np.log10(phi_fitted)
+	else:
+		y = phi_fitted
+	ax.plot(x, y, colour + "--", label="fitted Heun sol. ampl(in)={:.2f} ampl(out)={:.2f} \n phase={:.2f} l={:d} m={:d} a={:.2f}".format(A_in, A_out, phase, dd.l, dd.m, dd.a), linewidth=1)
+
+def impose_comb_solution(ax, dd, p0, colour):
+	def Stationary_sol_fit(r, A_in, A_out, phase):
+		phase_in = phase
+		phase_out = phase
+		print("testing A_in={:.2f} A_out={:.2f} phase={:.2f}".format(A_in, A_out, phase))
+		ingoing_phi = Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, True, A_in, phase)
+		outgoing_phi = Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, False, A_out, phase)
+		return np.abs(ingoing_phi + outgoing_phi)
+	A_in = p0[0]
+	A_out = p0[1]
+	phase = p0[2]
+	phi_fitted = Stationary_sol_fit(dd.r, A_in, A_out, phase)
+	if (lin_or_log):
+		x = dd.r/M
+	else:
+		x = np.log10(dd.r/M)
+	if log_y:
+		y = np.log10(phi_fitted)
+	else:
+		y = phi_fitted
+	ax.plot(x, y, colour + "--", label="Heun sol. ampl(in)={:.2f} ampl(out)={:.2f} \n phase={:.2f} l={:d} m={:d} a={:.2f}".format(A_in, A_out, phase, dd.l, dd.m, dd.a), linewidth=1)
+
 def plot_graph():
 	# plot setup
 	ax1 = plt.axes()
 	fig = plt.gcf()
 	fig.set_size_inches(3.8,3)
-	font_size = 5
-	title_font_size = 7
-	label_size = 9
-	legend_font_size = 8
+	font_size = 8
+	title_font_size = 8
+	label_size = 8
+	legend_font_size = 6
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#	
@@ -153,18 +201,19 @@ def plot_graph():
 				y = np.log10(dd.phi)
 			else:
 				y = dd.phi
-			ax1.plot(x, y, colours[i] + styles[j], label="l={:d} m={:d} a={:.2f}".format(dd.l, dd.m, dd.a))
+			ax1.plot(x, y, colours[i] + styles[j], label="l={:d} m={:d} a={:.2f}".format(dd.l, dd.m, dd.a), linewidth=1)
 			# plot fitted solution
-			fit_solution(ax1, dd, (10, 0), colours2[i])
+			impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
+			#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
-		plt.ylabel("$\\log_{10}(\\phi_{lm}/\\phi_0)$")
+		plt.ylabel("$\\log_{10}(\\phi_{lm}/\\phi_0)$", fontsize=label_size)
 	else:
-		plt.ylabel("$|\\phi_{lm}|/\\phi_0$")
+		plt.ylabel("$|\\phi_{lm}|/\\phi_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
 		xlabel_ = "$\\log_{10}(r_{BL}/M)$"
-	plt.xlabel(xlabel_)
+	plt.xlabel(xlabel_, fontsize=label_size)
 	#a_max = np.max([float(a_str) for a_str in a_list])
 	#r_plus_min = 1 + np.sqrt(1 - a_max**2)
 	#print("r_plus_min = ", r_plus_min)
@@ -173,6 +222,8 @@ def plot_graph():
 	#else :
 	#	plt.xlim(left=np.log10(r_plus_min))
 	ax1.legend(loc="best", fontsize=legend_font_size)
+	plt.xticks(fontsize=font_size)
+	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
 	title = "$\\phi_{lm}$" + " profile M=1, $\\mu$=0.4, time = {:.1f}".format(dd0.time) 
 	ax1.set_title(title, fontsize=title_font_size)

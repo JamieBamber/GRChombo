@@ -2,11 +2,11 @@
 #
 # this copy is for the Skylake nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction
+work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 
-start_number=0
-end_number=20000
-lin_or_log=1 # note 0 = log, 1 = linear
+start_number=2200
+end_number=2200
+lin_or_log=0 # note 0 = log, 1 = linear
 
 nphi=64
 ntheta=64
@@ -40,14 +40,15 @@ run0015=(1 1 0.7 0.5 0.4 0.0625)
 run0016=(1 -1 0.99 0 0.4 0.0625)
 run0017=(1 1 0.99 0.5 0.4 0.0625)
 run0018=(1 1 0.99 0.25 0.4 0.0625)
-run0019=(1 1 0.7 0 0.01 2.5)
 
 plot_interval=10
 #var_index=6
 
 # specify runs to submit
 run_list=(
-	run0016
+	run0001
+	run0002
+	run0003
 )
 
 ## loop over subdirs
@@ -69,8 +70,8 @@ do
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)
+	nradii=513
 	#min_radius=5
-	echo "mu = " ${mu}
 	echo "min_radius = " ${min_radius}
 	
 	suffix=_r_plus_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
@@ -79,8 +80,8 @@ do
 	#dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
 	echo "dt_multiplier = " ${dt_mult}
 
-	name=${subdir}_var${var_index}_flux${suffix}
-	echo ${name} "flux extraction"
+	name=${subdir}_var${var_index}_Ylm_integration_n${start_number}_linlog${lin_or_log}_${suffix}
+	echo ${name} "Ylm integration"
 	new_dir_path=outputs/${name}
 	#
 	mkdir -p ${new_dir_path}
@@ -90,7 +91,7 @@ do
 	
 	cd ${new_dir_path}
 	# add the location of the new directory to the params file
-	sed -i "s|JOBNAME|${run}FE|" slurm_submit
+	sed -i "s|JOBNAME|${run}YlmI|" slurm_submit
 	sed -i "s|DTMULT|${dt_mult}|" params.txt
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
@@ -102,6 +103,7 @@ do
 	sed -i "s|PLOTINTERVAL|${plot_interval}|" params.txt
 	sed -i "s|MINRADIUS|${min_radius}|" params.txt
 	sed -i "s|MAXRADIUS|${max_radius}|" params.txt
+	sed -i "s|NRADII|${nradii}|" params.txt
 	sed -i "s|NPHI|${nphi}|" params.txt
 	sed -i "s|NTHETA|${ntheta}|" params.txt
 	sed -i "s|SUFFIX|${suffix}|" params.txt

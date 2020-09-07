@@ -78,7 +78,7 @@ do
 	#dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
 	echo "dt_multiplier = " ${dt_mult}
 
-	name=${subdir}_var${var_index}_Ylm_integration_n${start_number}_linlog${lin_or_log}_${suffix}
+	name=${subdir}_var${var_index}_Ylm_integration_n${start_number}_linlog${lin_or_log}${suffix}
 	echo ${name} "Ylm integration"
 	new_dir_path=outputs/${name}
 	#

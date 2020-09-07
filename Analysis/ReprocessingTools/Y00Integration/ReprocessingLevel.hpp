@@ -30,22 +30,20 @@ class ReprocessingLevel : public GRAMRLevel
 	// what is m_restart_time ???
 
 	bool m_first_step;
-	double m_true_restart_time = m_p.coarsest_dx * m_p.dt_multiplier * m_p.start_number; 	
-	pout() << "m_time = " << m_time << std::endl;
-        pout() << "m_true_restart_time = " << m_true_restart_time << std::endl;
+        double m_true_restart_time = m_p.coarsest_dx * m_p.dt_multiplier * m_p.start_number;    
         if (m_time == m_true_restart_time){
-		m_first_step = 1;
-	} else {
-		m_first_step = 0;
-	}
-	
+                m_first_step = 1;
+        } else {
+                m_first_step = 0;
+        }
+
 	// Do the extraction on the min integration level
         if (m_level == m_p.integration_params.min_integration_level)
         {
             // Now refresh the interpolator and do the interpolation
             m_gr_amr.m_interpolator->refresh();
             Y00Integration phi_integration(m_p.integration_params, m_dt, m_time,
-                                         m_first_step, m_p.data_subdir, m_p.start_number, m_p.end_number, m_restart_time);
+                                         m_first_step, m_p.data_subdir, m_p.output_rootdir, m_p.start_number, m_p.end_number, m_restart_time);
             phi_integration.execute_query(m_gr_amr.m_interpolator); //! <--- This routine includes performing the integration and writing the output to a file
         }		
 

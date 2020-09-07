@@ -160,7 +160,7 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 
 add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
+add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
 add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max0.99")
 add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
 
@@ -176,7 +176,7 @@ def plot_graph():
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
-	colours = ['r', 'b', 'g', 'm', 'c', 'y']
+	colours = ['r', 'b', 'g', 'm-', 'c', 'y']
 	colours2 = ['k', 'm', 'c']
 	i = 0
 	dd0 = data_dirs[0]
@@ -189,8 +189,8 @@ def plot_graph():
 		label_ = "$m$={:d} $\\alpha$={:s}".format(dd.m, dd.Al)
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
-		ax1.plot(dd.tflux,dd.outer_mass_flux-dd0.outer_mass_flux[:len(dd.outer_mass_flux)],colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(dd.tflux,dd.analytic_outer_flux-dd0.analytic_outer_flux[:len(dd.outer_mass_flux)],colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+		ax1.plot(dd.tflux,(10**5)*(dd.outer_mass_flux-dd0.outer_mass_flux[:len(dd.outer_mass_flux)]),colours[i]+"-", label=label_, linewidth=1)
+		#ax1.plot(dd.tflux,dd.analytic_outer_flux-dd0.analytic_outer_flux[:len(dd.outer_mass_flux)],colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
@@ -203,10 +203,10 @@ def plot_graph():
 				ax1.plot(dd.tmass,dd.dmass,colours[i]+"-.", label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$t$", fontsize=label_size)
-	ax1.set_xlim((0, 200))
-	ax1.set_ylim((0, 0.00001))
+	ax1.set_xlim((0, 300))
+	ax1.set_ylim((-0.1, 1.5))
 	if cumulative:
-		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
+		ax1.set_ylabel("cumulative flux / $E_0 \\times 10^{-5}$", fontsize=label_size)
 		ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1.png".format(R_max)
 	else:
