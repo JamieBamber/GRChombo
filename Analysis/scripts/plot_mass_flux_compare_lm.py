@@ -132,7 +132,7 @@ R_min = 5
 R_max = 500
 average_time = False
 av_n = 1
-plot_mass=True
+plot_mass=False
 cumulative=True
 
 def load_flux_data():
