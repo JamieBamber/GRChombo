@@ -216,6 +216,8 @@ def plot_graph():
 			tmass = mass_line_data[1:,0]
 			ax1.plot(tmass*mu,delta_mass/E0,colours[i]+"-.", label="_change in mass {:.1f}$<R<${:.1f} ".format(r_min,r_max)+label_, linewidth=1)
 		i = i + 1
+	ax1.set_xlim((0, 200))
+	ax1.set_ylim((0, 0.001))
 	ax1.set_xlabel("$\\tau$")
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")

@@ -1,8 +1,8 @@
 ### parameters file for Ylm integration
 
 #Params for runtime inputs
-N1 = 128
-N2 = 128
+N1 = NBASIC
+N2 = NBASIC
 N3 = NSPACE3
 L = 1024
 max_level = 7 # There are (max_level+1) grids, so min is zero

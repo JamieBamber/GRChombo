@@ -67,13 +67,13 @@ inline void Y00Integration::execute_query(
     }
 
     // number label 
-    std::ostringstream nlabel;
+    /*std::ostringstream nlabel;
     nlabel << std::setw(6) << std::setfill('0') << m_start_number;
-    std::string nstring = "_n" + nlabel.str();
+    std::string nstring = "_n" + nlabel.str();*/
 
     auto integral = integrate_surface(interp_re_part);
     std::string integral_filename = m_output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[m_params.variable_index] +
-	"_Y00_integral_" + log_label + nstring + m_params.suffix; 
+	"_Y00_integral_" + log_label + m_params.suffix; 
     write_integral(integral, integral_filename);
 
     if (m_params.write_extraction)

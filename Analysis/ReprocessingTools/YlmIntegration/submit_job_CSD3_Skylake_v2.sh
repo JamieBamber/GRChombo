@@ -4,9 +4,10 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/YlmIntegration
 
-start_number=0
+start_number=840
 end_number=10000
 lin_or_log=0 # note 0 = log, 1 = linear
+resume=1 # resume previous integration run?
 
 nphi=64
 ntheta=64
@@ -84,13 +85,14 @@ do
 	#
 	mkdir -p ${new_dir_path}
 	
-	cp slurm_submit_Skylake ${new_dir_path}/slurm_submit
+	cp slurm_submit_Skylake_long ${new_dir_path}/slurm_submit
 	cp params.txt ${new_dir_path}
 	
 	cd ${new_dir_path}
 	# add the location of the new directory to the params file
 	sed -i "s|JOBNAME|${run}YlmI|" slurm_submit
 	sed -i "s|DTMULT|${dt_mult}|" params.txt
+	sed -i "s|RESUMEYN|${resume}|" params.txt
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
 	sed -i "s|BHMASS|${M}|" params.txt

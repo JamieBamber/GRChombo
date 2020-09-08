@@ -31,11 +31,15 @@ class ReprocessingLevel : public GRAMRLevel
 
 	bool m_first_step;
         double m_true_restart_time = m_p.coarsest_dx * m_p.dt_multiplier * m_p.start_number;    
-        if (m_time == m_true_restart_time){
+	pout() << "m_true_restart_time = " << m_true_restart_time  << endl;
+	pout() << "m_time = " << m_time  << endl;
+        if ((m_time == m_true_restart_time) && (m_p.resume == 0)){
                 m_first_step = 1;
         } else {
                 m_first_step = 0;
         }
+	pout() << "m_first_step = " << m_first_step << endl;
+	pout() << "m_p.resume = " << m_p.resume << endl;
 
 	// Do the extraction on the min integration level
         if (m_level == m_p.integration_params.min_integration_level)

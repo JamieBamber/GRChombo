@@ -57,6 +57,7 @@ class SimulationParameters : public ChomboParameters
         pp.get("end_number", end_number);
         pp.get("start_number", start_number);
         pp.get("plot_interval", plot_interval);
+        pp.get("resume", resume);
 
         // basic integration params
         dx.fill(coarsest_dx);
@@ -156,6 +157,7 @@ class SimulationParameters : public ChomboParameters
     std::string output_rootdir;
 
     bool linear_or_log;
+    bool resume; // resume previous integration run?
 
    integration_params_t integration_params;
 };

@@ -4,9 +4,10 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 
-start_number=0
-end_number=10000
+start_number=2430
+end_number=2430
 lin_or_log=0 # note 0 = log, 1 = linear
+resume=0 # resume previous integration?
 
 nphi=64
 ntheta=64
@@ -74,19 +75,19 @@ do
 	#min_radius=5
 	echo "min_radius = " ${min_radius}
 	
-	suffix=_r_plus_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
+	suffix=_n002430_r_plus_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
 	#suffix=_${min_radius}_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
 
 	#dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
 	echo "dt_multiplier = " ${dt_mult}
 
-	name=${subdir}_var${var_index}_Ylm_integration_n${start_number}_linlog${lin_or_log}_${suffix}
+	name=${subdir}_var${var_index}_Ylm_integration_n${start_number}_linlog${lin_or_log}${suffix}
 	echo ${name} "Ylm integration"
 	new_dir_path=outputs/${name}
 	#
 	mkdir -p ${new_dir_path}
 	
-	cp slurm_submit_Skylake ${new_dir_path}/slurm_submit
+	cp slurm_submit_Skylake_short ${new_dir_path}/slurm_submit
 	cp params.txt ${new_dir_path}
 	
 	cd ${new_dir_path}
@@ -95,6 +96,7 @@ do
 	sed -i "s|DTMULT|${dt_mult}|" params.txt
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
+	sed -i "s|RESUMEYN|${resume}|" params.txt
 	sed -i "s|BHMASS|${M}|" params.txt
 	sed -i "s|SNUMBER|${start_number}|" params.txt
 	sed -i "s|ENUMBER|${end_number}|" params.txt

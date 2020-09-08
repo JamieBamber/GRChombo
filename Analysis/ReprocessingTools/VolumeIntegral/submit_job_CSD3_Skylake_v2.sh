@@ -8,6 +8,8 @@ start_number=0
 end_number=20000
 lin_or_log=1 # note 0 = log, 1 = linear
 max_radius=500
+N1=256
+Nhalf=$(($N1 / 2))
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -43,7 +45,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0019
+	run0005
 )
 
 ## loop over subdirs
@@ -61,7 +63,7 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_N${N1}
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)
@@ -88,6 +90,7 @@ do
 	# add the location of the new directory to the params file
 	sed -i "s|JOBNAME|${run}VI|" slurm_submit
 	sed -i "s|DTMULT|${dt_mult}|" params.txt
+	sed -i "s|NBASIC|${N1}|" params.txt
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
 	sed -i "s|BHMASS|${M}|" params.txt
@@ -102,13 +105,13 @@ do
 	# half box or full box?
         if (( $(echo "$Al > 0.0" |bc -l) )); then
                 echo "Al = $Al so full box"
-                sed -i "s|NSPACE3|128|" params.txt
+                sed -i "s|NSPACE3|${N1}|" params.txt
                 sed -i "s|CENTERZ|512.0|" params.txt
                 sed -i "s|ZBOUND|3|" params.txt
 		sed -i "s|HALFBOX|0|" params.txt
         else
             	echo "Al = $Al so half box"
-                sed -i "s|NSPACE3|64|" params.txt
+                sed -i "s|NSPACE3|${Nhalf}|" params.txt
                 sed -i "s|CENTERZ|0.0|" params.txt
                 sed -i "s|ZBOUND|2|" params.txt
 		sed -i "s|HALFBOX|1|" params.txt
