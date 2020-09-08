@@ -203,7 +203,8 @@ def plot_graph():
 			y = dd.phi
 		ax1.plot(x, y, colours[i] + "-", label="l={:d} m={:d} a={:.2f}".format(dd.l, dd.m, dd.a), linewidth=1)
 		# plot fitted solution
-		fit_comb_solution(ax1, dd, (1, 0, 0), colours[i])
+		if (dd.a < 0.9):
+			fit_comb_solution(ax1, dd, (1, 0.2, 0.2), colours[i])
 		#impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
 		#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
