@@ -21,6 +21,7 @@ plot_prefix = KerrSFp_
 plot_interval = PLOTINTERVAL
 start_number = SNUMBER
 end_number = ENUMBER
+dt_multiplier = DTMULT
 resume = RESUMEYN
 suffix = SUFFIX
 

@@ -21,6 +21,7 @@ plot_prefix = KerrSFp_
 plot_interval = 10
 start_number = 2430
 end_number = 2430
+dt_multiplier = 0.0625
 resume = 0
 suffix = _n002430_r_plus_to_500_nphi64_ntheta64_theta_max0.99
 

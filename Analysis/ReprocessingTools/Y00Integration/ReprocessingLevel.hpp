@@ -38,6 +38,8 @@ class ReprocessingLevel : public GRAMRLevel
         } else {
                 m_first_step = 0;
         }
+	pout() << "m_p.dt_multiplier = " << m_p.dt_multiplier << endl;
+	pout() << "m_p.coarsest_dx = " << m_p.coarsest_dx << endl;
 	pout() << "m_first_step = " << m_first_step << endl;
 	pout() << "m_p.resume = " << m_p.resume << endl;
 
