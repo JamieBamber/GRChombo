@@ -55,8 +55,6 @@ def analytic_flux(t, R, l, m, a, mu, cumulative):
 		\int Ylm Ylm^* cos(2 theta) dtheta dphi = 1 
 	# """
 	if not cumulative:
-		
-
                 F0=(m*tau)/2+1/2*m*np.sin(tau)*np.cos(tau)
                 F1=1/2*m*tau*(L-np.cos(2*tau))-1/4*(L-1)*m*np.sin(2*tau)
                 F2=(m*tau*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m+3*(L-1)*mu*np.cos(2*tau)-4*L*mu))/(4*mu)+(m*np.sin(2*tau)*(-3*a**2*mu*cos2theta-7*a**2*mu-12*a*m+(L+3)*mu))/(8*mu)-m*tau**2*np.sin($

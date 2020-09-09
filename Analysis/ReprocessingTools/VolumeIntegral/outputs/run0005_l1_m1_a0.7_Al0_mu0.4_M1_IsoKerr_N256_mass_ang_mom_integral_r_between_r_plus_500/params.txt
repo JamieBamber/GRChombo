@@ -41,7 +41,8 @@ max_integration_radius = 500
 # linear_or_log = LINLOG		#!< use linear or log spacing for radii array. Linear = 1, Log = 0 
 
 # From here it is mostly dummy params
-verbosity = 0
+verbosity = 1
+nan_check = 1
 regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
 max_grid_size = 16
 block_factor = 16
