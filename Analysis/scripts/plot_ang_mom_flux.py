@@ -26,8 +26,8 @@ R_min = 5
 R_max = 500
 average_time = False
 av_n = 1
-plot_mass=False
-cumulative=True
+plot_ang_mom=False
+cumulative=False
 
 # appropriate \int Ylm Ylm^* cos(2 theta) dtheta dphi factor for 0 <= l <= 10
 cos2theta_integrals = [[-(1/3)],[1/5,-(3/5)],[1/21,-(1/7),-(5/7)],\
@@ -55,19 +55,19 @@ def analytic_flux(t, R, l, m, a, mu, cumulative):
 		\int Ylm Ylm^* cos(2 theta) dtheta dphi = 1 
 	# """
 	if not cumulative:
-                F0=(m*tau)/2+1/2*m*np.sin(tau)*np.cos(tau)
-                F1=1/2*m*tau*(L-np.cos(2*tau))-1/4*(L-1)*m*np.sin(2*tau)
-                F2=(m*tau*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m+3*(L-1)*mu*np.cos(2*tau)-4*L*mu))/(4*mu)+(m*np.sin(2*tau)*(-3*a**2*mu*cos2theta-7*a**2*mu-12*a*m+(L+3)*mu))/(8*mu)-m*tau**2*np.sin($
-                F3=(1/(2*mu))*m*tau*(-3*a**2*mu*cos2theta-mu*(a**2+2*L-5)*np.cos(2*tau)+mu*(a**2*(L-11)-L+10)-12*a*m)+(m*np.sin(2*tau)*(3*a**2*mu*cos2theta+a**2*(-(L-12))*mu+12*a*m+3*(L-5)*mu))/($
-                F4=-(1/(24*mu))*m*tau**3*(3*a**2*mu*cos2theta+mu*(9*a**2+L*(3*L+14)-35)+12*a*m+(L+5)*mu*np.cos(2*tau))-(m*tau**2*np.sin(2*tau)*(a**2*mu*cos2theta+mu*(11*a**2+L*(L+3)-20)+4*a*m))/($
-        elif cumulative:
-                F0=(m*tau**2)/(4*mu)+(m*(np.sin(tau)**2))/(4*mu)
-                F1=(L*m*tau**2)/(4*mu)-((L-2)*m*(np.sin(tau)**2))/(4*mu)-(m*tau*np.sin(tau)*np.cos(tau))/(2*mu)
-                F2=(m*tau**2*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m-4*L*mu+2*mu*np.cos(2*tau)))/(8*mu**2)-(m*(np.sin(tau)**2)*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m+2*(L-4)*mu))/(8*mu**2)+((3*L-5)*$
-                F3=-((m*tau**2*(6*a**2*mu*cos2theta+2*mu*(a**2*(-(L-11))+L-10)+24*a*m+L*mu*np.cos(2*tau)))/(8*mu**2))+(m*(np.sin(tau)**2)*(6*a**2*mu*cos2theta-2*a**2*(L-13)*mu+24*a*m+(9*L-40)*mu)$
-                F4=-((m*tau**4*(3*a**2*mu*cos2theta+mu*(9*a**2+L*(3*L+14)-35)+12*a*m+mu*np.cos(2*tau)))/(96*mu**2))-(m*tau*np.sin(2*tau)*(3*a**2*mu*cos2theta+3*a**2*(15-4*L)*mu+12*a*m+(L*(3*L+10)$
-        Flux = F0 + F1/r + F2/r**2 + F3/r**3 + F4/r**4
-        return Flux
+		F0=-(m*tau)/2+1/2*m*np.sin(tau)*np.cos(tau)
+		F1=1/2*m*tau*(L-np.cos(2*tau))-1/4*(L-1)*m*np.sin(2*tau)
+		F2=(m*tau*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m+3*(L-1)*mu*np.cos(2*tau)-4*L*mu))/(4*mu)+(m*np.sin(2*tau)*(-3*a**2*mu*cos2theta-7*a**2*mu-12*a*m+(L+3)*mu))/(8*mu)-m*tau**2*np.sin(tau)*np.cos(tau)
+		F3=(1/(2*mu))*m*tau*(-3*a**2*mu*cos2theta-mu*(a**2+2*L-5)*np.cos(2*tau)+mu*(a**2*(L-11)-L+10)-12*a*m)+(m*np.sin(2*tau)*(3*a**2*mu*cos2theta+a**2*(-(L-12))*mu+12*a*m+3*(L-5)*mu))/(4*mu)+1/6*m*tau**3*(3*L+np.cos(2*tau)-4)+1/4*(L+1)*m*tau**2*np.sin(2*tau)
+		F4=-(1/(24*mu))*m*tau**3*(3*a**2*mu*cos2theta+mu*(9*a**2+L*(3*L+14)-35)+12*a*m+(L+5)*mu*np.cos(2*tau))-(m*tau**2*np.sin(2*tau)*(a**2*mu*cos2theta+mu*(11*a**2+L*(L+3)-20)+4*a*m))/(16*mu)+(1/(4*mu))*tau*(a**2*m*(3*a**2*mu*cos2theta+9*a**2*mu+12*a*m+(3*L-7)*mu*np.cos(2*tau)-8*mu)+m*(np.sin(tau)**2)*(a**2*mu*cos2theta+mu*(3*a**2+L*(L+4)-15)+4*a*m))-(3*a**2*m*np.sin(tau)*np.cos(tau)*(a**2*mu*cos2theta+mu*(3*a**2+L-5)+4*a*m))/(4*mu)-(m*tau**5)/24+1/48*m*tau**4*np.sin(2*tau)
+	elif cumulative:
+		F0=-(m*tau**2)/4+1/4*m*(np.sin(tau)**2)
+		F1=1/4*L*m*tau**2-1/4*(L-2)*m*(np.sin(tau)**2)-1/2*m*tau*np.sin(tau)*np.cos(tau)
+		F2=(m*tau**2*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m-4*L*mu+2*mu*np.cos(2*tau)))/(8*mu)-(m*(np.sin(tau)**2)*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m+2*(L-4)*mu))/(8*mu)+1/8*(3*L-5)*m*tau*np.sin(2*tau)
+		F3=-((m*tau**2*(6*a**2*mu*cos2theta+2*mu*(a**2*(-(L-11))+L-10)+24*a*m+L*mu*np.cos(2*tau)))/(8*mu))+(m*(np.sin(tau)**2)*(6*a**2*mu*cos2theta-2*a**2*(L-13)*mu+24*a*m+(9*L-40)*mu))/(8*mu)-1/8*m*tau*(2*a**2+3*L-10)*np.sin(2*tau)+1/24*(3*L-4)*m*tau**4+1/6*m*tau**3*np.sin(tau)*np.cos(tau)
+		F4=-((m*tau**4*(3*a**2*mu*cos2theta+mu*(9*a**2+L*(3*L+14)-35)+12*a*m+mu*np.cos(2*tau)))/(96*mu))-(m*tau*np.sin(2*tau)*(3*a**2*mu*cos2theta+3*a**2*(15-4*L)*mu+12*a*m+(L*(3*L+10)-54)*mu))/(32*mu)+(1/(32*mu))*m*tau**2*(8*(6*a**3+a)*m+a**2*mu*cos2theta*(12*a**2+np.cos(2*tau)+2)+np.cos(2*tau)*(11*a**2*mu+4*a*m+(L-4)*(L+6)*mu)+2*mu*(18*a**4-13*a**2+L*(L+4)-15))+(1/(32*mu))*m*(np.sin(tau)**2)*(-36*a**4*mu-48*a**3*m+3*(1-4*a**2)*a**2*mu*cos2theta+3*a**2*(35-8*L)*mu+12*a*m+(L*(3*L+10)-54)*mu)-1/48*(L+4)*m*tau**3*np.sin(2*tau)-(m*tau**6)/144
+	Flux = -(F0 + F1/r + F2/r**2 + F3/r**3 + F4/r**4)
+	return Flux
 
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, suffix):
@@ -88,14 +88,14 @@ class data_dir:
 		flux_data = np.genfromtxt(file_name, skip_header=1)
 		print("loaded " + file_name)
 		mu = float(self.mu)
-		self.tflux = flux_data[1:,0]
+		self.tflux = flux_data[1:,0]*mu
 		self.r_min = flux_data[0,1]
 		self.r_max = flux_data[0,2]
 		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
 		self.inner_ang_mom_flux = -flux_data[1:,1]/E0
 		self.outer_ang_mom_flux = -flux_data[1:,2]/E0	
 		if cumulative:
-			dt = self.tflux[2] - self.tflux[1]
+			dt = (flux_data[2,0] - flux_data[1,0])
 			#inner_ang_mom_flux = np.cumsum(inner_ang_mom_flux)*dt
 			self.outer_ang_mom_flux = np.cumsum(self.outer_ang_mom_flux)*dt
 		self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
@@ -104,11 +104,11 @@ class data_dir:
 			self.ang_mom_data = np.genfromtxt(file_name, skip_header=1)
 			print("loaded " + file_name)
 			if cumulative:
-				self.tang_mom = ang_mom_data[1:,0]
+				self.tang_mom = ang_mom_data[1:,0]*mu
 				self.dang_mom = (ang_mom_data[1:,1] - ang_mom_data[0,1])/E0
 			elif not cumulative:
 				self.tang_mom = ang_mom_line_data[:-1,0]
-				dt = tang_mom[1] - tang_mom[0]
+				dt = ang_mom_data[2,0] - ang_mom_data[1,0]
 				self.tang_mom_mean = 0.5*(self.tang_mom[1:]+self.tang_mom[:-1])
 				self.dang_mom = (ang_mom_line_data[1:,1] - ang_mom_line_data[:-1,1])/(E0*dt)
 				
@@ -135,26 +135,28 @@ run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
-#add_data_dir(2, 0, 0, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(7, 2, 2, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(8, 4, 4, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(9, 1, -1, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
+add_data_dir(2, 0, 0, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
+add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
+add_data_dir(7, 2, 2, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
+add_data_dir(8, 4, 4, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
+add_data_dir(9, 1, -1, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
+add_data_dir(10, 8, 8, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
+
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 
-add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
+#add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
 #add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max0.99")
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
+#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max0.99")
+#add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
 
 def plot_graph():
 	# plot setup
 	ax1 = plt.axes()
 	fig = plt.gcf()
 	fig.set_size_inches(3.8,3)
-	font_size = 5
-	title_font_size = 7
-	label_size = 9
+	font_size = 10
+	title_font_size = 10
+	label_size = 10
 	legend_font_size = 8
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
@@ -166,8 +168,8 @@ def plot_graph():
 		dd.load_data()
 		#net_flux = outer_ang_mom_flux - inner_ang_mom_flux
 		#label_ = "$\\mu$={:.2f}".format(mu)
-		#label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
-		label_ = "$m$={:d} $\\alpha$={:s}".format(dd.m, dd.Al)
+		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
+		#label_ = "$m$={:d} $\\alpha$={:s}".format(dd.m, dd.Al)
 		#ax1.plot(dd.tflux,dd.inner_ang_mom_flux,colours[i]+":", label="flux into $R_+$ "+label_)
 		ax1.plot(dd.tflux,dd.outer_ang_mom_flux,colours[i]+"-", label=label_, linewidth=1)
 		ax1.plot(dd.tflux,dd.analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
@@ -178,17 +180,17 @@ def plot_graph():
 			elif not cumulative:
 				ax1.plot(dd.tang_mom,dd.dang_mom,colours[i]+"-.", label="_rate of change in ang_mom $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
-	ax1.set_xlabel("$t$", fontsize=label_size)
+	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	#ax1.set_xlim((0, 200))
 	#ax1.set_ylim((0, 0.00001))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
-		ax1.set_title("Cumulative ang. mom. flux, $M=1$, $\\mu=0.4$, $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
-		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_Al.png".format(R_max)
+		ax1.set_title("Cumulative ang. mom. flux, $M=1$, $\\chi=0.7$, $\\mu=0.4$", wrap=True, fontsize=title_font_size)
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
-		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $l=1$")
-		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_Al.png".format(R_max)
+		plt.title("Mass flux, $M=1$, $\\chi=0.7$, $\\mu=0.4$")
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
 	ax1.legend(loc='upper left', fontsize=legend_font_size)
 	plt.tight_layout()
 	plt.savefig(save_path)
