@@ -62,12 +62,14 @@ run0020=(1 1 0.7 0 0.1 0.25)
 
 
 run_list=(
-	run0020
+	run0009
+	run0016
 )
 
 params_file=params_v2.txt
-plot_interval=5
-N1=128
+plot_interval=10
+L=1024
+N1=256
 
 for run in "${run_list[@]}"
 do
@@ -84,6 +86,7 @@ do
 
 	# text_number=$(printf "%04d" ${run_number})
 	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
+	#_N$N1
 	echo ${new_dir}
 	new_dir_path=${data_directory}/${new_dir}
 	#
@@ -97,8 +100,11 @@ do
 	sed -i "s|DATASUBDIR|${new_dir}|" ${new_dir_path}/params.txt
 	sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/slurm_submit
 	sed -i "s|JOBNAME|${run}KS|" ${new_dir_path}/slurm_submit
+	sed -i "s|BOXLENGTH|${L}|" ${new_dir_path}/params.txt
+	sed -i "s|CENTERX|$(($L/2))|" ${new_dir_path}/params.txt
+	sed -i "s|CENTERY|$(($L/2))|" ${new_dir_path}/params.txt
 	sed -i "s|SCALARL|${l}|" ${new_dir_path}/params.txt
-	sed -i "s|SCALARM|${l}|" ${new_dir_path}/params.txt
+	sed -i "s|SCALARM|${m}|" ${new_dir_path}/params.txt
 	sed -i "s|BHSPIN|${a}|" ${new_dir_path}/params.txt
 	sed -i "s|ALANGLE|${Al}|" ${new_dir_path}/params.txt
 	sed -i "s|MUVAL|${mu}|" ${new_dir_path}/params.txt
@@ -109,11 +115,11 @@ do
 	if (( $(echo "$Al > 0.0" |bc -l) )); then
 		echo "Al = $Al so full box"
 		sed -i "s|NSPACE3|${N1}|" ${new_dir_path}/params.txt
-		sed -i "s|CENTERZ|512.0|" ${new_dir_path}/params.txt
+		sed -i "s|CENTERZ|$(($L/2))|" ${new_dir_path}/params.txt
 		sed -i "s|ZBOUND|3|" ${new_dir_path}/params.txt
 	else
 		echo "Al = $Al so half box"
-		sed -i "s|NSPACE3|64|" ${new_dir_path}/params.txt
+		sed -i "s|NSPACE3|$(($N1/2))|" ${new_dir_path}/params.txt
                 sed -i "s|CENTERZ|0.0|" ${new_dir_path}/params.txt
                 sed -i "s|ZBOUND|2|" ${new_dir_path}/params.txt
 	fi

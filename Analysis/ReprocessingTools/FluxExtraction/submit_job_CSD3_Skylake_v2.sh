@@ -9,9 +9,10 @@ end_number=20000
 lin_or_log=1 # note 0 = log, 1 = linear
 
 nphi=64
-ntheta=64
-theta_max=0.99
-max_radius=500
+ntheta=18
+theta_max=1.0
+max_radius=300
+N1=128
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -46,10 +47,30 @@ run0020=(1 1 0.7 0 0.1 0.25)
 plot_interval=10
 #var_index=6
 
+#	run0001
+#	run0002
+#	run0003
+#	run0004
+#	run0005
+#	run0006
+#	run0007
+#	run0008
+#	run0009
+#	run0010
+#	run0011
+#	run0012
+#	run0013
+#	run0014
+#	run0015
+#	run0016
+#	run0017
+#	run0018
+#	run0019
+#	run0020
+
 # specify runs to submit
 run_list=(
-	run0002
-	run0016
+	run0005
 )
 
 ## loop over subdirs
@@ -111,13 +132,13 @@ do
 	# half box or full box?
         if (( $(echo "$Al > 0.0" |bc -l) )); then
                 echo "Al = $Al so full box"
-                sed -i "s|NSPACE3|128|" params.txt
+                sed -i "s|NSPACE3|$N1|" params.txt
                 sed -i "s|CENTERZ|512.0|" params.txt
                 sed -i "s|ZBOUND|3|" params.txt
 		sed -i "s|THETAMAX|2.0|" params.txt
         else
             	echo "Al = $Al so half box"
-                sed -i "s|NSPACE3|64|" params.txt
+                sed -i "s|NSPACE3|$(($N1/2))|" params.txt
                 sed -i "s|CENTERZ|0.0|" params.txt
                 sed -i "s|ZBOUND|2|" params.txt
 		sed -i "s|THETAMAX|${theta_max}|" params.txt
