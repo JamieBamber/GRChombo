@@ -71,7 +71,7 @@ do
 	echo "mu = " ${mu}
 	echo "min_radius = " ${min_radius}
 
-	suffix=_in_r_plus_to_${max_radius}
+	suffix=_r_plus_to_${max_radius}
 
         #dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
         echo "dt_multiplier = " ${dt_mult}

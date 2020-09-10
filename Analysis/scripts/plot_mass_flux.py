@@ -29,7 +29,7 @@ average_time = False
 av_n = 1
 plot_mass=False
 cumulative=True
-Theta_max="0.97"
+Theta_max="0.99"
 Ntheta=64
 Nphi=64
 
@@ -97,7 +97,7 @@ def analytic_flux(t, R, l, m, a, mu, cumulative):
 	return result"""
 
 class data_dir:
-	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, suffix):
+	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, theta_max, N):
 		self.num = num
 		self.l = l
 		self.m = m
@@ -105,13 +105,18 @@ class data_dir:
 		self.mu = float(mu)
 		self.nphi = nphi
 		self.ntheta = ntheta
-		self.suffix = suffix
 		self.Al = float(Al)
-		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, Al, mu)
+		self.theta_max = theta_max 
+		self.N = N
+		if (N==128):
+			Nfix = ""
+		else:
+			Nfix = "_N{:d}".format(N)
+		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr{:s}".format(num, l, m, a, Al, mu, Nfix)
 	#
 	def load_data(self):
 		# load flux and mass data from csv files	
-		file_name = home_path + output_dir + "/" + self.name + "_J_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}{:s}.dat".format(R_max, self.nphi, self.ntheta, self.suffix)
+		file_name = home_path + output_dir + "/" + self.name + "_J_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:s}.dat".format(R_max, self.nphi, self.ntheta, self.theta_max)
 		flux_data = np.genfromtxt(file_name, skip_header=1)
 		print("loaded " + file_name)
 		mu = float(self.mu)
@@ -128,20 +133,20 @@ class data_dir:
 		self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
 		if plot_mass:
 			file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_r_plus_to_{:d}.dat".format(self.name, R_max)
-			self.mass_data = np.genfromtxt(file_name, skip_header=1)
+			mass_data = np.genfromtxt(file_name, skip_header=1)
 			print("loaded " + file_name)
 			if cumulative:
 				self.tmass = mass_data[1:,0]
 				self.dmass = (mass_data[1:,1] - mass_data[0,1])/E0
 			elif not cumulative:
-				self.tmass = mass_line_data[:-1,0]
+				self.tmass = mass_data[:-1,0]
 				dt = tmass[1] - tmass[0]
 				self.tmass_mean = 0.5*(self.tmass[1:]+self.tmass[:-1])
-				self.dmass = (mass_line_data[1:,1] - mass_line_data[:-1,1])/(E0*dt)
+				self.dmass = (mass_data[1:,1] - mass_data[:-1,1])/(E0*dt)
 				
 data_dirs = []
-def add_data_dir(num, l, m, a, mu, Al, nphi=Nphi, ntheta=Ntheta, suffix="_theta_max" + Theta_max):
-        x = data_dir(num, l, m, a, mu, Al, nphi, ntheta, suffix)
+def add_data_dir(num, l, m, a, mu, Al="0", nphi=Nphi, ntheta=Ntheta, theta_max=Theta_max, N=128):
+        x = data_dir(num, l, m, a, mu, Al, nphi, ntheta, theta_max, N)
         data_dirs.append(x)
 
 # choose datasets to compare
@@ -162,17 +167,17 @@ run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
-#add_data_dir(2, 0, 0, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(7, 2, 2, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(8, 4, 4, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(9, 1, -1, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
+#add_data_dir(2, 0, 0, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(7, 2, 2, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(8, 4, 4, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(9, 1, -1, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "0.99")
 
-add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max0.99")
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
+add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "0.99")
+add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "0.99")
+add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "0.99")
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "0.99")
 
 def plot_graph():
 	# plot setup
@@ -203,9 +208,6 @@ def plot_graph():
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
-			mass_line_data = mass_data[dd.num]
-			#print(mass_line_data[0:,1])
-			#ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass {:.1f}$<r<${:.1f} ".format(r_min,r_max)+label_)
 			if cumulative:
 				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+"-.", label="_change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 			elif not cumulative:
@@ -215,12 +217,12 @@ def plot_graph():
 	#ax1.set_xlim((0, 75))
 	#ax1.set_ylim((-1.0, 1.0))
 	if cumulative:
-		ax1.set_ylabel("cumulative flux / $E_0 \\times 10^{-5}$", fontsize=label_size)
+		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 		ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, $\\chi=0.7$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
-		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $\\chi=0.7$")
+		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $\\chi=0.7$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
 	ax1.legend(loc='best', fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
