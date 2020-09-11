@@ -214,7 +214,7 @@ def plot_graph():
 		i = i + 1
 	ax1.set_xlabel("$t$", fontsize=label_size)
 	ax1.set_xlim((0, 512))
-	ax1.set_ylim((-0.001, 0.005))
+	ax1.set_ylim((0.0, 0.015))
 	if cumulative:
 		#ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
 		ax1.set_ylabel("cumulative flux / $E_0$") # \\frac{1}{2} \\varphi^2_0$")
