@@ -91,7 +91,7 @@ class data_dir:
 		self.tflux = flux_data[1:,0]
 		self.r_min = flux_data[0,1]
 		self.r_max = flux_data[0,2]
-		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0)**2
+		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
 		self.inner_ang_mom_flux = -flux_data[1:,1]/E0
 		self.outer_ang_mom_flux = -flux_data[1:,2]/E0	
 		if cumulative:
@@ -188,7 +188,8 @@ def plot_graph():
 	ax1.set_xlim((0, 512))
 	ax1.set_ylim((-0.002, 0.01))
 	if cumulative:
-		ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
+		#ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
+		ax1.set_ylabel("cumulative flux / $E_0$") # \\frac{1}{2} \\varphi^2_0$")
 		plt.title("Cumulative ang. mom. flux, $M=1$, \n $a=0.7$, $l=m=1$", fontsize=title_font_size)
 		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative_vs_t.png".format(R_max)
 	else:
