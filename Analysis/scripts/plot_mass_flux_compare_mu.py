@@ -31,6 +31,7 @@ cumulative=True
 Theta_max="1.0"
 Ntheta=18
 Nphi=64
+tau_or_t=True
 
 # appropriate \int Ylm Ylm^* cos(2 theta) sin(theta) dtheta dphi factor for 0 <= l <= 10
 cos2theta_integrals = [[-(1/3)],[1/5,-(3/5)],[1/21,-(1/7),-(5/7)],\
@@ -117,7 +118,10 @@ class data_dir:
 		self.tflux = flux_data[1:,0]
 		self.r_min = flux_data[0,1]
 		self.r_max = flux_data[0,2]
-		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
+		if tau_or_t:
+			E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0)**2		
+		else:
+			E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
 		self.inner_mass_flux = -flux_data[1:,1]/(E0)
 		self.outer_mass_flux = -flux_data[1:,2]/(E0)	
 		if cumulative:
@@ -137,6 +141,10 @@ class data_dir:
 				dt = tmass[1] - tmass[0]
 				self.tmass_mean = 0.5*(self.tmass[1:]+self.tmass[:-1])
 				self.dmass = (mass_line_data[1:,1] - mass_line_data[:-1,1])/(E0*dt)
+			if tau_or_t:
+				self.tmass = self.tmass*mu
+		if tau_or_t:
+			self.tflux = self.tflux*mu
 				
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, Al, nphi=Nphi, ntheta=Ntheta, suffix="_theta_max" + Theta_max):
@@ -212,14 +220,24 @@ def plot_graph():
 			elif not cumulative:
 				ax1.plot(dd.tmass,dd.dmass,colours[i]+"-.", label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
-	ax1.set_xlabel("$t$", fontsize=label_size)
-	ax1.set_xlim((0, 512))
-	ax1.set_ylim((0.0, 0.015))
+	if tau_or_t:
+		ax1.set_xlabel("$\\tau$", fontsize=label_size)
+	else:
+		ax1.set_xlabel("$t$", fontsize=label_size)
+	if tau_or_t:
+		ax1.set_xlim((0, 512))
+		ax1.set_ylim((0.0, 0.015))
+	else:
+		ax1.set_xlim((0, 512))
+		ax1.set_ylim((0.0, 0.015))
 	if cumulative:
-		#ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
-		ax1.set_ylabel("cumulative flux / $E_0$") # \\frac{1}{2} \\varphi^2_0$")
+		if tau_or_t:
+			ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative.png".format(R_max)
+		else:
+			ax1.set_ylabel("cumulative flux / $E_0$") # \\frac{1}{2} \\varphi^2_0$")
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative_vs_t.png".format(R_max)
 		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative_vs_t.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
