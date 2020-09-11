@@ -61,7 +61,7 @@ class data_dir:
 		r_plus = M*(1 + np.sqrt(1 - self.a**2))
 		self.r = R*(1 + r_plus/(4*R))**2
 		self.time = data[1:,0]
-		phi = data[1:,1:]
+		phi = 0.5*data[1:,1:]
 		self.phi = phi/phi0
 		
 data_dirs = []
@@ -216,7 +216,7 @@ def plot_graph(N):
 	impose_comb_solution(ax1, dd, N, (1, 0, 0.24), colours2[0])
 	#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
-		plt.ylabel("$\\log_{10}(\\phi_{lm}/\\phi_0)$", fontsize=label_size)
+		plt.ylabel("$\\log_{10}(|\\phi_{lm}|/\\phi_0)$", fontsize=label_size)
 	else:
 		plt.ylabel("$|\\phi_{lm}|/\\phi_0$", fontsize=label_size)
 	if (lin_or_log):
@@ -236,7 +236,7 @@ def plot_graph(N):
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	#dd0 = data_dirs[0]
-	title = "$\\phi_{lm}$" + " profile M=1, $\\mu$=0.4, time = {:.1f}".format(dd.time[N]) 
+	title = "$|\\phi_{lm}|$" + " profile M=1, $\\mu$=0.4, time = {:.1f}".format(dd.time[N]) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	save_name = plots_root_path + movie_folder_name + "/frame_{:06d}.png".format(N)
