@@ -24,11 +24,15 @@ half_box = True
 KS_or_cartesian_r=True
 phi0 = 0.1
 R_min = 5
-R_max = 500
+R_max = 300
 average_time = False
 av_n = 1
 plot_mass=False
 cumulative=True
+diff_from_alpha0=1
+Nphi=64
+Ntheta=18
+Theta_max="1.0"
 
 # appropriate \int Ylm Ylm^* cos(2 theta) sin(theta) dtheta dphi factor for 0 <= l <= 10
 cos2theta_integrals = [[-(1/3)],[1/5,-(3/5)],[1/21,-(1/7),-(5/7)],\
@@ -169,10 +173,10 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 #add_data_dir(9, 1, -1, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 
-add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max0.99")
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
+add_data_dir(6, 1, 1, "0.99", "0.4", "0", Nphi, Ntheta, "_theta_max"+Theta_max)
+add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, "_theta_max"+Theta_max)
+add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 264, 264, "_theta_max"+Theta_max) 
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 264, 264, "_theta_max"+Theta_max)
 
 def plot_graph():
 	# plot setup
@@ -201,8 +205,8 @@ def plot_graph():
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
 		ds_length = min(len(dd.outer_mass_flux), len(dd0.outer_mass_flux))
-		ax1.plot(dd.tflux[:ds_length]*mu,(10**5)*(dd.outer_mass_flux[:ds_length]-dd0.outer_mass_flux[:ds_length]),colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(dd.tflux[:ds_length]*mu,(10**5)*(dd.analytic_outer_flux[:ds_length]-dd0.analytic_outer_flux[:ds_length]),colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+		ax1.plot(dd.tflux[:ds_length]*mu,(10**(5*diff_from_alpha0))*(dd.outer_mass_flux[:ds_length]-dd0.outer_mass_flux[:ds_length]*diff_from_alpha0),colours[i]+"-", label=label_, linewidth=1)
+		ax1.plot(dd.tflux[:ds_length]*mu,(10**(5*diff_from_alpha0))*(dd.analytic_outer_flux[:ds_length]-dd0.analytic_outer_flux[:ds_length]*diff_from_alpha0),colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
@@ -215,16 +219,28 @@ def plot_graph():
 				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+"-.", label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	ax1.set_xlim((0, 75))
-	ax1.set_ylim((-1.0, 1.0))
-	if cumulative:
-		ax1.set_ylabel("cumulative flux / $E_0 \\times 10^{-5}$", fontsize=label_size)
-		ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, \n $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1.png".format(R_max)
+	ax1.set_xlim((0, 300))
+	if diff_from_alpha0:
+		ax1.set_ylim((-0.1, 0.75))
 	else:
-		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
+		ax1.set_ylim((0.0, 0.02))
+	if cumulative:
+		if diff_from_alpha0:
+			ax1.set_ylabel("cumulative flux / $E_0 \\times 10^{-5}$", fontsize=label_size)
+			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, \n $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1.png".format(R_max)
+		else:
+			ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
+			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$,$l=|m|=1$", wrap=True, fontsize=title_font_size)			
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.png".format(R_max)
+	else:
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $l=1$")
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al.png".format(R_max)
+		if diff_from_alpha0:
+			ax1.set_ylabel("flux / $E_0 \\times 10^{-5}$", fontsize=label_size)
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1.png".format(R_max)
+		else:
+			ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al.png".format(R_max)			
 	ax1.legend(loc='upper left', fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)

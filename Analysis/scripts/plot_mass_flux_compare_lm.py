@@ -27,9 +27,9 @@ R_max = 300
 average_time = False
 av_n = 1
 plot_mass=False
-cumulative=False
-Theta_max="0.98"
-Ntheta=64
+cumulative=True
+Theta_max="1.0"
+Ntheta=18
 Nphi=64
 
 # appropriate \int Ylm Ylm^* cos(2 theta) sin(theta) dtheta dphi factor for 0 <= l <= 10
@@ -118,8 +118,8 @@ class data_dir:
 		self.r_min = flux_data[0,1]
 		self.r_max = flux_data[0,2]
 		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
-		self.inner_mass_flux = -flux_data[1:,1]/(E0*float(Theta_max))
-		self.outer_mass_flux = -flux_data[1:,2]/(E0*float(Theta_max))	
+		self.inner_mass_flux = -flux_data[1:,1]/(E0)
+		self.outer_mass_flux = -flux_data[1:,2]/(E0)	
 		if cumulative:
 			dt = self.tflux[2] - self.tflux[1]
 			#inner_mass_flux = np.cumsum(inner_mass_flux)*dt
@@ -161,12 +161,12 @@ run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
-#add_data_dir(2, 0, 0, "0.7", "0.4", "0")
+add_data_dir(2, 0, 0, "0.7", "0.4", "0")
 add_data_dir(5, 1, 1, "0.7", "0.4", "0")
-#add_data_dir(7, 2, 2, "0.7", "0.4", "0")
-#add_data_dir(8, 4, 4, "0.7", "0.4", "0")
-#add_data_dir(10, 8, 8, "0.7", "0.4", "0")
-#add_data_dir(9, 1, -1, "0.7", "0.4", "0")
+add_data_dir(7, 2, 2, "0.7", "0.4", "0")
+add_data_dir(8, 4, 4, "0.7", "0.4", "0")
+add_data_dir(10, 8, 8, "0.7", "0.4", "0")
+add_data_dir(9, 1, -1, "0.7", "0.4", "0")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 #add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
 #add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
@@ -181,7 +181,7 @@ def plot_graph():
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
-	legend_font_size = 10
+	legend_font_size = 8
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
@@ -211,17 +211,17 @@ def plot_graph():
 				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+"-.", label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	#ax1.set_xlim((0, 75))
-	#ax1.set_ylim((-1.0, 1.0))
+	ax1.set_xlim((0, 500))
+	ax1.set_ylim((-0.15, 0.15))
 	if cumulative:
-		ax1.set_ylabel("cumulative flux / $E_0 \\times 10^{-5}$", fontsize=label_size)
+		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 		ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, $\\chi=0.7$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $\\chi=0.7$")
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
-	ax1.legend(loc='best', fontsize=legend_font_size)
+	ax1.legend(loc='upper left', ncol=2, fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()
