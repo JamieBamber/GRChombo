@@ -4,7 +4,7 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/YlmIntegration
 
-start_number=2050
+start_number=3480
 end_number=10000
 lin_or_log=0 # note 0 = log, 1 = linear
 resume=1 # resume previous integration run?

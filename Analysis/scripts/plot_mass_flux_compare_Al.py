@@ -29,7 +29,7 @@ average_time = False
 av_n = 1
 plot_mass=False
 cumulative=True
-diff_from_alpha0=1
+diff_from_alpha0=0
 Nphi=64
 Ntheta=18
 Theta_max="1.0"
@@ -223,7 +223,7 @@ def plot_graph():
 	if diff_from_alpha0:
 		ax1.set_ylim((-0.1, 0.75))
 	else:
-		ax1.set_ylim((0.0, 0.02))
+		ax1.set_ylim((0.0, 0.035))
 	if cumulative:
 		if diff_from_alpha0:
 			ax1.set_ylabel("cumulative flux / $E_0 \\times 10^{-5}$", fontsize=label_size)
