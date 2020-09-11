@@ -31,7 +31,7 @@ if (lin_or_log):
 else:
 	scale = "log"
 
-log_y = False
+log_y = True
 
 movie_folder_name = "run0005_phi_profile_vs_Heun_" + scale + "_movie"
 
@@ -165,8 +165,7 @@ def fit_comb_solution(ax, dd, N, p0_, colour):
 	ax.plot(x, y, colour + "--", label="fitted Heun sol. ampl(in)={:.2f} ampl(out)={:.2f} \n phase={:.2f} l={:d} m={:d} a={:.2f}".format(A_in, A_out, phase, dd.l, dd.m, dd.a), linewidth=1)
 
 def impose_comb_solution(ax, dd, N, p0, colour):
-	t = dd.time[N]
-	phi = dd.phi[N,:]
+	t = 0
 	def Stationary_sol_fit(r, A_in, A_out, phase):
 		phase_in = phase
 		phase_out = phase
@@ -232,7 +231,7 @@ def plot_graph(N):
 	#	plt.xlim((r_plus_min, 100))
 	#else :
 	#	plt.xlim(left=np.log10(r_plus_min))
-	plt.ylim((0, 15))
+	plt.ylim((-2, 2))
 	ax1.legend(loc="best", fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
