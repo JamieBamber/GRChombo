@@ -175,26 +175,26 @@ def plot_graph():
 		#label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
 		#label_ = "$m$={:d} $\\alpha$={:s}".format(dd.m, dd.Al)
 		#ax1.plot(dd.tflux,dd.inner_ang_mom_flux,colours[i]+":", label="flux into $R_+$ "+label_)
-		ax1.plot(dd.tflux*mu,dd.outer_ang_mom_flux,colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(dd.tflux*mu,dd.analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+		ax1.plot(dd.tflux,dd.outer_ang_mom_flux,colours[i]+"-", label=label_, linewidth=1)
+		ax1.plot(dd.tflux,dd.analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#
 		if plot_ang_mom:
 			if cumulative:
-				ax1.plot(dd.tang_mom*mu,dd.dang_mom,colours[i]+"-.", label="_change in ang_mom $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
+				ax1.plot(dd.tang_mom,dd.dang_mom,colours[i]+"-.", label="_change in ang_mom $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 			elif not cumulative:
-				ax1.plot(dd.tang_mom*mu,dd.dang_mom,colours[i]+"-.", label="_rate of change in ang_mom $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
+				ax1.plot(dd.tang_mom,dd.dang_mom,colours[i]+"-.", label="_rate of change in ang_mom $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
-	ax1.set_xlabel("$\\tau$", fontsize=label_size)
+	ax1.set_xlabel("$t$", fontsize=label_size)
 	ax1.set_xlim((0, 300))
 	ax1.set_ylim((-0.002, 0.01))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
 		plt.title("Cumulative ang. mom. flux, $M=1$, \n $a=0.7$, $l=m=1$", fontsize=title_font_size)
-		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative.png".format(R_max)
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative_vs_t.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Ang. mom. flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
-		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_mu.png".format(R_max)
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_mu_vs_t.png".format(R_max)
 	ax1.legend(loc='best', fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
