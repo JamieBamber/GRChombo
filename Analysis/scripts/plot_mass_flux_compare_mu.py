@@ -225,8 +225,8 @@ def plot_graph():
 	else:
 		ax1.set_xlabel("$t$", fontsize=label_size)
 	if tau_or_t:
-		ax1.set_xlim((0, 512))
-		ax1.set_ylim((0.0, 0.015))
+		ax1.set_xlim((0, 350))
+		ax1.set_ylim((0.0, 0.0075))
 	else:
 		ax1.set_xlim((0, 512))
 		ax1.set_ylim((0.0, 0.015))

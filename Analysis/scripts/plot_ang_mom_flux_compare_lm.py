@@ -182,7 +182,7 @@ def plot_graph():
 				ax1.plot(dd.tang_mom*mu,dd.dang_mom,colours[i]+"-.", label="_rate of change in ang_mom $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	ax1.set_xlim((0, 300))
+	ax1.set_xlim((0, 350))
 	ax1.set_ylim((-0.7, 0.25))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
