@@ -45,7 +45,7 @@ ax1.plot(q0, L, 'r-', label="particle in a circular orbit")
 for i in range(0,len(Mmu_list)):
 	Mmu = Mmu_list[i]
 	Lexp = field_Lz(q0, Mmu, a, 1)
-	ax1.plot(q0, Lexp, colours[i], label="$\\mu=${:.2f}".format(Mmu)) 
+	ax1.plot(q0, Lexp, colours[i], label="$\\mu=${:.2f}".format(Mmu), linewidth=1) 
 plt.legend(fontsize=legend_font_size, ncol=2)
 plt.xlabel("$r_{BL}/M$", fontsize=label_size)
 plt.ylabel("$L_z/M$", fontsize=label_size)

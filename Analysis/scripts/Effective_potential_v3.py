@@ -1,4 +1,6 @@
 import numpy as np
+from matplotlib import rc
+rc('text', usetex=True)
 import matplotlib.pyplot as plt
 import cmath
 
@@ -55,9 +57,19 @@ def V_eff(r, chi, l, m, mu, M=1):
 	return V
 
 # plot potential
-colours = ['b--', 'b-', 'b-.','r-', 'g-', 'c-', 'r--', 'r-.']
+colours = ['b--', 'b-', 'b-.','r-', 'g-', 'c-', 'y-', 'r-.']
 #almmu = [(0.99, 1, 1, 0.4), (0.99, 2, 2, 0.4), (0.99, 1, 1, 0.05), (0.99, 1, 1, 0.5), (0.99, 0, 0, 0.194), (0.99, 0, 0, 0.01), (0.99, 0, 0, 0.4)]
-almmu = [(a, 1, 1, 0.1), (a, 1, 1, 0.4), (a, 1, 1, 0.5), (a, 0, 0, 0.4), (a, 1, -1, 0.4), (0.99, 1, 1, 0.4), (0, 0, 0, 0.4)]
+almmu = [(a, 1, 1, 0.1), (a, 1, 1, 0.4), (a, 1, 1, 0.5), (a, 0, 0, 0.4), (a, 1, -1, 0.4), (0.99, 1, 1, 0.4), (0, 1, 1, 0.4)]
+# plot setup
+ax1 = plt.axes()
+fig = plt.gcf()
+fig.set_size_inches(3.9,3.5)
+font_size = 10
+title_font_size = 10
+label_size = 11
+legend_font_size = 9
+#rc('xtick',labelsize=font_size)
+#rc('ytick',labelsize=font_size)
 for i in range(0, len(almmu)):
 	a, l, m, mu  = almmu[i]
 	M = 1
@@ -66,12 +78,12 @@ for i in range(0, len(almmu)):
 	r = r_plus + np.logspace(np.log10(0.001), np.log10(r_max), 500)
 	r_star = r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus)
 	y = V_eff(r, a, l, m, mu, M)
-	plt.plot(r_star, y, colours[i], label="a={:.2f} l={:d} m={:d} $M\\mu$={:.3f}".format(a, l, m, mu))
+	ax1.plot(r_star, y, colours[i], label="$\\chi=${:.2f} $l,m=${:d},{:d} $\\mu$={:.1f}".format(a, l, m, mu), linewidth=1)
 	print("plotted V_eff for a={:.2f} l={:d} m={:d} $M\\mu$={:.2f}".format(a, l, m, mu))
-plt.ylabel("$V_{eff} - \\mu^2$")
-plt.xlabel("$r_*$")
-plt.legend()
-plt.title("Effective potential for a Kerr Black Hole")
+plt.ylabel("$V_{eff} - \\mu^2$", fontsize=label_size)
+plt.xlabel("$r_*$", fontsize=label_size)
+plt.legend(fontsize=legend_font_size)
+plt.title("Effective potential for a Kerr Black Hole", fontsize=title_font_size)
 plt.tight_layout()
 plot_path = "/home/dc-bamb1/GRChombo/Analysis/plots/"
 save_name = "Effective_Kerr_potential_v3.png"
