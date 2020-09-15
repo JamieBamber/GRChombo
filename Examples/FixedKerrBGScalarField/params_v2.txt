@@ -3,7 +3,7 @@
 verbosity = 0
 chk_prefix = DATADIR/KerrSF_
 plot_prefix = DATADIR/KerrSFp_
-restart_file = DATADIR/KerrSF_001000.3d.hdf5
+#restart_file = DATADIR/KerrSF_001000.3d.hdf5
 
 # Set up grid spacings and regrid params
 # NB - the N values need to be multiples of block_factor
@@ -17,7 +17,7 @@ plot_vars = phi Pi chi rho rho_azimuth J_R J_azimuth_R
 # Length of longest box side, dx_coarsest = L/N(max)
 # NB if non cubic, this determines dx for all sides
 L = BOXLENGTH
-center = 512.0 512.0 CENTERZ
+center = CENTERX CENTERY CENTERZ
 # symmetry_dir = 0 0 1
 # this tells it which axes are symmetric
 
@@ -64,7 +64,7 @@ vars_asymptotic_values = 0 0 1 0 0 0 0 0 0  #phi, Pi, chi, rho, rho_azimuth, J_r
 checkpoint_interval = 100
 plot_interval = PLOTINTERVAL
 dt_multiplier = DTMULT # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
-stop_time = 2000.0
+stop_time = 20000.0
 ###
 # dt_raw = 8 * 1/16 = 0.5
 # dt_plot = 1.25

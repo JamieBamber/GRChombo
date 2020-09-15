@@ -111,20 +111,20 @@ run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
-#add_data_dir(2, 0, 0, "0.7", "0.4", 64, 64, "_theta_max0.99")
+#add_data_dir(2, 0, 0, "0.7", "0.4", 64, 18, "_theta_max1.0")
 
-add_data_dir(4, 1, 1, "0.0", "0.4", 64, 64, "_theta_max0.99")
-add_data_dir(5, 1, 1, "0.7", "0.4", 64, 64, "_theta_max0.99")
-add_data_dir(6, 1, 1, "0.99", "0.4", 64, 64, "_theta_max0.99")
+add_data_dir(4, 1, 1, "0.0", "0.4", 64, 18, "_theta_max1.0")
+add_data_dir(5, 1, 1, "0.7", "0.4", 64, 18, "_theta_max1.0")
+add_data_dir(6, 1, 1, "0.99", "0.4", 64, 18, "_theta_max1.0")
 
-#add_data_dir(7, 2, 2, "0.7", "0.4", 64, 64, "_theta_max0.99")
-#add_data_dir(8, 4, 4, "0.7", "0.4", 64, 64, "_theta_max0.99")
-#add_data_dir(9, 1, -1, "0.7", "0.4", 64, 64, "_theta_max0.99")
-#add_data_dir(11, 1, 1, "0.7", "2.0", 64, 64, "_theta_max0.99")
-#add_data_dir(12, 1, 1, "0.7", "0.01", 64, 64, "_theta_max0.99")
-#add_data_dir(19, 1, 1, "0.7", "0.01", 64, 64, "_theta_max0.99")
-#add_data_dir(10, 8, 8, "0.7", "0.4", 64, 64, "_theta_max0.99")
-#add_data_dir(10, 8, 8, "0.7", "0.4", 64, 64, "_theta_max0.99")
+#add_data_dir(7, 2, 2, "0.7", "0.4", 64, 18, "_theta_max1.0")
+#add_data_dir(8, 4, 4, "0.7", "0.4", 64, 18, "_theta_max1.0")
+#add_data_dir(9, 1, -1, "0.7", "0.4", 64, 18, "_theta_max1.0")
+#add_data_dir(11, 1, 1, "0.7", "2.0", 64, 18, "_theta_max1.0")
+#add_data_dir(12, 1, 1, "0.7", "0.01", 64, 18, "_theta_max1.0")
+#add_data_dir(19, 1, 1, "0.7", "0.01", 64, 18, "_theta_max1.0")
+#add_data_dir(10, 8, 8, "0.7", "0.4", 64, 18, "_theta_max1.0")
+#add_data_dir(10, 8, 8, "0.7", "0.4", 64, 18, "_theta_max1.0")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -137,11 +137,11 @@ half_box = True
 KS_or_cartesian_r=True
 phi0 = 0.1
 R_min = 5
-R_max = 500
+R_max = 300
 average_time = False
 av_n = 1
 plot_mass=False
-cumulative=False
+cumulative=True
 
 def load_flux_data():
 	# load data from csv files
@@ -219,7 +219,7 @@ def plot_graph():
 			tmass = mass_line_data[1:,0]
 			ax1.plot(tmass*mu,delta_mass/E0,colours[i]+"-.", label="_change in mass {:.1f}$<R<${:.1f} ".format(r_min,r_max)+label_, linewidth=1)
 		i = i + 1
-	ax1.set_xlabel("$\\tau$")
+	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$")
 		plt.title("Cumulative mass flux, $M=1$, $\\mu=0.4$, $l=m=1$", fontsize=title_font_size)
@@ -228,6 +228,8 @@ def plot_graph():
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $l=m=1$", fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_a.png".format(R_max)
+	ax1.set_xlim((0, 350))
+	ax1.set_ylim((0.0, 0.1))
 	ax1.legend(loc='upper left', fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)

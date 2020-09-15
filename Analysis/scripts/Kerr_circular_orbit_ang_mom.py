@@ -1,4 +1,6 @@
 import numpy as np
+from matplotlib import rc
+rc('text', usetex=True)
 from matplotlib import pyplot as plt
 
 # script to plot the expected angular momentum per unit mass needed for circular orbit by a massive particle 
@@ -28,19 +30,33 @@ Mmu_list = [0.2, 0.4, 0.8, 1.6]
 colours = ['b--', 'g--', 'c--', 'm--']
 q0 = np.linspace(r_plus, 15, 256)
 L = particle_Lz(q0, a)
-plt.plot(q0, L, 'r-', label="particle $L_z/M$ per unit mass for circular orbit")
+
+# plot setup
+ax1 = plt.axes()
+fig = plt.gcf()
+fig.set_size_inches(4,3.5)
+font_size = 10
+title_font_size = 10
+label_size = 11
+legend_font_size = 9
+rc('xtick',labelsize=font_size)
+rc('ytick',labelsize=font_size)
+ax1.plot(q0, L, 'r-', label="particle in a circular orbit")
 for i in range(0,len(Mmu_list)):
 	Mmu = Mmu_list[i]
 	Lexp = field_Lz(q0, Mmu, a, 1)
-	plt.plot(q0, Lexp, colours[i], label="expected initial $L_z/M$ per unit mass for $m=l=1$ $M\\mu=${:.2f}".format(Mmu)) 
-plt.legend(fontsize=8)
-plt.xlabel("$r_{BL}/M$")
-plt.ylabel("$L_z/M$")
+	ax1.plot(q0, Lexp, colours[i], label="$\\mu=${:.2f}".format(Mmu)) 
+plt.legend(fontsize=legend_font_size, ncol=2)
+plt.xlabel("$r_{BL}/M$", fontsize=label_size)
+plt.ylabel("$L_z/M$", fontsize=label_size)
 plt.ylim((-1, 7.5))
-plt.title("Ang. mom. per unit mass for a Kerr circular orbit in z=0 plane, a = " + str(a))
+plt.title("Ang. mom. per unit mass, $\\chi=$ " + str(a), fontsize=title_font_size)
 save_path = "/home/dc-bamb1/GRChombo/Analysis/plots/"
 filename = "Kerr_circular_orbit_ang_mom.png"
 file_path = save_path + filename
+plt.xticks(fontsize=font_size)
+plt.yticks(fontsize=font_size)
+plt.tight_layout()
 plt.savefig(file_path) 
 plt.clf()
 print("saved plot as " + file_path) 

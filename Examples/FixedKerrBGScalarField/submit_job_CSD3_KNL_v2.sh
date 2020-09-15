@@ -38,6 +38,7 @@ run0017=(1 1 0.99 0.5 0.4 0.0625)
 run0018=(1 1 0.99 0.25 0.4 0.0625)
 run0019=(1 1 0.7 0 0.01 1.0)
 run0020=(1 1 0.7 0 0.1 0.25)
+run0021=(0 0 0.7 0 2.0 0.015625)
 
 # specify runs to submit
 #run0001
@@ -62,13 +63,13 @@ run0020=(1 1 0.7 0 0.1 0.25)
 
 
 run_list=(
-	run0020
+	run0009
 )
 
 params_file=params_v2.txt
 plot_interval=10
-L=1024
-N1=256
+L=2048
+N1=264
 
 for run in "${run_list[@]}"
 do
@@ -84,7 +85,7 @@ do
 	val="$run[5]"; dt="${!val}"
 
 	# text_number=$(printf "%04d" ${run_number})
-	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
+	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_L${L}_N${N1}
 	#_N$N1
 	echo ${new_dir}
 	new_dir_path=${data_directory}/${new_dir}
