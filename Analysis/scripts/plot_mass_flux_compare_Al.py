@@ -1,17 +1,10 @@
-import yt
 import numpy as np
 import math
-from yt import derived_field
-from yt.units import cm
 import time
 import sys
 from matplotlib import rc
 rc('text', usetex=True)
 from matplotlib import pyplot as plt
-
-#print("yt version = ",yt.__version__)
-
-yt.enable_parallelism()
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -29,7 +22,7 @@ average_time = False
 av_n = 1
 plot_mass=False
 cumulative=True
-diff_from_alpha0=1
+diff_from_alpha0=0
 Nphi=64
 Ntheta=18
 Theta_max="1.0"
@@ -219,10 +212,11 @@ def plot_graph():
 				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+"-.", label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	ax1.set_xlim((0, 350))
 	if diff_from_alpha0:
+		ax1.set_xlim((0, 350))
 		ax1.set_ylim((-0.1, 0.2))
 	else:
+		ax1.set_xlim((0, 500))
 		ax1.set_ylim((0.0, 0.1))
 	if cumulative:
 		if diff_from_alpha0:

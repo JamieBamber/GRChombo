@@ -4,15 +4,15 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 
-start_number=2430
-end_number=2430
+start_number=0
+end_number=20000
 lin_or_log=0 # note 0 = log, 1 = linear
 resume=0 # resume previous integration?
 
 nphi=64
-ntheta=64
-theta_max=0.99
-max_radius=500
+ntheta=18
+theta_max=1.0
+max_radius=300
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -41,15 +41,14 @@ run0015=(1 1 0.7 0.5 0.4 0.0625)
 run0016=(1 -1 0.99 0 0.4 0.0625)
 run0017=(1 1 0.99 0.5 0.4 0.0625)
 run0018=(1 1 0.99 0.25 0.4 0.0625)
+run0021=(0 0 0.7 0 2.0 0.015625)
 
 plot_interval=10
 #var_index=6
 
 # specify runs to submit
 run_list=(
-	run0001
-	run0002
-	run0003
+	run0021
 )
 
 ## loop over subdirs

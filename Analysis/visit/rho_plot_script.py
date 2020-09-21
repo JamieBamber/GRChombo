@@ -22,18 +22,18 @@ absmax = 0.4
 OpenDatabase(data_root_dir + subdir + "/" + data_file_name,0)
 
 # add plot
-AddPlot("Pseudocolor", "phi", 1, 1)
+AddPlot("Pseudocolor", "rho", 1, 1)
 PseudocolorAtts = PseudocolorAttributes()
-PseudocolorAtts.scaling = PseudocolorAtts.Linear  # Linear, Log, Skew
+PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = -absmax
+PseudocolorAtts.min = 0.0001
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = absmax
+PseudocolorAtts.max = 15
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-PseudocolorAtts.colorTableName = "RdBu"
-PseudocolorAtts.invertColorTable = 1
+PseudocolorAtts.colorTableName = "inferno"
+PseudocolorAtts.invertColorTable = 0
 PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 PseudocolorAtts.opacity = 1
 PseudocolorAtts.pointSize = 0.05
@@ -148,7 +148,7 @@ View2DAtts.windowValid = 1
 SetView2D(View2DAtts)
 
 # save plot as png
-filename = "BBH_SF_phi_" + subdir + "_n%06d" % number 
+filename = "BBH_SF_rho_" + subdir + "_n%06d" % number 
 s = SaveWindowAttributes()
 s.family=0
 s.format = s.PNG

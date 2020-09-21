@@ -12,7 +12,8 @@ nphi=64
 ntheta=18
 theta_max=1.0
 max_radius=300
-N1=128
+N1=264
+L=2048
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -71,7 +72,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0020
+	run0009
 )
 
 ## loop over subdirs
@@ -89,7 +90,7 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_L${L}_N${N1}
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)
@@ -117,6 +118,10 @@ do
 	sed -i "s|JOBNAME|${run}FE|" slurm_submit
 	sed -i "s|DTMULT|${dt_mult}|" params.txt
 	sed -i "s|SUBDIR|${subdir}|" params.txt
+	sed -i "s|LSPACE|${L}|" params.txt
+	sed -i "s|NBASIC|${N1}|" params.txt
+	sed -i "s|CENTERX|$(($L/2))|" params.txt
+	sed -i "s|CENTERY|$(($L/2))|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
 	sed -i "s|BHMASS|${M}|" params.txt
 	sed -i "s|SNUMBER|${start_number}|" params.txt
@@ -134,7 +139,7 @@ do
         if (( $(echo "$Al > 0.0" |bc -l) )); then
                 echo "Al = $Al so full box"
                 sed -i "s|NSPACE3|$N1|" params.txt
-                sed -i "s|CENTERZ|512.0|" params.txt
+                sed -i "s|CENTERZ|$(($L/2))|" params.txt
                 sed -i "s|ZBOUND|3|" params.txt
 		sed -i "s|THETAMAX|2.0|" params.txt
         else
