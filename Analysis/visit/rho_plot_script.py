@@ -74,6 +74,7 @@ SetPlotSILRestriction(silr ,1)
 DrawPlots()
 
 # Annotation attributes
+ticks_label_scale = 2.5
 AnnotationAtts = AnnotationAttributes()
 AnnotationAtts.axes2D.visible = 1
 AnnotationAtts.axes2D.autoSetTicks = 1
@@ -81,7 +82,7 @@ AnnotationAtts.axes2D.autoSetScaling = 1
 AnnotationAtts.axes2D.lineWidth = 0
 AnnotationAtts.axes2D.tickLocation = AnnotationAtts.axes2D.Outside  # Inside, Outside, Both
 AnnotationAtts.axes2D.tickAxes = AnnotationAtts.axes2D.BottomLeft  # Off, Bottom, Left, BottomLeft, All
-AnnotationAtts.axes2D.xAxis.title.visible = 1
+AnnotationAtts.axes2D.xAxis.title.visible = 0
 AnnotationAtts.axes2D.xAxis.title.font.font = AnnotationAtts.axes2D.xAxis.title.font.Times  # Arial, Courier, Times
 AnnotationAtts.axes2D.xAxis.title.font.scale = 2
 AnnotationAtts.axes2D.xAxis.title.font.useForegroundColor = 1
@@ -94,7 +95,7 @@ AnnotationAtts.axes2D.xAxis.title.title = "X-Axis"
 AnnotationAtts.axes2D.xAxis.title.units = ""
 AnnotationAtts.axes2D.xAxis.label.visible = 1
 AnnotationAtts.axes2D.xAxis.label.font.font = AnnotationAtts.axes2D.xAxis.label.font.Times  # Arial, Courier, Times
-AnnotationAtts.axes2D.xAxis.label.font.scale = 1.7
+AnnotationAtts.axes2D.xAxis.label.font.scale = ticks_label_scale
 AnnotationAtts.axes2D.xAxis.label.font.useForegroundColor = 1
 AnnotationAtts.axes2D.xAxis.label.font.color = (0, 0, 0, 255)
 AnnotationAtts.axes2D.xAxis.label.font.bold = 0
@@ -104,7 +105,7 @@ AnnotationAtts.axes2D.xAxis.tickMarks.visible = 1
 AnnotationAtts.axes2D.xAxis.tickMarks.majorMinimum = 0
 AnnotationAtts.axes2D.xAxis.tickMarks.majorMaximum = 1
 AnnotationAtts.axes2D.xAxis.grid = 0
-AnnotationAtts.axes2D.yAxis.title.visible = 1
+AnnotationAtts.axes2D.yAxis.title.visible = 0
 AnnotationAtts.axes2D.yAxis.title.font.font = AnnotationAtts.axes2D.yAxis.title.font.Times  # Arial, Courier, Times
 AnnotationAtts.axes2D.yAxis.title.font.scale = 2
 AnnotationAtts.axes2D.yAxis.title.font.useForegroundColor = 1
@@ -117,7 +118,7 @@ AnnotationAtts.axes2D.yAxis.label.font.bold = 0
 AnnotationAtts.axes2D.yAxis.title.title = "Y-Axis"
 AnnotationAtts.axes2D.yAxis.title.units = ""
 AnnotationAtts.axes2D.yAxis.label.visible = 1
-AnnotationAtts.axes2D.yAxis.label.font.scale = 1.7
+AnnotationAtts.axes2D.yAxis.label.font.scale = ticks_label_scale
 AnnotationAtts.axes2D.yAxis.label.font.font = AnnotationAtts.axes2D.yAxis.label.font.Times  # Arial, Courier, Times
 AnnotationAtts.userInfoFlag = 0
 AnnotationAtts.databaseInfoFlag = 0
@@ -130,16 +131,17 @@ legend.yScale = 3.2
 legend.managePosition = 0
 legend.position = (0.82, 0.95)
 # the font.
+legend.numberFormat = "%.1f"
 legend.fontFamily = legend.Times
 legend.fontBold = 0
 legend.fontItalic = 0
 legend.drawTitle = 0
-legend.fontHeight = 0.035
+legend.fontHeight = 0.045
 
 # Set viewing attributes
 View2DAtts = View2DAttributes()
 View2DAtts.windowCoords = (512-0.5*width, 512+0.5*width, 512-0.5*width, 512+0.5*width)
-View2DAtts.viewportCoords = (0.15, 0.85, 0.12, 0.95)
+View2DAtts.viewportCoords = (0.12, 0.9, 0.12, 0.98)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
 View2DAtts.xScale = View2DAtts.LINEAR  # LINEAR, LOG
