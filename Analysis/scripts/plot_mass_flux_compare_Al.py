@@ -22,7 +22,7 @@ average_time = False
 av_n = 1
 plot_mass=False
 cumulative=True
-diff_from_alpha0=0
+diff_from_alpha0=1
 Nphi=64
 Ntheta=18
 Theta_max="1.0"
@@ -90,6 +90,20 @@ def misaligned_analytic_flux(alpha, t, R, a, mu, cumulative):
 	result = 0.25*(1 + np.cos(alpha*np.pi))**2*Y11 + 0.25*(1 - np.cos(alpha*np.pi))**2*Y1m1 + 0.5*(np.sin(alpha)**2)*Y10
 	return result
 
+def misaligned_analytic_flux_v2(alpha, t, R, a, mu, cumulative):
+	## calculate the Boyer Lindquist r
+	## assume M = 1
+	r_plus = 1 + np.sqrt(1 - a*a)
+	r = R*(1 + r_plus/(4.0*R))**2
+	## calculate the perturbative flux at large radius to order 
+	cos2theta = cos2theta_integrals[l][int(np.abs(m))]
+	L = l*(l+1)/(mu**2)
+	tau = mu*t	
+	#
+	#if cumulative:
+	#elif not cumulative:
+	return 0	
+	
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, suffix):
 		self.num = num
@@ -213,8 +227,8 @@ def plot_graph():
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	if diff_from_alpha0:
-		ax1.set_xlim((0, 350))
-		ax1.set_ylim((-0.1, 0.2))
+		ax1.set_xlim((0, 500))
+		ax1.set_ylim((-0.5, 1.0))
 	else:
 		ax1.set_xlim((0, 500))
 		ax1.set_ylim((0.0, 0.1))

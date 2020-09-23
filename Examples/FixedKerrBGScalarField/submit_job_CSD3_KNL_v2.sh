@@ -40,6 +40,8 @@ run0019=(1 1 0.7 0 0.01 1.0)
 run0020=(1 1 0.7 0 0.1 0.25)
 run0021=(0 0 0.7 0 2.0 0.015625)
 
+run0022=(8 8 0.99 0 2.0 0.015625)
+
 # specify runs to submit
 #run0001
 #run0003
@@ -63,13 +65,14 @@ run0021=(0 0 0.7 0 2.0 0.015625)
 
 
 run_list=(
-	run0009
+	run0021
 )
 
 params_file=params_v2.txt
 plot_interval=10
-L=2048
-N1=256
+L=1024
+N1=128
+box_size=16
 
 for run in "${run_list[@]}"
 do
@@ -85,7 +88,7 @@ do
 	val="$run[5]"; dt="${!val}"
 
 	# text_number=$(printf "%04d" ${run_number})
-	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_L${L}_N$N1
+	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
 	#_L${L}_N$N1
 	echo ${new_dir}
 	new_dir_path=${data_directory}/${new_dir}
@@ -101,6 +104,7 @@ do
 	sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/slurm_submit
 	sed -i "s|JOBNAME|${run}KS|" ${new_dir_path}/slurm_submit
 	sed -i "s|BOXLENGTH|${L}|" ${new_dir_path}/params.txt
+	sed -i "s|BOXSIZE|${box_size}|" ${new_dir_path}/params.txt
 	sed -i "s|CENTERX|$(($L/2))|" ${new_dir_path}/params.txt
 	sed -i "s|CENTERY|$(($L/2))|" ${new_dir_path}/params.txt
 	sed -i "s|SCALARL|${l}|" ${new_dir_path}/params.txt

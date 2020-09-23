@@ -4,10 +4,10 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 
-start_number=0
+start_number=940
 end_number=20000
 lin_or_log=0 # note 0 = log, 1 = linear
-resume=0 # resume previous integration?
+resume=1 # resume previous integration?
 
 nphi=64
 ntheta=18
@@ -74,7 +74,7 @@ do
 	#min_radius=5
 	echo "min_radius = " ${min_radius}
 	
-	suffix=_n002430_r_plus_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
+	suffix=_r_plus_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
 	#suffix=_${min_radius}_to_${max_radius}_nphi${nphi}_ntheta${ntheta}_theta_max${theta_max}
 
 	#dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')

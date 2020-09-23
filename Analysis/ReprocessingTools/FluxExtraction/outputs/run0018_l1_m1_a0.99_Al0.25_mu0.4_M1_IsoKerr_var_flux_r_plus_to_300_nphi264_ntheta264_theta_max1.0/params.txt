@@ -34,8 +34,8 @@ num_points_phi = 264
 num_points_theta = 264
 theta_min = 0
 theta_max = 2.0
-integration_center = 512.0 512.0 512.0
-center = 512.0 512.0 512.0
+integration_center = 512 512 512
+center = 512 512 512
 
 # radius parameters
 num_integration_radii = 2
