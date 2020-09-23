@@ -4,15 +4,15 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 
-start_number=940
+start_number=0
 end_number=20000
 lin_or_log=0 # note 0 = log, 1 = linear
-resume=1 # resume previous integration?
+resume=0 # resume previous integration?
 
 nphi=64
 ntheta=18
 theta_max=1.0
-max_radius=300
+max_radius=500
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt

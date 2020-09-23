@@ -65,14 +65,14 @@ run0022=(8 8 0.99 0 2.0 0.015625)
 
 
 run_list=(
-	run0022
+	run0021
 )
 
 params_file=params_v2.txt
 plot_interval=10
 L=1024
-N1=256
-box_size=32
+N1=128
+box_size=16
 
 for run in "${run_list[@]}"
 do

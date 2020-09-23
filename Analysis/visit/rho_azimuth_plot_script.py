@@ -75,7 +75,7 @@ DrawPlots()
 
 # Annotation attributes
 axes_label_scale = 2
-ticks_label_scale = 2.5
+ticks_label_scale = 3
 AnnotationAtts = AnnotationAttributes()
 AnnotationAtts.axes2D.visible = 1
 AnnotationAtts.axes2D.autoSetTicks = 1
@@ -137,7 +137,7 @@ legend.fontFamily = legend.Times
 legend.fontBold = 0
 legend.fontItalic = 0
 legend.drawTitle = 0
-legend.fontHeight = 0.045
+legend.fontHeight = 0.05
 
 # Set viewing attributes
 View2DAtts = View2DAttributes()
