@@ -23,6 +23,7 @@ R_max = 500
 average_time = False
 av_n = 1
 plot_mass=False
+log_y=True
 
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al, N):
@@ -71,11 +72,12 @@ run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
-#add_data_dir(2, 0, 0, "0.7", "0.4", "0", 64, 64, "0.99")
+add_data_dir(2, 0, 0, "0.7", "0.4")
 add_data_dir(5, 1, 1, "0.7", "0.4")
-#add_data_dir(7, 2, 2, "0.7", "0.4", "0", 64, 64, "0.99")
-#add_data_dir(8, 4, 4, "0.7", "0.4", "0", 64, 64, "0.99")
-#add_data_dir(9, 1, -1, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(7, 2, 2, "0.7", "0.4")
+add_data_dir(9, 1, -1, "0.7", "0.4")
+add_data_dir(8, 4, 4, "0.7", "0.4")
+add_data_dir(10, 8, 8, "0.7", "0.4")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "0.99")
 #add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "0.99")
 #add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "0.99")
@@ -101,12 +103,18 @@ def plot_graph():
 		dd.load_data()
 		mu = float(dd.mu)
 		label_="$l=${:d} $m=${:d}".format(dd.l, dd.m)
-		ax1.plot(dd.t,dd.max_rho,colours[i]+"-", label=label_, linewidth=1)
+		if log_y:
+			ax1.plot(dd.t,np.log10(dd.max_rho),colours[i]+"-", label=label_, linewidth=1)
+		else:
+			ax1.plot(dd.t,np.dd.max_rho,colours[i]+"-", label=label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	#ax1.set_xlim((0, 75))
 	#ax1.set_ylim((-1.0, 1.0))
-	ax1.set_ylabel("max $\\rho$ / $\\rho_0$", fontsize=label_size)
+	if log_y:
+		ax1.set_ylabel("$\\log_{10}($max $\\rho / \\rho_0)$", fontsize=label_size)
+	else:
+		ax1.set_ylabel("max $\\rho$ / $\\rho_0$", fontsize=label_size)
 	ax1.set_title("Max energy density, $M=1$, $\\mu=0.4$, $\\chi=0.7$", wrap=True, fontsize=title_font_size)
 	save_path = home_path + "plots/max_rho_IsoKerr_compare_lm.png"
 	ax1.legend(loc='best', fontsize=legend_font_size)

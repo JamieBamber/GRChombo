@@ -22,7 +22,7 @@ average_time = False
 av_n = 1
 plot_mass=False
 cumulative=True
-diff_from_alpha0=1
+diff_from_alpha0=0
 Nphi=64
 Ntheta=18
 Theta_max="1.0"
@@ -90,19 +90,31 @@ def misaligned_analytic_flux(alpha, t, R, a, mu, cumulative):
 	result = 0.25*(1 + np.cos(alpha*np.pi))**2*Y11 + 0.25*(1 - np.cos(alpha*np.pi))**2*Y1m1 + 0.5*(np.sin(alpha)**2)*Y10
 	return result
 
-def misaligned_analytic_flux_v2(alpha, t, R, a, mu, cumulative):
+def misaligned_analytic_flux_v2(Alpha, t, R, a, mu, cumulative):
 	## calculate the Boyer Lindquist r
 	## assume M = 1
 	r_plus = 1 + np.sqrt(1 - a*a)
 	r = R*(1 + r_plus/(4.0*R))**2
 	## calculate the perturbative flux at large radius to order 
-	cos2theta = cos2theta_integrals[l][int(np.abs(m))]
+	l=1
 	L = l*(l+1)/(mu**2)
-	tau = mu*t	
+	tau = mu*t
+	alpha = np.pi*Alpha	
 	#
-	#if cumulative:
-	#elif not cumulative:
-	return 0	
+	if cumulative:
+		F0=tau**2/4-(np.sin(tau)**2)/4
+		F1=1/4*(-L-1)*tau**2+1/4*(L-3)*(np.sin(tau)**2)+tau*np.sin(tau)*np.cos(tau)
+		F2=1/40*tau**2*(3*a**2*np.cos(2*alpha)-29*a**2+35*L-30*np.cos(2*tau))+1/40*(np.sin(tau)**2)*(-9*a**2*np.cos(2*alpha)+35*a**2+25*L-60)+3/40*tau*np.sin(2*tau)*(a**2*np.cos(2*alpha)-a**2-10*L+15)
+		F3=1/40*tau*np.sin(2*tau)*(2*a**2*np.cos(2*alpha)+5*(-6*a**2+L**2+L-2))+1/40*tau**2*(-2*a**2*np.cos(2*alpha)*(2*np.cos(2*tau)+5)+(4*a**2+45*L-40)*np.cos(2*tau)-5*(2*a**2*(L-14)+L*(L+4)+20))+1/40*(np.sin(tau)**2)*(10*a**2*np.cos(2*alpha)+2*a**2*(5*L-42)-5*L*(L+7)+160)+(1/6-L/8)*tau**4-7/6*tau**3*np.sin(tau)*np.cos(tau)
+		F4=1/480*tau**4*(-3*a**2*np.cos(2*alpha)+39*a**2+5*L*(3*L+35)+125*np.cos(2*tau)-295)+1/48*tau**3*np.sin(2*tau)*(-3*a**2*np.cos(2*alpha)+3*a**2+40*L-20)+1/160*tau**2*(a**2*np.cos(2*alpha)*(2*(6*a**2+5*L+7)+(10*L-7)*np.cos(2*tau))+(a**2*(67-10*L)-5*(15*L**2+L-32))*np.cos(2*tau)-2*(78*a**4+5*a**2*(7*L+15)+5*(-6*L**2+L-35)))+1/160*(np.sin(tau)**2)*(180*a**4+a**2*(-36*a**2+20*L+7)*np.cos(2*alpha)+a**2*(40*L-683)-15*(L**2+L-34))+1/160*tau*np.sin(2*tau)*(-12*a**4+a**2*(12*a**2-20*L-7)*np.cos(2*alpha)+a**2*(20*L+383)+15*(L**2+L-34))+tau**6/144	
+	elif not cumulative:
+		F0=(mu*tau)/2-1/4*mu*np.sin(2*tau)
+		F1=1/4*(L-1)*mu*np.sin(2*tau)-1/2*mu*tau*(L-2*np.cos(2*tau)+1)
+		F2=1/20*mu*tau*(6*a**2*np.cos(2*alpha)*(np.cos(tau)**2)-3*(a**2+10*L-5)*np.cos(2*tau)-29*a**2+35*L)-1/40*mu*np.sin(2*tau)*(6*a**2*np.cos(2*alpha)-32*a**2+5*(L+3))+3*mu*tau**2*np.sin(tau)*np.cos(tau)
+		F3=1/20*mu*tau**2*np.sin(2*tau)*(4*a**2*np.cos(2*alpha)-4*a**2-45*L+5)+1/20*mu*tau*(-2*a**2*np.cos(2*alpha)*(np.cos(2*tau)+5)+(-26*a**2+5*L*(L+10)-50)*np.cos(2*tau)-5*(2*a**2*(L-14)+L*(L+4)+20))+1/20*mu*np.sin(2*tau)*(6*a**2*np.cos(2*alpha)+a**2*(5*L-57)-15*(L-5))-1/6*mu*tau**3*(3*L+7*np.cos(2*tau)-4)
+		F4=1/80*mu*tau**2*np.sin(2*tau)*(-2*a**2*(5*L+4)*np.cos(2*alpha)+5*(2*a**2+41)*L-52*(a**2+5)+75*L**2)+1/120*mu*tau**3*(-3*a**2*np.cos(2*alpha)*(5*np.cos(2*tau)+1)+5*(3*a**2+40*L+5)*np.cos(2*tau)+39*a**2+5*L*(3*L+35)-295)-3/40*a**2*mu*np.sin(2*tau)*(2*a**2*np.cos(2*alpha)-14*a**2-5*L+25)+1/40*mu*tau*(-78*a**4+a**2*np.cos(2*alpha)*((6*a**2-5*L-7)*np.cos(2*tau)+6*a**2+5*L+7)-5*a**2*(7*L+15)+(-6*a**4+5*a**2*(L+45)+5*(-6*L**2+L-35))*np.cos(2*tau)+5*L*(6*L-1)+175)+(mu*tau**5)/24-25/48*mu*tau**4*np.sin(2*tau)
+	Flux = F0 + F1/r + F2/r**2 + F3/r**3 + F4/r**4
+	return Flux
 	
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, suffix):
@@ -136,7 +148,8 @@ class data_dir:
 		if self.Al==0:
 			self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
 		elif self.Al!=0:
-			self.analytic_outer_flux = misaligned_analytic_flux(self.Al, self.tflux, self.r_max, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
+			self.analytic_outer_flux = misaligned_analytic_flux_v2(self.Al, self.tflux, self.r_max, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
+			pass
 		if plot_mass:
 			file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_r_plus_to_{:d}.dat".format(self.name, R_max)
 			self.mass_data = np.genfromtxt(file_name, skip_header=1)
@@ -183,7 +196,7 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 add_data_dir(6, 1, 1, "0.99", "0.4", "0", Nphi, Ntheta, "_theta_max"+Theta_max)
 add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, "_theta_max"+Theta_max)
 add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 264, 264, "_theta_max"+Theta_max) 
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 264, 264, "_theta_max"+Theta_max)
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 18, "_theta_max"+Theta_max)
 
 def plot_graph():
 	# plot setup
@@ -211,7 +224,7 @@ def plot_graph():
 		label_ = "$m$={:d} $\\alpha$={:.2f}".format(dd.m, dd.Al)
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
-		ds_length = min(len(dd.outer_mass_flux), len(dd0.outer_mass_flux))
+		ds_length = min(len(dd.outer_mass_flux), len(dd.outer_mass_flux))
 		ax1.plot(dd.tflux[:ds_length]*mu,(10**(4*diff_from_alpha0))*(dd.outer_mass_flux[:ds_length]-dd0.outer_mass_flux[:ds_length]*diff_from_alpha0),colours[i]+"-", label=label_, linewidth=1)
 		ax1.plot(dd.tflux[:ds_length]*mu,(10**(4*diff_from_alpha0))*(dd.analytic_outer_flux[:ds_length]-dd0.analytic_outer_flux[:ds_length]*diff_from_alpha0),colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)

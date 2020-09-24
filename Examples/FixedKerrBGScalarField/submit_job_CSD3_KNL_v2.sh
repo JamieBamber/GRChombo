@@ -65,7 +65,7 @@ run0022=(8 8 0.99 0 2.0 0.015625)
 
 
 run_list=(
-	run0021
+	run0017
 )
 
 params_file=params_v2.txt
