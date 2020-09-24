@@ -112,7 +112,7 @@ def plot_graph():
 			ax1.plot(dd.mu*dd.t,np.dd.max_rho,colours[i]+"-", label=label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	#ax1.set_xlim((0, 75))
+	ax1.set_xlim((0, 400))
 	#ax1.set_ylim((-1.0, 1.0))
 	if log_y:
 		ax1.set_ylabel("$\\log_{10}($max $\\rho / \\rho_0)$", fontsize=label_size)

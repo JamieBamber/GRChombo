@@ -65,14 +65,14 @@ run0022=(8 8 0.99 0 2.0 0.015625)
 
 
 run_list=(
-	run0005
+	run0017
 )
 
 params_file=params_v2.txt
 plot_interval=10
-L=512
+L=1024
 N1=128
-box_size=16
+box_size=32
 
 for run in "${run_list[@]}"
 do
@@ -88,7 +88,7 @@ do
 	val="$run[5]"; dt="${!val}"
 
 	# text_number=$(printf "%04d" ${run_number})
-	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_L${L}_N$N1
+	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
 	#_L${L}_N$N1
 	echo ${new_dir}
 	new_dir_path=${data_directory}/${new_dir}
