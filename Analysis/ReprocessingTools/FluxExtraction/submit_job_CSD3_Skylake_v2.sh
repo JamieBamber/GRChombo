@@ -5,7 +5,7 @@
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction
 
 start_number=0
-end_number=20000
+end_number=200000
 lin_or_log=1 # note 0 = log, 1 = linear
 
 nphi=264
@@ -72,7 +72,6 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0017
 	run0018
 )
 
