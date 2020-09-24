@@ -12,7 +12,7 @@ start_time = time.time()
 # set up parameters 
 phi0 = 0.1
 R_min = 5
-R_max = 300
+R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
 num = 800

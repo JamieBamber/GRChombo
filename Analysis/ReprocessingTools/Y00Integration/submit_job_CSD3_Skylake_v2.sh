@@ -4,10 +4,10 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 
-start_number=0
+start_number=640
 end_number=20000
 lin_or_log=0 # note 0 = log, 1 = linear
-resume=0 # resume previous integration?
+resume=1 # resume previous integration?
 
 nphi=64
 ntheta=18

@@ -8,12 +8,13 @@ start_number=0
 end_number=200000
 lin_or_log=1 # note 0 = log, 1 = linear
 
-nphi=264
-ntheta=264
+nphi=64
+ntheta=18
 theta_max=1.0
 max_radius=300
-N1=128
+N1=32
 L=1024
+box_size=8
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -44,6 +45,7 @@ run0017=(1 1 0.99 0.5 0.4 0.0625)
 run0018=(1 1 0.99 0.25 0.4 0.0625)
 run0019=(1 1 0.7 0 0.01 2.5)
 run0020=(1 1 0.7 0 0.1 0.25)
+run0022=(8 8 0.99 0 2.0 0.015625)
 
 plot_interval=10
 #var_index=6
@@ -72,7 +74,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0018
+	run0022
 )
 
 ## loop over subdirs
@@ -90,7 +92,7 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_N$N1
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)
@@ -120,6 +122,7 @@ do
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|LSPACE|${L}|" params.txt
 	sed -i "s|NBASIC|${N1}|" params.txt
+	sed -i "s|BOXSIZE|${box_size}|" params.txt
 	sed -i "s|CENTERX|$(($L/2))|" params.txt
 	sed -i "s|CENTERY|$(($L/2))|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
