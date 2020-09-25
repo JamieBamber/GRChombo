@@ -12,7 +12,7 @@ start_time = time.time()
 # set up parameters 
 phi0 = 0.1
 R_min = 5
-R_max = 300
+R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
 number = 800
@@ -276,7 +276,7 @@ def plot_graph():
 	title = "$\\phi_{00}$" + " profile M=1, $\\mu$=2.0, $\\chi=0.7$, $l=m=0$, time = {:.1f}".format(dd0.time) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_t={:.1f}_plot_vs_Heun_v2.png".format(2.0, scale, dd0.time)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_t={:.1f}_maxR={:d}_plot_vs_Heun_v2.png".format(2.0, scale, dd0.time, R_max)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()

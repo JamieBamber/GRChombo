@@ -28,7 +28,7 @@ R_max = 300
 average_time=False
 av_n = 1
 plot_mass=True
-cumulative=False
+cumulative=True
 Theta_max="0.99"
 Ntheta=64
 Nphi=64
@@ -214,7 +214,7 @@ def plot_graph():
 	ax1.set_xlim((0, 300))
 	if cumulative:
 		ax1.set_ylabel("$\\log_{10}(|\\Delta M_{cloud} - $cumulative flux$|/E_0)$", fontsize=label_size)
-		ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.7,l=m=8$", wrap=True, fontsize=title_font_size)
+		ax1.set_title("Mass and flux agreement, $M=1,\\mu=0.4,\\chi=0.7,l=m=8$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_with_mass_cumulative.png".format(R_max)
 	else:
 		ax1.set_ylabel("$\\log_{10}(|\\dot{M}_{cloud}-$flux$|/E_0)$", fontsize=label_size)

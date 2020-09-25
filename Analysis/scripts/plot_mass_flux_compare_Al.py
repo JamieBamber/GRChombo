@@ -98,6 +98,7 @@ def misaligned_analytic_flux_v2(Alpha, t, R, a, mu, cumulative):
 	r = R*(1 + r_plus/(4.0*R))**2
 	## calculate the perturbative flux at large radius to order 
 	l=1
+	m=1
 	L = l*(l+1)/(mu**2)
 	tau = mu*t
 	alpha = np.pi*Alpha	
@@ -105,15 +106,15 @@ def misaligned_analytic_flux_v2(Alpha, t, R, a, mu, cumulative):
 	if cumulative:
 		F0=tau**2/4-(np.sin(tau)**2)/4
 		F1=1/4*(-L-1)*tau**2+1/4*(L-3)*(np.sin(tau)**2)+tau*np.sin(tau)*np.cos(tau)
-		F2=1/40*tau**2*(3*a**2*np.cos(2*alpha)-29*a**2+35*L-30*np.cos(2*tau))+1/40*(np.sin(tau)**2)*(-9*a**2*np.cos(2*alpha)+35*a**2+25*L-60)+3/40*tau*np.sin(2*tau)*(a**2*np.cos(2*alpha)-a**2-10*L+15)
-		F3=1/40*tau*np.sin(2*tau)*(2*a**2*np.cos(2*alpha)+5*(-6*a**2+L**2+L-2))+1/40*tau**2*(-2*a**2*np.cos(2*alpha)*(2*np.cos(2*tau)+5)+(4*a**2+45*L-40)*np.cos(2*tau)-5*(2*a**2*(L-14)+L*(L+4)+20))+1/40*(np.sin(tau)**2)*(10*a**2*np.cos(2*alpha)+2*a**2*(5*L-42)-5*L*(L+7)+160)+(1/6-L/8)*tau**4-7/6*tau**3*np.sin(tau)*np.cos(tau)
-		F4=1/480*tau**4*(-3*a**2*np.cos(2*alpha)+39*a**2+5*L*(3*L+35)+125*np.cos(2*tau)-295)+1/48*tau**3*np.sin(2*tau)*(-3*a**2*np.cos(2*alpha)+3*a**2+40*L-20)+1/160*tau**2*(a**2*np.cos(2*alpha)*(2*(6*a**2+5*L+7)+(10*L-7)*np.cos(2*tau))+(a**2*(67-10*L)-5*(15*L**2+L-32))*np.cos(2*tau)-2*(78*a**4+5*a**2*(7*L+15)+5*(-6*L**2+L-35)))+1/160*(np.sin(tau)**2)*(180*a**4+a**2*(-36*a**2+20*L+7)*np.cos(2*alpha)+a**2*(40*L-683)-15*(L**2+L-34))+1/160*tau*np.sin(2*tau)*(-12*a**4+a**2*(12*a**2-20*L-7)*np.cos(2*alpha)+a**2*(20*L+383)+15*(L**2+L-34))+tau**6/144	
+		F2=3/40*tau*np.sin(2*tau)*(a**2*np.cos(2*alpha)-a**2-10*L+15)+1/40*tau**2*(3*a**2*np.cos(2*alpha)-29*a**2-(60*a*m*np.cos(alpha))/mu+35*L-30*np.cos(2*tau))+((np.sin(tau)**2)*(mu*(-9*a**2*np.cos(2*alpha)+35*a**2+25*L-60)+60*a*m*np.cos(alpha)))/(40*mu)
+		F3=(tau*np.sin(2*tau)*(2*a**2*mu*np.cos(2*alpha)+5*mu*(-6*a**2+L**2+L-2)-80*a*m*np.cos(alpha)))/(40*mu)+tau**2*(1/40*(-2*a**2*np.cos(2*alpha)*(2*np.cos(2*tau)+5)+(4*a**2+45*L-40)*np.cos(2*tau)-5*(2*a**2*(L-14)+L*(L+4)+20))+(5*a*m*np.cos(alpha))/mu)+((np.sin(tau)**2)*(mu*(10*a**2*np.cos(2*alpha)+2*a**2*(5*L-42)-5*L*(L+7)+160)-40*a*m*np.cos(alpha)))/(40*mu)+(1/6-L/8)*tau**4-7/6*tau**3*np.sin(tau)*np.cos(tau)
+		F4=1/48*tau**3*np.sin(2*tau)*(-3*a**2*np.cos(2*alpha)+3*a**2+40*L-20)+1/480*tau**4*(-3*a**2*np.cos(2*alpha)+39*a**2+(60*a*m*np.cos(alpha))/mu+5*L*(3*L+35)+125*np.cos(2*tau)-295)+1/160*tau**2*(np.cos(2*tau)*(a**2*(10*L-7)*np.cos(2*alpha)+a**2*(67-10*L)-5*(15*L**2+L-32))-(20*a*m*np.cos(alpha)*(2*(6*a**2+5*L+9)-15*np.cos(2*tau)))/mu+2*(-78*a**4+a**2*(6*a**2+5*L+7)*np.cos(2*alpha)-5*a**2*(7*L+15)+5*L*(6*L-1)+175))+((np.sin(tau)**2)*(20*a*m*(12*a**2-10*L-3)*np.cos(alpha)+mu*(180*a**4+a**2*(-36*a**2+20*L+7)*np.cos(2*alpha)+a**2*(40*L-683)-15*(L**2+L-34))))/(160*mu)+(tau*np.sin(2*tau)*(mu*(-12*a**4+a**2*(12*a**2-20*L-7)*np.cos(2*alpha)+a**2*(20*L+383)+15*(L**2+L-34))+20*a*(10*L+3)*m*np.cos(alpha)))/(160*mu)+tau**6/144
 	elif not cumulative:
 		F0=(mu*tau)/2-1/4*mu*np.sin(2*tau)
 		F1=1/4*(L-1)*mu*np.sin(2*tau)-1/2*mu*tau*(L-2*np.cos(2*tau)+1)
-		F2=1/20*mu*tau*(6*a**2*np.cos(2*alpha)*(np.cos(tau)**2)-3*(a**2+10*L-5)*np.cos(2*tau)-29*a**2+35*L)-1/40*mu*np.sin(2*tau)*(6*a**2*np.cos(2*alpha)-32*a**2+5*(L+3))+3*mu*tau**2*np.sin(tau)*np.cos(tau)
-		F3=1/20*mu*tau**2*np.sin(2*tau)*(4*a**2*np.cos(2*alpha)-4*a**2-45*L+5)+1/20*mu*tau*(-2*a**2*np.cos(2*alpha)*(np.cos(2*tau)+5)+(-26*a**2+5*L*(L+10)-50)*np.cos(2*tau)-5*(2*a**2*(L-14)+L*(L+4)+20))+1/20*mu*np.sin(2*tau)*(6*a**2*np.cos(2*alpha)+a**2*(5*L-57)-15*(L-5))-1/6*mu*tau**3*(3*L+7*np.cos(2*tau)-4)
-		F4=1/80*mu*tau**2*np.sin(2*tau)*(-2*a**2*(5*L+4)*np.cos(2*alpha)+5*(2*a**2+41)*L-52*(a**2+5)+75*L**2)+1/120*mu*tau**3*(-3*a**2*np.cos(2*alpha)*(5*np.cos(2*tau)+1)+5*(3*a**2+40*L+5)*np.cos(2*tau)+39*a**2+5*L*(3*L+35)-295)-3/40*a**2*mu*np.sin(2*tau)*(2*a**2*np.cos(2*alpha)-14*a**2-5*L+25)+1/40*mu*tau*(-78*a**4+a**2*np.cos(2*alpha)*((6*a**2-5*L-7)*np.cos(2*tau)+6*a**2+5*L+7)-5*a**2*(7*L+15)+(-6*a**4+5*a**2*(L+45)+5*(-6*L**2+L-35))*np.cos(2*tau)+5*L*(6*L-1)+175)+(mu*tau**5)/24-25/48*mu*tau**4*np.sin(2*tau)
+		F2=tau*(1/20*mu*(6*a**2*np.cos(2*alpha)*(np.cos(tau)**2)-3*(a**2+10*L-5)*np.cos(2*tau)-29*a**2+35*L)-3*a*m*np.cos(alpha))+1/40*np.sin(2*tau)*(-6*a**2*mu*np.cos(2*alpha)+32*a**2*mu+60*a*m*np.cos(alpha)-5*(L+3)*mu)+3*mu*tau**2*np.sin(tau)*np.cos(tau)
+		F3=1/20*mu*tau**2*np.sin(2*tau)*(4*a**2*np.cos(2*alpha)-4*a**2-45*L+5)+tau*(1/20*mu*(-2*a**2*np.cos(2*alpha)*(np.cos(2*tau)+5)+(-26*a**2+5*L*(L+10)-50)*np.cos(2*tau)-5*(2*a**2*(L-14)+L*(L+4)+20))+2*a*m*np.cos(alpha)*(5-2*np.cos(2*tau)))+1/20*np.sin(2*tau)*(mu*(6*a**2*np.cos(2*alpha)+a**2*(5*L-57)-15*(L-5))-60*a*m*np.cos(alpha))-1/6*mu*tau**3*(3*L+7*np.cos(2*tau)-4)
+		F4=1/120*tau**3*(mu*(-3*a**2*np.cos(2*alpha)*(5*np.cos(2*tau)+1)+5*(3*a**2+40*L+5)*np.cos(2*tau)+39*a**2+5*L*(3*L+35)-295)+60*a*m*np.cos(alpha))-1/80*tau**2*np.sin(2*tau)*(mu*(2*a**2*(5*L+4)*np.cos(2*alpha)+a**2*(52-10*L)-5*L*(15*L+41)+260)+300*a*m*np.cos(alpha))+3/40*a**2*np.sin(2*tau)*(mu*(-2*a**2*np.cos(2*alpha)+14*a**2+5*L-25)+20*a*m*np.cos(alpha))+1/40*tau*(mu*(-78*a**4+a**2*np.cos(2*alpha)*((6*a**2-5*L-7)*np.cos(2*tau)+6*a**2+5*L+7)-5*a**2*(7*L+15)+(-6*a**4+5*a**2*(L+45)+5*(-6*L**2+L-35))*np.cos(2*tau)+5*L*(6*L-1)+175)-20*a*m*np.cos(alpha)*(6*a**2-(5*L+9)*np.cos(2*tau)+5*L+9))+(mu*tau**5)/24-25/48*mu*tau**4*np.sin(2*tau)
 	Flux = F0 + F1/r + F2/r**2 + F3/r**3 + F4/r**4
 	return Flux
 	
@@ -211,12 +212,12 @@ def plot_graph():
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
-	colours = ['b', 'g', 'm', 'c', 'y']
+	colours = ['r', 'b', 'g', 'm', 'c', 'y']
 	colours2 = ['k', 'm', 'c']
 	i = 0
 	dd0 = data_dirs[0]
 	dd0.load_data()
-	for dd in data_dirs[1:]:
+	for dd in data_dirs:
 		dd.load_data()
 		mu = float(dd.mu)
 		#net_flux = outer_mass_flux - inner_mass_flux
