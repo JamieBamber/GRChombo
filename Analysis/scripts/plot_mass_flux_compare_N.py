@@ -24,11 +24,12 @@ half_box = True
 KS_or_cartesian_r=True
 phi0 = 0.1
 R_min = 5
-R_max = 500
-average_time = False
+R_max = 300
+average_time=False
 av_n = 1
-plot_mass=True
-cumulative=True
+plot_mass=False
+cumulative=False
+differential=True
 Theta_max="0.99"
 Ntheta=64
 Nphi=64
@@ -108,10 +109,7 @@ class data_dir:
 		self.Al = float(Al)
 		self.theta_max = theta_max 
 		self.N = N
-		if (N==128):
-			Nfix = ""
-		else:
-			Nfix = "_N{:d}".format(N)
+		Nfix = "_N{:d}".format(N)
 		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr{:s}".format(num, l, m, a, Al, mu, Nfix)
 	#
 	def load_data(self):
@@ -168,8 +166,8 @@ run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 #add_data_dir(2, 0, 0, "0.7", "0.4", "0", 64, 64, "0.99")
-add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99", 128)
-add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99", 256)
+#add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99", 128)
+#add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99", 256)
 #add_data_dir(7, 2, 2, "0.7", "0.4", "0", 64, 64, "0.99")
 #add_data_dir(8, 4, 4, "0.7", "0.4", "0", 64, 64, "0.99")
 #add_data_dir(9, 1, -1, "0.7", "0.4", "0", 64, 64, "0.99")
@@ -178,6 +176,12 @@ add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99", 256)
 #add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "0.99")
 #add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "0.99")
 #add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "0.99")
+
+add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 32)
+add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 64) 
+add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 128)
+add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 256)
+add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 512)
 
 def plot_graph():
 	# plot setup
@@ -195,6 +199,8 @@ def plot_graph():
 	colours2 = ['k', 'm', 'c']
 	#styles = ['-', ':']
 	i = 0
+	#dd0 = data_dirs[0]
+        #dd0.load_data()
 	for dd in data_dirs:
 		dd.load_data()
 		mu = float(dd.mu)
@@ -204,8 +210,14 @@ def plot_graph():
 		#label_ = "$m$={:d} $\\alpha$={:.2f}".format(dd.m, dd.Al)
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
-		ax1.plot(dd.tflux*mu,dd.outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(dd.tflux*mu,dd.analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+		tau = dd.tflux*mu
+		if differential:
+			dflux = np.abs((dd.outer_mass_flux - dd.analytic_outer_flux)/dd.analytic_outer_flux)
+			ax1.plot(tau,np.log10(dflux),colours[i]+"-", label=label_, linewidth=1)
+		elif not differential:
+			ax1.plot(tau,(10**4)*dd.outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
+			if (dd.N==128):
+				ax1.plot(tau,(10**4)*dd.analytic_outer_flux,'k'+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
@@ -215,17 +227,27 @@ def plot_graph():
 				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+'-.', label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	ax1.set_xlim((0, 40))
-	ax1.set_ylim((-0.00005, 0.0001))
+	ax1.set_xlim((0, 300))
+	if differential:
+		#ax1.set_ylim((-0.001, 0.005))
+		pass
+	elif not differential:
+		ax1.set_ylim((-0.2, 0.175))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 		ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4$,\n$\\chi=0.7,l=m=1$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_cumulative.png".format(R_max)
 	else:
-		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
-		plt.title("Mass flux, $M=1,\\mu=0.4,\\chi=0.7,l=m=1$", wrap=True, fontsize=title_font_size)
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N.png".format(R_max)
-	ax1.legend(loc='best', fontsize=legend_font_size)
+		if differential:
+			ax1.set_ylabel("$\\log_{10}(|(F_{num.}-F_{pert.})/F_{pert.}|)$", fontsize=label_size)
+		elif not differential:
+			ax1.set_ylabel("flux / $E_0 \\times 10^{-4}$", fontsize=label_size)		
+		plt.title("Mass flux, $M=1,\\mu=2.0,\\chi=0.99,l=m=8$", wrap=True, fontsize=title_font_size)
+		if differential:
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_differential.png".format(R_max)
+		elif not differential:
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N.png".format(R_max)
+	ax1.legend(loc='best', fontsize=legend_font_size, ncol=3, labelspacing=0.2, handletextpad=0, columnspacing=1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()
