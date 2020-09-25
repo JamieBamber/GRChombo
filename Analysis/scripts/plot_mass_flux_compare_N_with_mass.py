@@ -28,7 +28,7 @@ R_max = 300
 average_time=False
 av_n = 1
 plot_mass=True
-cumulative=True
+cumulative=False
 Theta_max="0.99"
 Ntheta=64
 Nphi=64
@@ -136,7 +136,7 @@ class data_dir:
 			self.dmass = (mass_data[1:,1] - mass_data[0,1])/E0
 		elif not cumulative:
 			self.tmass = mass_data[:-1,0]
-			dt = tmass[1] - tmass[0]
+			dt = self.tmass[1] - self.tmass[0]
 			self.tmass_mean = 0.5*(self.tmass[1:]+self.tmass[:-1])
 			self.dmass = (mass_data[1:,1] - mass_data[:-1,1])/(E0*dt)
 				
@@ -205,18 +205,16 @@ def plot_graph():
 		#net_flux = outer_mass_flux - inner_mass_flux
 		#label_ = "$\\mu$={:.2f}".format(mu)
 		label_ = "$N$={:d}".format(dd.N)
-		#label_ = "$m$={:d} $\\alpha$={:.2f}".format(dd.m, dd.Al)
-		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
-		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
 		ds_length = min(len(dd.tflux),len(dd.tmass))
 		tau = dd.tflux[:ds_length]*dd.mu		
-		ax1.plot(tau,np.log10(np.abs(dd.outer_mass_flux[:ds_length]-dd.dmass[:ds_length])),colours[i]+'-', label=label_, linewidth=1)
+		#ax1.plot(tau,np.log10(np.abs(dd.outer_mass_flux[:ds_length]-dd.dmass[:ds_length])),colours[i]+'-', label=label_, linewidth=1)
+		ax1.plot(tau,np.log10(np.abs(dd.outer_mass_flux[:ds_length] - dd.dmass[:ds_length])),colours[i]+'-', label=label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	ax1.set_xlim((0, 300))
 	if cumulative:
-		ax1.set_ylabel("$\\log_{10}(|\\Delta M_{cloud} - $cumulative flux$| / E_0)$", fontsize=label_size)
-		ax1.set_title("Cumulative mass flux, $M=1, \\mu=0.4, \\chi=0.7$", wrap=True, fontsize=title_font_size)
+		ax1.set_ylabel("$\\log_{10}(|\\Delta M_{cloud} - $cumulative flux$|/E_0)$", fontsize=label_size)
+		ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.7,l=m=8$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_with_mass_cumulative.png".format(R_max)
 	else:
 		ax1.set_ylabel("$\\log_{10}(|\\dot{M}_{cloud}-$flux$|/E_0|)$", fontsize=label_size)
