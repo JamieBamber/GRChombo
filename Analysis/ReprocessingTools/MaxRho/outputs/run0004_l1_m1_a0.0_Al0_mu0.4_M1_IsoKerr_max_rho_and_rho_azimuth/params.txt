@@ -27,13 +27,13 @@ plot_prefix = KerrSFp_
 input_plot_interval = 10
 start_number = 0
 end_number = 20000
-suffix = full_region
+suffix = _full_region
 
 # integration parameters
 # num_vars = 2
 # vars = phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
-integration_center = 512.0 512.0 0.0
-center = 512.0 512.0 0.0
+integration_center = 512 512 0.0
+center = 512 512 0.0
 
 # radius parameters
 min_integration_radius = 2.00 #!< r_plus = 1 + sqrt(1 - a**2)
@@ -41,9 +41,9 @@ max_integration_radius = 300
 # linear_or_log = LINLOG		#!< use linear or log spacing for radii array. Linear = 1, Log = 0 
 
 # From here it is mostly dummy params
-verbosity = 1
-nan_check = 1
+verbosity = 0
+nan_check = 0
 regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
-max_grid_size = 32
-block_factor = 32
+max_grid_size = 16
+block_factor = 16
 isPeriodic = 0 0 0 

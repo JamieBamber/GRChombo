@@ -8,9 +8,9 @@ start_number=0
 end_number=20000
 lin_or_log=1 # note 0 = log, 1 = linear
 max_radius=300
-L=1024
+L=512
 N1=128
-boxsize=16
+box_size=16
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -46,10 +46,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0006
-	run0016
-	run0017	
-	run0018	
+	run0005
 )
 
 Nhalf=$(($N1 / 2))
@@ -69,7 +66,7 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_L${L}_N${N1}
 	#_L${L}_N${N1}
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}

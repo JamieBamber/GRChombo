@@ -181,7 +181,7 @@ add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 32)
 add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 64) 
 add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 128)
 add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 256)
-add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 512)
+#add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 512)
 
 def plot_graph():
 	# plot setup
@@ -203,7 +203,7 @@ def plot_graph():
         #dd0.load_data()
 	for dd in data_dirs:
 		dd.load_data()
-	for i in range(0, 4):
+	for i in range(0, len(data_dirs)-1):
 		dd_HR = data_dirs[i+1] # higher resolution data
 		dd_LR = data_dirs[i] # lower resolution data
 		tau_LR = dd_LR.tflux*dd_LR.mu
@@ -220,7 +220,7 @@ def plot_graph():
 		#
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	ax1.set_xlim((0, 300))
-	ax1.set_ylim((-35, -15))
+	ax1.set_ylim((-30, -15))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 		ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4$,\n$\\chi=0.7,l=m=1$", wrap=True, fontsize=title_font_size)
