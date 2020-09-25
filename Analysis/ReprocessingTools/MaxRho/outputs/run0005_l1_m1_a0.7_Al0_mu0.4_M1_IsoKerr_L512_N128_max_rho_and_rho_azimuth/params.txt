@@ -1,20 +1,20 @@
 ### parameters file for Ylm integration
 
 #Params for runtime inputs
-N1 = NBASIC
-N2 = NBASIC
-N3 = NSPACE3
-L = LSPACE
+N1 = 128
+N2 = 128
+N3 = 64
+L = 512
 max_level = 7 # There are (max_level+1) grids, so min is zero
-dt_multiplier = DTMULT
+dt_multiplier = 0.0625
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
-data_subdir = SUBDIR
-bh_spin = BHSPIN
-bh_mass = BHMASS
+data_subdir = run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr_L512_N128
+bh_spin = 0.7
+bh_mass = 1
 
-half_box = HALFBOX
+half_box = 1
 
 # output directory 
 output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/max_rho_data/
@@ -24,26 +24,26 @@ chk_prefix = KerrSF_
 plot_prefix = KerrSFp_
 # restart_file = KerrSFp_000000.3d.hdf5
 # plot_interval = 1
-input_plot_interval = PLOTINTERVAL
-start_number = SNUMBER
-end_number = ENUMBER
-suffix = SFIX
+input_plot_interval = 10
+start_number = 0
+end_number = 20000
+suffix = full_region
 
 # integration parameters
 # num_vars = 2
 # vars = phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
-integration_center = CENTERX CENTERY CENTERZ
-center = CENTERX CENTERY CENTERZ
+integration_center = 256 256 0.0
+center = 256 256 0.0
 
 # radius parameters
-min_integration_radius = MINRADIUS #!< r_plus = 1 + sqrt(1 - a**2)
-max_integration_radius = MAXRADIUS
+min_integration_radius = 1.71414 #!< r_plus = 1 + sqrt(1 - a**2)
+max_integration_radius = 300
 # linear_or_log = LINLOG		#!< use linear or log spacing for radii array. Linear = 1, Log = 0 
 
 # From here it is mostly dummy params
 verbosity = 0
 nan_check = 0
 regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
-max_grid_size = BOXSIZE
-block_factor = BOXSIZE
+max_grid_size = 
+block_factor = 
 isPeriodic = 0 0 0 

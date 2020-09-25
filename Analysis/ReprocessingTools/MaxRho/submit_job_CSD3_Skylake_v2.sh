@@ -8,8 +8,9 @@ start_number=0
 end_number=20000
 lin_or_log=1 # note 0 = log, 1 = linear
 max_radius=300
+L=512
 N1=128
-Nhalf=$(($N1 / 2))
+boxsize=16
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -45,12 +46,10 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0002
-	run0007
-	run0008
-	run0009
-	run0010
+	run0005	
 )
+
+Nhalf=$(($N1 / 2))
 
 ## loop over subdirs
 for run in "${run_list[@]}"
@@ -67,8 +66,7 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
-	#_N$N1
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_L${L}_N${N1}
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)
@@ -76,14 +74,14 @@ do
 	echo "mu = " ${mu}
 	echo "min_radius = " ${min_radius}
 
-	suffix=full_region
+	suffix=_full_region
 
         #dt_mult=$(echo "scale=5; 0.025 / ${mu}" | bc | sed 's/^\./0./')
         echo "dt_multiplier = " ${dt_mult}
 
         name=${subdir}_max_rho_and_rho_azimuth
 	
-	echo ${name} "flux extraction"
+	echo ${name} "max rho extraction"
 	new_dir_path=outputs/${name}
 	#
 	mkdir -p ${new_dir_path}
@@ -95,7 +93,11 @@ do
 	# add the location of the new directory to the params file
 	sed -i "s|JOBNAME|${run}MR|" slurm_submit
 	sed -i "s|DTMULT|${dt_mult}|" params.txt
-	sed -i "s|NBASIC|${N1}|" params.txt
+	sed -i "s|LSPACE|${L}|" params.txt
+        sed -i "s|NBASIC|${N1}|" params.txt
+        sed -i "s|BOXSIZE|${box_size}|" params.txt
+        sed -i "s|CENTERX|$(($L/2))|" params.txt
+        sed -i "s|CENTERY|$(($L/2))|" params.txt
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
 	sed -i "s|BHMASS|${M}|" params.txt

@@ -76,7 +76,7 @@ add_data_dir(2, 0, 0, "0.7", "0.4")
 #add_data_dir(4, 1, 1, "0.0", "0.4")
 add_data_dir(5, 1, 1, "0.7", "0.4")
 #add_data_dir(6, 1, 1, "0.99", "0.4")
-#add_data_dir(7, 2, 2, "0.7", "0.4")
+add_data_dir(7, 2, 2, "0.7", "0.4")
 add_data_dir(9, 1, -1, "0.7", "0.4")
 add_data_dir(8, 4, 4, "0.7", "0.4")
 add_data_dir(10, 8, 8, "0.7", "0.4")
@@ -106,10 +106,11 @@ def plot_graph():
 		mu = float(dd.mu)
 		label_="$l=${:d} $m=${:d}".format(dd.l, dd.m)
 		#label_="$\\chi=${:.2f}".format(dd.a)
+		tau = dd.mu*dd.t
 		if log_y:
-			ax1.plot(dd.mu*dd.t,np.log10(dd.max_rho),colours[i]+"-", label=label_, linewidth=1)
+			ax1.plot(tau,np.log10(dd.max_rho),colours[i]+"-", label=label_, linewidth=1)
 		else:
-			ax1.plot(dd.mu*dd.t,np.dd.max_rho,colours[i]+"-", label=label_, linewidth=1)
+			ax1.plot(tau,np.dd.max_rho,colours[i]+"-", label=label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	ax1.set_xlim((0, 400))
@@ -118,9 +119,9 @@ def plot_graph():
 		ax1.set_ylabel("$\\log_{10}($max $\\rho / \\rho_0)$", fontsize=label_size)
 	else:
 		ax1.set_ylabel("max $\\rho$ / $\\rho_0$", fontsize=label_size)
-	ax1.set_title("Max energy density, $M=1$, $\\mu=0.4$, $l=m=1$", wrap=True, fontsize=title_font_size)
+	ax1.set_title("Max energy density, $M=1$, $\\mu=0.4$, $\\chi=0.7$", wrap=True, fontsize=title_font_size)
 	save_path = home_path + "plots/max_rho_IsoKerr_compare_lm.png"
-	ax1.legend(loc='best', fontsize=legend_font_size)
+	ax1.legend(loc='best', fontsize=legend_font_size, labelspacing=0.1, handletextpad=1, columnspacing=1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()

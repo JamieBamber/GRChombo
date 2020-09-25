@@ -12,9 +12,9 @@ nphi=64
 ntheta=18
 theta_max=1.0
 max_radius=300
-N1=32
+N1=256
 L=1024
-box_size=8
+box_size=32
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -74,7 +74,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0022
+	run0005
 )
 
 ## loop over subdirs
