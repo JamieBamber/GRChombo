@@ -71,7 +71,7 @@ run_list=(
 params_file=params_v2.txt
 plot_interval=10
 L=1024
-N1=512
+N1=256
 box_size=32
 
 for run in "${run_list[@]}"

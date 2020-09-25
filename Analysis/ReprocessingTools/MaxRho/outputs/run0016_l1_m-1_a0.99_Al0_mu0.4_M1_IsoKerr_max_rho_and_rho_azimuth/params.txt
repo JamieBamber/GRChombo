@@ -10,7 +10,7 @@ dt_multiplier = 0.0625
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
-data_subdir = run0006_l1_m1_a0.99_Al0_mu0.4_M1_IsoKerr
+data_subdir = run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 bh_spin = 0.99
 bh_mass = 1
 
