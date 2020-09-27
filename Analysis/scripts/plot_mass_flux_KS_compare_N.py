@@ -149,7 +149,7 @@ def time_average(x, n):
 #add_data_dir(102, 0, 0, "0.7", "0.4", 64, 64, "_theta_max0.99")
 #add_data_dir(103, 0, 0, "0.99", "0.4", 64, 64, "_theta_max0.99")
 #add_data_dir(104, 1, 1, "0.0", "0.4", 64, 64, "_theta_max0.99")
-add_data_dir(105, 1, 1, "0.7", "0.4", 64, 64, "_theta_max0.99")
+#add_data_dir(105, 1, 1, "0.7", "0.4", 64, 64, "_theta_max0.99")
 add_data_dir(105, 1, 1, "0.7", "0.4", 64, 64, "_theta_max0.99", 256)
 #add_data_dir(106, 1, 1, "0.99", "0.4", 64, 64, "_theta_max0.99")
 #add_data_dir(107, 2, 2, "0.7", "0.4", 64, 64, "_theta_max0.99")
