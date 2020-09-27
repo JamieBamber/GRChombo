@@ -8,9 +8,8 @@ start_number=0
 end_number=20000
 lin_or_log=1 # note 0 = log, 1 = linear
 max_radius=300
-N1=256
-Nhalf=$(($N1 / 2))
-boxsize=32
+N1=512
+boxsize=64
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -42,12 +41,13 @@ run0018=(1 1 0.99 0.25 0.4 0.0625)
 run0019=(1 1 0.7 0 0.01 2.5)
 run0022=(8 8 0.99 0 2.0 0.015625)
 
+Nhalf=$(($N1 / 2))
 plot_interval=10
 #var_index=6
 
 # specify runs to submit
 run_list=(
-	run0005
+	run0022
 )
 
 ## loop over subdirs

@@ -229,7 +229,7 @@ def plot_graph():
 	#	
 	for i in range(0, len(data_dirs)):
 		dd = data_dirs[i]
-		numbers=[40, 400, 1600]
+		numbers=[50, 410, 2000]
 		for j in range(0, len(numbers)):
 			number=numbers[j]
 			dd.load_data(number)
@@ -280,7 +280,7 @@ def plot_graph():
 	title = "$\\phi_{00}$" + " profile M=1, $\\mu$=2.0, $\\chi=0.7$, $l=m=0$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_plot_vs_Heun_v4.png".format(2.0, scale)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_Rmax={:d}_plot_vs_Heun_v4.png".format(2.0, scale, R_max)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()

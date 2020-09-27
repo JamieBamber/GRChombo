@@ -4,7 +4,7 @@
 N1 = 256
 N2 = 256
 N3 = 128
-L = 1024
+L = 1028
 max_level = 7 # There are (max_level+1) grids, so min is zero
 dt_multiplier = 0.015625
 
@@ -34,8 +34,8 @@ num_points_phi = 64
 num_points_theta = 18
 theta_min = 0
 theta_max = 1.0
-integration_center = 512 512 0.0
-center = 512 512 0.0
+integration_center = 514 514 0.0
+center = 514 514 0.0
 
 # radius parameters
 num_integration_radii = 2

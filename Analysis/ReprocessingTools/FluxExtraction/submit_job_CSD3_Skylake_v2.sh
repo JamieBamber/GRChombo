@@ -8,13 +8,13 @@ start_number=0
 end_number=200000
 lin_or_log=1 # note 0 = log, 1 = linear
 
-nphi=264
-ntheta=264
+nphi=64
+ntheta=18
 theta_max=1.0
 max_radius=300
-N1=128
-L=512
-box_size=16
+N1=512
+L=1028
+box_size=64
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -74,7 +74,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0005
+	run0022
 )
 
 ## loop over subdirs
@@ -92,7 +92,7 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_L${L}_N${N1}
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_N${N1}
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)
