@@ -91,7 +91,7 @@ class data_dir:
 		self.tflux = flux_data[1:,0]
 		self.r_min = flux_data[0,1]
 		self.r_max = flux_data[0,2]
-		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
+		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0)**2
 		self.inner_ang_mom_flux = -flux_data[1:,1]/E0
 		self.outer_ang_mom_flux = -flux_data[1:,2]/E0	
 		if cumulative:
@@ -160,7 +160,7 @@ def plot_graph():
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
-	legend_font_size = 8
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
@@ -175,8 +175,8 @@ def plot_graph():
 		#label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
 		#label_ = "$m$={:d} $\\alpha$={:s}".format(dd.m, dd.Al)
 		#ax1.plot(dd.tflux,dd.inner_ang_mom_flux,colours[i]+":", label="flux into $R_+$ "+label_)
-		ax1.plot(dd.tflux,dd.outer_ang_mom_flux,colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(dd.tflux,dd.analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+		ax1.plot(mu*dd.tflux,dd.outer_ang_mom_flux,colours[i]+"-", label=label_, linewidth=1)
+		ax1.plot(mu*dd.tflux,dd.analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#
 		if plot_ang_mom:
 			if cumulative:
@@ -184,19 +184,19 @@ def plot_graph():
 			elif not cumulative:
 				ax1.plot(dd.tang_mom,dd.dang_mom,colours[i]+"-.", label="_rate of change in ang_mom $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
-	ax1.set_xlabel("$t$", fontsize=label_size)
-	ax1.set_xlim((0, 512))
-	ax1.set_ylim((0.0, 0.05))
+	ax1.set_xlabel("$\\tau$", fontsize=label_size)
+	ax1.set_xlim((0, 500))
+	ax1.set_ylim((-0.005, 0.04))
 	if cumulative:
 		#ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
 		ax1.set_ylabel("cumulative flux / $E_0$") # \\frac{1}{2} \\varphi^2_0$")
 		plt.title("Cumulative ang. mom. flux, $M=1$, \n $a=0.7$, $l=m=1$", fontsize=title_font_size)
-		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative_vs_t.png".format(R_max)
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative.png".format(R_max)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Ang. mom. flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
 		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_mu_vs_t.png".format(R_max)
-	ax1.legend(loc='best', fontsize=legend_font_size)
+	ax1.legend(loc='best', fontsize=legend_font_size, labelspacing=0.1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()

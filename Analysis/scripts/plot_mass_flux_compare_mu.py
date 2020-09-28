@@ -202,7 +202,7 @@ def plot_graph():
 		dd.load_data()
 		mu = float(dd.mu)
 		#net_flux = outer_mass_flux - inner_mass_flux
-		label_ = "$\\mu$={:.2f}".format(mu)
+		label_ = "$\\mu$={:.1f}".format(mu)
 		#label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
 		#label_ = "$m$={:d} $\\alpha$={:.2f}".format(dd.m, dd.Al)
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
@@ -225,8 +225,8 @@ def plot_graph():
 	else:
 		ax1.set_xlabel("$t$", fontsize=label_size)
 	if tau_or_t:
-		ax1.set_xlim((0, 350))
-		ax1.set_ylim((0.0, 0.0075))
+		ax1.set_xlim((0, 400))
+		ax1.set_ylim((-0.0001, 0.01))
 	else:
 		ax1.set_xlim((0, 512))
 		ax1.set_ylim((0.0, 0.015))

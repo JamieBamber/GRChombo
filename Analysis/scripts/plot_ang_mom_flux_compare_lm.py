@@ -157,7 +157,7 @@ def plot_graph():
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
-	legend_font_size = 8
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
@@ -192,7 +192,7 @@ def plot_graph():
 		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
 		plt.title("Mass flux, $M=1$, $\\chi=0.7$, $\\mu=0.4$")
 		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
-	ax1.legend(loc='best', fontsize=legend_font_size)
+	ax1.legend(loc='best', fontsize=legend_font_size, labelspacing=0.1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()
