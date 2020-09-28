@@ -1,10 +1,17 @@
+import yt
 import numpy as np
 import math
+from yt import derived_field
+from yt.units import cm
 import time
 import sys
 from matplotlib import rc
 rc('text', usetex=True)
 from matplotlib import pyplot as plt
+
+#print("yt version = ",yt.__version__)
+
+yt.enable_parallelism()
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -14,10 +21,11 @@ output_dir = "data/flux_data"
 
 half_box = True
 
+KS_or_cartesian_r=True
 phi0 = 0.1
-#R_min = 5
+R_min = 5
 R_max = 300
-average_time = False
+average_time=False
 av_n = 1
 plot_mass=False
 cumulative=True
@@ -54,7 +62,6 @@ def analytic_flux(t, R, l, m, a, mu, cumulative):
 		if not cumulative:
 			F0=(mu*tau)/2-1/2*mu*np.sin(tau)*np.cos(tau)
 			F1=1/4*(L-1)*mu*np.sin(2*tau)-1/2*mu*tau*(L-2*np.cos(2*tau)+1)
-
 			F2=1/4*tau*(-3*a**2*mu*cos2theta-7*a**2*mu-12*a*m+3*(1-2*L)*mu*np.cos(2*tau)+7*L*mu)+1/8*np.sin(2*tau)*(3*a**2*mu*cos2theta+7*a**2*mu+12*a*m-(L+3)*mu)+3*mu*tau**2*np.sin(tau)*np.cos(tau)
 			F3=1/4*tau*(2*a**2*mu*cos2theta*(5-2*np.cos(2*tau))-mu*(2*a**2*(L-16)+L*(L+4)+20)+np.cos(2*tau)*(-8*a**2*mu-16*a*m+(L*(L+10)-10)*mu)+40*a*m)-1/4*np.sin(2*tau)*(3*a**2*mu*cos2theta+a**2*(-(L-12))*mu+12*a*m+3*(L-5)*mu)-1/6*mu*tau**3*(3*L+7*np.cos(2*tau)-4)+1/4*(1-9*L)*mu*tau**2*np.sin(2*tau)
 			F4=1/24*tau**3*(3*a**2*mu*cos2theta+mu*(9*a**2+L*(3*L+35)-59)+12*a*m+5*(8*L+1)*mu*np.cos(2*tau))-1/16*tau**2*np.sin(2*tau)*(15*a**2*mu*cos2theta+mu*(21*a**2-L*(15*L+41)+52)+60*a*m)+3/8*a**2*np.sin(2*tau)*(a**2*mu*cos2theta+mu*(3*a**2+L-5)+4*a*m)+1/8*tau*(a**2*mu*cos2theta*(-6*a**2+(5*L+9)*np.cos(2*tau)-5*L-9)+np.cos(2*tau)*(mu*(a**2*(3*L+49)-6*L**2+L-35)+4*a*(5*L+9)*m)-4*a*m*(6*a**2+5*L+9)-mu*(18*a**4+a**2*(9*L+19)-6*L**2+L-35))+(mu*tau**5)/24-25/48*mu*tau**4*np.sin(2*tau)
@@ -90,21 +97,31 @@ def analytic_flux(t, R, l, m, a, mu, cumulative):
 	return result"""
 
 class data_dir:
-	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, suffix):
+	def __init__(self, num, l, m, a, mu, Al, N, L):
 		self.num = num
 		self.l = l
 		self.m = m
 		self.a = float(a)
 		self.mu = float(mu)
-		self.nphi = nphi
-		self.ntheta = ntheta
-		self.suffix = suffix
+		self.nphi = Nphi
+		self.ntheta = Ntheta
 		self.Al = float(Al)
-		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, Al, mu)
+		self.theta_max = Theta_max 
+		self.N = N
+		self.L = L
+		if N==128:
+			Nfix=""
+		else:
+			Nfix = "_N{:d}".format(N)
+		if L==1024:
+			Lfix=""
+		else:
+			Lfix="_L{:d}".format(L)
+		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr{:s}{:s}".format(num, l, m, a, Al, mu, Lfix, Nfix)
 	#
 	def load_data(self):
 		# load flux and mass data from csv files	
-		file_name = home_path + output_dir + "/" + self.name + "_J_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}{:s}.dat".format(R_max, self.nphi, self.ntheta, self.suffix)
+		file_name = home_path + output_dir + "/" + self.name + "_J_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:s}.dat".format(R_max, self.nphi, self.ntheta, self.theta_max)
 		flux_data = np.genfromtxt(file_name, skip_header=1)
 		print("loaded " + file_name)
 		mu = float(self.mu)
@@ -112,8 +129,8 @@ class data_dir:
 		self.r_min = flux_data[0,1]
 		self.r_max = flux_data[0,2]
 		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
-		self.inner_mass_flux = -flux_data[1:,1]/(E0)
-		self.outer_mass_flux = -flux_data[1:,2]/(E0)	
+		self.inner_mass_flux = -flux_data[1:,1]/E0
+		self.outer_mass_flux = -flux_data[1:,2]/E0	
 		if cumulative:
 			dt = self.tflux[2] - self.tflux[1]
 			#inner_mass_flux = np.cumsum(inner_mass_flux)*dt
@@ -121,20 +138,20 @@ class data_dir:
 		self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
 		if plot_mass:
 			file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_r_plus_to_{:d}.dat".format(self.name, R_max)
-			self.mass_data = np.genfromtxt(file_name, skip_header=1)
+			mass_data = np.genfromtxt(file_name, skip_header=1)
 			print("loaded " + file_name)
 			if cumulative:
 				self.tmass = mass_data[1:,0]
 				self.dmass = (mass_data[1:,1] - mass_data[0,1])/E0
 			elif not cumulative:
-				self.tmass = mass_line_data[:-1,0]
+				self.tmass = mass_data[:-1,0]
 				dt = tmass[1] - tmass[0]
 				self.tmass_mean = 0.5*(self.tmass[1:]+self.tmass[:-1])
-				self.dmass = (mass_line_data[1:,1] - mass_line_data[:-1,1])/(E0*dt)
+				self.dmass = (mass_data[1:,1] - mass_data[:-1,1])/(E0*dt)
 				
 data_dirs = []
-def add_data_dir(num, l, m, a, mu, Al, nphi=Nphi, ntheta=Ntheta, suffix="_theta_max" + Theta_max):
-        x = data_dir(num, l, m, a, mu, Al, nphi, ntheta, suffix)
+def add_data_dir(num, l, m, a, mu, Al="0", N=128, L=1024):
+        x = data_dir(num, l, m, a, mu, Al, N, L)
         data_dirs.append(x)
 
 # choose datasets to compare
@@ -155,17 +172,25 @@ run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
-add_data_dir(2, 0, 0, "0.7", "0.4", "0")
-add_data_dir(5, 1, 1, "0.7", "0.4", "0")
-add_data_dir(7, 2, 2, "0.7", "0.4", "0")
-add_data_dir(8, 4, 4, "0.7", "0.4", "0")
-add_data_dir(10, 8, 8, "0.7", "0.4", "0")
-add_data_dir(9, 1, -1, "0.7", "0.4", "0")
-#add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
-#add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max0.99")
-#add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
+#add_data_dir(2, 0, 0, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99", 128)
+#add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99", 256)
+#add_data_dir(7, 2, 2, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(8, 4, 4, "0.7", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "0.99")
+#add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "0.99")
+#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "0.99")
+#add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "0.99")
+
+#add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 32)
+#add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 64) 
+#add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 128)
+#add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 256)
+#add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 512)
+
+add_data_dir(9, 1, -1, "0.7", "0.4")
+add_data_dir(9, 1, -1, "0.7", "0.4", "0", 256, 2048)
 
 def plot_graph():
 	# plot setup
@@ -175,47 +200,42 @@ def plot_graph():
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
-	legend_font_size = 8
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
 	colours = ['r', 'b', 'g', 'm', 'c', 'y']
 	colours2 = ['k', 'm', 'c']
+	#styles = ['-', ':']
 	i = 0
+	#dd0 = data_dirs[0]
+        #dd0.load_data()
 	for dd in data_dirs:
 		dd.load_data()
 		mu = float(dd.mu)
 		#net_flux = outer_mass_flux - inner_mass_flux
-		#label_ = "$\\mu$={:.2f}".format(mu)
-		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
-		#label_ = "$m$={:d} $\\alpha$={:.2f}".format(dd.m, dd.Al)
-		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
-		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
-		ax1.plot(dd.tflux*mu,dd.outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(dd.tflux*mu,dd.analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
-		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
-		#
+		label_ = "$N=${:d} $L=${:d}".format(dd.N, dd.L)
+		tau = dd.tflux*mu
+		ax1.plot(tau,dd.outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
+		ax1.plot(tau,dd.analytic_outer_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		if plot_mass:
-			mass_line_data = mass_data[dd.num]
-			#print(mass_line_data[0:,1])
-			#ax1.plot(tmass,delta_mass/E0,colours[i]+"-", label="change in mass {:.1f}$<r<${:.1f} ".format(r_min,r_max)+label_)
 			if cumulative:
-				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+"-.", label="_change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
+				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+'-.', label="_change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 			elif not cumulative:
-				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+"-.", label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
+				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+'-.', label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	ax1.set_xlim((0, 500))
-	ax1.set_ylim((-0.15, 0.15))
+	#ax1.set_xlim((0, 300))
+	#ax1.set_ylim((-0.001, 0.005))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
-		ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, $\\chi=0.7$", wrap=True, fontsize=title_font_size)
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative.png".format(R_max)
+		ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4$,\n$\\chi=0.7,l=1 m=-1$", wrap=True, fontsize=title_font_size)
+		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_L_cumulative.png".format(R_max)
 	else:
-		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
-		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $\\chi=0.7$")
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
-	ax1.legend(loc='upper left', ncol=2, fontsize=legend_font_size)
+		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)		
+		plt.title("Mass flux, $M=1,\\mu=0.4,\\chi=0.7,l=1 m=-1$", wrap=True, fontsize=title_font_size)
+		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_L.png".format(R_max)
+	ax1.legend(loc='best', fontsize=legend_font_size, labelspacing=0.2, handletextpad=0, columnspacing=1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()

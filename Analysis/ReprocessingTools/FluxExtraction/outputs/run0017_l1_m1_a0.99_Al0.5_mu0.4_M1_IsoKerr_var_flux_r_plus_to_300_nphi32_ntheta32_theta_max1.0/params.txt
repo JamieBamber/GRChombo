@@ -24,14 +24,14 @@ plot_prefix = KerrSFp_
 plot_interval = 10
 start_number = 0
 end_number = 200000
-suffix = _r_plus_to_300_nphi264_ntheta264_theta_max1.0
+suffix = _r_plus_to_300_nphi32_ntheta32_theta_max1.0
 
 # integration parameters
 num_vars = 2
 # vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
 var_indices = 5 6
-num_points_phi = 264
-num_points_theta = 264
+num_points_phi = 32
+num_points_theta = 32
 theta_min = 0
 theta_max = 2.0
 integration_center = 512 512 512

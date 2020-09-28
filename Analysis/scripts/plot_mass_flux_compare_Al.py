@@ -22,8 +22,8 @@ average_time = False
 av_n = 1
 plot_mass=False
 cumulative=True
-diff_from_alpha0=0
-log_y=0
+diff_from_alpha0=1
+log_y=1
 Nphi=64
 Ntheta=18
 Theta_max="1.0"
@@ -197,8 +197,21 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 add_data_dir(6, 1, 1, "0.99", "0.4", "0", Nphi, Ntheta, "_theta_max"+Theta_max)
 add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, "_theta_max"+Theta_max)
-add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 264, 264, "_theta_max"+Theta_max) 
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 264, 264, "_theta_max"+Theta_max)
+#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 264, 264, "_theta_max"+Theta_max) 
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 264, 264, "_theta_max"+"1.0")
+
+def alpha_text(m, alpha):
+        if m == 1:
+                if alpha == 0:
+                        return "0"
+                elif alpha == 0.25:
+                        return "\\pi/4"
+                elif alpha == 0.5:
+                        return "\\pi/2"
+                else:
+                     	return "nan"
+        elif m == -1:
+                return "\\pi"
 
 def plot_graph():
 	# plot setup
@@ -223,10 +236,10 @@ def plot_graph():
 		#net_flux = outer_mass_flux - inner_mass_flux
 		#label_ = "$\\mu$={:.2f}".format(mu)
 		#label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
-		label_ = "$m$={:d} $\\alpha$={:.2f}".format(dd.m, dd.Al)
+		label_ = "$\\alpha={:s}$".format(alpha_text(dd.m, dd.Al))
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
-		ds_length = min(len(dd.outer_mass_flux), len(dd.outer_mass_flux))
+		ds_length = min(len(dd.outer_mass_flux), len(dd0.outer_mass_flux))
 		tau = dd.tflux[:ds_length]*mu
 		flux=(10**(4*diff_from_alpha0))*(dd.outer_mass_flux[:ds_length]-dd0.outer_mass_flux[:ds_length]*diff_from_alpha0)
 		aflux=(10**(4*diff_from_alpha0))*(dd.analytic_outer_flux[:ds_length]-dd0.analytic_outer_flux[:ds_length]*diff_from_alpha0)
@@ -253,7 +266,7 @@ def plot_graph():
 		if log_y:
 			ax1.set_ylim((-5.0, 3.0))
 		else:
-			ax1.set_ylim((-1.0, 2.0))
+			ax1.set_ylim((-1.0, 3.0))
 	else:
 		ax1.set_xlim((0, 500))
 		ax1.set_ylim((0.0, 0.1))
@@ -268,7 +281,7 @@ def plot_graph():
 			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, \n $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
 		else:
 			ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
-			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$,$l=|m|=1$", wrap=True, fontsize=title_font_size)			
+			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$,$l=m=1$", wrap=True, fontsize=title_font_size)			
 			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.png".format(R_max)
 	else:
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $l=1$")
