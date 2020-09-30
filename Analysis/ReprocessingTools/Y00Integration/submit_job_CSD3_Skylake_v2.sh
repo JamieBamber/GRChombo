@@ -4,10 +4,10 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration
 
-start_number=640
+start_number=0
 end_number=20000
 lin_or_log=0 # note 0 = log, 1 = linear
-resume=1 # resume previous integration?
+resume=0 # resume previous integration?
 
 nphi=64
 ntheta=18
@@ -44,11 +44,19 @@ run0018=(1 1 0.99 0.25 0.4 0.0625)
 run0021=(0 0 0.7 0 2.0 0.015625)
 
 plot_interval=10
-#var_index=6
+# vars = phi Pi chi rho rho_azimuth J_R J_azimuth_R
+var_index=3
 
 # specify runs to submit
 run_list=(
-	run0021
+	run0004
+	run0005
+	run0006
+	run0007
+	run0008
+	run0009
+	run0010
+	run0011
 )
 
 ## loop over subdirs
@@ -95,6 +103,7 @@ do
 	sed -i "s|DTMULT|${dt_mult}|" params.txt
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|BHSPIN|${a}|" params.txt
+	sed -i "s|VARINDEX|${var_index}|" params.txt
 	sed -i "s|RESUMEYN|${resume}|" params.txt
 	sed -i "s|BHMASS|${M}|" params.txt
 	sed -i "s|SNUMBER|${start_number}|" params.txt

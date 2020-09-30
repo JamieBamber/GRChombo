@@ -197,8 +197,8 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 add_data_dir(6, 1, 1, "0.99", "0.4", "0", Nphi, Ntheta, "_theta_max"+Theta_max)
 add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, "_theta_max"+Theta_max)
-#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 264, 264, "_theta_max"+Theta_max) 
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 264, 264, "_theta_max"+"1.0")
+add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max"+"0.99") 
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max"+"0.99")
 
 def alpha_text(m, alpha):
         if m == 1:
@@ -273,7 +273,7 @@ def plot_graph():
 	if cumulative:
 		if diff_from_alpha0:
 			if log_y:
-				ax1.set_ylabel("$\\log_{10}($|diff. in cumulative flux / $E_0 \\times 10^{-4}|)$", fontsize=label_size)
+				ax1.set_ylabel("$\\log_{10}(|$diff. in cumulative flux| / $E_0 \\times 10^{-4}|)$", fontsize=label_size)
 				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1_log_y.png".format(R_max)
 			else:
 				ax1.set_ylabel("difference in cumulative flux / $E_0 \\times 10^{-4}$", fontsize=label_size)

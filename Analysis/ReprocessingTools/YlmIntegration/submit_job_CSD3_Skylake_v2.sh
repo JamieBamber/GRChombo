@@ -4,14 +4,14 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/YlmIntegration
 
-start_number=3480
+start_number=0
 end_number=10000
 lin_or_log=0 # note 0 = log, 1 = linear
-resume=1 # resume previous integration run?
+resume=0 # resume previous integration run?
 
 nphi=64
-ntheta=64
-theta_max=0.99
+ntheta=18
+theta_max=1.0
 max_radius=500
 
 # specify the input params for each run I want to submit
@@ -43,7 +43,7 @@ run0017=(1 1 0.99 0.5 0.4 0.0625)
 run0018=(1 1 0.99 0.25 0.4 0.0625)
 
 plot_interval=10
-#var_index=6
+var_index=3
 
 # specify runs to submit
 run_list=(

@@ -8,8 +8,8 @@ start_number=0
 end_number=200000
 lin_or_log=1 # note 0 = log, 1 = linear
 
-nphi=32
-ntheta=32
+nphi=64
+ntheta=64
 theta_max=1.0
 max_radius=300
 N1=128
