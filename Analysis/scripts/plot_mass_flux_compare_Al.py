@@ -143,14 +143,11 @@ class data_dir:
 		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
 		self.inner_mass_flux = -flux_data[1:,1]/E0
 		self.outer_mass_flux = -flux_data[1:,2]/E0	
+		self.analytic_outer_flux = misaligned_analytic_flux_v2(self.Al+0.5*(1-self.m), self.tflux, self.r_max, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
 		if cumulative:
 			dt = self.tflux[2] - self.tflux[1]
 			#inner_mass_flux = np.cumsum(inner_mass_flux)*dt
 			self.outer_mass_flux = np.cumsum(self.outer_mass_flux)*dt
-		if self.Al==0:
-			self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
-		elif self.Al!=0:
-			self.analytic_outer_flux = misaligned_analytic_flux_v2(self.Al, self.tflux, self.r_max, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
 			pass
 		if plot_mass:
 			file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_r_plus_to_{:d}.dat".format(self.name, R_max)
@@ -230,7 +227,8 @@ def plot_graph():
 	i = 0
 	dd0 = data_dirs[0]
 	dd0.load_data()
-	for dd in data_dirs:
+	for i in range(1,len(data_dirs)):
+		dd = data_dirs[i]
 		dd.load_data()
 		mu = float(dd.mu)
 		#net_flux = outer_mass_flux - inner_mass_flux
@@ -270,32 +268,34 @@ def plot_graph():
 		if diff_from_alpha0:
 			if log_y:
 				ax1.set_ylim((-5.0, 3.0))
-				ax1.set_ylabel("$\\log_{10}(|$diff. in cumulative flux| / $E_0 \\times 10^{-4}|)$", fontsize=label_size)
+				ax1.set_ylabel("$\\log_{10}(|$diff. in cumulative flux$| \\times 10^{4} / E_0)$", fontsize=label_size)
 				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1_log_y.png".format(R_max)
 			else:
-				ax1.set_ylim((-1.0, 3.0))
-				ax1.set_ylabel("difference in cumulative flux / $E_0 \\times 10^{-4}$", fontsize=label_size)
+				ax1.set_ylim((-0.5, 1.0))
+				ax1.set_ylabel("difference in cumulative flux $\\times 10^{4} / E_0$", fontsize=label_size)
 				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1.png".format(R_max)
-			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, \n $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
+			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99$ \n $l=|m|=1$; diff from $\\alpha=0$", wrap=True, fontsize=title_font_size)
 		else:
 			ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
-			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$,$l=m=1$", wrap=True, fontsize=title_font_size)			
+			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99,l=|m|=1$", wrap=True, fontsize=title_font_size)			
 			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.png".format(R_max)
 	else:
-		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $l=1$")
 		if diff_from_alpha0:
 			if log_y:
-				ax1.set_ylim((-10.0, 5.0))
-				ax1.set_ylabel("$\\log_{10}(|$diff. in flux$| / E_0 \\times 10^{-4})$", fontsize=label_size)
+				ax1.set_ylim((-6.0, 2.5))
+				ax1.set_ylabel("$\\log_{10}(|$diff. in flux$| \\times 10^{4} / E_0)$", fontsize=label_size)
 				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1_log_y.png".format(R_max)
 			else:
-				ax1.set_ylim((-0.1, 0.3))
-				ax1.set_ylabel("difference in flux / $E_0 \\times 10^{-4}$", fontsize=label_size)
+				ax1.set_ylim((-0.05, 0.1))
+				ax1.set_ylabel("difference in flux $\\times 10^{4} / E_0 $", fontsize=label_size)
 				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1.png".format(R_max)			
+			plt.title("Mass flux, $M=1,\\mu=0.4,\\chi=0.99$ \n$l=|m|=1$; diff. from $\\alpha=0$")
+
 		else:
+			plt.title("Mass flux, $M=1,\\mu=0.4,\\chi=0.99$, $l=|m|=1$")
 			ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
 			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al.png".format(R_max)			
-	ax1.legend(loc='upper left', fontsize=legend_font_size)
+	ax1.legend(loc='best', fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()

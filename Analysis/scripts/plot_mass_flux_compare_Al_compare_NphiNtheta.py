@@ -23,7 +23,7 @@ av_n = 1
 plot_mass=False
 cumulative=True
 diff_from_alpha0=1
-log_y=1
+log_y=0
 Nphi=64
 Ntheta=18
 Theta_max="1.0"
@@ -143,14 +143,11 @@ class data_dir:
 		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
 		self.inner_mass_flux = -flux_data[1:,1]/E0
 		self.outer_mass_flux = -flux_data[1:,2]/E0	
+		self.analytic_outer_flux = misaligned_analytic_flux_v2(self.Al+0.5*(1-self.m), self.tflux, self.r_max, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
 		if cumulative:
 			dt = self.tflux[2] - self.tflux[1]
 			#inner_mass_flux = np.cumsum(inner_mass_flux)*dt
 			self.outer_mass_flux = np.cumsum(self.outer_mass_flux)*dt
-		if self.Al==0:
-			self.analytic_outer_flux = analytic_flux(self.tflux, self.r_max, self.l, self.m, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
-		elif self.Al!=0:
-			self.analytic_outer_flux = misaligned_analytic_flux_v2(self.Al, self.tflux, self.r_max, self.a, mu, cumulative)*(4*np.pi)*phi0**2/E0
 			pass
 		if plot_mass:
 			file_name = home_path + "data/mass_data" + "/" + "{:s}_mass_r_plus_to_{:d}.dat".format(self.name, R_max)
@@ -204,6 +201,8 @@ add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 32, 32, "_theta_max"+"1.0")
 add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max"+"1.0")
 add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 264, 264, "_theta_max"+"1.0")
 
+alpha_compare="0.25"
+
 def alpha_text(m, alpha):
         if m == 1:
                 if alpha == 0:
@@ -225,7 +224,7 @@ def plot_graph():
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
-	legend_font_size = 8
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
@@ -274,32 +273,32 @@ def plot_graph():
 		if diff_from_alpha0:
 			if log_y:
 				ax1.set_ylim((-5.0, 1.0))
-				ax1.set_ylabel("$\\log_{10}(|$diff. in cumulative flux$| / E_0 \\times 10^{-4}|)$", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_Al=0.25_cumulative_difference_from_Al0_m1_log_y_compare_NphiNtheta.png".format(R_max)
+				ax1.set_ylabel("$\\log_{10}(|$diff. in cumulative flux$| \\times 10^{4} / E_0)$", fontsize=label_size)
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_Al={:s}_cumulative_difference_from_Al0_m1_log_y_compare_NphiNtheta.png".format(R_max, alpha_compare)
 			else:
-				ax1.set_ylim((-1.0, 3.0))
-				ax1.set_ylabel("difference in cumulative flux / $E_0 \\times 10^{-4}$", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1.png".format(R_max)
-			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$, \n $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
+				ax1.set_ylim((-0.25, 0.75))
+				ax1.set_ylabel("difference in cumulative flux $\\times 10^{4} / E_0$", fontsize=label_size)
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_Al={:s}_cumulative_difference_from_Al0_m1_compare_NphiNtheta.png".format(R_max, alpha_compare)
+			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99$, \n $l=1$; diff from $\\alpha=0, m=1$", wrap=True, fontsize=title_font_size)
 		else:
 			ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
-			ax1.set_title("Cumulative mass flux, $M=1$, $\\mu=0.4$,$l=m=1$", wrap=True, fontsize=title_font_size)			
+			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99,l=m=1$", wrap=True, fontsize=title_font_size)			
 			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.png".format(R_max)
 	else:
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $l=1$")
 		if diff_from_alpha0:
 			if log_y:
 				ax1.set_ylim((-10.0, 5.0))
-				ax1.set_ylabel("$\\log_{10}(|$diff. in flux$| / E_0 \\times 10^{-4})$", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1_log_y.png".format(R_max)
+				ax1.set_ylabel("$\\log_{10}(|$diff. in flux$| \\times 10^{4} / E_0)$", fontsize=label_size)
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_Al={:s}_difference_from_Al0_m1_log_y_compare_NphiNtheta.png".format(R_max, alpha_compare)
 			else:
 				ax1.set_ylim((-0.1, 0.3))
 				ax1.set_ylabel("difference in flux / $E_0 \\times 10^{-4}$", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1.png".format(R_max)			
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_Al={:s}_difference_from_Al0_m1_compare_NphiNtheta.png".format(R_max, alpha_compare)			
 		else:
 			ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
 			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al.png".format(R_max)			
-	ax1.legend(loc='upper left', fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4)
+	ax1.legend(loc='best', fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()
