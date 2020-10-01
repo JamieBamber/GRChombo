@@ -23,7 +23,7 @@ av_n = 1
 plot_mass=False
 cumulative=True
 diff_from_alpha0=1
-log_y=0
+log_y=1
 Nphi=64
 Ntheta=18
 Theta_max="1.0"
@@ -196,9 +196,13 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 
 add_data_dir(6, 1, 1, "0.99", "0.4", "0", Nphi, Ntheta, "_theta_max"+Theta_max)
-add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, "_theta_max"+Theta_max)
-add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max"+"1.0") 
+#add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, "_theta_max"+Theta_max)
+#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 32, 32, "_theta_max"+"1.0") 
+#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max"+"1.0") 
+#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 264, 264, "_theta_max"+"1.0") 
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 32, 32, "_theta_max"+"1.0")
 add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max"+"1.0")
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 264, 264, "_theta_max"+"1.0")
 
 def alpha_text(m, alpha):
         if m == 1:
@@ -221,7 +225,7 @@ def plot_graph():
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
-	legend_font_size = 10
+	legend_font_size = 8
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
@@ -236,7 +240,7 @@ def plot_graph():
 		#net_flux = outer_mass_flux - inner_mass_flux
 		#label_ = "$\\mu$={:.2f}".format(mu)
 		#label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
-		label_ = "$\\alpha={:s}$".format(alpha_text(dd.m, dd.Al))
+		label_ = "$\\alpha={:s}$ ".format(alpha_text(dd.m, dd.Al)) + "$N_{\\phi}$=" + "{:d}".format(dd.nphi) + " $N_{\\theta}$=" + "{:d}".format(dd.ntheta)
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
 		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
 		ds_length = min(len(dd.outer_mass_flux), len(dd0.outer_mass_flux))
@@ -269,9 +273,9 @@ def plot_graph():
 	if cumulative:
 		if diff_from_alpha0:
 			if log_y:
-				ax1.set_ylim((-5.0, 3.0))
-				ax1.set_ylabel("$\\log_{10}(|$diff. in cumulative flux| / $E_0 \\times 10^{-4}|)$", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1_log_y.png".format(R_max)
+				ax1.set_ylim((-5.0, 1.0))
+				ax1.set_ylabel("$\\log_{10}(|$diff. in cumulative flux$| / E_0 \\times 10^{-4}|)$", fontsize=label_size)
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_Al=0.25_cumulative_difference_from_Al0_m1_log_y_compare_NphiNtheta.png".format(R_max)
 			else:
 				ax1.set_ylim((-1.0, 3.0))
 				ax1.set_ylabel("difference in cumulative flux / $E_0 \\times 10^{-4}$", fontsize=label_size)
@@ -295,7 +299,7 @@ def plot_graph():
 		else:
 			ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
 			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al.png".format(R_max)			
-	ax1.legend(loc='upper left', fontsize=legend_font_size)
+	ax1.legend(loc='upper left', fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()
