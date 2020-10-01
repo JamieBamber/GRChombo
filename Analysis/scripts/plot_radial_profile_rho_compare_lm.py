@@ -15,12 +15,12 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-num = 800
+num = 400
 plot_interval = 10
 M = 1
 phi0 = 0.1
 lin_or_log = False
-colours = ['b', 'g', 'm', 'c', 'y']
+colours = ['r', 'b', 'g', 'm', 'c', 'y']
 colours2 = ["k", "m", "y"]
 styles = ["-", "--"]
 
@@ -34,8 +34,7 @@ if (lin_or_log):
 else:
 	scale = "log"
 
-log_y = False
-
+log_y = True
 
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, theta_max):
@@ -54,6 +53,7 @@ class data_dir:
 		file_name = self.name+"_rho_Y00_integral_{:s}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:.1f}.dat".format(scale, R_max, self.nphi, self.ntheta, self.theta_max)
 		dataset_path = data_root_path + file_name
 		data = np.genfromtxt(dataset_path, skip_header=1)
+		print("loaded " + file_name)
 		R = data[0,1:]
 		r_plus = M*(1 + np.sqrt(1 - self.a**2))
 		self.r = R*(1 + r_plus/(4*R))**2
@@ -87,13 +87,13 @@ run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 #add_data_dir(1, 0, 0, "0.0", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(2, 0, 0, "0.7", "0.4")
+add_data_dir(2, 0, 0, "0.7", "0.4")
 #add_data_dir(3, 0, 0, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
 add_data_dir(5, 1, 1, "0.7", "0.4")
 add_data_dir(7, 2, 2, "0.7", "0.4")
 add_data_dir(8, 4, 4, "0.7", "0.4")
 add_data_dir(10, 8, 8, "0.7", "0.4")
-add_data_dir(9, 1, -1, "0.7", "0.4")
+#add_data_dir(9, 1, -1, "0.7", "0.4")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 #add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
 #add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
@@ -108,8 +108,8 @@ def plot_graph():
 	fig.set_size_inches(3.8,3)
 	font_size = 10
 	title_font_size = 10
-	label_size = 11
-	legend_font_size = 9
+	label_size = 10
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#	
@@ -143,14 +143,17 @@ def plot_graph():
 	#else :
 	#	plt.xlim(left=np.log10(r_plus_min))
 	#plt.ylim((-3, 3))
-	ax1.legend(loc="best", fontsize=legend_font_size)
+	ax1.legend(loc="best", fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
 	title = "$\\rho$" + " profile $M=1,\\mu=0.4,\\chi=0.7$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm.png".format(scale, R_max, num)
+	if log_y:
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm_log_y.png".format(scale, R_max, num)
+	else:
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm.png".format(scale, R_max, num)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
