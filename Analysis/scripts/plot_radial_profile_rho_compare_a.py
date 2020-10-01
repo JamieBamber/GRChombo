@@ -87,13 +87,15 @@ run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 #add_data_dir(1, 0, 0, "0.0", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(2, 0, 0, "0.7", "0.4")
+#add_data_dir(2, 0, 0, "0.7", "0.4")
 #add_data_dir(3, 0, 0, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
+add_data_dir(4, 1, 1, "0.0", "0.4")
 add_data_dir(5, 1, 1, "0.7", "0.4")
-add_data_dir(7, 2, 2, "0.7", "0.4")
-add_data_dir(8, 4, 4, "0.7", "0.4")
-add_data_dir(10, 8, 8, "0.7", "0.4")
-add_data_dir(9, 1, -1, "0.7", "0.4")
+add_data_dir(6, 1, 1, "0.99", "0.4")
+#add_data_dir(7, 2, 2, "0.7", "0.4")
+#add_data_dir(8, 4, 4, "0.7", "0.4")
+#add_data_dir(10, 8, 8, "0.7", "0.4")
+#add_data_dir(9, 1, -1, "0.7", "0.4")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 #add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
 #add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
@@ -124,7 +126,7 @@ def plot_graph():
 			y = np.log10(dd.rho)
 		else:
 			y = dd.rho
-		label_="$l=${:d} $m=${:d}".format(dd.l, dd.m)
+		label_="$\\chi=${:.2f}".format(dd.a)
 		ax1.plot(x, y, colours[i] + "-", label=label_, linewidth=1)
 	if log_y:
 		ax1.set_ylabel("$\\log_{10}(\\rho/\\rho_0)$", fontsize=label_size)
@@ -147,13 +149,13 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho$" + " profile $M=1,\\mu=0.4,\\chi=0.7$" 
+	title = "$\\rho$" + " profile $M=1,\\mu=0.4,l=m=1$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm_log_y.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_a_log_y.png".format(scale, R_max, num)
 	else:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_a.png".format(scale, R_max, num)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
