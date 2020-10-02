@@ -236,7 +236,8 @@ def plot_graph():
 			if (lin_or_log):
 				x = dd.r/M
 			else:
-	     			x = np.log10(dd.r/M)
+				x = dd.r/M
+				#x = np.log10(dd.r/M)
 			if log_y:
 				y = np.log10(dd.phi)
 			else:
@@ -263,7 +264,8 @@ def plot_graph():
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
-		xlabel_ = "$\\log_{10}(r_{BL}/M)$"
+		xlabel_ = "$r_{BL}/M$"
+		#xlabel_ = "$\\log_{10}(r_{BL}/M)$"
 	plt.xlabel(xlabel_, fontsize=label_size)
 	#a_max = np.max([float(a_str) for a_str in a_list])
 	#r_plus_min = 1 + np.sqrt(1 - a_max**2)
@@ -280,7 +282,7 @@ def plot_graph():
 	title = "$\\phi_{00}$" + " profile M=1, $\\mu$=2.0, $\\chi=0.7$, $l=m=0$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_Rmax={:d}_plot_vs_Heun_v4.png".format(2.0, scale, R_max)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_Rmax={:d}_plot_vs_Heun_v4_lin_x.png".format(2.0, scale, R_max)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
