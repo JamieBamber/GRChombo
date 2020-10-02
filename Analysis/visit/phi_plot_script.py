@@ -10,15 +10,18 @@ print("starting visit run")
 
 # file settings
 data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-run_number = 2
-subdir = "run{:04d}_FlatScalar_mu0.4_G0".format(run_number)
-number = 300
+run_number = 8
+#subdir = "run{:04d}_FlatScalar_mu1_G0_delay1500".format(run_number)
+#subdir = "run{:04d}_FlatScalar_mu1_G0".format(run_number)
+subdir = "run{:04d}_FlatScalar_mu0.08187607564_G0_delay0".format(run_number)
+number = 26
 data_file_name = "BinaryBHSFPlot_%06d.3d.hdf5" % number
 
 # open datafile(s)
-OpenDatabase(data_root_dir + "failures/" + subdir + "/" + data_file_name,0)
+OpenDatabase(data_root_dir + subdir + "/" + data_file_name,0)
 
-abs_max = 20
+abs_max = 1.5
+width=64
 
 # add plot
 AddPlot("Pseudocolor", "phi", 1, 1)
@@ -31,7 +34,7 @@ PseudocolorAtts.min = -abs_max
 PseudocolorAtts.maxFlag = 1
 PseudocolorAtts.max = abs_max
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-PseudocolorAtts.colorTableName = "PuOr" # inferno 
+PseudocolorAtts.colorTableName = "RdBu" # inferno 
 PseudocolorAtts.invertColorTable = 1
 PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 PseudocolorAtts.opacity = 1
@@ -74,7 +77,6 @@ DrawPlots()
 
 # Set viewing attributes
 View2DAtts = View2DAttributes()
-width=64
 View2DAtts.windowCoords = (256-0.5*width, 256+0.5*width, 
 256-0.5*width,256+0.5*width)
 View2DAtts.viewportCoords = (0.2, 0.95, 0.15, 0.95)
@@ -86,8 +88,8 @@ View2DAtts.windowValid = 1
 SetView2D(View2DAtts)
 
 # save plot as png
-root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
-filename = "BBH_SF_phi_failure" + subdir + "_n%06d" % number
+root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/Binary_BH/"
+filename = "BBH_SF_phi_" + subdir + "_n%06d" % number
 s = SaveWindowAttributes()
 s.family=0
 s.format = s.PNG

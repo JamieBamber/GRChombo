@@ -1,6 +1,6 @@
 #!/bin/bash
 # Job Name and Files (also --job-name)
-#SBATCH -J BinaryBHSF_Job
+#SBATCH -J JOBNAME
 
 #Output and error (also --output, --error):
 #SBATCH -o ./%x.%j.out
@@ -24,11 +24,11 @@
 #SBATCH --partition=general
 
 #Number of nodes and MPI tasks per node:
-#SBATCH --nodes=22
+#SBATCH --nodes=43
 # There are 48 physical cores per node, so
 # the product of these numbers should be 48
-#SBATCH --ntasks-per-node=12
-export OMP_NUM_THREADS=4
+#SBATCH --ntasks-per-node=6
+export OMP_NUM_THREADS=8
 
 #Load modules
 module load slurm_setup

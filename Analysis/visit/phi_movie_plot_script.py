@@ -3,6 +3,7 @@
 # python Visit script
 # -------------------
 from sys import exit
+from os import makedirs
 
 # import visit_utils, we will use it to help encode our movie
 from visit_utils import *
@@ -13,21 +14,15 @@ print("starting visit run")
 
 # file settings
 data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-run_number = 4
-subdir = "run{:04d}_FlatScalar_mu0.4_G0".format(run_number)
+run_number = 8
+subdir = "run{:04d}_FlatScalar_mu1_G0_delay0_ratio2".format(run_number)
 data_file_name = "BinaryBHSFPlot_*.3d.hdf5 database"
-# set basic save options
-root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
-frame_dir = "BBH_SF_phi_run{:04d}".format(run_number)
-try:
-        makedirs(root_plot_path + frame_dir)
-except:
-        pass
+width = 32
 
 # open datafile(s)
 OpenDatabase(data_root_dir + subdir + "/" + data_file_name, 0)
 
-abs_max = 16
+abs_max = 10
 
 # add plot
 AddPlot("Pseudocolor", "phi")
@@ -40,7 +35,7 @@ PseudocolorAtts.min = -abs_max
 PseudocolorAtts.maxFlag = 1
 PseudocolorAtts.max = abs_max
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-PseudocolorAtts.colorTableName = "PuOr" #"RdBu"
+PseudocolorAtts.colorTableName = "RdBu"
 PseudocolorAtts.invertColorTable = 1
 PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 PseudocolorAtts.opacity = 1
@@ -83,7 +78,6 @@ DrawPlots()
 
 # Set viewing attributes
 View2DAtts = View2DAttributes()
-width = 100
 View2DAtts.windowCoords = (256 - 0.5*width, 256+0.5*width, 256 - 0.5*width, 256+0.5*width)
 View2DAtts.viewportCoords = (0.2, 0.95, 0.15, 0.95)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
@@ -96,6 +90,13 @@ SetView2D(View2DAtts)
 # get the number of timesteps
 nts = TimeSliderGetNStates()
 
+# set basic save options
+root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/Binary_BH/BBH_run{:04d}/".format(run_number)
+frame_dir = "BBH_run{:04d}_phi_movie".format(run_number) 
+try:
+        makedirs(root_plot_path + frame_dir)
+except:
+        pass
 # The 'family' option controls if visit automatically adds a frame number to 
 # the rendered files. 
 swatts = SaveWindowAttributes()
@@ -110,7 +111,7 @@ swatts.progressive = 1
 for ts in range(0, nts):
 	# Change to the next timestep
 	TimeSliderSetState(ts)
-	swatts.fileName = root_plot_path + frame_dir + "/BBH_SF_phi_movie_%06d.png" % ts
+	swatts.fileName = root_plot_path + frame_dir + "/BBH_movie_%06d.png" % ts
 	SetPlotOptions(PseudocolorAtts)
 	SetSaveWindowAttributes(swatts)
 	DrawPlots()

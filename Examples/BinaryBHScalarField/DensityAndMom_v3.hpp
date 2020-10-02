@@ -62,8 +62,9 @@ class DensityAndMom
     	const auto emtensor = m_matter.compute_emtensor(vars, d1, h_UU, chris.ULL);
 
 	// spacial metric
-	//const data_t det_gamma = 1.0/(vars.chi*vars.chi*vars.chi);
-	//Tensor<2, data_t> gamma_UU = h_UU/vars.chi;
+	const data_t det_gamma = 1.0/(vars.chi*vars.chi*vars.chi);
+	Tensor<2, data_t> gamma_UU;
+	FOR2(i, j){ gamma_UU[i][j]= h_UU[i][j]*(1.0/vars.chi); }
 	
 	// cartesian coordinates
 	const Coordinates<data_t> coords(current_cell, m_dx, m_center);
@@ -77,18 +78,17 @@ class DensityAndMom
         data_t r2 = disc/2 + sqrt(disc*disc/4 + (a*z)*(a*z));
         data_t r = sqrt(r2);*/	
 	
-	/*
-	// azimuthal direction vector
+	// dx/daz vector
         Tensor<1, data_t> dxdaz;
         dxdaz[0] = - y;
         dxdaz[1] =   x;
         dxdaz[2] = 0;
-	// radial direction vector
-	Tensor <1, data_t> dxdR;
-	dxdR[0] = x/R;
-	dxdR[1] = y/R;
-	dxdR[2] = z/R;
-	// theta direction vector
+	// radial direction normal vector
+	Tensor <1, data_t> NR;
+	NR[0] = x/R;
+	NR[1] = y/R;
+	NR[2] = z/R;
+	// dx/dtheta vector
 	data_t rxy = sqrt(x*x + y*y);
 	Tensor <1, data_t> dxdtheta;
         dxdtheta[0] = x*z/rxy;
@@ -100,31 +100,29 @@ class DensityAndMom
         FOR1(k){ rho += -vars.shift[k]*emtensor.Si[k];   }
         rho = rho*sqrt(det_gamma);
 
-	// conserved j_i_0 = -sqrt(-g)T_i_0 = det(gamma)*alpha*[ alpha * S_i - beta^k S_ki ] for the cartesian coordinates
+	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] - beta^i rho for the cartesian coordinates
         Tensor<1, data_t> Sbeta; 
         FOR2(i, j){ Sbeta[i] += vars.shift[j]*emtensor.Sij[i][j]; }                      
         Tensor<1, data_t> J; 
-        // conserved 3-current linear momentum covector in the cartesian coordinates 
-        FOR2(i, j){ J[i] += sqrt(det_gamma)*vars.lapse*(vars.lapse*emtensor.Si[i] - Sbeta[i]); }
+        // conserved 3-current linear momentum vector in the cartesian coordinates 
+	FOR2(i, j){ J[i] += sqrt(det_gamma)*vars.lapse*( gamma_UU[i][j]*(vars.lapse*emtensor.Si[j] - Sbeta[j]) ); } 
+	FOR1(i){ J[i] += - vars.shift[i]*rho; }
 
 	// conserved rho_azimuth = |gamma|(x * S_y - y * S_z)
         data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma);
 	
-	// azimuthal momentum covector 
+	// azimuthal momentum covector j_i_phi 
+	Tensor<1, data_t> J_azimuth_co;
+	FOR2(i,j){ J_azimuth_co[i] += sqrt(det_gamma)*vars.lapse*(emtensor.Sij[i][j]*dxdaz[j]); } 	
+	// azimuthal momentum vector j^i_phi
 	Tensor<1, data_t> J_azimuth;
-	FOR2(i,j){ J_azimuth[i] += sqrt(det_gamma)*vars.lapse*(emtensor.Sij[i][j]*dxdaz[j]); } 	
+        FOR2(i,j){ J_azimuth[i] += (gamma_UU[i][j] - vars.shift[i]*vars.shift[j]/(vars.lapse*vars.lapse))*J_azimuth_co[j]; }
 
-	// **** projections of momentum covectors in the spherical coordinate directions
+	// **** projections of momentum vectors in the spherical coordinate directions
 	data_t J_R = 0;
 	data_t J_azimuth_R = 0;
-	FOR1(i){ J_R += J[i]*dxdR[i]; }
-	FOR1(i){ J_azimuth_R += J_azimuth[i]*dxdR[i]; }*/
-
-	// set everything to zero
-	data_t rho = 0.0;
-	data_t rho_azimuth = 0.0;
-	data_t J_R = 0.0;
-	data_t J_azimuth_R = 0.0;
+	FOR1(i){ J_R += J[i]*NR[i]; }
+	FOR1(i){ J_azimuth_R += J_azimuth[i]*NR[i]; }
 
     	// assign values of density in output box
     	current_cell.store_vars(rho, c_rho);

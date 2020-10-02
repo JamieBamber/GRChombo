@@ -13,6 +13,7 @@ machine.file.*
 jobscript*
 *gz
 *env
+*.core.*
 core
 d
 o

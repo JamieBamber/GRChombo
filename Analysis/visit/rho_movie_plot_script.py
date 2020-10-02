@@ -14,12 +14,15 @@ print("starting visit run")
 
 # file settings
 data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-run_number = 5
-mu = "1"
-subdir = "run{:04d}_FlatScalar_mu{:s}_G0".format(run_number, mu)
+run_number = 9
+mu = "0.08187607564"
+delay = "0"
+suffix = ""
+subdir = "run{:04d}_FlatScalar_mu{:s}_G0_delay{:s}{:s}".format(run_number, mu, delay, suffix)
 #number = 100
 data_file_name = "BinaryBHSFPlot_*.3d.hdf5 database"
 width=64
+start_frame = 0
 
 # open datafile(s)
 OpenDatabase(data_root_dir + subdir + "/" + data_file_name, 0)
@@ -34,9 +37,9 @@ PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.CurrentPlot  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = 0.01
+PseudocolorAtts.min = 0.00001
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = 1000
+PseudocolorAtts.max = 10
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
 PseudocolorAtts.colorTableName = "inferno"
 PseudocolorAtts.invertColorTable = 0
@@ -94,12 +97,16 @@ print("made first plot")
 nts = TimeSliderGetNStates()
 
 # set basic save options
-root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/Binary_BH/BBH_run{:04d}/".format(run_number)
-frame_dir = "BBH_run{:04d}_rho_movie".format(run_number) 
-#try:
-#	makedirs(root_plot_path + frame_dir)
-#except:
-#	pass
+root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/Binary_BH/BBH_run{:04d}".format(run_number)
+frame_dir = "/BBH_run{:04d}_rho_movie".format(run_number) 
+try:
+        makedirs(root_plot_path)
+except:
+        pass
+try:
+	makedirs(root_plot_path + frame_dir)
+except:
+	pass
 # The 'family' option controls if visit automatically adds a frame number to 
 # the rendered files. 
 swatts = SaveWindowAttributes()
@@ -112,7 +119,6 @@ swatts.progressive = 1
 
 frame_step=1
 Nframes=int(nts/frame_step)
-start_frame=318
 
 # make movie frames
 print("starting with frame ", start_frame)
@@ -136,3 +142,4 @@ for ts in range(start_frame, Nframes):
 # print("saved as " + output_movie)
 # print("done visit run")
 exit()
+

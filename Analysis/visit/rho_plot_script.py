@@ -10,12 +10,12 @@ print("starting visit run")
 
 # file settings
 data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-run_number = 5
-mu = "1"
-subdir = "run{:04d}_FlatScalar_mu{:s}_G0".format(run_number, mu)
+run_number = 9
+mu = "0.08187607564"
+subdir = "run{:04d}_FlatScalar_mu{:s}_G0_delay0".format(run_number, mu)
 #data_root_dir = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField/"
 #subdir = "test0001"
-number = 1160
+number = 290
 width = 64
 data_file_name = "BinaryBHSFPlot_%06d.3d.hdf5" % number
 
@@ -31,9 +31,9 @@ PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.CurrentPlot # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = 0.001
+PseudocolorAtts.min = 0.000001
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = 1000
+PseudocolorAtts.max = 10
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
 PseudocolorAtts.colorTableName = "inferno"
 PseudocolorAtts.invertColorTable = 0
@@ -89,7 +89,7 @@ View2DAtts.windowValid = 1
 SetView2D(View2DAtts)
 
 # save plot as png
-root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/Binary_BH/BBH_run{:04d}/".format(run_number)
+root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/Binary_BH/"
 filename = "BBH_SF_rho_" + subdir + "_n%06d" % number 
 s = SaveWindowAttributes()
 s.family = 0
