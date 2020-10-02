@@ -104,21 +104,25 @@ def plot_graph():
 	for i in range(0, len(data_dirs)):
 		dd = data_dirs[i]
 		dd.load_data()
+		A_light = 0.6
+		A_ff = 4.8
+		r_light = A_light*dd.time
+		r_ff = A_ff*(np.sqrt(2)*dd.time/(M*np.pi))**(2/3)
 		if log_x:
 			x = np.log10(dd.time/M)
 		else:
 			x = dd.time/M
 		if log_y:
 			y = np.log10(dd.max_extrema/M)
-			y_free_fall = np.log10((np.sqrt(2)*dd.time/(M*np.pi))**(2/3))
-			y_light = np.log10((dd.time/M))
+			y_free_fall = np.log10(r_ff)
+			y_light = np.log10(r_light)
 		else:
 			y = dd.max_extrema/M
-			y_free_fall = (np.sqrt(2)*dd.time/(M*np.pi))**(2/3)
-			y_light = dd.time/M
-		ax1.plot(x, y, colours[0] + "x", label="_turning point", linewidth=1)
-		ax1.plot(x, y_free_fall, colours[1] + "-.", label="freefall distance", linewidth=2)
-		ax1.plot(x, y_light, colours[2] + "--", label="light travel distance", linewidth=2)
+			y_free_fall = r_ff
+			y_light = r_light
+		ax1.plot(x, y, colours[0] + "x", label="_turning point", markersize=1)
+		ax1.plot(x, y_free_fall, colours[1] + "-.", label="freefall distance $(t\\sqrt{2}/\\pi)^{2/3}$" + "$\\times${:.1f}".format(A_ff), linewidth=1)
+		ax1.plot(x, y_light, colours[2] + "--", label="light speed distance $t\\times${:.1f}".format(A_light), linewidth=1)
 	if log_y:
 		ax1.set_ylabel("$\\log_{10}(r_{\\textup{turning point}}/M)$", fontsize=label_size)
 	else:
