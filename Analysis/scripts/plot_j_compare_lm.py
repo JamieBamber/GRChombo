@@ -117,23 +117,23 @@ class data_dir:
 		mu = float(self.mu)
 		tflux_m = mass_flux_data[1:,0]
 		self.r_min = mass_flux_data[0,1]
-		self.r_max = mass_flux_data[0,2]
-		E0 = 0.5*(4*np.pi*(self.r_max**3)/3)*(phi0*mu)**2
-		outer_mass_flux = -mass_flux_data[1:,2]/(E0)
+		self.R_max = mass_flux_data[0,2]
+		E0 = 0.5*(4*np.pi*(self.R_max**3)/3)*(phi0*mu)**2
+		self.outer_mass_flux = -mass_flux_data[1:,2]/(E0)
 		#
 		ang_mom_file_name = home_path + output_dir + "/" + self.name + "_J_azimuth_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}{:s}.dat".format(R_max, self.nphi, self.ntheta, self.suffix)
 		ang_mom_flux_data = np.genfromtxt(ang_mom_file_name, skip_header=1)
 		print("loaded " + ang_mom_file_name)
 		mu = float(self.mu)
 		tflux_a = ang_mom_flux_data[1:,0]
-		outer_ang_mom_flux = -ang_mom_flux_data[1:,2]/E0
+		self.outer_ang_mom_flux = -ang_mom_flux_data[1:,2]/E0
 		#
 		ds_length = min(tflux_m.size, tflux_a.size)
 		self.tau = mu*tflux_m[:ds_length]
-		analytic_outer_mass_flux = analytic_mass_flux(tflux_m[:ds_length], self.r_max, self.l, self.m, self.a, mu, False)
-		analytic_outer_ang_mom_flux = analytic_ang_mom_flux(tflux_m[:ds_length], self.r_max, self.l, self.m, self.a, mu, False)
-		self.j_outer_flux = outer_ang_mom_flux[:ds_length]/outer_mass_flux[:ds_length]
-		self.j_analytic_flux = analytic_outer_ang_mom_flux/analytic_outer_mass_flux
+		analytic_outer_mass_flux = analytic_mass_flux(tflux_m[:ds_length], self.R_max, self.l, self.m, self.a, mu, False)
+		analytic_outer_ang_mom_flux = analytic_ang_mom_flux(tflux_m[:ds_length], self.R_max, self.l, self.m, self.a, mu, False)
+		self.j_diff_numerical = self.outer_ang_mom_flux[:ds_length] - self.m*self.outer_mass_flux[:ds_length]/self.mu
+		self.j_diff_analytic = analytic_outer_ang_mom_flux - self.m*analytic_outer_mass_flux/self.mu
 				
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, Al="0", nphi=Nphi, ntheta=Ntheta, suffix="_theta_max" + Theta_max):
@@ -188,19 +188,20 @@ def plot_graph():
 		dd.load_data()
 		label_ = "$l$={:d} $m$={:d}".format(dd.l, dd.m)
 		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
-		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
-		ax1.plot(dd.tau,dd.mu*dd.j_outer_flux,colours[i]+"-", label=label_, linewidth=1)
-		ax1.plot(dd.tau,dd.mu*dd.j_analytic_flux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+		#ax1.plot(dd.tau,dd.outer_mass_flux,colours[i]+"-", label=label_)
+		#ax1.plot(dd.tau,dd.mu*dd.outer_ang_mom_flux/dd.m,colours[i]+"-.", label="_ang. momentum flux into R={:.1f} ".format(R_max)+label_)
+		ax1.plot(dd.tau,np.log10(np.abs(dd.j_diff_numerical)),colours[i]+"-", label=label_, linewidth=1)
+		ax1.plot(dd.tau,np.log10(np.abs(dd.j_diff_analytic)),colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	ax1.set_xlim((0, 500))
-	ax1.set_ylim((-5, 10))
-	ax1.set_ylabel("$\\mu$(ang. mom. flux) / mass flux", fontsize=label_size)
-	plt.title("Ang. mom. per unit mass, $M=1,\\mu=0.4,\\chi=0.7$")
+	ax1.set_ylim((-10, 2))
+	ax1.set_ylabel("$\\log_{10}(|F_J - F_E\\frac{m}{\\mu}|/E_0)$", fontsize=label_size)
+	plt.title("Angular momentum flux, $M=1,\\mu=0.4,\\chi=0.7$")
 	save_path = home_path + "plots/j_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
-	ax1.legend(loc='lower left', ncol=2, fontsize=legend_font_size, labelspacing=0.05, borderpad=0.1, borderaxespad=0.1)
+	ax1.legend(loc='best', ncol=2, fontsize=legend_font_size, labelspacing=0.05, borderpad=0.1, borderaxespad=0.1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()

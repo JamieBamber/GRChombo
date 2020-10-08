@@ -33,11 +33,11 @@ class ReprocessingLevel : public GRAMRLevel
 	double m_true_restart_time = m_p.coarsest_dx * m_p.dt_multiplier * m_p.start_number; 	
 	//pout() << "m_time = " << m_time << std::endl;
         //pout() << "m_true_restart_time = " << m_true_restart_time << std::endl;
-        if (m_time == m_true_restart_time){
-		m_first_step = 1;
-	} else {
-		m_first_step = 0;
-	}
+	if ((m_time == m_true_restart_time) && (m_p.resume == 0)){
+                m_first_step = 1;
+        } else {
+                m_first_step = 0;
+        }
 	
 	// Do the extraction on the min integration level
         if (m_level == m_p.integration_params.min_integration_level)

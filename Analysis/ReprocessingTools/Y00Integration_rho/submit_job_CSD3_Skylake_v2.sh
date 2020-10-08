@@ -52,7 +52,7 @@ var_index=3 # don't change
 
 # specify runs to submit
 run_list=(
-	run0020
+	run0023
 )
 
 ## loop over subdirs

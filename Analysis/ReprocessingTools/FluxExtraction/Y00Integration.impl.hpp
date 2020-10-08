@@ -70,7 +70,7 @@ inline void Y00Integration::execute_query(
     	// number label 
     	std::ostringstream nlabel;
     	nlabel << std::setw(6) << std::setfill('0') << m_start_number;
-    	std::string nstring = "n" + nlabel.str();
+    	std::string nstring = "n000000";
 
     	std::string integral_filename = m_params.output_rootdir + m_data_subdir + "_" + UserVariables::variable_names[var] + log_label + nstring + 
     	m_params.suffix;

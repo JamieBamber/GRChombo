@@ -119,7 +119,7 @@ def misaligned_analytic_flux_v2(Alpha, t, R, a, mu, cumulative):
 	return Flux
 	
 class data_dir:
-	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, suffix):
+	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, L, N):
 		self.num = num
 		self.l = l
 		self.m = m
@@ -127,13 +127,23 @@ class data_dir:
 		self.mu = float(mu)
 		self.nphi = nphi
 		self.ntheta = ntheta
-		self.suffix = suffix
+		self.theta_max = Theta_max
 		self.Al = float(Al)
-		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, Al, mu)
+		self.N = N
+		self.L = L
+		if N==128:
+			Nfix=""
+		else:
+			Nfix = "_N{:d}".format(N)
+		if L==1024:
+		        Lfix=""
+		else:
+		     	Lfix="_L{:d}".format(L)
+		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr{:s}{:s}".format(num, l, m, a, Al, mu, Lfix, Nfix)
 	#
 	def load_data(self):
 		# load flux and mass data from csv files	
-		file_name = home_path + output_dir + "/" + self.name + "_J_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}{:s}.dat".format(R_max, self.nphi, self.ntheta, self.suffix)
+		file_name = home_path + output_dir + "/" + self.name + "_J_R_linear_n000000_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:s}.dat".format(R_max, self.nphi, self.ntheta, self.theta_max)
 		flux_data = np.genfromtxt(file_name, skip_header=1)
 		print("loaded " + file_name)
 		mu = float(self.mu)
@@ -163,8 +173,8 @@ class data_dir:
 				self.dmass = (mass_line_data[1:,1] - mass_line_data[:-1,1])/(E0*dt)
 				
 data_dirs = []
-def add_data_dir(num, l, m, a, mu, Al, nphi, ntheta, suffix=""):
-        x = data_dir(num, l, m, a, mu, Al, nphi, ntheta, suffix)
+def add_data_dir(num, l, m, a, mu, Al, nphi=Nphi, ntheta=Ntheta, L=1024, N=128):
+        x = data_dir(num, l, m, a, mu, Al, nphi, ntheta, L, N)
         data_dirs.append(x)
 
 # choose datasets to compare
@@ -192,10 +202,10 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 #add_data_dir(9, 1, -1, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 
-add_data_dir(6, 1, 1, "0.99", "0.4", "0", Nphi, Ntheta, "_theta_max"+Theta_max)
-add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, "_theta_max"+Theta_max)
-add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max"+"1.0") 
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max"+"1.0")
+add_data_dir(6, 1, 1, "0.99", "0.4", "0")
+add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, 2048, 256)
+add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64) 
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64)
 
 def alpha_text(m, alpha):
         if m == 1:

@@ -1,17 +1,10 @@
-import yt
 import numpy as np
 import math
-from yt import derived_field
-from yt.units import cm
 import time
 import sys
 from matplotlib import rc
 rc('text', usetex=True)
 from matplotlib import pyplot as plt
-
-#print("yt version = ",yt.__version__)
-
-yt.enable_parallelism()
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -181,6 +174,7 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 #add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
 add_data_dir(5, 1, 1, "0.7", "0.4", "0")
 add_data_dir(11, 1, 1, "0.7", "2.0", "0")
+add_data_dir(23, 1, 1, "0.7", "0.2", "0")
 add_data_dir(20, 1, 1, "0.7", "0.1", "0")
 
 def plot_graph():

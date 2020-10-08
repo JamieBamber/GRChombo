@@ -47,7 +47,8 @@ var_index=3
 
 # specify runs to submit
 run_list=(
-	run0005
+	run0004
+	run0006
 )
 
 ## loop over subdirs
