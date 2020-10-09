@@ -15,7 +15,7 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-tau = 200
+tau = 250
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -100,7 +100,7 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 add_data_dir(5, 1, 1, "0.7", "0.4", "0")
 add_data_dir(11, 1, 1, "0.7", "2.0", "0")
-#add_data_dir(23, 1, 1, "0.7", "0.2", "0")
+add_data_dir(23, 1, 1, "0.7", "0.2", "0")
 add_data_dir(20, 1, 1, "0.7", "0.1", "0")
 
 def plot_graph():

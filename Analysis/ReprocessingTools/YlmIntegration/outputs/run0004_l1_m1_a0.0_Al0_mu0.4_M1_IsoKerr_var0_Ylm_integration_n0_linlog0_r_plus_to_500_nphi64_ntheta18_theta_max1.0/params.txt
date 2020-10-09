@@ -3,15 +3,15 @@
 #Params for runtime inputs
 N1 = 128
 N2 = 128
-N3 = NSPACE3
+N3 = 64
 L = 1024
 max_level = 7 # There are (max_level+1) grids, so min is zero
 
 # For read in of files
 data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
-data_subdir = SUBDIR
-dt_multiplier = DTMULT
-resume = RESUMEYN
+data_subdir = run0004_l1_m1_a0.0_Al0_mu0.4_M1_IsoKerr
+dt_multiplier = 0.0625
+resume = 0
 
 # output directory 
 output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/
@@ -20,27 +20,27 @@ output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/Ylm_integration_data/
 chk_prefix = KerrSF_
 plot_prefix = KerrSFp_
 # restart_file = KerrSFp_000000.3d.hdf5
-plot_interval = PLOTINTERVAL
-start_number = SNUMBER
-end_number = ENUMBER
-suffix = SUFFIX
+plot_interval = 10
+start_number = 0
+end_number = 10000
+suffix = _r_plus_to_500_nphi64_ntheta18_theta_max1.0
 
 # integration parameters
 num_vars = 1
 # vars = phi Pi chi rho rho_azimuth J_R J_azimuth_R
-variable_index = VARINDEX
-num_points_phi = NPHI
-num_points_theta = NTHETA
+variable_index = 0
+num_points_phi = 64
+num_points_theta = 18
 theta_min = 0
-theta_max = THETAMAX
-integration_center = 512.0 512.0 CENTERZ
-center = 512.0 512.0 CENTERZ
+theta_max = 1.0
+integration_center = 512.0 512.0 0.0
+center = 512.0 512.0 0.0
 
 # radius parameters
-num_integration_radii = NRADII
-min_integration_radius = MINRADIUS #!< r_plus = 1 + sqrt(1 - a**2)
-max_integration_radius = MAXRADIUS
-linear_or_log = LINLOG          #!< use linear or log spacing for radii array. Linear = 1, Log = 0
+num_integration_radii = 513
+min_integration_radius = 2.00 #!< r_plus = 1 + sqrt(1 - a**2)
+max_integration_radius = 500
+linear_or_log = 0          #!< use linear or log spacing for radii array. Linear = 1, Log = 0
 
 # l m modes
 # in the form "modes = l1 m1 l2 m2 l3 m3 l4 m4 ... "

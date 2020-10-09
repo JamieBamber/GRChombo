@@ -45,7 +45,7 @@ run0021=(0 0 0.7 0 2.0 0.015625)
 
 plot_interval=10
 # vars = phi Pi chi rho rho_azimuth J_R J_azimuth_R
-var_index=3
+var_index=4
 
 # specify runs to submit
 run_list=(

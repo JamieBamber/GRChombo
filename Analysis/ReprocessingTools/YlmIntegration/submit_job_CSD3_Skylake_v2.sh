@@ -43,7 +43,7 @@ run0017=(1 1 0.99 0.5 0.4 0.0625)
 run0018=(1 1 0.99 0.25 0.4 0.0625)
 
 plot_interval=10
-var_index=3
+var_index=0
 
 # specify runs to submit
 run_list=(

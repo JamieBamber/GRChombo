@@ -3,7 +3,7 @@
 verbosity = 0
 chk_prefix = DATADIR/KerrSF_
 plot_prefix = DATADIR/KerrSFp_
-restart_file = DATADIR/KerrSF_002000.3d.hdf5
+restart_file = DATADIR/KerrSF_000700.3d.hdf5
 
 # Set up grid spacings and regrid params
 # NB - the N values need to be multiples of block_factor

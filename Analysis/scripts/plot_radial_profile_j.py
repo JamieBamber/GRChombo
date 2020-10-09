@@ -15,7 +15,7 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-num = 400
+num = 500
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -34,16 +34,7 @@ if (lin_or_log):
 else:
 	scale = "log"
 
-log_y = True
-
-def fix_spikes(rho):
-        out_rho = rho
-        for i in range(1, len(rho)-1):
-                if ((np.abs(np.log(out_rho[i+1]/out_rho[i])) >= np.abs(np.log(0.2))) or (out_rho[i+1] < 0)):
-                        out_rho[i+1] = out_rho[i] + 0.1*(out_rho[i] - out_rho[i-1])
-                else:
-                     	pass
-        return out_rho
+log_y = False
 
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, theta_max):
@@ -70,7 +61,16 @@ class data_dir:
 		self.time = data[row,0]
 		rho = data[row,1:]
 		rho0 = 0.5*(phi0**2)*(self.mu)**2
-		self.rho = fix_spikes(rho/rho0)
+		self.rho = rho/rho0
+		#
+		file_name = self.name+"_rho_azimuth_Y00_integral_{:s}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:.1f}.dat".format(scale, R_max, self.nphi, self.ntheta, self.theta_max)
+		dataset_path = data_root_path + file_name
+		data = np.genfromtxt(dataset_path, skip_header=1)
+		print("loaded " + file_name)
+		self.time_azimuth = data[row,0]
+		rho_azimuth = data[row,1:]
+		self.rho_azimuth = rho_azimuth/rho0
+		self.j = (self.mu/self.m)*self.rho_azimuth/self.rho	
 		
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, Al="0", nphi=Nphi, ntheta=Ntheta, theta_max=Theta_max):
@@ -96,13 +96,13 @@ run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 #add_data_dir(1, 0, 0, "0.0", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(2, 0, 0, "0.7", "0.4")
+#add_data_dir(2, 0, 0, "0.7", "0.4")
 #add_data_dir(3, 0, 0, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
 add_data_dir(5, 1, 1, "0.7", "0.4")
-add_data_dir(7, 2, 2, "0.7", "0.4")
-add_data_dir(8, 4, 4, "0.7", "0.4")
-add_data_dir(10, 8, 8, "0.7", "0.4")
-add_data_dir(9, 1, -1, "0.7", "0.4")
+#add_data_dir(7, 2, 2, "0.7", "0.4")
+#add_data_dir(8, 4, 4, "0.7", "0.4")
+#add_data_dir(10, 8, 8, "0.7", "0.4")
+#add_data_dir(9, 1, -1, "0.7", "0.4")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 #add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
 #add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
@@ -130,15 +130,15 @@ def plot_graph():
 		else:
 	     		x = np.log10(dd.r/M)
 		if log_y:
-			y = np.log10(dd.rho)
+			y = np.log10(dd.rho_azimuth)
 		else:
-			y = dd.rho
+			y = dd.rho_azimuth
 		label_="$l=${:d} $m=${:d}".format(dd.l, dd.m)
 		ax1.plot(x, y, colours[i] + "-", label=label_, linewidth=1)
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}(\\rho/\\rho_0)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}((\\mu/m)\\rho_J/\\rho)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$\\rho/\\rho_0$", fontsize=label_size)
+		ax1.set_ylabel("$(\\mu/m)\\rho_J/\\rho$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -151,18 +151,18 @@ def plot_graph():
 	#	plt.xlim((r_plus_min, 100))
 	#else :
 	#	plt.xlim(left=np.log10(r_plus_min))
-	#plt.ylim((-3, 3))
+	#plt.ylim((0, 2))
 	ax1.legend(loc="best", fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho$" + " profile $M=1,\\mu=0.4,\\chi=0.7,\\tau=${:.1f}".format(dd0.time*dd0.mu) 
+	title = "Ang. mom. per unit mass" + " profile $M=1,\\mu=0.4,\\chi=0.7$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm_log_y.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_j_profile_{:s}_Rmax={:d}_n={:d}_log_y.png".format(scale, R_max, num)
 	else:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_j_profile_{:s}_Rmax={:d}_n={:d}.png".format(scale, R_max, num)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()

@@ -4,7 +4,7 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction
 
-start_number=1370
+start_number=2000
 end_number=200000
 lin_or_log=1 # note 0 = log, 1 = linear
 resume=1 # resume previous extraction?
