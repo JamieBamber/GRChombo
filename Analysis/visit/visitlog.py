@@ -3,7 +3,7 @@ ScriptVersion = "2.13.0"
 if ScriptVersion != Version():
     print "This script is for VisIt %s. It may not work with version %s" % (ScriptVersion, Version())
 ShowAllWindows()
-OpenDatabase("/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr/KerrSFp_001600.3d.hdf5", 0)
+OpenDatabase("/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr/KerrSFp_001600.3d.hdf5", 0)
 # The UpdateDBPluginInfo RPC is not supported in the VisIt module so it will not be logged.
 AddPlot("Pseudocolor", "rho", 1, 1)
 PseudocolorAtts = PseudocolorAttributes()
@@ -323,7 +323,7 @@ SetView2D(View2DAtts)
 SaveWindowAtts = SaveWindowAttributes()
 SaveWindowAtts.outputToCurrentDirectory = 1
 SaveWindowAtts.outputDirectory = "."
-SaveWindowAtts.fileName = "/home/dc-bamb1/GRChombo/Analysis/plots/BBH_SF_rho_run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr_n001600"
+SaveWindowAtts.fileName = "/home/dc-bamb1/GRChombo/Analysis/plots/BBH_SF_rho_run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr_n001600"
 SaveWindowAtts.family = 0
 SaveWindowAtts.format = SaveWindowAtts.PNG  # BMP, CURVE, JPEG, OBJ, PNG, POSTSCRIPT, POVRAY, PPM, RGB, STL, TIFF, ULTRA, VTK, PLY
 SaveWindowAtts.width = 512

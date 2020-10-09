@@ -15,8 +15,8 @@ data_root_dir = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrS
 #subdir = "run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr"
 #subdir = "run0006_l1_m1_a0.99_Al0_mu0.4_M1_IsoKerr"
 #subdir = "run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr"
-#subdir = "run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr"
-subdir = "run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"
+subdir = "run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr"
+#subdir = "run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"
 number = 1600
 data_file_name = "KerrSFp_%06d.3d.hdf5" % number
 width = 256
@@ -54,8 +54,8 @@ SetPlotOptions(PseudocolorAtts)
 AddOperator("Slice", 1)
 SliceAtts = SliceAttributes()
 SliceAtts.originType = SliceAtts.Intercept  # Point, Intercept, Percent, Zone, Node
-SliceAtts.originPoint = (0, 0, 512)
-SliceAtts.originIntercept = 0.001
+SliceAtts.originPoint = (0, 0, 0)
+SliceAtts.originIntercept = 512.0
 SliceAtts.originPercent = 0
 SliceAtts.originZone = 0
 SliceAtts.originNode = 0
