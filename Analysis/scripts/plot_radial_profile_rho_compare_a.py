@@ -15,7 +15,7 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-num = 400
+num = 1010
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -35,6 +35,15 @@ else:
 	scale = "log"
 
 log_y = True
+
+def fix_spikes(rho):
+        out_rho = rho
+        for i in range(1, len(rho)-1):
+                if ((np.abs(np.log(out_rho[i+1]/out_rho[i])) >= np.abs(np.log(0.9))) or (out_rho[i+1] < 0)):
+                        out_rho[i+1] = out_rho[i] + 0.1*(out_rho[i] - out_rho[i-1])
+                else:
+                     	pass
+        return out_rho
 
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, theta_max):
@@ -61,7 +70,7 @@ class data_dir:
 		self.time = data[row,0]
 		rho = data[row,1:]
 		rho0 = 0.5*(phi0**2)*(self.mu)**2
-		self.rho = rho/rho0
+		self.rho = fix_spikes(rho/rho0)
 		
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, Al="0", nphi=Nphi, ntheta=Ntheta, theta_max=Theta_max):
@@ -149,7 +158,7 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho$" + " profile $M=1,\\mu=0.4,l=m=1$" 
+	title = "$\\rho$" + " profile $M=1,\\mu=0.4,l=m=1,\\tau=" + str(dd0.time*dd0.mu) + "$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:

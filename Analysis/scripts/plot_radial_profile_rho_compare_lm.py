@@ -15,7 +15,7 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-num = 400
+tau = 200
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -58,7 +58,7 @@ class data_dir:
 		self.Al = Al
 		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, Al, mu)
 	#
-	def load_data(self, number):
+	def load_data(self):
 		file_name = self.name+"_rho_Y00_integral_{:s}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:.1f}.dat".format(scale, R_max, self.nphi, self.ntheta, self.theta_max)
 		dataset_path = data_root_path + file_name
 		data = np.genfromtxt(dataset_path, skip_header=1)
@@ -66,7 +66,8 @@ class data_dir:
 		R = data[0,1:]
 		r_plus = M*(1 + np.sqrt(1 - self.a**2))
 		self.r = R*(1 + r_plus/(4*R))**2
-		row = int(number/plot_interval)
+		dt = data[2,0] - data[1,0]
+		row = int(tau/(self.mu*dt*plot_interval))
 		self.time = data[row,0]
 		rho = data[row,1:]
 		rho0 = 0.5*(phi0**2)*(self.mu)**2
@@ -124,7 +125,7 @@ def plot_graph():
 	#	
 	for i in range(0, len(data_dirs)):
 		dd = data_dirs[i]
-		dd.load_data(num)
+		dd.load_data()
 		if (lin_or_log):
 			x = dd.r/M
 		else:
@@ -156,11 +157,11 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho$" + " profile $M=1,\\mu=0.4,\\chi=0.7,\\tau=${:.1f}".format(dd0.time*dd0.mu) 
+	title = "$\\rho$" + " profile $M=1,\\mu=0.4,\\chi=0.7,\\tau=${:.1f}".format(tau) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm_log_y.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_tau={:d}_compare_lm_log_y.png".format(scale, R_max, tau)
 	else:
 			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm.png".format(scale, R_max, num)
 	print("saved " + save_name)
