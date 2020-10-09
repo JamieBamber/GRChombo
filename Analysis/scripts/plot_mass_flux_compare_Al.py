@@ -22,7 +22,7 @@ average_time = False
 av_n = 1
 plot_mass=False
 cumulative=True
-diff_from_alpha0=1
+diff_from_alpha0=0
 log_y=0
 Nphi=64
 Ntheta=18
@@ -237,7 +237,7 @@ def plot_graph():
 	i = 0
 	dd0 = data_dirs[0]
 	dd0.load_data()
-	for i in range(1,len(data_dirs)):
+	for i in range(0,len(data_dirs)):
 		dd = data_dirs[i]
 		dd.load_data()
 		mu = float(dd.mu)
