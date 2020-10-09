@@ -54,7 +54,7 @@ SetPlotOptions(PseudocolorAtts)
 AddOperator("Slice", 1)
 SliceAtts = SliceAttributes()
 SliceAtts.originType = SliceAtts.Intercept  # Point, Intercept, Percent, Zone, Node
-SliceAtts.originPoint = (0, 0, 0)
+SliceAtts.originPoint = (0, 0, 512)
 SliceAtts.originIntercept = 0.001
 SliceAtts.originPercent = 0
 SliceAtts.originZone = 0
