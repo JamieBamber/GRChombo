@@ -9,13 +9,13 @@ end_number=200000
 lin_or_log=1 # note 0 = log, 1 = linear
 resume=1 # resume previous extraction?
 
-nphi=64
-ntheta=18
+nphi=256
+ntheta=256
 theta_max=1.0
 max_radius=300
-N1=256
-L=2048
-box_size=32
+N1=128
+L=1024
+box_size=16
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -76,7 +76,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0016
+	run0017
 )
 
 ## loop over subdirs
