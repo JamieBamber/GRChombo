@@ -53,6 +53,7 @@ var_index=4 # don't change
 # specify runs to submit
 run_list=(
 	run0004
+	run0005
 	run0006
 )
 
