@@ -258,9 +258,9 @@ def plot_graph():
 			#impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
 			#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}(\\phi_{lm}/\\phi_0)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}(\\varphi_{lm}/\\varphi_0)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$\\phi_{00}/\\phi_0$", fontsize=label_size)
+		ax1.set_ylabel("$\\varphi_{00}/\\varphi_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -279,7 +279,7 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\phi_{00}$" + " profile M=1, $\\mu$=2.0, $\\chi=0.7$, $l=m=0$" 
+	title = "$\\varphi_{00}$" + " profile M=1, $\\mu$=2.0, $\\chi=0.7$, $l=m=0$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_Rmax={:d}_plot_vs_Heun_v4_lin_x.png".format(2.0, scale, R_max)

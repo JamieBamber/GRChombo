@@ -48,13 +48,13 @@ run0023=(1 1 0.7 0 0.2 0.125)
 
 plot_interval=10
 # vars = phi Pi chi rho rho_azimuth J_R J_azimuth_R
-var_index=4 # don't change
+var_index=3 # don't change
 
 # specify runs to submit
 run_list=(
-	run0004
-	run0005
-	run0006
+	run0016
+	run0017
+	run0018
 )
 
 ## loop over subdirs

@@ -15,7 +15,7 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-number = 1600
+number = 800
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -254,9 +254,9 @@ def plot_graph():
 		#impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
 		#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}(\\phi_{lm}/\\phi_0)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}(\\varphi_{lm}/\\varphi_0)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$\\phi_{00}/\\phi_0$", fontsize=label_size)
+		ax1.set_ylabel("$\\varphi_{00}/\\varphi_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -273,7 +273,7 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\phi_{00}$" + " profile M=1, $\\mu$=2.0, $\\chi=0.7$, $l=m=0$, time = {:.1f}".format(dd0.time) 
+	title = "$\\varphi_{00}$" + " profile $M=1,\\mu=2.0,\\chi=0.7,l=m=0,\\tau=${:.1f}".format(dd0.time*dd0.mu) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_t={:.1f}_maxR={:d}_plot_vs_Heun_v2.png".format(2.0, scale, dd0.time, R_max)
