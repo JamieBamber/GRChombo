@@ -236,8 +236,7 @@ def plot_graph():
 			if (lin_or_log):
 				x = dd.r/M
 			else:
-				x = dd.r/M
-				#x = np.log10(dd.r/M)
+				x = np.log10(dd.r/M)
 			if log_y:
 				y = np.log10(dd.phi)
 			else:
@@ -254,7 +253,7 @@ def plot_graph():
 					break
 			analytic_y = analytic_phi(dd.time, dd.r[n_cutoff:], dd.a, dd.mu)
 			#ax1.plot(x[n_cutoff:], analytic_y, colours[j] + "-.", label="_pertubative sol.".format(dd.l, dd.m, dd.a), linewidth=1)
-			ax1.plot(x, y, colours[j] + "-", label="t={:.1f}".format(dd.time), linewidth=1)
+			ax1.plot(x, y, colours[j] + "-", label="$\\tau=${:.1f}".format(dd.time*dd.mu), linewidth=1)
 			#impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
 			#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
@@ -282,7 +281,7 @@ def plot_graph():
 	title = "$\\varphi_{00}$" + " profile M=1, $\\mu$=2.0, $\\chi=0.7$, $l=m=0$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_Rmax={:d}_plot_vs_Heun_v4_lin_x.png".format(2.0, scale, R_max)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_Rmax={:d}_plot_vs_Heun_v4.png".format(2.0, scale, R_max)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
