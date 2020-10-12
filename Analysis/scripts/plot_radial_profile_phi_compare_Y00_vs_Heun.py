@@ -154,7 +154,7 @@ def fit_comb_solution(ax, dd, p0_, colour):
 		y = np.log10(phi_fitted)
 	else:
 		y = phi_fitted
-	ax.plot(x, y, colour + "--", label="fitted Heun sol. l={:d} m={:d} a={:.2f}".format(dd.l, dd.m, dd.a), linewidth=1)
+	ax.plot(x, y, colour + "--", label="_fitted Heun sol. l={:d} m={:d} a={:.2f}".format(dd.l, dd.m, dd.a), linewidth=1)
 
 def impose_comb_solution(ax, dd, p0, colour):
 	def Stationary_sol_fit(r, A_in, A_out, phase):
@@ -185,8 +185,8 @@ def plot_graph():
 	fig.set_size_inches(3.8,3)
 	font_size = 10
 	title_font_size = 10
-	label_size = 11
-	legend_font_size = 9
+	label_size = 10
+	legend_font_size = 10
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#	
@@ -201,16 +201,16 @@ def plot_graph():
 			y = np.log10(dd.phi)
 		else:
 			y = dd.phi
-		ax1.plot(x, y, colours[i] + "-", label="l={:d} m={:d} a={:.2f}".format(dd.l, dd.m, dd.a), linewidth=1)
+		ax1.plot(x, y, colours[i] + "-", label="$\\chi=${:.2f}".format(dd.a), linewidth=1)
 		# plot fitted solution
 		if (dd.a < 0.9):
 			fit_comb_solution(ax1, dd, (1, 0.2, 0.2), colours[i])
 		#impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
 		#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}(\\phi_{lm}/\\phi_0)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}(\\varphi_{00}/\\varphi_0)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$\\phi_{00}/\\phi_0$", fontsize=label_size)
+		ax1.set_ylabel("$\\varphi_{00}/\\varphi_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -227,10 +227,10 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\phi_{00}$" + " profile M=1, $\\mu$=0.4, time = {:.1f}".format(dd0.time) 
+	title = "$\\varphi_{00}$" + " profile $M=1,\\mu=0.4,l=m=0,\\tau$={:.1f}".format(dd0.time*dd0.mu) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_t={:.1f}_plot_vs_Heun.png".format(0.4, scale, dd0.time)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_tau={:.1f}_plot_vs_Heun.png".format(0.4, scale, dd0.time*dd0.mu)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
