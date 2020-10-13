@@ -178,7 +178,10 @@ def fit_comb_solution(ax, dd, p0_, colour):
 		ingoing_phi = Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, True, A_in, phase)
 		outgoing_phi = Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, False, A_out, phase)
 		return ingoing_phi + outgoing_phi
-	popt, pconv = curve_fit(Stationary_sol_fit, dd.r, dd.phi, p0=p0_)
+	cut_off=100
+	r_fit = dd.r[:cut_off]
+	phi_fit = dd.phi[:cut_off]
+	popt, pconv = curve_fit(Stationary_sol_fit, r_fit, phi_fit, p0=p0_)
 	A_in = popt[0]
 	A_out = popt[1]
 	phase = popt[2]
