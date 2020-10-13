@@ -132,7 +132,7 @@ legend.yScale = 3.2
 legend.managePosition = 0
 legend.position = (0.8, 0.95)
 # the font.
-legend.numberFormat = "%.3f"
+legend.numberFormat = "%.4f"
 legend.fontFamily = legend.Times
 legend.fontBold = 0
 legend.fontItalic = 0

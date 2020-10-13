@@ -142,7 +142,7 @@ def plot_graph():
 	#	plt.xlim((r_plus_min, 100))
 	#else :
 	#	plt.xlim(left=np.log10(r_plus_min))
-	ax1.legend(loc="best", fontsize=legend_font_size)
+	#ax1.legend(loc="best", fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
