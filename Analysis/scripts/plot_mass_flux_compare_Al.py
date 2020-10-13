@@ -203,9 +203,9 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 
 add_data_dir(6, 1, 1, "0.99", "0.4", "0")
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64)
+add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64) 
 add_data_dir(16, 1, -1, "0.99", "0.4", "0" , Nphi, Ntheta, 2048, 256)
-add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 264, 264) 
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 264, 264)
 
 def alpha_text(m, alpha):
         if m == 1:
@@ -253,7 +253,7 @@ def plot_graph():
 		aflux=(10**(4*diff_from_alpha0))*(dd.analytic_outer_flux[:ds_length]-dd0.analytic_outer_flux[:ds_length]*diff_from_alpha0)
 		if log_y:		
 			ax1.plot(tau,np.log10(np.abs(flux)),colours[i]+"-", label=label_, linewidth=1)
-			ax1.plot(tau,np.log10(np.abs(aflux)),colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+		#	ax1.plot(tau,np.log10(np.abs(aflux)),colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		else:
 			ax1.plot(tau,flux,colours[i]+"-", label=label_, linewidth=1)
 			ax1.plot(tau,aflux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
@@ -273,7 +273,7 @@ def plot_graph():
 		ax1.set_xlim((0, 400))
 	else:
 		ax1.set_xlim((0, 500))
-		ax1.set_ylim((0.0, 0.1))
+		#ax1.set_ylim((0.0, 0.1))
 	if cumulative:
 		if diff_from_alpha0:
 			if log_y:
