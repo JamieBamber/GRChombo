@@ -22,14 +22,14 @@ phi0 = 0.1
 lin_or_log = False
 colours = ["r", "b", "g", "c"]
 colours2 = ["k", "m", "y"]
-styles = ["-", "--"]
+styles = ["-", "--", "-."]
 scale = ""
 if (lin_or_log):
 	scale = "linear"
 else:
 	scale = "log"
 
-log_y = False
+log_y = True
 
 Ntheta=18
 Nphi=64
@@ -52,15 +52,18 @@ class data_dir:
 		if (l_ != 0):
 			file_name = "Ylm_integration_data/"+self.name+"_phi_Ylm_integral_{:s}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:s}_l={:d}_m={:d}.dat".format(scale, R_max, self.nphi, self.ntheta, self.theta_max, l_, m_)
 		else:
-			file_name = "Y00_integration_data/"+self.name+"_phi_Ylm_integral_{:s}_n{:06d}_r_plus_to_{:d}_nphi64_ntheta64_theta_max0.99.dat".format(scale, number, R_max)			
+			file_name = "Y00_integration_data/"+self.name+"_phi_Y00_integral_{:s}_n{:06d}_r_plus_to_{:d}_nphi64_ntheta64_theta_max0.99.dat".format(scale, number, R_max)			
 		dataset_path = data_root_path + file_name
 		data = np.genfromtxt(dataset_path, skip_header=1)
 		R = data[0,1:]
 		r_plus = M*(1 + np.sqrt(1 - self.a**2))
 		self.r = R*(1 + r_plus/(4*R))**2
-		dt = data[2,0] - data[1,0]
-		#row = int((tau/self.mu-data[1,0])/dt)
-		row = int(number/plot_interval - data[1,0]/dt)
+		if (l_ != 0):
+			dt = data[2,0] - data[1,0]
+			#row = int((tau/self.mu-data[1,0])/dt)
+			row = int(number/plot_interval - data[1,0]/dt)
+		else:
+			row=1
 		self.time = data[row,0]
 		phi = data[row,1:]
 		self.phi = phi/phi0
@@ -88,10 +91,9 @@ run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr
 run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
-#add_data_dir(2, 0, 0, "0.7", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(4, 1, 1, "0.0", "0.4", "0")
-add_data_dir(5, 1, 1, "0.7", "0.4", "0", 64, 64, "0.99")
-add_data_dir(6, 1, 1, "0.99", "0.4", "0")
+add_data_dir(1, 0, 0, "0.0", "0.4", "0")
+add_data_dir(2, 0, 0, "0.7", "0.4", "0")
+add_data_dir(3, 0, 0, "0.99", "0.4", "0")
 
 def plot_graph():
 	# plot setup
@@ -115,13 +117,17 @@ def plot_graph():
 			else:
 	     			x = np.log10(dd.r/M)
 			if log_y:
-				y = np.log10(dd.phi)
+				y = np.log10(np.abs(dd.phi))
 			else:
-				y = dd.phi
-			ax1.plot(x, y, colours[i] + styles[j], label="$\\chi=${:.2f} $l=${:d} $m=$0".format(dd.a, l), linewidth=1)
+				y = np.abs(dd.phi)
+			if i == 0:
+				prefix=""
+			else:
+				prefix="_"
+			ax1.plot(x, y, colours[i] + styles[j], label=prefix+"$\\chi=${:.0f} $l=${:d} $m=$0".format(dd.a, l), linewidth=1)
 			# plot fitted solution
 	if log_y:
-		plt.ylabel("$\\log_{10}(\\varphi_{lm}/\\varphi_0)$", fontsize=label_size)
+		plt.ylabel("$\\log_{10}(|\\varphi_{lm}|/\\varphi_0)$", fontsize=label_size)
 	else:
 		plt.ylabel("$|\\varphi_{lm}|/\\varphi_0$", fontsize=label_size)
 	if (lin_or_log):
@@ -140,10 +146,10 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\varphi_{lm}$" + " profiles $M=1,\\mu=0.4,l=m=1,\\tau=${:.1f}".format(tau) 
+	title = "$\\varphi_{lm}$" + " profiles $M=1,\\mu=0.4,l=m=1,\\tau=${:.1f}".format(dd0.time*dd0.mu) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_lm_phi_{:s}_tau={:.1f}_plot.png".format(0.4, scale, tau)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_mu{:.1f}_l=m=0_lm_phi_{:s}_tau={:.1f}_plot.png".format(0.4, scale, dd0.time*dd0.mu)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
