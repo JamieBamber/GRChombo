@@ -3,7 +3,7 @@ ScriptVersion = "2.13.0"
 if ScriptVersion != Version():
     print "This script is for VisIt %s. It may not work with version %s" % (ScriptVersion, Version())
 ShowAllWindows()
-OpenDatabase("/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr/KerrSFp_001600.3d.hdf5", 0)
+OpenDatabase("/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr/KerrSFp_001600.3d.hdf5", 0)
 # The UpdateDBPluginInfo RPC is not supported in the VisIt module so it will not be logged.
 AddPlot("Pseudocolor", "rho", 1, 1)
 PseudocolorAtts = PseudocolorAttributes()
@@ -11,7 +11,7 @@ PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = 0.0001
+PseudocolorAtts.min = 0.05
 PseudocolorAtts.maxFlag = 1
 PseudocolorAtts.max = 15
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
@@ -301,7 +301,7 @@ SetAnnotationAttributes(AnnotationAtts)
 # Logging for SetAnnotationObjectOptions is not implemented yet.
 # Begin spontaneous state
 View2DAtts = View2DAttributes()
-View2DAtts.windowCoords = (384, 640, 384, 640)
+View2DAtts.windowCoords = (504, 520, 504, 520)
 View2DAtts.viewportCoords = (0.15, 0.9, 0.15, 0.98)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
@@ -312,7 +312,7 @@ SetView2D(View2DAtts)
 # End spontaneous state
 
 View2DAtts = View2DAttributes()
-View2DAtts.windowCoords = (384, 640, 384, 640)
+View2DAtts.windowCoords = (504, 520, 504, 520)
 View2DAtts.viewportCoords = (0.15, 0.9, 0.15, 0.98)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
@@ -323,7 +323,7 @@ SetView2D(View2DAtts)
 SaveWindowAtts = SaveWindowAttributes()
 SaveWindowAtts.outputToCurrentDirectory = 1
 SaveWindowAtts.outputDirectory = "."
-SaveWindowAtts.fileName = "/home/dc-bamb1/GRChombo/Analysis/plots/BBH_SF_rho_run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr_n001600"
+SaveWindowAtts.fileName = "/home/dc-bamb1/GRChombo/Analysis/plots/BBH_SF_rho_run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr_n001600_width16"
 SaveWindowAtts.family = 0
 SaveWindowAtts.format = SaveWindowAtts.PNG  # BMP, CURVE, JPEG, OBJ, PNG, POSTSCRIPT, POVRAY, PPM, RGB, STL, TIFF, ULTRA, VTK, PLY
 SaveWindowAtts.width = 512

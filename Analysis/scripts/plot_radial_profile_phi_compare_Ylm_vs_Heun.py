@@ -116,7 +116,10 @@ def fit_ingoing_solution(ax, dd, p0_, colour):
 		print("testing A={:.2f} phase={:.2f}".format(A, phase))
 		ingoing_phi = Stationary_sol(r, dd.time, dd.a, dd.mu, dd.l, dd.m, True, A, phase)
 		return np.abs(ingoing_phi)
-	popt, pconv = curve_fit(Stationary_sol_fit, dd.r, dd.phi, p0=p0_)
+	cut_off = 250
+	phi_fit = dd.phi[:cut_off]
+	r_fit = dd.r[:cut_off]
+	popt, pconv = curve_fit(Stationary_sol_fit, r_fit, phi_fit, p0=p0_)
 	A = popt[0]
 	phase = popt[1]
 	phi_fitted = Stationary_sol_fit(dd.r, A, phase)
@@ -222,7 +225,7 @@ def plot_graph():
 			y = dd.phi
 		ax1.plot(x, y, colours[i] + "-", label="$\\chi=${:.2f}".format(dd.a), linewidth=1)
 		# plot fitted solution
-		fit_ingoing_solution(ax1, dd, (1, 0), colours[i]+"--")
+		#fit_ingoing_solution(ax1, dd, (1, 0), colours[i]+"--")
 		#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
 		plt.ylabel("$\\log_{10}(\\varphi_{11}/\\varphi_0)$", fontsize=label_size)
