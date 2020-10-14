@@ -5,6 +5,7 @@
 
 #include "GRAMR.hpp"
 #include "GRAMRLevel.hpp"
+<<<<<<< HEAD
 #include "computeNorm.H"
 #include "computeSum.H"
 #include <algorithm>
@@ -75,4 +76,39 @@ Real GRAMR::compute_inf_norm(const Interval a_comps)
     CH_TIME("GRAMR::compute_inf_norm");
     return std::max(std::abs(compute_max(a_comps)),
                     std::abs(compute_min(a_comps)));
+=======
+
+GRAMR::GRAMR() : m_interpolator(nullptr) {}
+
+// Called after AMR object set up
+void GRAMR::set_interpolator(AMRInterpolator<Lagrange<4>> *a_interpolator)
+{
+    m_interpolator = a_interpolator;
+}
+
+// returs a std::vector of GRAMRLevel pointers
+// similar to AMR::getAMRLevels()
+std::vector<GRAMRLevel *> GRAMR::get_gramrlevels()
+{
+    std::vector<GRAMRLevel *> out(m_amrlevels.size());
+    std::transform(m_amrlevels.stdVector().cbegin(),
+                   m_amrlevels.stdVector().cend(), out.begin(),
+                   [](AMRLevel *amrlevel_ptr) {
+                       return GRAMRLevel::gr_cast(amrlevel_ptr);
+                   });
+    return out;
+}
+
+// const version of above
+std::vector<const GRAMRLevel *> GRAMR::get_gramrlevels() const
+{
+    std::vector<const GRAMRLevel *> out(m_amrlevels.size());
+    std::transform(m_amrlevels.constStdVector().cbegin(),
+                   m_amrlevels.constStdVector().cend(), out.begin(),
+                   [](const AMRLevel *amrlevel_ptr) {
+                       return GRAMRLevel::gr_cast(amrlevel_ptr);
+                   });
+
+    return out;
+>>>>>>> 4c0609ad1d202c0243cf203cda88d8fc2f8e116e
 }

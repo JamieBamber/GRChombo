@@ -51,10 +51,6 @@ class SimulationParametersBase : public ChomboParameters
         pp.load("min_chi", min_chi, 1e-4);
         pp.load("min_lapse", min_lapse, 1e-4);
 
-        // extraction params
-        dx.fill(coarsest_dx);
-        origin.fill(coarsest_dx / 2.0);
-
         // Extraction params
         pp.load("num_extraction_radii", extraction_params.num_extraction_radii,
                 1);
@@ -80,6 +76,7 @@ class SimulationParametersBase : public ChomboParameters
             pp.load("extraction_radius", extraction_params.extraction_radii, 1,
                     0.1);
         }
+
         pp.load("num_points_phi", extraction_params.num_points_phi, 2);
         pp.load("num_points_theta", extraction_params.num_points_theta, 5);
         if (extraction_params.num_points_theta % 2 == 0)
@@ -89,6 +86,9 @@ class SimulationParametersBase : public ChomboParameters
                    << "rule so increased by 1.\n";
         }
         pp.load("extraction_center", extraction_params.center, center);
+
+        check_radii();
+
         if (pp.contains("modes"))
         {
             pp.load("num_modes", extraction_params.num_modes);
@@ -119,6 +119,48 @@ class SimulationParametersBase : public ChomboParameters
         pp.load("write_extraction", extraction_params.write_extraction, false);
     }
 
+    void check_radii()
+    {
+        // check center of extraction and extraction radii are compatible with
+        // box size
+        for (auto &radius : extraction_params.extraction_radii)
+        {
+            std::array<double, CH_SPACEDIM> axis_distance_to_boundary;
+
+            // upper boundary
+            FOR1(i)
+            {
+                axis_distance_to_boundary[i] =
+                    (boundary_params.hi_boundary[i] ==
+                             BoundaryConditions::REFLECTIVE_BC
+                         ? 2.
+                         : 1.) *
+                        (ivN[i] + 1) * coarsest_dx -
+                    extraction_params.center[i];
+            }
+            if (radius >= *std::min_element(axis_distance_to_boundary.begin(),
+                                            axis_distance_to_boundary.end()))
+                MayDay::Error(
+                    "Extraction radii go beyond the box's upper boundary");
+
+            // lower boundary
+            FOR1(i)
+            {
+                axis_distance_to_boundary[i] =
+                    extraction_params.center[i] +
+                    (boundary_params.lo_boundary[i] ==
+                             BoundaryConditions::REFLECTIVE_BC
+                         ? 1.
+                         : 0.) *
+                        (ivN[i] + 1) * coarsest_dx;
+            }
+            if (radius >= *std::min_element(axis_distance_to_boundary.begin(),
+                                            axis_distance_to_boundary.end()))
+                MayDay::Error(
+                    "Extraction radii go beyond the box's lower boundary");
+        }
+    }
+
   public:
     double sigma; // Kreiss-Oliger dissipation parameter
 
@@ -127,9 +169,6 @@ class SimulationParametersBase : public ChomboParameters
     double min_chi, min_lapse;
 
     int formulation; // Whether to use BSSN or CCZ4
-
-    std::array<double, CH_SPACEDIM> origin,
-        dx; // location of coarsest origin and dx
 
     // Collection of parameters necessary for the CCZ4 RHS and extraction
     CCZ4::params_t ccz4_params;

@@ -73,7 +73,13 @@ GRAMRLevel *GRAMRLevel::gr_cast(AMRLevel *const amr_level_ptr)
         gr_cast(static_cast<const AMRLevel *const>(amr_level_ptr)));
 }
 
-const GRLevelData &GRAMRLevel::getLevelData() const { return m_state_new; }
+const GRLevelData &GRAMRLevel::getLevelData(VariableType var_type) const
+{
+    if (var_type == VariableType::evolution)
+        return m_state_new;
+    else
+        return m_state_diagnostics;
+}
 
 bool GRAMRLevel::contains(const std::array<double, CH_SPACEDIM> &point) const
 {
@@ -101,9 +107,10 @@ Real GRAMRLevel::advance()
     // balancing)
     const DisjointBoxLayout &level_domain = m_state_new.disjointBoxLayout();
     int nbox = level_domain.dataIterator().size();
+    int total_nbox = level_domain.size();
     pout() << "GRAMRLevel::advance level " << m_level << " at time " << m_time
            << " (" << speed << " M/hr)"
-           << ". Boxes on this rank: " << nbox << "." << endl;
+           << ". Boxes on this rank: " << nbox << " / " << total_nbox << endl;
 
     // copy soln to old state to save it
     m_state_new.copyTo(m_state_new.interval(), m_state_old,
@@ -192,7 +199,8 @@ void GRAMRLevel::tagCells(IntVectSet &a_tags)
     if (m_verbosity)
         pout() << "GRAMRLevel::tagCells " << m_level << endl;
 
-    fillAllGhosts(); // We need filled ghost cells to calculate gradients etc
+    fillAllEvolutionGhosts(); // We need filled ghost cells to calculate
+                              // gradients etc
 
     // Create tags based on undivided gradient of phi
     IntVectSet local_tags;
@@ -291,13 +299,20 @@ void GRAMRLevel::regrid(const Vector<Box> &a_new_grids)
         m_patcher.define(level_domain, coarser_gr_amr_level_ptr->m_grids,
                          NUM_VARS, coarser_gr_amr_level_ptr->problemDomain(),
                          m_ref_ratio, m_num_ghosts);
+        if (NUM_DIAGNOSTIC_VARS > 0)
+        {
+            m_patcher_diagnostics.define(
+                level_domain, coarser_gr_amr_level_ptr->m_grids,
+                NUM_DIAGNOSTIC_VARS, coarser_gr_amr_level_ptr->problemDomain(),
+                m_ref_ratio, m_num_ghosts);
+        }
 
         // interpolate from coarser level
         m_fine_interp.interpToFine(m_state_new,
                                    coarser_gr_amr_level_ptr->m_state_new);
 
         // also interpolate fine boundary cells
-        if (m_p.nonperiodic_boundaries_exist)
+        if (m_p.boundary_params.nonperiodic_boundaries_exist)
         {
             m_boundaries.interp_boundaries(
                 m_state_new, coarser_gr_amr_level_ptr->m_state_new, Side::Hi);
@@ -318,6 +333,11 @@ void GRAMRLevel::regrid(const Vector<Box> &a_new_grids)
     fillBdyGhosts(m_state_new);
 
     m_state_old.define(level_domain, NUM_VARS, iv_ghosts);
+    if (NUM_DIAGNOSTIC_VARS > 0)
+    {
+        m_state_diagnostics.define(level_domain, NUM_DIAGNOSTIC_VARS,
+                                   iv_ghosts);
+    }
 }
 
 /// things to do after regridding
@@ -346,6 +366,11 @@ void GRAMRLevel::initialGrid(const Vector<Box> &a_new_grids)
     IntVect iv_ghosts = m_num_ghosts * IntVect::Unit;
     m_state_new.define(level_domain, NUM_VARS, iv_ghosts);
     m_state_old.define(level_domain, NUM_VARS, iv_ghosts);
+    if (NUM_DIAGNOSTIC_VARS > 0)
+    {
+        m_state_diagnostics.define(level_domain, NUM_DIAGNOSTIC_VARS,
+                                   iv_ghosts);
+    }
 
     defineExchangeCopier(level_domain);
     m_coarse_average.define(level_domain, NUM_VARS, m_ref_ratio);
@@ -357,6 +382,13 @@ void GRAMRLevel::initialGrid(const Vector<Box> &a_new_grids)
         m_patcher.define(level_domain, coarser_gr_amr_level_ptr->m_grids,
                          NUM_VARS, coarser_gr_amr_level_ptr->problemDomain(),
                          m_ref_ratio, m_num_ghosts);
+        if (NUM_DIAGNOSTIC_VARS > 0)
+        {
+            m_patcher_diagnostics.define(
+                level_domain, coarser_gr_amr_level_ptr->m_grids,
+                NUM_DIAGNOSTIC_VARS, coarser_gr_amr_level_ptr->problemDomain(),
+                m_ref_ratio, m_num_ghosts);
+        }
     }
 }
 
@@ -473,7 +505,7 @@ void GRAMRLevel::writeCheckpointLevel(HDF5Handle &a_handle) const
 
     // only need to write ghosts when non periodic BCs exist
     IntVect ghost_vector = IntVect::Zero;
-    if (m_p.nonperiodic_boundaries_exist)
+    if (m_p.boundary_params.nonperiodic_boundaries_exist)
     {
         ghost_vector = m_num_ghosts * IntVect::Unit;
     }
@@ -655,6 +687,13 @@ void GRAMRLevel::readCheckpointLevel(HDF5Handle &a_handle)
         m_patcher.define(level_domain, coarser_gr_amr_level_ptr->m_grids,
                          NUM_VARS, coarser_gr_amr_level_ptr->problemDomain(),
                          m_ref_ratio, m_num_ghosts);
+        if (NUM_DIAGNOSTIC_VARS > 0)
+        {
+            m_patcher_diagnostics.define(
+                level_domain, coarser_gr_amr_level_ptr->m_grids,
+                NUM_DIAGNOSTIC_VARS, coarser_gr_amr_level_ptr->problemDomain(),
+                m_ref_ratio, m_num_ghosts);
+        }
     }
 
     // reshape state with new grids
@@ -669,6 +708,11 @@ void GRAMRLevel::readCheckpointLevel(HDF5Handle &a_handle)
                       "state data");
     }
     m_state_old.define(level_domain, NUM_VARS, iv_ghosts);
+    if (NUM_DIAGNOSTIC_VARS > 0)
+    {
+        m_state_diagnostics.define(level_domain, NUM_DIAGNOSTIC_VARS,
+                                   iv_ghosts);
+    }
 }
 
 void GRAMRLevel::writePlotLevel(HDF5Handle &a_handle) const
@@ -676,11 +720,9 @@ void GRAMRLevel::writePlotLevel(HDF5Handle &a_handle) const
     if (m_verbosity)
         pout() << "GRAMRLevel::writePlotLevel" << endl;
 
-    // number and index of states to print. first default to parameter
-    std::vector<int> plot_states = m_p.plot_vars;
-    // but call this which may defined in specific Level class for backwards
-    // compatibility
-    specificWritePlotHeader(plot_states);
+    // number and index of states to print
+    const std::vector<std::pair<int, VariableType>> &plot_states =
+        m_p.plot_vars;
     int num_states = plot_states.size();
 
     if (num_states > 0)
@@ -722,21 +764,65 @@ void GRAMRLevel::writePlotLevel(HDF5Handle &a_handle) const
         IntVect iv_ghosts = m_num_ghosts * IntVect::Unit;
         LevelData<FArrayBox> plot_data(levelGrids, num_states, iv_ghosts);
 
-        for (int comp = 0; comp < num_states; comp++)
-        {
-            Interval currentComp(comp, comp);
-            Interval plotComps(plot_states[comp], plot_states[comp]);
-            m_state_new.copyTo(plotComps, plot_data, currentComp);
-        }
-
-        plot_data.exchange(plot_data.interval());
-
         // only need to write ghosts when non periodic BCs exist
         IntVect ghost_vector = IntVect::Zero;
         if (m_p.write_plot_ghosts)
         {
             ghost_vector = m_num_ghosts * IntVect::Unit;
+            Box grown_domain_box = m_problem_domain.domainBox();
+            grown_domain_box.grow(ghost_vector);
+            Copier boundary_copier;
+            boundary_copier.ghostDefine(
+                m_state_new.disjointBoxLayout(), plot_data.disjointBoxLayout(),
+                grown_domain_box, ghost_vector, ghost_vector);
+            for (int comp = 0; comp < num_states; comp++)
+            {
+                Interval currentComp(comp, comp);
+                if (plot_states[comp].second == VariableType::evolution)
+                {
+                    Interval plotComps(plot_states[comp].first,
+                                       plot_states[comp].first);
+                    m_state_new.copyTo(plotComps, plot_data, currentComp,
+                                       boundary_copier);
+                }
+                else
+                {
+                    Interval plotComps(plot_states[comp].first,
+                                       plot_states[comp].first);
+                    if (NUM_DIAGNOSTIC_VARS > 0)
+                    {
+                        m_state_diagnostics.copyTo(plotComps, plot_data,
+                                                   currentComp);
+                    }
+                }
+            }
         }
+
+        else
+        {
+            for (int comp = 0; comp < num_states; comp++)
+            {
+                Interval currentComp(comp, comp);
+                if (plot_states[comp].second == VariableType::evolution)
+                {
+                    Interval plotComps(plot_states[comp].first,
+                                       plot_states[comp].first);
+                    m_state_new.copyTo(plotComps, plot_data, currentComp);
+                }
+                else
+                {
+                    Interval plotComps(plot_states[comp].first,
+                                       plot_states[comp].first);
+                    if (NUM_DIAGNOSTIC_VARS > 0)
+                    {
+                        m_state_diagnostics.copyTo(plotComps, plot_data,
+                                                   currentComp);
+                    }
+                }
+            }
+        }
+
+        plot_data.exchange(plot_data.interval());
 
         // Write the data for this level
         write(a_handle, levelGrids);
@@ -749,11 +835,9 @@ void GRAMRLevel::writePlotHeader(HDF5Handle &a_handle) const
     if (m_verbosity)
         pout() << "GRAMRLevel::writePlotHeader" << endl;
 
-    // number and index of states to print. first default to parameter
-    std::vector<int> plot_states = m_p.plot_vars;
-    // but call this which may defined in specific Level class for backwards
-    // compatibility
-    specificWritePlotHeader(plot_states);
+    // number and index of states to print.
+    const std::vector<std::pair<int, VariableType>> &plot_states =
+        m_p.plot_vars;
     int num_states = plot_states.size();
 
     if (num_states > 0)
@@ -767,8 +851,17 @@ void GRAMRLevel::writePlotHeader(HDF5Handle &a_handle) const
         for (int comp = 0; comp < num_states; ++comp)
         {
             sprintf(compStr, "component_%d", comp);
-            header.m_string[compStr] =
-                UserVariables::variable_names[plot_states[comp]];
+            if (plot_states[comp].second == VariableType::evolution)
+            {
+                header.m_string[compStr] =
+                    UserVariables::variable_names[plot_states[comp].first];
+            }
+            else
+            {
+                header.m_string[compStr] =
+                    DiagnosticVariables::variable_names[plot_states[comp]
+                                                            .first];
+            }
         }
 
         // Write the header
@@ -832,13 +925,14 @@ void GRAMRLevel::evalRHS(GRLevelData &rhs, GRLevelData &soln,
     specificEvalRHS(soln, rhs, time); // Call the problem specific rhs
 
     // evolution of the boundaries according to conditions
+
     if (m_verbosity) {
 	pout() << "---> evolving boundaries according to conditions" << endl;
     } 
-    if (m_p.nonperiodic_boundaries_exist)
+    if (m_p.boundary_params.nonperiodic_boundaries_exist)
     {
-        m_boundaries.fill_boundary_rhs(Side::Lo, soln, rhs);
-        m_boundaries.fill_boundary_rhs(Side::Hi, soln, rhs);
+        m_boundaries.fill_rhs_boundaries(Side::Lo, soln, rhs);
+        m_boundaries.fill_rhs_boundaries(Side::Hi, soln, rhs);
     }
 }
 
@@ -868,7 +962,7 @@ void GRAMRLevel::defineRHSData(GRLevelData &newRHS,
 {
     // only need ghosts for non periodic boundary case
     IntVect ghost_vector = IntVect::Zero;
-    if (m_p.nonperiodic_boundaries_exist)
+    if (m_p.boundary_params.nonperiodic_boundaries_exist)
     {
         ghost_vector = m_num_ghosts * IntVect::Unit;
     }
@@ -888,10 +982,19 @@ void GRAMRLevel::copySolnData(GRLevelData &dest, const GRLevelData &src)
 
 double GRAMRLevel::get_dx() const { return m_dx; }
 
-void GRAMRLevel::fillAllGhosts()
+void GRAMRLevel::fillAllGhosts(const VariableType var_type)
 {
+    if (var_type == VariableType::evolution)
+        fillAllEvolutionGhosts();
+    else if (var_type == VariableType::diagnostic)
+        fillAllDiagnosticsGhosts();
+}
+
+void GRAMRLevel::fillAllEvolutionGhosts()
+{
+    CH_TIME("GRAMRLevel::fillAllEvolutionGhosts()");
     if (m_verbosity)
-        pout() << "GRAMRLevel::fillAllGhosts" << endl;
+        pout() << "GRAMRLevel::fillAllEvolutionGhosts" << endl;
 
     // If there is a coarser level then interpolate undefined ghost cells
     if (m_coarser_level_ptr != nullptr)
@@ -901,6 +1004,31 @@ void GRAMRLevel::fillAllGhosts()
                              0, 0, NUM_VARS);
     }
     fillIntralevelGhosts();
+}
+
+void GRAMRLevel::fillAllDiagnosticsGhosts()
+{
+    CH_TIME("GRAMRLevel::fillAllDiagnosticsGhosts");
+    if (m_verbosity)
+        pout() << "GRAMRLevel::fillAllDiagnosticsGhosts" << endl;
+
+    // If there is a coarser level then interpolate undefined ghost cells
+    if (m_coarser_level_ptr != nullptr)
+    {
+        GRAMRLevel *coarser_gr_amr_level_ptr = gr_cast(m_coarser_level_ptr);
+        m_patcher_diagnostics.fillInterp(
+            m_state_diagnostics, coarser_gr_amr_level_ptr->m_state_diagnostics,
+            0, 0, NUM_DIAGNOSTIC_VARS);
+    }
+    m_state_diagnostics.exchange(m_exchange_copier);
+
+    // We should always fill the boundary ghosts to avoid nans
+    // if we have non periodic directions
+    if (m_p.boundary_params.nonperiodic_boundaries_exist)
+    {
+        m_boundaries.fill_diagnostic_boundaries(Side::Hi, m_state_diagnostics);
+        m_boundaries.fill_diagnostic_boundaries(Side::Lo, m_state_diagnostics);
+    }
 }
 
 void GRAMRLevel::fillIntralevelGhosts()
@@ -913,10 +1041,10 @@ void GRAMRLevel::fillBdyGhosts(GRLevelData &a_state)
 {
     // enforce solution BCs after filling ghosts
     // e.g. if symmetric or extrapolating
-    if (m_p.boundary_solution_enforced)
+    if (m_p.boundary_params.boundary_solution_enforced)
     {
-        m_boundaries.enforce_solution_boundaries(Side::Hi, a_state);
-        m_boundaries.enforce_solution_boundaries(Side::Lo, a_state);
+        m_boundaries.fill_solution_boundaries(Side::Hi, a_state);
+        m_boundaries.fill_solution_boundaries(Side::Lo, a_state);
     }
 }
 
@@ -924,7 +1052,7 @@ void GRAMRLevel::copyBdyGhosts(const GRLevelData &a_src, GRLevelData &a_dest)
 {
     // Specifically copy boundary cells if non periodic as
     // cells outside the domain are not copied by default
-    if (m_p.nonperiodic_boundaries_exist)
+    if (m_p.boundary_params.nonperiodic_boundaries_exist)
     {
         m_boundaries.copy_boundary_cells(Side::Hi, a_src, a_dest);
         m_boundaries.copy_boundary_cells(Side::Lo, a_src, a_dest);
@@ -934,7 +1062,7 @@ void GRAMRLevel::copyBdyGhosts(const GRLevelData &a_src, GRLevelData &a_dest)
 void GRAMRLevel::defineExchangeCopier(const DisjointBoxLayout &a_level_grids)
 {
     // if there are Sommerfeld BCs, expand boxes along those sides
-    if (m_p.nonperiodic_boundaries_exist)
+    if (m_p.boundary_params.nonperiodic_boundaries_exist)
     {
         m_boundaries.expand_grids_to_boundaries(m_grown_grids, a_level_grids);
     }
