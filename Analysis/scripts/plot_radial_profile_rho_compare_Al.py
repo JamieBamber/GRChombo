@@ -98,19 +98,31 @@ run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 #add_data_dir(1, 0, 0, "0.0", "0.4", "0", 64, 64, "_theta_max0.99")
 #add_data_dir(2, 0, 0, "0.7", "0.4")
 #add_data_dir(3, 0, 0, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-add_data_dir(4, 1, 1, "0.0", "0.4")
-add_data_dir(5, 1, 1, "0.7", "0.4")
-add_data_dir(6, 1, 1, "0.99", "0.4")
+#add_data_dir(4, 1, 1, "0.0", "0.4")
+#add_data_dir(5, 1, 1, "0.7", "0.4")
 #add_data_dir(7, 2, 2, "0.7", "0.4")
 #add_data_dir(8, 4, 4, "0.7", "0.4")
 #add_data_dir(10, 8, 8, "0.7", "0.4")
 #add_data_dir(9, 1, -1, "0.7", "0.4")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
-#add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max0.99")
-#add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
+add_data_dir(6, 1, 1, "0.99", "0.4", "0")
+add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64)
+add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64)
+add_data_dir(16, 1, -1, "0.99", "0.4", "0")
 #add_data_dir(21, 0, 0, "0.7", "2.0", "0", 64, 18, "1.0")
+
+def alpha_text(m, alpha):
+        if m == 1:
+                if alpha == 0:
+                        return "0"
+                elif alpha == 0.25:
+                        return "\\pi/4"
+                elif alpha == 0.5:
+                        return "\\pi/2"
+                else:
+                     	return "nan"
+        elif m == -1:
+                return "\\pi"
 
 def plot_graph():
 	# plot setup
@@ -135,12 +147,12 @@ def plot_graph():
 			y = np.log10(dd.rho)
 		else:
 			y = dd.rho
-		label_="$\\chi=${:.2f}".format(dd.a)
+		label_="$\\alpha=${:s}".format(alpha_text(dd.m, dd.Al))
 		ax1.plot(x, y, colours[i] + "-", label=label_, linewidth=1)
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}(\\rho_E/\\rho_0)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}(\\rho/\\rho_0)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$\\rho_E/\\rho_0$", fontsize=label_size)
+		ax1.set_ylabel("$\\rho/\\rho_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -158,13 +170,13 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho_E$" + " profile $M=1,\\mu=0.4,l=m=1,\\tau=" + str(dd0.time*dd0.mu) + "$" 
+	title = "$\\rho$" + " profile $M=1,\\mu=0.4,l=|m|=1,\\chi=0.99,\\tau=" + str(dd0.time*dd0.mu) + "$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_a_log_y.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_Al_log_y.png".format(scale, R_max, num)
 	else:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_a.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_Al.png".format(scale, R_max, num)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()

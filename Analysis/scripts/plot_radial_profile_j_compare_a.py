@@ -15,7 +15,7 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-tau = 100
+tau = 200
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -148,9 +148,9 @@ def plot_graph():
 		label_="$\\chi=${:.2f}".format(dd.a)
 		ax1.plot(x, y, colours[i] + "-", label=label_, linewidth=1)
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}((\\mu/m)\\rho_J/\\rho)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}((\\mu/m)\\rho_J/\\rho_E)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$(\\mu/m)\\rho_J/\\rho$", fontsize=label_size)
+		ax1.set_ylabel("$(\\mu/m)\\rho_J/\\rho_E$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:

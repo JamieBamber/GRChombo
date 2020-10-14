@@ -251,7 +251,7 @@ def plot_graph():
 				if (dd.r[i] > cutoff):
 					n_cutoff = i
 					break
-			analytic_y = analytic_phi(dd.time, dd.r[n_cutoff:], dd.a, dd.mu)
+			#analytic_y = analytic_phi(dd.time, dd.r[n_cutoff:], dd.a, dd.mu)
 			#ax1.plot(x[n_cutoff:], analytic_y, colours[j] + "-.", label="_pertubative sol.".format(dd.l, dd.m, dd.a), linewidth=1)
 			ax1.plot(x, y, colours[j] + "-", label="$\\tau=${:.1f}".format(dd.time*dd.mu), linewidth=1)
 			#impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
