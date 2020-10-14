@@ -15,7 +15,8 @@ R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-tau = 200
+#tau = 200
+time = 300
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -37,14 +38,21 @@ else:
 log_y = True
 log_x = True
 
-def fix_spikes(rho):
+def fix_spikes(rho, A, B):
 	out_rho = rho
 	for i in range(1, len(rho)-1):
-		if ((np.abs(np.log(out_rho[i+1]/out_rho[i])) >= np.abs(np.log(0.75))) or (out_rho[i+1] < 0)):
-			out_rho[i+1] = out_rho[i] + 0.1*(out_rho[i] - out_rho[i-1])
+		j = len(rho) - 1 - i
+		if ((np.abs(np.log(out_rho[j-1]*out_rho[j+1]/out_rho[j]**2)) >= np.abs(np.log(A))) or (out_rho[j-1] < 0)):
+			out_rho[j-1] = out_rho[j] + B*(out_rho[j] - out_rho[j+1])
 		else:
 			pass
 	return out_rho
+
+AB_dict = {}
+AB_dict["5"]=(0.5,0.1)
+AB_dict["11"]=(0.9,0.2)
+AB_dict["23"]=(0.9,0.2)
+AB_dict["20"]=(0.9,0.2)
 
 class data_dir:
 	def __init__(self, num, l, m, a, mu, Al, nphi, ntheta, theta_max):
@@ -68,11 +76,14 @@ class data_dir:
 		r_plus = M*(1 + np.sqrt(1 - self.a**2))
 		self.r = R*(1 + r_plus/(4*R))**2
 		dt = data[2,0] - data[1,0]
-		row = int(tau/(dt*self.mu))
+		#row = int(tau/(dt*self.mu))
+		row = int(time/(dt))
 		self.time = data[row,0]
 		rho = data[row,1:]
 		rho0 = 0.5*(phi0**2)*(self.mu)**2
-		self.rho = fix_spikes(rho/rho0)
+		AB = AB_dict[str(self.num)]
+		self.rho_fixed = fix_spikes(rho/rho0, AB[0], AB[1])
+		self.rho = rho/rho0
 		print("self.rho = ",self.rho)
 		
 data_dirs = []
@@ -123,11 +134,14 @@ def plot_graph():
 		else:
 			x = dd.r/M
 		if log_y:
+			y_fixed = np.log10(dd.rho_fixed)
 			y = np.log10(dd.rho)
 		else:
+			y_fixed = dd.rho_fixed
 			y = dd.rho
 		label_="$\\mu=${:.1f}".format(dd.mu)
-		ax1.plot(x, y, colours[i] + "-", label=label_, linewidth=1)
+		ax1.plot(x, y_fixed, colours[i] + "-", label=label_, linewidth=1)
+		#ax1.plot(x, y, colours[i] + "--", label="_"+label_, linewidth=1)
 	if log_y:
 		ax1.set_ylabel("$\\log_{10}(\\rho_E/\\rho_0)$", fontsize=label_size)
 	else:
@@ -149,13 +163,14 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho_E$" + " profile $M=1,\\chi=0.7,l=m=1,\\tau=${:.1f}".format(tau) 
+	#title = "$\\rho_E$" + " profile $M=1,\\chi=0.7,l=m=1,\\tau=${:.1f}".format(tau) 
+	title = "$\\rho_E$" + " profile $M=1,\\chi=0.7,l=m=1,t=${:.1f}".format(time) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_tau={:d}_compare_mu_log_y.png".format(scale, R_max, tau)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_time={:d}_compare_mu_log_y.png".format(scale, R_max, time)
 	else:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_tau={:d}_compare_mu.png".format(scale, R_max, tau)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_tau={:d}_compare_mu.png".format(scale, R_max, time)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
