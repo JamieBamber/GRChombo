@@ -28,7 +28,7 @@ class DensityAndMom
 
     /// CCZ4 variables
     template <class data_t> 
-    using MetricVars = BSSNVars::VarsNoGauge<data_t>;
+    using MetricVars = BSSNVars::VarsWithGauge<data_t>;
 
     // Inherit the variables from MatterVars and MetricVars
     template <class data_t>
@@ -44,8 +44,8 @@ class DensityAndMom
         }
     };
 
-    DensityAndMom(matter_t a_matter, double a_dx, std::array<double, CH_SPACEDIM> a_center)
-        : m_matter(a_matter), m_deriv(a_dx), m_dx(a_dx), m_center(a_center)
+    DensityAndMom(matter_t a_matter, double a_dx, std::array<double, CH_SPACEDIM> a_center, double a_final_a)
+        : m_matter(a_matter), m_deriv(a_dx), m_dx(a_dx), m_center(a_center), m_final_a(a_final_a)
     {
     }
 
@@ -61,39 +61,81 @@ class DensityAndMom
     	// Energy Momentum Tensor
     	const auto emtensor = m_matter.compute_emtensor(vars, d1, h_UU, chris.ULL);
 
-    	// assign values of density in output box
-    	current_cell.store_vars(emtensor.rho, c_rho);
-
-	// Eulerian momentum density
+	// spacial metric
+	const data_t det_gamma = 1.0/(vars.chi*vars.chi*vars.chi);
+	Tensor<2, data_t> gamma_UU;
+	FOR2(i, j){ gamma_UU[i][j]= h_UU[i][j]*(1.0/vars.chi); }
+	
+	// cartesian coordinates
 	const Coordinates<data_t> coords(current_cell, m_dx, m_center);
 	data_t x = coords.x;
         double y = coords.y;
         double z = coords.z;
 	data_t R = coords.get_radius();
-	// d x / d azimuth
-	Tensor<1, data_t> dxdaz;
+	// calculate approximate Kerr Schild radius for the final black hole
+	/*double a = m_final_a;
+        data_t disc = simd_max((R*R - a*a), 0.001);
+        data_t r2 = disc/2 + sqrt(disc*disc/4 + (a*z)*(a*z));
+        data_t r = sqrt(r2);*/	
+	
+	// dx/daz vector
+        Tensor<1, data_t> dxdaz;
         dxdaz[0] = - y;
         dxdaz[1] =   x;
         dxdaz[2] = 0;
-	// outward radial vector
-	Tensor<1, data_t> Ni;
-	Ni[0] = x/R;
-	Ni[1] = y/R;
-	Ni[2] = z/R;
-	data_t S_azimuth = x * emtensor.Si[1] - y * emtensor.Si[0];
-	data_t S_r = (x * emtensor.Si[0] + y * emtensor.Si[1] + z * emtensor.Si[2])/R;		
-	data_t S_Jr = 0;
-	FOR2(i, j) { S_Jr += emtensor.Sij[i][j]*dxdaz[i]*Ni[j]; }
-	current_cell.store_vars(S_azimuth, c_S_azimuth);
-	current_cell.store_vars(S_r, c_S_r);
-	current_cell.store_vars(S_Jr, c_S_Jr);
+	// radial direction normal vector
+	Tensor <1, data_t> NR;
+	NR[0] = x/R;
+	NR[1] = y/R;
+	NR[2] = z/R;
+	// dx/dtheta vector
+	data_t rxy = sqrt(x*x + y*y);
+	Tensor <1, data_t> dxdtheta;
+        dxdtheta[0] = x*z/rxy;
+        dxdtheta[1] = y*z/rxy;
+        dxdtheta[2] = -rxy;	
+
+	// conserved rho = -sqrt(-g)T^0_0 = sqrt(det_gamma)*(alpha*rho_3+1 - beta^i * S_i)
+        data_t rho = vars.lapse*emtensor.rho;
+        FOR1(k){ rho += -vars.shift[k]*emtensor.Si[k];   }
+        rho = rho*sqrt(det_gamma);
+
+	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] - beta^i rho for the cartesian coordinates
+        Tensor<1, data_t> Sbeta; 
+        FOR2(i, j){ Sbeta[i] += vars.shift[j]*emtensor.Sij[i][j]; }                      
+        Tensor<1, data_t> J; 
+        // conserved 3-current linear momentum vector in the cartesian coordinates 
+	FOR2(i, j){ J[i] += sqrt(det_gamma)*vars.lapse*( gamma_UU[i][j]*(vars.lapse*emtensor.Si[j] - Sbeta[j]) ); } 
+	FOR1(i){ J[i] += - vars.shift[i]*rho; }
+
+	// conserved rho_azimuth = |gamma|(x * S_y - y * S_z)
+        data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma);
+	
+	// azimuthal momentum covector j_i_phi 
+	Tensor<1, data_t> J_azimuth_co;
+	FOR2(i,j){ J_azimuth_co[i] += sqrt(det_gamma)*vars.lapse*(emtensor.Sij[i][j]*dxdaz[j]); } 	
+	// azimuthal momentum vector j^i_phi
+	Tensor<1, data_t> J_azimuth;
+        FOR2(i,j){ J_azimuth[i] += (gamma_UU[i][j] - vars.shift[i]*vars.shift[j]/(vars.lapse*vars.lapse))*J_azimuth_co[j]; }
+
+	// **** projections of momentum vectors in the spherical coordinate directions
+	data_t J_R = 0;
+	data_t J_azimuth_R = 0;
+	FOR1(i){ J_R += J[i]*NR[i]; }
+	FOR1(i){ J_azimuth_R += J_azimuth[i]*NR[i]; }
+
+    	// assign values of density in output box
+    	current_cell.store_vars(rho, c_rho);
+    	current_cell.store_vars(rho_azimuth, c_rho_azimuth);
+	current_cell.store_vars(J_R, c_J_R);
+	current_cell.store_vars(J_azimuth_R, c_J_azimuth_R);
      }
 
   protected:
     const matter_t m_matter;              //!< The matter object
     const FourthOrderDerivatives m_deriv; //!< An object for calculating derivatives of the variables
     const std::array<double, CH_SPACEDIM> m_center; //!< The grid center
-    const double m_dx;
+    const double m_dx, m_final_a;
 };
 
 #endif /* DENSITYANDMOM_HPP_ */

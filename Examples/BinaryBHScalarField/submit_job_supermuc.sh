@@ -9,35 +9,62 @@ work_dir=/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField
 cd $work_dir
 data_directory=/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField
 
-run_number=6
+# specify the input params for each run I want to submit
+# list for each is: mu, delay, dt, G
+
+run0001=(1 0 0.125 0)
+run0002=(0.08187607564 0 0.25 0)
 
 params_file=params.txt
 
-# extract parameters from params.txt
-cd $work_dir
-l=$(grep "scalar_l" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+')
-m=$(grep "scalar_m " ${params_file} | grep -v "scalar_mass" | tr -cd '(\-)?[0-9]+([.][0-9]+)?+')
-G_Newton=$(grep "G_Newton" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
-mu=$(grep "scalar_mass" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
-delay=$(grep "delay" ${params_file} | tr -cd '(\-)?[0-9]+([.][0-9]+)?+' | sed -r '/^0$/! s/(\.)??0+$//')
+run_list=(
+	run0001
+)
 
-text_number=$(printf "%04d" ${run_number})
+params_file=params.txt
+plot_interval=10
+L=512
+N1=64
+box_size=16
 
-new_dir=run${text_number}_FlatScalar_mu${mu}_G${G_Newton}_delay${delay}
-echo ${new_dir}
-new_dir_path=${data_directory}/${new_dir}
-#
-mkdir -p ${new_dir_path}
-cp slurm_submit_supermuc ${new_dir_path}/slurm_submit
-cp ${params_file} ${new_dir_path}/params.txt
+for run in "${run_list[@]}"
+do
+  	cd $work_dir
+        # extract parameters    
+        val="$run[0]"; mu="${!val}"
+        val="$run[1]"; delay="${!val}"
+        val="$run[2]"; dt_mult="${!val}"
+        val="$run[3]"; G="${!val}"
 
-cd ${new_dir_path}
-# add the location of the new directory to the input files
-sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
-# 
-mkdir -p outputs
-cd outputs
-sbatch ../slurm_submit
-#
-cd ${work_dir}
+        # text_number=$(printf "%04d" ${run_number})
+        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio1
+        #_L${L}_N$N1
+        echo ${new_dir}
+        new_dir_path=${data_directory}/${new_dir}
+        #
+	mkdir -p ${new_dir_path}
+        cp slurm_submit_cosma ${new_dir_path}/slurm_submit
+        cp ${params_file} ${new_dir_path}/params.txt
 
+	cd ${new_dir_path}
+        # add the input params to the input files
+        sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
+        sed -i "s|DATASUBDIR|${new_dir}|" ${new_dir_path}/params.txt
+        sed -i "s|JOBNAME|${run}KS|" ${new_dir_path}/slurm_submit
+        sed -i "s|BOXLENGTH|${L}|" ${new_dir_path}/params.txt
+        sed -i "s|BOXSIZE|${box_size}|" ${new_dir_path}/params.txt
+        sed -i "s|CENTERX|$(($L/2))|" ${new_dir_path}/params.txt
+        sed -i "s|CENTERY|$(($L/2))|" ${new_dir_path}/params.txt
+        sed -i "s|MUVAL|${mu}|" ${new_dir_path}/params.txt
+        sed -i "s|DELAYTIME|${delay}|" ${new_dir_path}/params.txt
+        sed -i "s|DTMULT|${dt}|" ${new_dir_path}/params.txt
+        sed -i "s|NBASIC|${N1}|" ${new_dir_path}/params.txt
+	sed -i "s|NSPACE3|$(($N1/2))|" ${new_dir_path}/params.txt
+        sed -i "s|PLOTINTERVAL|${plot_interval}|" ${new_dir_path}/params.txt
+	#
+	mkdir -p outputs
+        cd outputs
+        sbatch ../slurm_submit
+        #
+	cd ${work_dir}
+done
