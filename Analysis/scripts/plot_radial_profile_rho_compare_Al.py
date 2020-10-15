@@ -55,7 +55,7 @@ class data_dir:
 		self.nphi = nphi
 		self.ntheta = ntheta
 		self.theta_max = float(theta_max)
-		self.Al = Al
+		self.Al = float(Al)
 		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, Al, mu)
 	#
 	def load_data(self, number):
@@ -147,7 +147,7 @@ def plot_graph():
 			y = np.log10(dd.rho)
 		else:
 			y = dd.rho
-		label_="$\\alpha=${:s}".format(alpha_text(dd.m, dd.Al))
+		label_="$\\alpha={:s}$".format(alpha_text(dd.m, dd.Al))
 		ax1.plot(x, y, colours[i] + "-", label=label_, linewidth=1)
 	if log_y:
 		ax1.set_ylabel("$\\log_{10}(\\rho/\\rho_0)$", fontsize=label_size)
