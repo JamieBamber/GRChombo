@@ -228,9 +228,9 @@ def plot_graph():
 		#fit_ingoing_solution(ax1, dd, (1, 0), colours[i]+"--")
 		#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
-		plt.ylabel("$\\log_{10}(\\varphi_{11}/\\varphi_0)$", fontsize=label_size)
+		plt.ylabel("$\\log_{10}(\\varphi_{11}/\\Phi_0)$", fontsize=label_size)
 	else:
-		plt.ylabel("$|\\varphi_{11}|/\\varphi_0$", fontsize=label_size)
+		plt.ylabel("$|\\varphi_{11}|/\\Phi_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:

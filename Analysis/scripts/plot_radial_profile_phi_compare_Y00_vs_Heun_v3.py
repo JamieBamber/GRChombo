@@ -257,9 +257,9 @@ def plot_graph():
 			#impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
 			#impose_solution(ax1, dd, (1, 0), colours2[i])
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}(\\varphi_{lm}/\\varphi_0)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}(\\varphi_{lm}/\\Phi_0)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$\\varphi_{00}/\\varphi_0$", fontsize=label_size)
+		ax1.set_ylabel("$\\varphi_{00}/\\Phi_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
