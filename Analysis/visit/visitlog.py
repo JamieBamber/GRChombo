@@ -5,17 +5,75 @@ if ScriptVersion != Version():
 ShowAllWindows()
 OpenDatabase("/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr/KerrSFp_001600.3d.hdf5", 0)
 # The UpdateDBPluginInfo RPC is not supported in the VisIt module so it will not be logged.
-AddPlot("Pseudocolor", "rho_azimuth", 1, 1)
+DefineScalarExpression("operators/ConnectedComponents/Mesh", "cell_constant(<Mesh>, 0.)")
+DefineCurveExpression("operators/DataBinning/1D/Mesh", "cell_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/DataBinning/2D/Mesh", "cell_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/DataBinning/3D/Mesh", "cell_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/Flux/Mesh", "cell_constant(<Mesh>, 0.)")
+DefineCurveExpression("operators/Lineout/phi", "cell_constant(<phi>, 0.)")
+DefineCurveExpression("operators/Lineout/Pi", "cell_constant(<Pi>, 0.)")
+DefineCurveExpression("operators/Lineout/chi", "cell_constant(<chi>, 0.)")
+DefineCurveExpression("operators/Lineout/rho", "cell_constant(<rho>, 0.)")
+DefineCurveExpression("operators/Lineout/rho_azimuth", "cell_constant(<rho_azimuth>, 0.)")
+DefineCurveExpression("operators/Lineout/J_R", "cell_constant(<J_R>, 0.)")
+DefineCurveExpression("operators/Lineout/J_azimuth_R", "cell_constant(<J_azimuth_R>, 0.)")
+DefineScalarExpression("operators/ModelFit/model", "point_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/ModelFit/distance", "point_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/phi", "cell_constant(<phi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/Pi", "cell_constant(<Pi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/rho_azimuth", "cell_constant(<rho_azimuth>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/J_R", "cell_constant(<J_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/J_azimuth_R", "cell_constant(<J_azimuth_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/phi", "cell_constant(<phi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/Pi", "cell_constant(<Pi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/rho_azimuth", "cell_constant(<rho_azimuth>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/J_R", "cell_constant(<J_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/J_azimuth_R", "cell_constant(<J_azimuth_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/phi", "cell_constant(<phi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/Pi", "cell_constant(<Pi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/rho_azimuth", "cell_constant(<rho_azimuth>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/J_R", "cell_constant(<J_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/J_azimuth_R", "cell_constant(<J_azimuth_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./phi", "cell_constant(<phi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./Pi", "cell_constant(<Pi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./rho_azimuth", "cell_constant(<rho_azimuth>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./J_R", "cell_constant(<J_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./J_azimuth_R", "cell_constant(<J_azimuth_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/phi", "cell_constant(<phi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/Pi", "cell_constant(<Pi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/rho_azimuth", "cell_constant(<rho_azimuth>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/J_R", "cell_constant(<J_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/J_azimuth_R", "cell_constant(<J_azimuth_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/phi", "cell_constant(<phi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/Pi", "cell_constant(<Pi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/rho_azimuth", "cell_constant(<rho_azimuth>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/J_R", "cell_constant(<J_R>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/J_azimuth_R", "cell_constant(<J_azimuth_R>, 0.)")
+DefineVectorExpression("operators/SurfaceNormal/Mesh", "cell_constant(<Mesh>, 0.)")
+DefineScalarExpression("norm_rho", "rho/(0.5*(0.4*0.4)*(0.01))")
+AddPlot("Pseudocolor", "norm_rho", 1, 1)
 PseudocolorAtts = PseudocolorAttributes()
 PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = 0.0001
+PseudocolorAtts.min = 10
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = 50
+PseudocolorAtts.max = 16000
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-PseudocolorAtts.colorTableName = "viridis"
+PseudocolorAtts.colorTableName = "inferno"
 PseudocolorAtts.invertColorTable = 0
 PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 PseudocolorAtts.opacityVariable = ""
@@ -93,7 +151,7 @@ AnnotationAtts.axes2D.tickLocation = AnnotationAtts.axes2D.Outside  # Inside, Ou
 AnnotationAtts.axes2D.tickAxes = AnnotationAtts.axes2D.BottomLeft  # Off, Bottom, Left, BottomLeft, All
 AnnotationAtts.axes2D.xAxis.title.visible = 1
 AnnotationAtts.axes2D.xAxis.title.font.font = AnnotationAtts.axes2D.xAxis.title.font.Times  # Arial, Courier, Times
-AnnotationAtts.axes2D.xAxis.title.font.scale = 2
+AnnotationAtts.axes2D.xAxis.title.font.scale = 2.5
 AnnotationAtts.axes2D.xAxis.title.font.useForegroundColor = 1
 AnnotationAtts.axes2D.xAxis.title.font.color = (0, 0, 0, 255)
 AnnotationAtts.axes2D.xAxis.title.font.bold = 0
@@ -118,7 +176,7 @@ AnnotationAtts.axes2D.xAxis.tickMarks.majorSpacing = 0.2
 AnnotationAtts.axes2D.xAxis.grid = 0
 AnnotationAtts.axes2D.yAxis.title.visible = 1
 AnnotationAtts.axes2D.yAxis.title.font.font = AnnotationAtts.axes2D.yAxis.title.font.Times  # Arial, Courier, Times
-AnnotationAtts.axes2D.yAxis.title.font.scale = 2
+AnnotationAtts.axes2D.yAxis.title.font.scale = 2.5
 AnnotationAtts.axes2D.yAxis.title.font.useForegroundColor = 1
 AnnotationAtts.axes2D.yAxis.title.font.color = (0, 0, 0, 255)
 AnnotationAtts.axes2D.yAxis.title.font.bold = 0
@@ -296,10 +354,13 @@ SetAnnotationAttributes(AnnotationAtts)
 # Logging for SetAnnotationObjectOptions is not implemented yet.
 # Logging for SetAnnotationObjectOptions is not implemented yet.
 # Logging for SetAnnotationObjectOptions is not implemented yet.
+# Logging for SetAnnotationObjectOptions is not implemented yet.
+# Logging for SetAnnotationObjectOptions is not implemented yet.
+# Logging for SetAnnotationObjectOptions is not implemented yet.
 # Begin spontaneous state
 View2DAtts = View2DAttributes()
-View2DAtts.windowCoords = (384, 640, 384, 640)
-View2DAtts.viewportCoords = (0.15, 0.92, 0.15, 0.95)
+View2DAtts.windowCoords = (504, 520, 504, 520)
+View2DAtts.viewportCoords = (0.15, 0.9, 0.15, 0.98)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
 View2DAtts.xScale = View2DAtts.LINEAR  # LINEAR, LOG
@@ -309,8 +370,8 @@ SetView2D(View2DAtts)
 # End spontaneous state
 
 View2DAtts = View2DAttributes()
-View2DAtts.windowCoords = (384, 640, 384, 640)
-View2DAtts.viewportCoords = (0.15, 0.92, 0.15, 0.95)
+View2DAtts.windowCoords = (504, 520, 504, 520)
+View2DAtts.viewportCoords = (0.15, 0.9, 0.15, 0.98)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
 View2DAtts.xScale = View2DAtts.LINEAR  # LINEAR, LOG
@@ -320,7 +381,7 @@ SetView2D(View2DAtts)
 SaveWindowAtts = SaveWindowAttributes()
 SaveWindowAtts.outputToCurrentDirectory = 1
 SaveWindowAtts.outputDirectory = "."
-SaveWindowAtts.fileName = "/home/dc-bamb1/GRChombo/Analysis/plots/BBH_SF_rho_azimuth_run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr_n001600"
+SaveWindowAtts.fileName = "/home/dc-bamb1/GRChombo/Analysis/plots/BBH_SF_rho_run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr_n001600_width16"
 SaveWindowAtts.family = 0
 SaveWindowAtts.format = SaveWindowAtts.PNG  # BMP, CURVE, JPEG, OBJ, PNG, POSTSCRIPT, POVRAY, PPM, RGB, STL, TIFF, ULTRA, VTK, PLY
 SaveWindowAtts.width = 512

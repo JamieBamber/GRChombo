@@ -4,13 +4,13 @@
 
 work_dir=/home/dc-bamb1/GRChombo/Analysis/ReprocessingTools/Y00Integration_rho
 
-start_number=590
+start_number=0
 end_number=20000
 lin_or_log=0 # note 0 = log, 1 = linear
-resume=1 # resume previous integration?
+resume=0 # resume previous integration?
 
 nphi=64
-ntheta=64
+ntheta=18
 theta_max=1.0
 max_radius=500
 
@@ -45,6 +45,7 @@ run0020=(1 1 0.7 0 0.1 0.25)
 run0021=(0 0 0.7 0 2.0 0.015625)
 run0022=(8 8 0.99 0 2.0 0.015625)
 run0023=(1 1 0.7 0 0.2 0.125)
+run0024=(1 1 0.7 0 0.125 0.2)
 
 plot_interval=10
 # vars = phi Pi chi rho rho_azimuth J_R J_azimuth_R
@@ -52,8 +53,7 @@ var_index=3 # don't change
 
 # specify runs to submit
 run_list=(
-	run0017
-	run0018
+	run0024
 )
 
 ## loop over subdirs

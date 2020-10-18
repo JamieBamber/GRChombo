@@ -13,9 +13,9 @@ nphi=64
 ntheta=18
 theta_max=1.0
 max_radius=10
-N1=256
-L=2048
-box_size=32
+N1=128
+L=1024
+box_size=16
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, dt
@@ -48,6 +48,7 @@ run0019=(1 1 0.7 0 0.01 2.5)
 run0020=(1 1 0.7 0 0.1 0.25)
 run0022=(8 8 0.99 0 2.0 0.015625)
 run0023=(1 1 0.7 0 0.2 0.125)
+run0024=(1 1 0.7 0 0.125 0.2)
 
 plot_interval=10
 #var_index=6
@@ -76,7 +77,7 @@ plot_interval=10
 
 # specify runs to submit
 run_list=(
-	run0016
+	run0024
 )
 
 ## loop over subdirs
@@ -94,7 +95,8 @@ do
         val="$run[5]"; dt_mult="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr_L${L}_N${N1}
+        subdir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
+	#_L${L}_N${N1}
 
 	# note vars = {phi Pi chi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R}
 	min_radius=$(echo "scale=5; ${M}*(1.00 + sqrt(1 - ${a} * ${a}))" | bc)

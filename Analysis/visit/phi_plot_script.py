@@ -16,13 +16,17 @@ subdir = "run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr"
 number = 1600
 data_file_name = "KerrSFp_%06d.3d.hdf5" % number
 width = 256
-absmax = 0.4
+absmax = 4
 
 # open datafile(s)
 OpenDatabase(data_root_dir + subdir + "/" + data_file_name,0)
 
+# Expression to do the normalisation
+phi0=0.1
+DefineScalarExpression("norm_phi","10*phi")
+
 # add plot
-AddPlot("Pseudocolor", "phi", 1, 1)
+AddPlot("Pseudocolor", "norm_phi", 1, 1)
 PseudocolorAtts = PseudocolorAttributes()
 PseudocolorAtts.scaling = PseudocolorAtts.Linear  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1

@@ -21,16 +21,20 @@ absmax = 0.4
 # open datafile(s)
 OpenDatabase(data_root_dir + subdir + "/" + data_file_name,0)
 
+# normalise
+# rho0 = 0.5*(0.4**2)*(0.1**2)
+DefineScalarExpression("norm_rho_azimuth","rho_azimuth/(0.5*(0.4*0.4)*(0.01))")
+
 # add plot
-AddPlot("Pseudocolor", "rho_azimuth", 1, 1)
+AddPlot("Pseudocolor", "norm_rho_azimuth", 1, 1)
 PseudocolorAtts = PseudocolorAttributes()
 PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = 0.0001
+PseudocolorAtts.min = 0.1
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = 50
+PseudocolorAtts.max = 1000
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
 PseudocolorAtts.colorTableName = "viridis"
 PseudocolorAtts.invertColorTable = 0
@@ -132,7 +136,7 @@ legend.yScale = 3.2
 legend.managePosition = 0
 legend.position = (0.8, 0.95)
 # the font.
-legend.numberFormat = "%.4f"
+legend.numberFormat = "%.1f"
 legend.fontFamily = legend.Times
 legend.fontBold = 0
 legend.fontItalic = 0
