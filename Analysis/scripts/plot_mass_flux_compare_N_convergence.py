@@ -219,7 +219,7 @@ def plot_graph():
 		ax1.plot(tau,np.log(dflux)/np.log(2),colours[i]+"-", label=label_, linewidth=1)
 		#
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	ax1.set_xlim((0, 300))
+	ax1.set_xlim((0, 150))
 	ax1.set_ylim((-30, -15))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)

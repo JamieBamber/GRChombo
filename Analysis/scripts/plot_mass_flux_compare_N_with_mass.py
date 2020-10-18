@@ -189,7 +189,7 @@ def plot_graph():
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
-	legend_font_size = 10
+	legend_font_size = 9
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
