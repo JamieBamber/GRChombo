@@ -211,7 +211,7 @@ def plot_graph():
 		ax1.plot(tau,np.log(np.abs(dd.outer_mass_flux[:ds_length] - dd.dmass[:ds_length]))/np.log(2),colours[i]+'-', label=label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	ax1.set_xlim((0, 300))
+	ax1.set_xlim((0, 150))
 	if cumulative:
 		ax1.set_ylabel("$\\log_{2}(|\\Delta M_{cloud} - $cumulative flux$|/E_0)$", fontsize=label_size)
 		ax1.set_title("Mass and flux agreement, $M=1,\\mu=0.4,\\chi=0.7,l=m=8$", wrap=True, fontsize=title_font_size)

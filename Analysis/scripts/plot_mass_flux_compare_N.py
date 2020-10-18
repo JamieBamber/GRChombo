@@ -29,7 +29,7 @@ average_time=False
 av_n = 1
 plot_mass=False
 cumulative=False
-differential=True
+differential=False
 Theta_max="0.99"
 Ntheta=64
 Nphi=64
@@ -227,7 +227,7 @@ def plot_graph():
 				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+'-.', label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
-	ax1.set_xlim((0, 300))
+	ax1.set_xlim((0, 150))
 	if differential:
 		#ax1.set_ylim((-0.001, 0.005))
 		pass
