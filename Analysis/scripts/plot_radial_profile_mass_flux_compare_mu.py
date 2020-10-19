@@ -35,7 +35,7 @@ if (lin_or_log):
 else:
 	scale = "log"
 
-log_y = True
+log_y = False
 
 def fix_spikes(rho):
         out_rho = rho
@@ -74,8 +74,8 @@ class data_dir:
 		flux = np.mean(data[row-2:row+3,1:],axis=0)
 		print("flux.shape = ", flux.shape)
 		rho0 = 0.5*(phi0**2)*(self.mu)**2
-		self.flux = fix_spikes(-flux/rho0)
-		#self.flux = -flux/rho0
+		#self.flux = fix_spikes(-flux/rho0)
+		self.flux = -flux/rho0*(R**2)
 		
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, Al="0", nphi=Nphi, ntheta=Ntheta, theta_max=Theta_max):
@@ -151,7 +151,7 @@ def plot_graph():
 	if log_y:
 		ax1.set_ylabel("$\\log_{10}($mass flux$/\\rho_0)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("mass flux$/\\rho_0$", fontsize=label_size)
+		ax1.set_ylabel("mass flux $R^2/\\rho_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -164,13 +164,13 @@ def plot_graph():
 	#	plt.xlim((r_plus_min, 100))
 	#else :
 	#	plt.xlim(left=np.log10(r_plus_min))
-	#plt.ylim((-3, 3))
-	ax1.legend(loc="best", fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4)
+	plt.ylim((-500, 2000))
+	ax1.legend(loc="best", fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4, ncol=2)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
 	tau=dd0.time*dd0.mu
-	title = "Mass flux profile $M=1,\\chi=0.7,l=m=1,\\tau=${:.1f}".format(tau) 
+	title = "Mass flux profile $M=1,\\chi=0.7,l=m=1,\\tau=${:.1f} \n averaged over 5 timesteps".format(tau) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:

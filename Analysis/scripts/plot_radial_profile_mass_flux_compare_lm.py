@@ -35,7 +35,7 @@ if (lin_or_log):
 else:
 	scale = "log"
 
-log_y = True
+log_y = False
 
 def fix_spikes(rho):
         out_rho = rho
@@ -74,8 +74,8 @@ class data_dir:
 		flux = np.mean(data[row-2:row+3,1:],axis=0)
 		print("flux.shape = ", flux.shape)
 		rho0 = 0.5*(phi0**2)*(self.mu)**2
-		self.flux = fix_spikes(-flux/rho0)
-		#self.flux = -flux/rho0
+		#self.flux = fix_spikes(-flux/rho0)
+		self.flux = -flux/rho0*(R**2)
 		
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, Al="0", nphi=Nphi, ntheta=Ntheta, theta_max=Theta_max):
@@ -106,7 +106,7 @@ add_data_dir(2, 0, 0, "0.7", "0.4")
 add_data_dir(5, 1, 1, "0.7", "0.4")
 add_data_dir(7, 2, 2, "0.7", "0.4")
 #add_data_dir(8, 4, 4, "0.7", "0.4")
-#add_data_dir(10, 8, 8, "0.7", "0.4")
+add_data_dir(10, 8, 8, "0.7", "0.4")
 add_data_dir(9, 1, -1, "0.7", "0.4")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
 #add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
@@ -143,7 +143,7 @@ def plot_graph():
 	if log_y:
 		ax1.set_ylabel("$\\log_{10}($mass flux$/\\rho_0)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("mass flux$/\\rho_0$", fontsize=label_size)
+		ax1.set_ylabel("mass flux $ R^2/\\rho_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -156,7 +156,7 @@ def plot_graph():
 	#	plt.xlim((r_plus_min, 100))
 	#else :
 	#	plt.xlim(left=np.log10(r_plus_min))
-	#plt.ylim((-3, 3))
+	plt.ylim((-500, 1000))
 	ax1.legend(loc="best", fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
