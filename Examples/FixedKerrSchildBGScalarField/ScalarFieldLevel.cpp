@@ -14,7 +14,7 @@
 #include "FixedBGEvolution.hpp"
 
 // For density calculation
-#include "FixedBGDensityAndMom_v3.hpp"
+#include "FixedBGDensityAndMom.hpp"
 
 // For tag cells
 #include "FixedGridsTaggingCriterion.hpp"

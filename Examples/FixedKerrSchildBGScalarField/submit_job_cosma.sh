@@ -3,78 +3,26 @@
 # This script should make a new directory in ~/GRChombo_data for the data, and copy the slurm_submit file, params.txt file and output files to
 # that directory, submit the job, then change back to the working directory
 
-# this copy is for the KNL nodes
+# this copy is for COSMA6 nodes
 
-work_dir=/home/dc-bamb1/GRChombo/Examples/FixedKerrBGScalarField
+work_dir=/cosma/home/dp174/dc-bamb1/GRChombo/Examples/FixedKerrSchildBGScalarField
 cd $work_dir
-data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF
+data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/KerrSF
 
 # specify the input params for each run I want to submit
-# list for each is: l, m, a, Al, mu, dt
-# test adding spin
-run0001=(0 0 0.0 0 0.4 0.0625)
-run0002=(0 0 0.7 0 0.4 0.0625)
-run0003=(0 0 0.99 0 0.4 0.0625)
-# same for l=m=1
-run0004=(1 1 0.0 0 0.4 0.0625)
-run0005=(1 1 0.7 0 0.4 0.0625)
-run0006=(1 1 0.99 0 0.4 0.0625)
-# test lm
-run0007=(2 2 0.7 0 0.4 0.0625)
-run0008=(4 4 0.7 0 0.4 0.0625)
-run0009=(1 -1 0.7 0 0.4 0.0625)
-run0010=(8 8 0.7 0 0.4 0.0625)
-# test effect of mu
-# run0111=(0 0 0.0 0 0.05 0.4)
-run0011=(1 1 0.7 0 2.0 0.015625)
-run0012=(1 1 0.7 0 0.01 0.0625)
-# test effect of m / mu ratio
-run0013=(2 2 0.7 0 0.8 0.03125)
-run0014=(8 8 0.7 0 3.2 0.0078125)
-# test effect of alignment
-run0015=(1 1 0.7 0.5 0.4 0.0625)
-run0016=(1 -1 0.99 0 0.4 0.0625)
-run0017=(1 1 0.99 0.5 0.4 0.0625)
-run0018=(1 1 0.99 0.25 0.4 0.0625)
-run0019=(1 1 0.7 0 0.01 1.0)
-run0020=(1 1 0.7 0 0.1 0.25)
-run0021=(0 0 0.7 0 2.0 0.015625)
-
-run0022=(8 8 0.99 0 2.0 0.015625)
-run0023=(1 1 0.7 0 0.2 0.125)
-run0024=(1 1 0.7 0 0.125 0.2)
+# list for each is: l, m, a, Al, mu, M, dt
+run0001=(0 0 0 0 1 0.48847892320123 0.0625)
 
 # specify runs to submit
-#run0001
-#run0003
-#run0004
-
-#	run0002
-#	run0005
-#	run0006
-#	run0007
-#	run0008
-#	run0009
-#	run0010
-#	run0011
-#	run0012
-#	run0013	
-#	run0014
-#	run0015
-#	run0016
-#	run0017
-#	run0018
-
-
 run_list=(
-	run0024
+       run0001
 )
 
-params_file=params_v2.txt
-plot_interval=10
-L=1024
-N1=128
-box_size=16
+params_file=params.txt
+plot_interval=20
+L=512
+N1=64
+box_size=8
 
 for run in "${run_list[@]}"
 do
@@ -85,18 +33,17 @@ do
 	val="$run[1]"; m="${!val}"
 	val="$run[2]"; a="${!val}"
 	val="$run[3]"; Al="${!val}"
-	M=1
 	val="$run[4]"; mu="${!val}"
-	val="$run[5]"; dt="${!val}"
+	val="$run[5]"; M="${!val}"
+	val="$run[6]"; dt="${!val}"
 
 	# text_number=$(printf "%04d" ${run_number})
-	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_IsoKerr
-	#_L${L}_N$N1
+	new_dir=${run}_l${l}_m${m}_a${a}_Al${Al}_mu${mu}_M${M}_KerrSchild
 	echo ${new_dir}
 	new_dir_path=${data_directory}/${new_dir}
 	#
 	mkdir -p ${new_dir_path}
-	cp slurm_submit_KNL ${new_dir_path}/slurm_submit
+	cp slurm_submit_cosma ${new_dir_path}/slurm_submit
 	cp ${params_file} ${new_dir_path}/params.txt
 	
 	cd ${new_dir_path}
@@ -105,17 +52,18 @@ do
 	sed -i "s|DATASUBDIR|${new_dir}|" ${new_dir_path}/params.txt
 	sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/slurm_submit
 	sed -i "s|JOBNAME|${run}KS|" ${new_dir_path}/slurm_submit
+	sed -i "s|NBASIC|${N1}|" ${new_dir_path}/slurm_submit
 	sed -i "s|BOXLENGTH|${L}|" ${new_dir_path}/params.txt
-	sed -i "s|BOXSIZE|${box_size}|" ${new_dir_path}/params.txt
-	sed -i "s|CENTERX|$(($L/2))|" ${new_dir_path}/params.txt
-	sed -i "s|CENTERY|$(($L/2))|" ${new_dir_path}/params.txt
+        sed -i "s|BOXSIZE|${box_size}|" ${new_dir_path}/params.txt
+        sed -i "s|CENTERX|$(($L/2))|" ${new_dir_path}/params.txt
+        sed -i "s|CENTERY|$(($L/2))|" ${new_dir_path}/params.txt
 	sed -i "s|SCALARL|${l}|" ${new_dir_path}/params.txt
-	sed -i "s|SCALARM|${m}|" ${new_dir_path}/params.txt
+	sed -i "s|SCALARM|${l}|" ${new_dir_path}/params.txt
+	sed -i "s|BHMASS|${M}|" ${new_dir_path}/params.txt
 	sed -i "s|BHSPIN|${a}|" ${new_dir_path}/params.txt
 	sed -i "s|ALANGLE|${Al}|" ${new_dir_path}/params.txt
 	sed -i "s|MUVAL|${mu}|" ${new_dir_path}/params.txt
 	sed -i "s|DTMULT|${dt}|" ${new_dir_path}/params.txt
-	sed -i "s|NBASIC|${N1}|" ${new_dir_path}/params.txt
 	sed -i "s|PLOTINTERVAL|${plot_interval}|" ${new_dir_path}/params.txt
 	# half box or full box?
 	if (( $(echo "$Al > 0.0" |bc -l) )); then

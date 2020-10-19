@@ -38,6 +38,7 @@ class SimulationParameters : public SimulationParametersBase
         pp.load("momentumA", bh1_params.momentum);
         pp.load("massB", bh2_params.mass);
         pp.load("momentumB", bh2_params.momentum);
+	pp.load("final_a", final_a); // final dimensionfull spin J/M of the merged black hole
 
         // Get the centers of the BHs either explicitly or as
         // an offset (not both, or they will be offset from center
@@ -76,6 +77,7 @@ class SimulationParameters : public SimulationParametersBase
     std::vector<std::array<double, CH_SPACEDIM>> initial_puncture_coords;
     double G_Newton;
     double delay;
+    double final_a;
     FlatScalar::params_t initial_params;
     ScalarPotential::params_t potential_params;
     

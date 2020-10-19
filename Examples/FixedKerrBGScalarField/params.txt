@@ -3,18 +3,21 @@
 verbosity = 0
 chk_prefix = DATADIR/KerrSF_
 plot_prefix = DATADIR/KerrSFp_
-#restart_file = DATADIR/KerrSF_000100.3d.hdf5
+restart_file = DATADIR/KerrSF_001100.3d.hdf5
 
 # Set up grid spacings and regrid params
 # NB - the N values need to be multiples of block_factor
-N1 = 128
-N2 = 128
-N3 = 64
+N1 = NBASIC
+N2 = NBASIC
+N3 = NSPACE3
+
+num_plot_vars = 7
+plot_vars = phi Pi chi rho rho_azimuth J_R J_azimuth_R
 
 # Length of longest box side, dx_coarsest = L/N(max)
 # NB if non cubic, this determines dx for all sides
-L =  BOXLENGTH
-center = 512.0 512.0 0.0
+L = BOXLENGTH
+center = CENTERX CENTERY CENTERZ
 # symmetry_dir = 0 0 1
 # this tells it which axes are symmetric
 
@@ -27,8 +30,8 @@ max_level = 7 # There are (max_level+1) grids, so min is zero
 regrid_interval = 0 0 0 0 0 0 0 0 0 0 0
 tag_buffer_size = 0
 # Max and min box size - for load balancing
-max_box_size = 16
-min_box_size = 16
+max_box_size = BOXSIZE
+min_box_size = BOXSIZE
 write_plot_ghosts = 0
 
 #boundaries and periodicity of grid
@@ -39,7 +42,7 @@ isPeriodic = 0 0 0
 # 3 = extrapolating
 # (see BoundaryConditions.hpp for details)
 hi_boundary = 3 3 3
-lo_boundary = 3 3 2
+lo_boundary = 3 3 ZBOUND
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
@@ -50,8 +53,8 @@ lo_boundary = 3 3 2
 # 1,2,3 = odd x, y, z
 # 4,5,6 = odd xy, yz, xz
 # !!! If l+m = odd, for Al = 0 you need to set the parity of phi and Pi to be 3
-vars_parity = 0 0 0 0 0 0 0		#phi, Pi, chi, rho, rho_Eulerian, rho_azimuth, J_r, J_azimuth_r
-vars_asymptotic_values = 0 0 1 0 0 0 0 0  #phi, Pi, chi, rho, rho_Eulerian, rho_azimuth, J_r, J_azimuth_r
+vars_parity = 0 0 0 0 0 0 0 0 0		#phi, Pi, chi, rho, rho_azimuth, J_rKS, J_azimuth_rKS, J_R, J_azimuth_R
+vars_asymptotic_values = 0 0 1 0 0 0 0 0 0  #phi, Pi, chi, rho, rho_azimuth, J_rKS, J_azimuth_rKS, J_R, J_azimuth_R
 
 # Set up time steps
 # dt will be dx*dt_multiplier on each grid level
@@ -59,11 +62,11 @@ vars_asymptotic_values = 0 0 1 0 0 0 0 0  #phi, Pi, chi, rho, rho_Eulerian, rho_
 # L/N = 1024/128 = 8
 #
 checkpoint_interval = 100
-plot_interval = 5
-dt_multiplier = 0.0625 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
-stop_time = 2000.0
+plot_interval = PLOTINTERVAL
+dt_multiplier = DTMULT # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
+stop_time = 20000.0
 ###
-# dt_raw = 8 * 1/32 = 0.25
+# dt_raw = 8 * 1/16 = 0.5
 # dt_plot = 1.25
 #
 
@@ -77,15 +80,14 @@ sigma = 0.5
 # for s = 0.99 omega_crit = m * 0.4338
 #	so m_crit = 2.30
 # SF Initial data
-scalar_mass = 1
-scalar_amplitude = 0.1
-scalar_omega = 1
-scalar_l = 0
-scalar_m = 0
-alignment = 0.5
 phase = 0
-# "phase" initial extra phase term in units of pi
+scalar_mass = MUVAL
+scalar_amplitude = 0.1
+scalar_omega = MUVAL
+scalar_l = SCALARL
+scalar_m = SCALARM
+alignment = ALANGLE
 
 # BH initial data
 bh_mass = 1
-bh_spin = 0.7
+bh_spin = BHSPIN

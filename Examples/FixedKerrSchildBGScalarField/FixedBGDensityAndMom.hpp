@@ -11,12 +11,12 @@
 #include "Cell.hpp"
 #include "Coordinates.hpp"
 #include "FourthOrderDerivatives.hpp"
-#include "DimensionDefinitions.hpp"
 #include "GRInterval.hpp"
 #include "Tensor.hpp"
 #include "UserVariables.hpp" //This files needs NUM_VARS - total number of components
 #include "VarsTools.hpp"
 #include "simd.hpp"
+#include "parstream.H"
 
 //! Calculates the density rho with type matter_t and writes it to the grid
 template <class matter_t, class background_t> class FixedBGDensityAndMom
@@ -51,7 +51,7 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         const auto vars = current_cell.template load_vars<MatterVars>();
         const auto d1 = m_deriv.template diff1<MatterVars>(current_cell);
 
-        // get the metric vars from the background
+	// get the metric vars from the background
         MetricVars<data_t> metric_vars;
         const Coordinates<data_t> coords(current_cell, m_dx, m_center);
         m_background.compute_metric_background(metric_vars, coords);
@@ -65,35 +65,77 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
 	const data_t det_gamma = 
             TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
 
-	// first rho. True rho = -sqrt(-g)T^0_0 = alpha*sqrt(det_gamma)*(rho_3+1 + beta^i/alpha * S_i)
-	data_t rho = emtensor.rho;
-	FOR1(k){ rho += +metric_vars.shift[k]*emtensor.Si[k]; 	}
-	rho = rho*sqrt(det_gamma)*metric_vars.lapse;
-
-	// find angular momentum in Kerr BH direction and the cloud spin direction
-	data_t x = coords.x;
+	// coordinates
+        data_t x = coords.x;
         double y = coords.y;
-        double z = coords.z;	
+        double z = coords.z;    
+	data_t R = coords.get_radius();
 
-	// True j^i = alpha^2 * gamma^ij [ S_j - beta^k S_kj ] for the cartesian coordinates
-	Tensor<1, data_t> Sbeta; 
-	FOR2(i, j){ Sbeta[i] += metric_vars.shift[j]*emtensor.Sij[i][j]; }			
-	Tensor<1, data_t> J; 
-	FOR2(i, j){ J[i] += sqrt(det_gamma)*gamma_UU[i][j]*emtensor.Si[j]; }			
+	// get KerrSchild r
+	double a = m_background.m_params.spin*m_background.m_params.mass;
+	data_t disc = simd_max((R*R - a*a), 0.001);
+	data_t r2 = disc/2 + sqrt(disc*disc/4 + (a*z)*(a*z));
+	data_t r = sqrt(r2);
 
-	// J_azimuth = x * S_y - y * S_z
-	// J_azimuth_prime = x(S_y cos(alignment) + S_z sin(alignment)) - yprime * S_x
-	data_t J_azimuth = (x * J[1] - y * J[0]);
+        // conserved rho = -sqrt(-g)T^0_0 = sqrt(det_gamma)*(alpha*rho_3+1 - beta^i * S_i)
+        data_t rho = metric_vars.lapse*emtensor.rho;
+        FOR1(k){ rho += -metric_vars.shift[k]*emtensor.Si[k];   }
+        rho = rho*sqrt(det_gamma);
 
-	// fine the inward radial momentum (i.e. radial mass flux density)
-	// S_r = (x * S_x + y * S_y + z * S_z)/r
-	data_t r = coords.get_radius();
-	data_t J_r = -(x * J[0] + y * J[1] + z * J[2])/r;
+	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] - beta^i rho   for the cartesian coordinates
+        Tensor<1, data_t> Sbeta; 
+        FOR2(i, j){ Sbeta[i] += metric_vars.shift[j]*emtensor.Sij[i][j]; }                      
+        Tensor<1, data_t> J; 
+        FOR2(i, j){ J[i] += sqrt(det_gamma)*metric_vars.lapse*( gamma_UU[i][j]*(metric_vars.lapse*emtensor.Si[j] - Sbeta[j]) ); }
+	FOR1(i) { J[i] += - metric_vars.shift[i] * rho; }	
+
+        // conserved rho_azimuth = |gamma|(x * S_y - y * S_z)
+        data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma);
+
+	// d x / d azimuth
+        Tensor<1, data_t> dxdaz;
+        dxdaz[0] = - y;
+        dxdaz[1] =   x;
+        dxdaz[2] = 0;
+        // outward radial unit normal vector (Kerr Schild radius direction)
+        Tensor<1, data_t> Ni;
+        Ni[0] = x;
+        Ni[1] = y;
+        Ni[2] = z*(1+a*a/(r*r)); 
+	data_t N2 = 0;
+	FOR1(j){ N2 += Ni[j]*Ni[j]; }
+	FOR1(j){ Ni[j] *= 1.0/sqrt(N2); }	
+	// outward radial vector (cartesian radius direction)
+        Tensor<1, data_t> NRi;
+        NRi[0] = x/R;
+        NRi[1] = y/R;
+        NRi[2] = z/R;
+
+	Tensor<1, data_t> Siaz;
+	FOR2(i,j) { Siaz[i] += emtensor.Sij[i][j]*dxdaz[j]; }
+	Tensor<1, data_t> J_azimuth;
+	FOR2(i, j) { J_azimuth[i] += sqrt(det_gamma)*metric_vars.lapse*gamma_UU[i][j]*Siaz[j]; }
+	FOR1(i) { J_azimuth[i] += - metric_vars.shift[i] * rho_azimuth; } 
+
+	// cartesian projection of the 3-current momentum vectors in the r_KS unit direction
+	data_t J_rKS = 0;
+	FOR1(j) { J_rKS += Ni[j]*J[j]; }
+	data_t J_azimuth_rKS = 0;
+        FOR1(i) { J_azimuth_rKS += J_azimuth[i]*Ni[i]; }
+
+	// cartesian projection of the 3-current momentum vectors in the R unit direction
+	data_t J_R = 0;
+	FOR1(j) { J_R += NRi[j]*J[j]; }
+	data_t J_azimuth_R = 0;
+        FOR1(i) { J_azimuth_R += J_azimuth[i] * NRi[i]; }
 
         // assign values of density in output box
         current_cell.store_vars(rho, c_rho);
-	current_cell.store_vars(J_azimuth, c_J_azimuth);
-	current_cell.store_vars(J_r, c_J_r);
+        current_cell.store_vars(rho_azimuth, c_rho_azimuth);
+        current_cell.store_vars(J_rKS, c_J_rKS);
+        current_cell.store_vars(J_azimuth_rKS, c_J_azimuth_rKS);
+        current_cell.store_vars(J_R, c_J_R);
+        current_cell.store_vars(J_azimuth_R, c_J_azimuth_R);
     }
 };
 

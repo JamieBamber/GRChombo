@@ -1,19 +1,20 @@
 #!/bin/bash
 #
-# This script should make a new directory in ~/GRChombo_data for the data, and copy the slurm_submit file, params.txt file and output files to
+# This script should make a new directory in GRChombo_data for the data, and copy the slurm_submit file, params.txt file and output files to
 # that directory, submit the job, then change back to the working directory
 
-# this copy is for the KNL nodes
+# this copy is for COSMA6
 
-work_dir=/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField
+work_dir=/cosma/home/dp174/dc-bamb1/GRChombo/Examples/BinaryBHScalarField
 cd $work_dir
-data_directory=/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField
+data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/BinaryBHSF
 
 # specify the input params for each run I want to submit
 # list for each is: mu, delay, dt, G
 
 run0001=(1 0 0.125 0)
-run0002=(0.08187607564 0 0.25 0)
+run0002=(1 10000 0.125 0)
+run0003=(0.08187607564 0 0.25 0)
 
 params_file=params.txt
 
