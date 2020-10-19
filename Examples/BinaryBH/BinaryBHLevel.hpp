@@ -50,12 +50,6 @@ class BinaryBHLevel : public GRAMRLevel
 
     /// Any actions that should happen just before plot files output
     virtual void prePlotLevel() override;
-<<<<<<< HEAD
-
-    //! Specify which variables to write at plot intervals
-    //virtual void specificWritePlotHeader(std::vector<int> &plot_states) const;
-=======
->>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60
 };
 
 #endif /* BINARYBHLEVEL_HPP_ */

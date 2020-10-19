@@ -122,11 +122,7 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
             m_bh_amr.get_puncture_coords();
         BoxLoops::loop(ChiPunctureExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
-<<<<<<< HEAD
                            puncture_coords, 1,
-=======
-                           puncture_coords, m_p.activate_extraction,
->>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60
                            m_p.track_punctures, puncture_masses),
                        current_state, tagging_criterion);
     }
@@ -134,11 +130,7 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     {
         BoxLoops::loop(ChiExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
-<<<<<<< HEAD
                            1),
-=======
-                           m_p.activate_extraction),
->>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60
                        current_state, tagging_criterion);
     }
 }
@@ -150,13 +142,10 @@ void BinaryBHLevel::specificPostTimeStep()
     {
         // Populate the Weyl Scalar values on the grid
         fillAllGhosts();
-<<<<<<< HEAD
         BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
-=======
         BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx), m_state_new,
                        m_state_new, EXCLUDE_GHOST_CELLS);
->>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60
 
         // Do the extraction on the min extraction level
         if (m_level == m_p.extraction_params.min_extraction_level())
@@ -194,7 +183,6 @@ void BinaryBHLevel::prePlotLevel()
     fillAllGhosts();
     if (m_p.activate_extraction == 1)
     {
-<<<<<<< HEAD
         BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
     }
@@ -202,9 +190,3 @@ void BinaryBHLevel::prePlotLevel()
 
 // Specify if you want any plot files to be written, with which vars
 void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const;
-=======
-        BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx), m_state_new,
-                       m_state_new, EXCLUDE_GHOST_CELLS);
-    }
-}
->>>>>>> ac9fdf1ef05657f8194a6b43981d5f6d25273f60
