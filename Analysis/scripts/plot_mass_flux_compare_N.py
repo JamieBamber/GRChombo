@@ -29,7 +29,7 @@ average_time=False
 av_n = 1
 plot_mass=False
 cumulative=False
-differential=False
+differential=True
 Theta_max="0.99"
 Ntheta=64
 Nphi=64
@@ -181,7 +181,7 @@ add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 32)
 add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 64) 
 add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 128)
 add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 256)
-add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 512)
+#add_data_dir(22, 8, 8, "0.99", "2.0", "0", 64, 18, "1.0", 512)
 
 def plot_graph():
 	# plot setup
@@ -215,9 +215,9 @@ def plot_graph():
 			dflux = np.abs((dd.outer_mass_flux - dd.analytic_outer_flux)/dd.analytic_outer_flux)
 			ax1.plot(tau,np.log10(dflux),colours[i]+"-", label=label_, linewidth=1)
 		elif not differential:
-			ax1.plot(tau,(10**4)*dd.outer_mass_flux,colours[i]+"-", label=label_, linewidth=2)
+			ax1.plot(tau,(10**4)*dd.outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
 			if (dd.N==128):
-				ax1.plot(tau,(10**4)*dd.analytic_outer_flux,'k'+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+				ax1.plot(tau,(10**4)*dd.analytic_outer_flux,'k'+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=2)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
