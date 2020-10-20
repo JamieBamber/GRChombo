@@ -17,7 +17,7 @@ half_box = True
 KS_or_cartesian_r=True
 phi0 = 0.1
 R_min = 5
-R_max = 300
+R_max = 10
 average_time = False
 av_n = 1
 plot_mass=False
@@ -256,7 +256,7 @@ def plot_graph():
 		#	ax1.plot(tau,np.log10(np.abs(aflux)),colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		else:
 			ax1.plot(tau,flux,colours[i]+"-", label=label_, linewidth=1)
-			ax1.plot(tau,aflux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+			#ax1.plot(tau,aflux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
