@@ -208,7 +208,7 @@ void BinaryBHLevel::specificPostTimeStep()
     if (m_verbosity)
         pout() << "starting BinaryBHLevel::specificPostTimeStep()" << endl;
     CH_TIME("BinaryBHLevel::specificPostTimeStep");
-    if (m_p.activate_extraction == 1)
+    /*if (m_p.activate_extraction == 1)
     {
         // Populate the Weyl Scalar values on the grid
         fillAllGhosts();
@@ -225,7 +225,7 @@ void BinaryBHLevel::specificPostTimeStep()
                                          m_restart_time);
             my_extraction.execute_query(m_gr_amr.m_interpolator);
         }
-    }
+    }*/
 
     // do puncture tracking on requested level
     if (m_p.track_punctures == 1 && m_level == m_p.puncture_tracking_level)
@@ -251,11 +251,11 @@ void BinaryBHLevel::prePlotLevel()
     if (m_verbosity)
          pout() << "starting BinaryBHLevel::prePlotLevel()" << endl;
     fillAllGhosts();
-    if (m_p.activate_extraction == 1)
+    /*if (m_p.activate_extraction == 1)
     {
         BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
-    }
+    }*/
     
     // Calculate and save ADM density and momentum
     ScalarPotential potential(m_p.potential_params);

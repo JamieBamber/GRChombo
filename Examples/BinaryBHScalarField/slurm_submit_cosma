@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH -A dp174
-#SBATCH -p cosma6-pauper
+#SBATCH -p cosma6
 #SBATCH --nodes 16
 ### NB cosma6 has 16 cores per node so product of these = 16
 #SBATCH --ntasks-per-node=8
@@ -8,7 +8,7 @@
 #SBATCH -o output_file.%J.out
 #SBATCH -e error_file.%J.err
 #
-#SBATCH -t 24:00:00
+#SBATCH -t 2:00:00
 #SBATCH -J JOBNAME
 #SBATCH --exclusive
 #SBATCH --mail-type=NONE             # notifications for job done & fail
@@ -19,4 +19,4 @@ module load intel_comp/2019 intel_mpi/2019 parallel_hdf5/1.10.3
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 # Run the program
 export application=/cosma/home/dp174/dc-bamb1/GRChombo/Examples/BinaryBHScalarField/Main_BinaryBH3d.Linux.64.mpiicpc.ifort.OPTHIGH.MPI.OPENMPCC.ex
-mpirun -np $SLURM_NTASKS ${application} params.txt
+mpirun -np $SLURM_NTASKS ${application} ../params.txt
