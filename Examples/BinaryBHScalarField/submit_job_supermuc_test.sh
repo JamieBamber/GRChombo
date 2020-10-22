@@ -9,6 +9,7 @@ work_dir=/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField
 cd $work_dir
 #data_directory=/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField
 
+<<<<<<< HEAD
 run_number=4
 
 params_file=params_test.txt
@@ -17,11 +18,23 @@ params_file=params_test.txt
 text_number=$(printf "%04d" ${run_number})
 
 new_dir=test${text_number}
+=======
+run_number=1
+suffix=valgrind
+
+params_file=params_test.txt
+
+new_dir=test_${suffix}
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
 echo ${new_dir}
 new_dir_path=${work_dir}/${new_dir}
 #
 mkdir -p ${new_dir_path}
+<<<<<<< HEAD
 cp slurm_submit_supermuc_test ${new_dir_path}/slurm_submit
+=======
+cp slurm_submit_supermuc_valgrind ${new_dir_path}/slurm_submit
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
 cp ${params_file} ${new_dir_path}/params.txt
 
 cd ${new_dir_path}

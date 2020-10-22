@@ -34,32 +34,26 @@ def add_data_dir(num, l, m, a, mu, Al="0"):
 """add_data_dir(74, 0, 0, "0.7", "0.4")
 add_data_dir(39, 1, 1, "0.7", "0.4")
 add_data_dir(73, 4, 4, "0.7", "0.4")
+add_data_dir(76, 5, 5, "0.7", "0.4")
 add_data_dir(77, 2, 2, "0.7", "0.4")"""
 
 #add_data_dir(74, 0, 0, "0.7", "0.4")
 #add_data_dir(78, 1, -1, "0.7", "0.4")
+#add_data_dir(75, 1, 1, "0.7", "0.4", "0.5")
 #add_data_dir(39, 1, 1, "0.7", "0.4")
 
 #add_data_dir(67, 0, 0, "0", "1")
 #add_data_dir(79, 0, 0, "0.7", "1")
 #add_data_dir(68, 0, 0, "0.99", "1")
 
-#add_data_dir(103, 0, 0, "0.7", "0.4")
-#add_data_dir(101, 1, 1, "0.7", "0.4")
-#add_data_dir(104, 1, -1, "0.7", "0.4")
-#add_data_dir(102, 2, 2, "0.7", "0.4")
-#add_data_dir(105, 1, 1, "0.99", "0.4")
-#add_data_dir(106, 0, 0, "0.99", "0.4")
-#add_data_dir(107, 4, 4, "0.7", "0.4")
-#add_data_dir(76, 5, 5, "0.7", "0.4")
-add_data_dir(108, 2, 2, "0.7", "0.8")
-#add_data_dir(109, 8, 8, "0.7", "0.4")
-#add_data_dir(110, 1, 1, "0.7", "0.05")
-#add_data_dir(111, 1, 1, "0.7", "1")
-
-#add_data_dir(75, 1, 1, "0.7", "0.4", "0.5")
-#add_data_dir(101, 1, 1, "0.7", "0.4")
-#add_data_dir(104, 1, -1, "0.7", "0.4")
+add_data_dir(101, 1, 1, "0.7", "0.4")
+add_data_dir(102, 2, 2, "0.7", "0.4")
+add_data_dir(103, 0, 0, "0.7", "0.4")
+add_data_dir(104, 1, -1, "0.7", "0.4")
+add_data_dir(105, 1, 1, "0.99", "0.4")
+add_data_dir(106, 0, 0, "0.99", "0.4")
+add_data_dir(107, 4, 4, "0.7", "0.4")
+#add_data_dir(108, 8, 8, "0.7", "0.4")
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -68,14 +62,14 @@ M = 1
 max_r = 450
 phi0 = 0.1
 
-output_dir = "data/mass_data"
+output_dir = "data/compare_almmu_mass"
 
 half_box = True
 
 change_in_E = True
 
 start_num=0
-end_num=1000
+end_num=30
 	
 def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
@@ -88,7 +82,7 @@ def calculate_mass_in_sphere(dd):
 	# load dataset time series
 	
 	# derived fields
-	@derived_field(name = "r_KS", units = "", force_override=True)
+	@derived_field(name = "r_KS", units = "")
 	def _r_KS(field, data):
 		R = data["spherical_radius"]/cm
 		z = data["z"]/cm
@@ -100,7 +94,7 @@ def calculate_mass_in_sphere(dd):
 	ds_all = yt.load(dataset_path) # this loads a dataset time series
 	print("loaded data from ", dataset_path)
 	print("time = ", time.time() - start_time)
-	ds = ds_all
+	ds = ds_all[start_num:end_num]
 	N = len(ds)
 
 	ds0 = ds[0] # get the first dataset 
@@ -113,7 +107,7 @@ def calculate_mass_in_sphere(dd):
 	# iterate through datasets (forcing each to go to a different processor)
 	for sto, dsi in ds.piter(storage=data_storage):
 		current_time = dsi.current_time 
-		dt = 0.5
+		dt = 2.5
 		i = int(current_time/dt)
 		#if (i % 2 == 0):
 		time_0 = time.time()
@@ -139,7 +133,7 @@ def calculate_mass_in_sphere(dd):
 		
 	if yt.is_root():	
 		# output to file
-		dd.filename = "{:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.name, max_r)
+		dd.filename = "l={:d}_m={:d}_a={:s}_mu={:s}_mass_in_r={:d}_KerrSchild_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, max_r)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		print("writing data")
@@ -160,14 +154,14 @@ def load_data():
 	# load data from csv files
 	data = {}
 	for dd in data_dirs:
-		file_name = home_path + output_dir + "/" + "{:s}_mass_in_r={:d}_conserved_rho.csv".format(dd.name, max_r)
+		file_name = home_path + output_dir + "/" + "l={:d}_m={:d}_a={:s}_mu={:s}_Al={:s}_mass_in_r={:d}_KerrSchild_conserved_rho.csv".format(dd.l, dd.m, str(dd.a), dd.mu, dd.Al, max_r)
 		data[dd.num] = np.genfromtxt(file_name, skip_header=1)
 		print("loaded data for " + dd.name)
 	return data 	
 
 def plot_graph():
 	data = load_data()
-	colours = ['r-', 'b-', 'b--', 'g-', 'm-', 'c-', 'y-']
+	colours = ['r-', 'b-', 'g-', 'm-']
 	i = 0
 	for dd in data_dirs:
 		line_data = data[dd.num]
@@ -181,9 +175,7 @@ def plot_graph():
 			a = -dd.a
 		else:
 			a = dd.a
-		#label_ = "$a=${:2f}".format(dd.a)
-		label_ = "$l=${:d} $m=${:d} $\\mu$={:.1f}".format(dd.l, dd.m, mu)
-		#label_ = "$l=${:d} $m=${:d} align. angle={:s}$\pi$".format(dd.l, dd.m, dd.Al)
+		label_ = "$a=${:2f}".format(dd.a)
 		if change_in_E:
 			plt.plot(t[1:], delta_mass, colours[i], label=label_)
 		else:
@@ -195,12 +187,12 @@ def plot_graph():
 	else:
 		plt.ylabel("$E$ in $r < $" + str(max_r))
 	plt.legend(loc='upper left', fontsize=8)
-	plt.title("scalar field energy inside $r_{KS}<$" + "{:.0f} vs time, $M=1$, $a=0.7$".format(max_r))
+	plt.title("scalar field energy inside a sphere vs time, $M=1$, $\\mu=0.4$, $l=m=0$")
 	#plt.xlim((0, 450))
 	#plt.ylim((0, 0.004))
 	plt.tight_layout()
 	if change_in_E:
-		save_path = home_path + "plots/delta_mass_in_sphere_compare_l_over_mu_Kerr_Schild_radius_" + str(max_r) + ".png"
+		save_path = home_path + "plots/delta_mass_in_sphere_compare_a_l=m=0_Kerr_Schild_radius_" + str(max_r) + ".png"
 	else:
 		save_path = home_path + "plots/mass_in_sphere_compare_mu_radius_" + str(max_r) + ".png"
 	plt.savefig(save_path)

@@ -1,6 +1,10 @@
 #!/bin/bash
 # Job Name and Files (also --job-name)
+<<<<<<< HEAD
 #SBATCH -J BinaryBHSF_Job
+=======
+#SBATCH -J JOBNAME
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
 
 #Output and error (also --output, --error):
 #SBATCH -o ./%x.%j.out
@@ -14,7 +18,11 @@
 #SBATCH --mail-user=james.bamber@physics.ox.ac.uk
 
 # Wall clock limit:
+<<<<<<< HEAD
 #SBATCH --time=12:00:00
+=======
+#SBATCH --time=36:00:00
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
 #SBATCH --no-requeue
 
 #Setup of execution environment
@@ -24,11 +32,19 @@
 #SBATCH --partition=general
 
 #Number of nodes and MPI tasks per node:
+<<<<<<< HEAD
 #SBATCH --nodes=25
 # There are 48 physical cores per node, so
 # the product of these numbers should be 48
 #SBATCH --ntasks-per-node=8
 export OMP_NUM_THREADS=4
+=======
+#SBATCH --nodes=43
+# There are 48 physical cores per node, so
+# the product of these numbers should be 48
+#SBATCH --ntasks-per-node=6
+export OMP_NUM_THREADS=8
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
 
 #Load modules
 module load slurm_setup

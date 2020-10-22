@@ -20,7 +20,7 @@ class data_dir:
 		self.a = float(a)
 		self.mu = mu
 		self.Al = Al
-		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_correct_Ylm".format(num, l, m, a, Al, mu)
+		self.name = "run{:04d}_KNL_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_correct_Ylm".format(num, l, m, a, Al, mu)
 
 data_dirs = []		
 def add_data_dir(num, l, m, a, mu, Al="0"):
@@ -37,10 +37,10 @@ add_data_dir( 55, 7, 1, "0.7", "0.4")
 add_data_dir( 45, 10, 10, "0.7", "0.4")"""
 
 #add_data_dir( 31, 0, 0, "0", "0.4")
-add_data_dir(28, 0, 0, "0.7", "0.4")
+#add_data_dir( 28, 0, 0, "0.7", "0.4")
 #add_data_dir( 29, 0, 0, "0.99", "0.4")
 
-# add_data_dir(68, 0, 0, "0.99", "1")
+add_data_dir(68, 0, 0, "0.99", "1")
 
 #add_data_dir( 46, 2, 2, "0", "0.4")
 
@@ -49,7 +49,7 @@ add_data_dir(28, 0, 0, "0.7", "0.4")
 #add_data_dir( 37, 1, 1, "0.99", "0.4")
 
 #add_data_dir( 46, 2, 2, "0", "0.4")
-add_data_dir(48, 2, 2, "0.7", "0.4")
+#add_data_dir( 48, 2, 2, "0.7", "0.4")
 #add_data_dir( 47, 2, 2, "0.99", "0.4")
 
 #add_data_dir( 50, 2, -2, "0.99", "0.4")
@@ -63,13 +63,11 @@ max_R = 450
 dR = 0.1
 phi0 = 0.1
 
-output_dir = "data/flux_data"
+output_dir = "data/compare_almmu_flux"
 
 half_box = True
 
 change_in_E = True
-
-data_Eulerian_rho = True
 	
 def calculate_mass_in_sphere(dd):
 	data_sub_dir = dd.name
@@ -89,7 +87,7 @@ def calculate_mass_in_sphere(dd):
 	# set centre
 	center = [512.0, 512.0, 0]
 	L = 512.0	
-
+		
 	data_storage = {}
 	# iterate through datasets (forcing each to go to a different processor)
 	for sto, dsi in ds.piter(storage=data_storage):

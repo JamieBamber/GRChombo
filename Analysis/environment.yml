@@ -1,0 +1,12 @@
+name: analysis_env
+dependencies:
+  - setuptools 
+  - numpy
+  - scipy
+  - matplotlib
+  - yt
+  - h5py
+  - python=3.6
+  - mpi4py
+  - ctypes
+prefix: ./analysis_env

@@ -22,7 +22,11 @@
 #include "MatterConstraints.hpp"
 #include "MatterCCZ4.hpp"
 #include "MatterOnly.hpp"
+<<<<<<< HEAD
 #include "DensityAndMom.hpp"
+=======
+#include "DensityAndMom_v3.hpp"
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
 #include "FlatScalar.hpp"
 #include "ScalarPotential.hpp"
 #include "ScalarField.hpp"
@@ -94,7 +98,11 @@ void BinaryBHLevel::postRestart()
     {
         // need to set a temporary interpolator for finding the shift
         // as the happens in setupAMRObject() not amr.run()
+<<<<<<< HEAD
         AMRInterpolator<Lagrange<4>> interpolator(m_bh_amr, m_p.origin, m_p.dx,m_p.boundary_params,
+=======
+        AMRInterpolator<Lagrange<4>> interpolator(m_bh_amr, m_p.origin, m_p.dx,
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
                                                   m_p.verbosity);
         m_bh_amr.set_interpolator(&interpolator);
         PunctureTracker my_punctures(m_time, m_restart_time, m_dt,
@@ -208,7 +216,11 @@ void BinaryBHLevel::specificPostTimeStep()
     if (m_verbosity)
         pout() << "starting BinaryBHLevel::specificPostTimeStep()" << endl;
     CH_TIME("BinaryBHLevel::specificPostTimeStep");
+<<<<<<< HEAD
     /*if (m_p.activate_extraction == 1)
+=======
+    if (m_p.activate_extraction == 1)
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
     {
         // Populate the Weyl Scalar values on the grid
         fillAllGhosts();
@@ -225,7 +237,11 @@ void BinaryBHLevel::specificPostTimeStep()
                                          m_restart_time);
             my_extraction.execute_query(m_gr_amr.m_interpolator);
         }
+<<<<<<< HEAD
     }*/
+=======
+    }
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
 
     // do puncture tracking on requested level
     if (m_p.track_punctures == 1 && m_level == m_p.puncture_tracking_level)
@@ -251,11 +267,19 @@ void BinaryBHLevel::prePlotLevel()
     if (m_verbosity)
          pout() << "starting BinaryBHLevel::prePlotLevel()" << endl;
     fillAllGhosts();
+<<<<<<< HEAD
     /*if (m_p.activate_extraction == 1)
     {
         BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx),
                        m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
     }*/
+=======
+    if (m_p.activate_extraction == 1)
+    {
+        BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx),
+                       m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
+    }
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
     
     // Calculate and save ADM density and momentum
     ScalarPotential potential(m_p.potential_params);
@@ -273,3 +297,9 @@ void BinaryBHLevel::prePlotLevel()
     	pout() << "Done BinaryBHLevel::prePlotLevel()" << endl;
 }
 
+<<<<<<< HEAD
+=======
+// Specify if you want any plot files to be written, with which vars
+void BinaryBHLevel::specificWritePlotHeader(std::vector<int> &plot_states) const;
+
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb

@@ -10,7 +10,11 @@ cd $work_dir
 #data_directory=/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/BinaryBHSF
 
 #run_number=10 
+<<<<<<< HEAD
 suffix=KNL
+=======
+suffix=KNL_new_test
+>>>>>>> 19ec65fc4645d129b84ac21c2a7df23148a31ffb
 
 params_file=params_test.txt
 

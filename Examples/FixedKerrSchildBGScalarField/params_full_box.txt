@@ -1,0 +1,89 @@
+#Params for runtime inputs
+
+verbosity = 0
+chk_prefix = DATADIR/KerrSF_
+plot_prefix = DATADIR/KerrSFp_
+#restart_file = DATADIR/KerrSF_000500.3d.hdf5
+
+# Set up grid spacings and regrid params
+# NB - the N values need to be multiples of block_factor
+N1 = 128
+N2 = 128
+N3 = 128
+
+# Length of longest box side, dx_coarsest = L/N(max)
+# NB if non cubic, this determines dx for all sides
+L =  1024
+center = 512.0 512.0 512.0
+# symmetry_dir = 0 0 1
+# this tells it which axes are symmetric
+
+# Level data
+# Maximum number of times you can regrid above coarsest level
+max_level = 7 # There are (max_level+1) grids, so min is zero
+# Frequency of regridding at each level
+# Need one for each level, ie max_level+1 items (or more)
+# No regrid for fixed BG and no tag buffer
+regrid_interval = 0 0 0 0 0 0 0 0 0 0 0
+tag_buffer_size = 0
+# Max and min box size - for load balancing
+max_box_size = 16
+min_box_size = 16
+write_plot_ghosts = 0
+
+#boundaries and periodicity of grid
+#Periodic directions - 0 = false, 1 = true
+isPeriodic = 0 0 0
+# if not periodic, then specify the boundary type
+# 0 = static, 1 = sommerfeld, 2 = reflective
+# 3 = extrapolating
+# (see BoundaryConditions.hpp for details)
+hi_boundary = 3 3 3
+lo_boundary = 3 3 3
+
+# if reflective boundaries selected, must set
+# parity of all vars (in order given by UserVariables.hpp)
+# if sommerfeld boundaries selected, must select 
+# asymptotic values (in order given by UserVariables.hpp)
+
+# 0 = even
+# 1,2,3 = odd x, y, z
+# 4,5,6 = odd xy, yz, xz
+# !!! If l+m = odd, for Al = 0 you need to set the parity of phi and Pi to be 3
+vars_parity = 0 0 0 0 0 0 0		#phi, Pi, chi, rho, S_az, S_az_prime, S_r
+vars_asymptotic_values = 0 0 1 0 0 0 0  #phi, Pi, chi, rho, S_az, S_az_prime, S_r
+
+# Set up time steps
+# dt will be dx*dt_multiplier on each grid level
+# HDF5files are written every dt = L/N*dt_multiplier *checkpoint_interval
+# L/N = 1024/128 = 8
+#
+checkpoint_interval = 100
+plot_interval = 5
+dt_multiplier = 0.0625 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
+stop_time = 2000.0
+###
+# dt_raw = 8 * 1/16 = 0.5
+# dt_plot = 1.25
+#
+
+# coefficient for KO numerical dissipation
+# NB must be less than 0.5 for stability
+sigma = 0.5
+
+# note that omega_crit = m * s / (2 r_+)
+# where r_+ = M + sqrt(M^2 - a^2) = = M(1 + sqrt(1-s^2)) = 1 + sqrt(1-s^2)
+# m_crit = 2 * r_+ / s
+# for s = 0.99 omega_crit = m * 0.4338
+#	so m_crit = 2.30
+# SF Initial data
+scalar_mass = 0.4
+scalar_amplitude = 0.1
+scalar_omega = 0.4
+scalar_l = 1
+scalar_m = 1
+alignment = 0.5
+
+# BH initial data
+bh_mass = 1
+bh_spin = 0.7

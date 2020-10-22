@@ -28,12 +28,12 @@ def add_data_dir(list, num, l, m, a):
 
 data_dirs = []
 # choose datasets to compare
-add_data_dir(data_dirs, 31, 0, 0, "0")
-"""add_data_dir(data_dirs, 28, 0, 0, "0.7")
+"""add_data_dir(data_dirs, 31, 0, 0, "0")
+add_data_dir(data_dirs, 28, 0, 0, "0.7")
 add_data_dir(data_dirs, 29, 0, 0, "0.99")
-add_data_dir(data_dirs, 32, 1, 1, "0")
+add_data_dir(data_dirs, 32, 1, 1, "0")"""
 add_data_dir(data_dirs, 37, 1, 1, "0.99")
-add_data_dir(data_dirs, 49, 1, -1, "0.99")
+"""add_data_dir(data_dirs, 49, 1, -1, "0.99")
 add_data_dir(data_dirs, 42, 5, 1, "0.7")
 add_data_dir(data_dirs, 40, 10, 1, "0.7")
 add_data_dir(data_dirs, 47, 2, 2, "0.99")
@@ -47,13 +47,13 @@ data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/Kerr
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
 max_radius = 450
 M = 1
-mu = 0.4
+
 output_dir = "data/compare_alm_mass"
 
 half_box = True
 
-change_in_E = False
-true_rho = False
+change_in_E = True
+true_rho = True
 	
 """@derived_field(name = "rho_J_eff", units = "")
 def _rho_J_eff(field, data):
@@ -132,8 +132,6 @@ def calculate_mass_in_sphere(dd):
 		# output to file
 		if true_rho:
 			dd.filename = "l={:d}_m={:d}_a={:s}_mass_in_r={:d}_true.csv".format(dd.l, dd.m, str(dd.a), max_radius)
-		elif not true_rho:
-			dd.filename = "l={:d}_m={:d}_a={:s}_mass_in_r={:d}.csv".format(dd.l, dd.m, str(dd.a), max_radius)
 		output_path = home_path + output_dir + "/" + dd.filename 
 		# output header to file
 		f = open(output_path, "w+")
@@ -160,8 +158,6 @@ def load_data():
                 print("loaded data for " + dd.name)
 	return (old_data, data) 	
 
-volume = (4*np.pi/3)*(max_radius**3 - 2**3)
-rho0 = 0.5*(0.1*mu)**2
 def plot_graph():
 	old_data, data = load_data()
 	colours = ['r--', 'r-.', 'r-', 'b--', 'b-', 'c-', 'm-', 'k-', 'g-', 'g--', 'y-'] 
@@ -170,11 +166,11 @@ def plot_graph():
 		old_line_data = old_data[dd.num]
 		line_data = data[dd.num]
 		t = line_data[:,0]
-		mass = line_data[:,1] / (volume*rho0)#- line_data[0,1]
+		mass = line_data[:,1] #- line_data[0,1]
 		label_ = "l={:d} m={:d} a={:s}".format(dd.l, dd.m, str(dd.a))
 		if change_in_E:
-			plt.plot(t[1:], old_line_data[1:,1] - old_line_data[0,1], 'r-', label=label_+" Eulerian $\\rho$")
-			plt.plot(t[1:], line_data[1:,1] - line_data[0,1], 'b-', label=label_+" conserved $\\rho$")
+			plt.plot(t[1:], old_line_data[1:,1] - old_line_data[0,1], 'r-', label=label_+" old $\\rho$")
+			plt.plot(t[1:], line_data[1:,1] - line_data[0,1], 'b-', label=label_+" new $\\rho$")
 		else:
 			plt.plot(t, mass, colours[i], label=label_)
 		i = i + 1
@@ -189,7 +185,7 @@ def plot_graph():
 	if change_in_E:
 		save_path = home_path + "plots/delta_mass_in_sphere_compare_alm_radius_" + str(max_radius) + "_compare_rho.png"
 	else:
-		save_path = home_path + "plots/mass_in_sphere_compare_alm_radius_" + str(max_radius) + "_compare_rho.png"
+		save_path = home_path + "plots/mass_in_sphere_compare_alm_radius_" + str(max_radius) + ".png"
 	plt.savefig(save_path)
 	print("saved plot as " + str(save_path))
 	plt.clf()
