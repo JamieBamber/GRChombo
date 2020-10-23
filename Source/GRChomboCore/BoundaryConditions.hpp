@@ -12,10 +12,7 @@
 #include "DimensionDefinitions.hpp"
 #include "FourthOrderInterpStencil.H"
 #include "GRLevelData.hpp"
-<<<<<<< HEAD
-=======
 #include "GRParmParse.hpp"
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 #include "Interval.H"
 #include "RealVect.H"
 #include "UserVariables.hpp"
@@ -40,12 +37,8 @@ class BoundaryConditions
         SOMMERFELD_BC,
         REFLECTIVE_BC,
         EXTRAPOLATING_BC,
-<<<<<<< HEAD
-        MIXED_BC
-=======
         MIXED_BC,
         FUDGE_BC
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
     };
 
     /// enum for possible parity states
@@ -82,9 +75,6 @@ class BoundaryConditions
         std::array<double, NUM_VARS> vars_asymptotic_values;
         std::vector<int> mixed_bc_extrapolating_vars;
         std::vector<int> mixed_bc_sommerfeld_vars;
-<<<<<<< HEAD
-        int extrapolation_order = 1;
-=======
         int extrapolation_order;
         params_t(); // sets the defaults
         void
@@ -92,20 +82,10 @@ class BoundaryConditions
         void set_hi_boundary(const std::array<int, CH_SPACEDIM> &a_hi_boundary);
         void set_lo_boundary(const std::array<int, CH_SPACEDIM> &a_lo_boundary);
         void read_params(GRParmParse &pp);
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
     };
 
   protected:
     // Member values
-<<<<<<< HEAD
-    double m_dx;                 // The grid spacing
-    int m_num_ghosts;            // the number of ghosts (usually 3)
-    params_t m_params;           // the boundary params
-    std::vector<int> m_all_vars; // a vector of c_nums for all the vars
-    RealVect m_center;           // the position of the center of the grid
-    ProblemDomain m_domain;      // the problem domain (excludes boundary cells)
-    Box m_domain_box;            // The box representing the domain
-=======
     double m_dx;              // The grid spacing
     int m_num_ghosts;         // the number of ghosts (usually 3)
     params_t m_params;        // the boundary params
@@ -115,7 +95,6 @@ class BoundaryConditions
     std::vector<int> m_comps; // a vector of c_nums for all the evolution vars
     std::vector<int>
         m_diagnostic_comps; // a vector of c_nums for all the diagnostic vars
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
     bool is_defined; // whether the BoundaryConditions class members are defined
 
   public:
@@ -162,31 +141,17 @@ class BoundaryConditions
 
     /// Fill the boundary values appropriately based on the params set
     /// in the direction dir
-<<<<<<< HEAD
-    void fill_boundary_cells_dir(const Side::LoHiSide a_side,
-                                 const GRLevelData &a_soln, GRLevelData &a_rhs,
-                                 const int dir, const bool filling_rhs = true);
-=======
     void fill_boundary_cells_dir(
         const Side::LoHiSide a_side, const GRLevelData &a_soln,
         GRLevelData &a_out, const int dir, const int boundary_condition,
         const VariableType var_type = VariableType::evolution,
         const bool filling_rhs = true);
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 
     /// Copy the boundary values from src to dest
     /// NB assumes same box layout of input and output data
     void copy_boundary_cells(const Side::LoHiSide a_side,
                              const GRLevelData &a_src, GRLevelData &a_dest);
 
-<<<<<<< HEAD
-    /// enforce solution boundary conditions, e.g. after interpolation
-    /// for BCs where solution is specified, not rhs
-    void enforce_solution_boundaries(const Side::LoHiSide a_side,
-                                     GRLevelData &a_state);
-
-=======
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
     /// Fill the fine boundary values in a_state
     /// Required for interpolating onto finer levels at boundaries
     void interp_boundaries(GRLevelData &a_fine_state,
@@ -221,23 +186,10 @@ class BoundaryConditions
     /// write out mixed conditions
     static void write_mixed_conditions(int idir, const params_t &a_params);
 
-    /// write out mixed conditions
-    static void write_mixed_conditions(int idir, params_t a_params);
-
     void fill_sommerfeld_cell(FArrayBox &rhs_box, const FArrayBox &soln_box,
                               const IntVect iv,
                               const std::vector<int> &sommerfeld_comps) const;
 
-<<<<<<< HEAD
-    void fill_reflective_cell(FArrayBox &rhs_box, const IntVect iv,
-                              const Side::LoHiSide a_side, const int dir,
-                              const std::vector<int> &reflective_comps) const;
-
-    void fill_extrapolating_cell(FArrayBox &rhs_box, const IntVect iv,
-                                 const Side::LoHiSide a_side, const int dir,
-                                 const std::vector<int> &extrapolating_comps,
-                                 const int order = 1) const;
-=======
     void fill_extrapolating_cell(FArrayBox &out_box, const IntVect iv,
                                  const Side::LoHiSide a_side, const int dir,
                                  const std::vector<int> &extrapolating_comps,
@@ -259,7 +211,6 @@ class BoundaryConditions
         const char *a_vector_size_string,
         std::vector<std::pair<int, VariableType>> &a_vars_vector,
         int &a_vars_vector_size);
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 };
 
 /// This derived class is used by expand_grids_to_boundaries to grow the

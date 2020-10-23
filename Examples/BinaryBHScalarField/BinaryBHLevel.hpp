@@ -9,6 +9,8 @@
 #include "BHAMR.hpp"
 #include "DefaultLevelFactory.hpp"
 #include "GRAMRLevel.hpp"
+#include "Potential.hpp"
+#include "ScalarField.hpp"
 
 class BinaryBHLevel : public GRAMRLevel
 {
@@ -18,8 +20,8 @@ class BinaryBHLevel : public GRAMRLevel
 
     BHAMR &m_bh_amr = dynamic_cast<BHAMR &>(m_gr_amr);
 
-    //Typedef for scalar field
-    typedef ScalarField<ScalarPotential> ScalarFieldWithPotential;
+    // Typedef for scalar field
+    typedef ScalarField<Potential> ScalarFieldWithPotential;
 
     /// Things to do at every full timestep
     ///(might include several substeps, e.g. in RK4)
@@ -27,12 +29,6 @@ class BinaryBHLevel : public GRAMRLevel
 
     /// Initial data calculation
     virtual void initialData() override;
-
-    /// Things to do after a restart
-    virtual void postRestart() override;
-
-    /// Any actions that should happen just before checkpointing
-    virtual void preCheckpointLevel() override;
 
     /// Calculation of the right hand side for the time stepping
     virtual void specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
@@ -53,10 +49,6 @@ class BinaryBHLevel : public GRAMRLevel
 
     /// Any actions that should happen just before plot files output
     virtual void prePlotLevel() override;
-
-    /// Specify if you want any plot files to be written, with which vars
-    // virtual void specificWritePlotHeader(std::vector<int> &plot_states) const;
 };
 
 #endif /* BINARYBHLEVEL_HPP_ */
-

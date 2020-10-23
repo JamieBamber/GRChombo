@@ -156,17 +156,6 @@ class GRAMRLevel : public AMRLevel, public InterpSource
 
     double get_dx() const;
 
-<<<<<<< HEAD
-    /// Returns true if m_time is the same as the time at the end of the current
-    /// timestep on level a_level and false otherwise
-    /// Useful to check whether to calculate something in postTimeStep (which
-    /// might only be needed at the end of a_level's timestep)
-    bool at_level_timestep_multiple(int a_level) const;
-
-    /// Fill all [either] evolution or diagnostic ghost cells
-    virtual void
-    fillAllGhosts(const VariableType var_type = VariableType::evolution);
-=======
     /// Fill all [either] evolution or diagnostic ghost cells
     virtual void
     fillAllGhosts(const VariableType var_type = VariableType::evolution);
@@ -176,7 +165,6 @@ class GRAMRLevel : public AMRLevel, public InterpSource
     /// Useful to check whether to calculate something in postTimeStep (which
     /// might only be needed at the end of a_level's timestep)
     bool at_level_timestep_multiple(int a_level) const;
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 
   protected:
     /// Fill all evolution ghosts cells (i.e. those in m_state_new)

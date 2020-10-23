@@ -49,11 +49,7 @@ class GRAMR : public AMR
     }
 
     // Called after AMR object set up
-<<<<<<< HEAD
-    virtual void set_interpolator(AMRInterpolator<Lagrange<4>> *a_interpolator);
-=======
     void set_interpolator(AMRInterpolator<Lagrange<4>> *a_interpolator);
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 
     // returs a std::vector of GRAMRLevel pointers
     // similar to AMR::getAMRLevels()

@@ -35,7 +35,7 @@ template <class data_t> void KerrBH::compute(Cell<data_t> current_cell) const
     double y = coords.y;
     double z = coords.z;
 
-    using namespace CoordinateTransformations;
+    using namespace InitialDataTools;
     // Convert spherical components to cartesian components using coordinate
     // transforms
     vars.h = spherical_to_cartesian_LL(spherical_g, x, y, z);

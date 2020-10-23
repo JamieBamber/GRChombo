@@ -221,11 +221,6 @@ void BoundaryConditions::define(double a_dx,
     m_domain = a_domain;
     m_domain_box = a_domain.domainBox();
     m_num_ghosts = a_num_ghosts;
-    m_all_vars.resize(NUM_VARS);
-    for (int i = 0; i < NUM_VARS; i++)
-    {
-        m_all_vars[i] = i;
-    }
     FOR1(i) { m_center[i] = a_center[i]; }
     m_comps.resize(NUM_VARS);
     for (int i = 0; i < NUM_VARS; i++)
@@ -315,33 +310,6 @@ void BoundaryConditions::write_mixed_conditions(int idir,
     write_sommerfeld_conditions(idir, a_params);
 }
 
-void BoundaryConditions::write_mixed_conditions(int idir, params_t a_params)
-{
-    // check all the vars have been assigned a BC - this should always be the
-    // case because of how the params are assigned
-    CH_assert(a_params.mixed_bc_sommerfeld_vars.size() +
-                  a_params.mixed_bc_extrapolating_vars.size() ==
-              NUM_VARS);
-
-    // now do the write out
-    pout()
-        << "The variables that use extrapolating bcs in this direction are : "
-        << endl;
-
-    for (int icomp = 0; icomp < NUM_VARS; icomp++)
-    {
-        std::vector<int> v = a_params.mixed_bc_extrapolating_vars;
-        if (std::binary_search(v.begin(), v.end(), icomp))
-        {
-            pout() << UserVariables::variable_names[icomp] << "    ";
-        }
-    }
-    pout() << endl;
-    pout() << "The other variables all use Sommerfeld boundary conditions."
-           << endl;
-    write_sommerfeld_conditions(idir, a_params);
-}
-
 /// write out boundary params (used during setup for debugging)
 void BoundaryConditions::write_boundary_conditions(const params_t &a_params)
 {
@@ -353,12 +321,8 @@ void BoundaryConditions::write_boundary_conditions(const params_t &a_params)
                                            {SOMMERFELD_BC, "Sommerfeld"},
                                            {REFLECTIVE_BC, "Reflective"},
                                            {EXTRAPOLATING_BC, "Extrapolating"},
-<<<<<<< HEAD
-                                           {MIXED_BC, "Mixed"}};
-=======
                                            {MIXED_BC, "Mixed"},
                                            {FUDGE_BC, "Fudge"}};
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
     FOR1(idir)
     {
         if (!a_params.is_periodic[idir])
@@ -455,9 +419,6 @@ void BoundaryConditions::fill_rhs_boundaries(const Side::LoHiSide a_side,
         // only do something if this direction is not periodic
         if (!m_params.is_periodic[idir])
         {
-<<<<<<< HEAD
-            fill_boundary_cells_dir(a_side, a_soln, a_rhs, idir);
-=======
             int boundary_condition = get_boundary_condition(a_side, idir);
             fill_boundary_cells_dir(a_side, a_soln, a_rhs, idir,
                                     boundary_condition);
@@ -522,13 +483,10 @@ void BoundaryConditions::fill_diagnostic_boundaries(const Side::LoHiSide a_side,
             fill_boundary_cells_dir(a_side, a_state, a_state, idir,
                                     boundary_condition,
                                     VariableType::diagnostic, filling_rhs);
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
         }
     }
 }
 
-<<<<<<< HEAD
-=======
 /// Fill the boundary values appropriately based on the params set
 /// in the direction dir
 void BoundaryConditions::fill_boundary_cells_dir(
@@ -636,7 +594,6 @@ void BoundaryConditions::fill_boundary_cells_dir(
     }         // end iterate over boxes
 }
 
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 void BoundaryConditions::fill_sommerfeld_cell(
     FArrayBox &rhs_box, const FArrayBox &soln_box, const IntVect iv,
     const std::vector<int> &sommerfeld_comps) const
@@ -704,45 +661,13 @@ void BoundaryConditions::fill_sommerfeld_cell(
         rhs_box(iv, icomp) +=
             (m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp)) /
             radius;
-        // debugging step
-        if (isnan(rhs_box(iv, icomp))) {
-                pout() << "In BoundaryConditions::fill_sommerfeld_cell()" << endl;
-                pout() << "Integer position: " << iv << endl;
-                pout() << UserVariables::variable_names[icomp] << " = " << rhs_box(iv, icomp) << endl;
-                //pout() << "d1 vector = ";
-                //FOR1(i) {pout() << d1_vec[i] << ", ";}
-                //pout() << endl;
-                // test loc
-                //pout() << "loc " << loc << endl;
-                // test values of soln_box
-                IntVect iv_offset;
-                pout() << "soln_box(iv + offset, icomp) = " << endl;
-                pout() << "offset:      -2      -1      0       +1      +2" << endl;
-                FOR1(i){
-                        pout() << "dir " << i;
-                        for(int j=-2; j<=2; j++){
-                                iv_offset = iv;
-                                iv_offset[i] += j;
-                                pout() << "     " << soln_box(iv_offset, icomp);
-                        }
-                        pout() << endl;
-                } 
-                pout() << "radius = " << radius << endl;
-                pout() << "m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp) = " << m_params.vars_asymptotic_values[icomp] - soln_box(iv, icomp) << endl;
-                throw std::runtime_error("variable value is nan");
-	}
     }
 }
 
 void BoundaryConditions::fill_reflective_cell(
-<<<<<<< HEAD
-    FArrayBox &rhs_box, const IntVect iv, const Side::LoHiSide a_side,
-    const int dir, const std::vector<int> &reflective_comps) const
-=======
     FArrayBox &out_box, const IntVect iv, const Side::LoHiSide a_side,
     const int dir, const std::vector<int> &reflective_comps,
     const VariableType var_type) const
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 {
     // assume boundary is a reflection of values within the grid
     // care must be taken with variable parity to maintain correct
@@ -768,90 +693,9 @@ void BoundaryConditions::fill_reflective_cell(
 }
 
 void BoundaryConditions::fill_extrapolating_cell(
-<<<<<<< HEAD
-    FArrayBox &rhs_box, const IntVect iv, const Side::LoHiSide a_side,
-    const int dir, const std::vector<int> &extrapolating_comps,
-    const int order) const
-{
-    for (int icomp : extrapolating_comps)
-    {
-        // current radius
-        double radius = Coordinates<double>::get_radius(
-            iv, m_dx, {m_center[0], m_center[1], m_center[2]});
-
-        // vector of 2 nearest values and radii within the grid
-        std::array<double, 2> value_at_point;
-        std::array<double, 2> r_at_point;
-        // how many units are we from domain boundary?
-        int units_from_edge = 0;
-        if (a_side == Side::Hi)
-        {
-            // how many units are we from domain boundary?
-            units_from_edge = iv[dir] - m_domain_box.bigEnd(dir);
-            // vector of 2 nearest values and radii within the grid
-            for (int i = 0; i < 2; i++)
-            {
-                IntVect iv_tmp = iv;
-                iv_tmp[dir] += -units_from_edge - i;
-                value_at_point[i] = rhs_box(iv_tmp, icomp);
-                r_at_point[i] = Coordinates<double>::get_radius(
-                    iv_tmp, m_dx, {m_center[0], m_center[1], m_center[2]});
-            }
-        }
-        else // Lo side
-        {
-            // how many units are we from domain boundary?
-            units_from_edge = -iv[dir] + m_domain_box.smallEnd(dir);
-            // vector of 2 nearest values within the grid
-            for (int i = 0; i < 2; i++)
-            {
-                IntVect iv_tmp = iv;
-                iv_tmp[dir] += units_from_edge + i;
-                value_at_point[i] = rhs_box(iv_tmp, icomp);
-                r_at_point[i] = Coordinates<double>::get_radius(
-                    iv_tmp, m_dx, {m_center[0], m_center[1], m_center[2]});
-            }
-        }
-
-        // assume some radial dependence and fit it
-        double analytic_change = 0.0;
-        // comp = const
-        if (order == 0)
-        {
-            analytic_change = 0.0;
-        }
-        // comp = B + A*r
-        else if (order == 1)
-        {
-            double delta_r_in_domain = r_at_point[1] - r_at_point[0];
-            double A =
-                (value_at_point[1] - value_at_point[0]) / delta_r_in_domain;
-            double delta_r_here = radius - r_at_point[0];
-            analytic_change = A * delta_r_here;
-        }
-        // other orders not supported yet
-        else
-        {
-            MayDay::Error("Order not supported for boundary extrapolation.");
-        }
-
-        // set the value here to the extrapolated value
-        rhs_box(iv, icomp) = value_at_point[0] + analytic_change;
-    }
-}
-
-/// Fill the boundary values appropriately based on the params set
-/// in the direction dir
-void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
-                                                 const GRLevelData &a_soln,
-                                                 GRLevelData &a_rhs,
-                                                 const int dir,
-                                                 const bool filling_rhs)
-=======
     FArrayBox &out_box, const IntVect iv, const Side::LoHiSide a_side,
     const int dir, const std::vector<int> &extrapolating_comps,
     const int order) const
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 {
     for (int icomp : extrapolating_comps)
     {
@@ -884,21 +728,9 @@ void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
                         iv_tmp[idir] = m_domain_box.smallEnd(idir);
                     }
                 }
-<<<<<<< HEAD
-                break;
-            }
-            case SOMMERFELD_BC:
-            {
-                if (filling_rhs)
-                {
-                    fill_sommerfeld_cell(rhs_box, soln_box, iv, m_all_vars);
-                }
-                break;
-=======
                 value_at_point[i] = out_box(iv_tmp, icomp);
                 r_at_point[i] = Coordinates<double>::get_radius(
                     iv_tmp, m_dx, {m_center[0], m_center[1], m_center[2]});
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
             }
         }
         else // Lo side
@@ -908,32 +740,6 @@ void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
             // vector of 2 nearest values within the grid
             for (int i = 0; i < 2; i++)
             {
-<<<<<<< HEAD
-                fill_reflective_cell(rhs_box, iv, a_side, dir, m_all_vars);
-                break;
-            }
-            case EXTRAPOLATING_BC:
-            {
-                fill_extrapolating_cell(rhs_box, iv, a_side, dir, m_all_vars,
-                                        m_params.extrapolation_order);
-                break;
-            }
-            case MIXED_BC:
-            {
-                fill_extrapolating_cell(rhs_box, iv, a_side, dir,
-                                        m_params.mixed_bc_extrapolating_vars,
-                                        m_params.extrapolation_order);
-                if (filling_rhs)
-                {
-                    fill_sommerfeld_cell(rhs_box, soln_box, iv,
-                                         m_params.mixed_bc_sommerfeld_vars);
-                }
-		/*else
-                {
-                    for(int icomp : m_params.mixed_bc_sommerfeld_vars) {rhs_box(iv, icomp) = 0.0;}
-                }*/
-                break;
-=======
                 IntVect iv_tmp = iv;
                 iv_tmp[dir] += units_from_edge + i;
                 FOR1(idir)
@@ -950,7 +756,6 @@ void BoundaryConditions::fill_boundary_cells_dir(const Side::LoHiSide a_side,
                 value_at_point[i] = out_box(iv_tmp, icomp);
                 r_at_point[i] = Coordinates<double>::get_radius(
                     iv_tmp, m_dx, {m_center[0], m_center[1], m_center[2]});
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
             }
         }
 
@@ -1036,38 +841,6 @@ void BoundaryConditions::copy_boundary_cells(const Side::LoHiSide a_side,
     }                 // end test for same box layout
 }
 
-<<<<<<< HEAD
-/// enforce symmetric boundary conditions, e.g. after interpolation
-void BoundaryConditions::enforce_solution_boundaries(
-    const Side::LoHiSide a_side, GRLevelData &a_state)
-{
-    CH_assert(is_defined);
-    CH_TIME("BoundaryConditions::enforce_solution_boundaries");
-
-    // cycle through the directions
-    FOR1(idir)
-    {
-        // only do something if this direction is not periodic and symmetric
-        if (!m_params.is_periodic[idir])
-        {
-            int boundary_condition = get_boundary_condition(a_side, idir);
-
-            // uses the same update as the rhs, since it is the
-            // same copying of cells which we require for the solution
-            if (boundary_condition == REFLECTIVE_BC ||
-                boundary_condition == EXTRAPOLATING_BC ||
-                boundary_condition == MIXED_BC)
-            {
-                const bool filling_rhs = false;
-                fill_boundary_cells_dir(a_side, a_state, a_state, idir,
-                                        filling_rhs);
-            }
-        }
-    }
-}
-
-=======
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 /// Fill the fine boundary values in a_state
 /// Required for interpolating onto finer levels at boundaries
 void BoundaryConditions::interp_boundaries(GRLevelData &a_fine_state,
@@ -1307,13 +1080,9 @@ Box ExpandGridsToBoundaries::operator()(const Box &a_in_box)
             if ((m_boundaries.get_boundary_condition(Side::Lo, idir) ==
                      BoundaryConditions::SOMMERFELD_BC ||
                  m_boundaries.get_boundary_condition(Side::Lo, idir) ==
-<<<<<<< HEAD
-                     BoundaryConditions::MIXED_BC) &&
-=======
                      BoundaryConditions::MIXED_BC ||
                  m_boundaries.get_boundary_condition(Side::Lo, idir) ==
                      BoundaryConditions::FUDGE_BC) &&
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
                 offset_lo[idir] == 0)
             {
                 out_box.growLo(idir, m_boundaries.m_num_ghosts);
@@ -1321,13 +1090,9 @@ Box ExpandGridsToBoundaries::operator()(const Box &a_in_box)
             if ((m_boundaries.get_boundary_condition(Side::Hi, idir) ==
                      BoundaryConditions::SOMMERFELD_BC ||
                  m_boundaries.get_boundary_condition(Side::Hi, idir) ==
-<<<<<<< HEAD
-                     BoundaryConditions::MIXED_BC) &&
-=======
                      BoundaryConditions::MIXED_BC ||
                  m_boundaries.get_boundary_condition(Side::Hi, idir) ==
                      BoundaryConditions::FUDGE_BC) &&
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
                 offset_hi[idir] == 0)
             {
                 out_box.growHi(idir, m_boundaries.m_num_ghosts);
@@ -1357,22 +1122,14 @@ void BoundaryConditions::expand_grids_to_boundaries(
         if (!m_params.is_periodic[idir])
         {
             if ((get_boundary_condition(Side::Lo, idir) == SOMMERFELD_BC) ||
-<<<<<<< HEAD
-                (get_boundary_condition(Side::Lo, idir) == MIXED_BC))
-=======
                 (get_boundary_condition(Side::Lo, idir) == MIXED_BC) ||
                 (get_boundary_condition(Side::Lo, idir) == FUDGE_BC))
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
             {
                 domain_with_boundaries.growLo(idir, m_num_ghosts);
             }
             if ((get_boundary_condition(Side::Hi, idir) == SOMMERFELD_BC) ||
-<<<<<<< HEAD
-                (get_boundary_condition(Side::Hi, idir) == MIXED_BC))
-=======
                 (get_boundary_condition(Side::Hi, idir) == MIXED_BC) ||
                 (get_boundary_condition(Side::Hi, idir) == FUDGE_BC))
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
             {
                 domain_with_boundaries.growHi(idir, m_num_ghosts);
             }

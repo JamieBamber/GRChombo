@@ -13,7 +13,7 @@
 
 // Problem specific includes:
 #include "BoostedBH.hpp"
-#include "ScalarPotential.hpp"
+#include "Potential.hpp"
 #include "FlatScalar.hpp"
 
 class SimulationParameters : public SimulationParametersBase
@@ -79,7 +79,7 @@ class SimulationParameters : public SimulationParametersBase
     double delay;
     double final_a;
     FlatScalar::params_t initial_params;
-    ScalarPotential::params_t potential_params;
+    Potential::params_t potential_params;
     
     // Collection of parameters necessary for initial conditions
     BoostedBH::params_t bh2_params;

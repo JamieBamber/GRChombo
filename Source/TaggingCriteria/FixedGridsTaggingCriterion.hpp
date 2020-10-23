@@ -22,41 +22,17 @@ class FixedGridsTaggingCriterion
     const std::array<double, CH_SPACEDIM> m_center;
 
   public:
-<<<<<<< HEAD
-    FixedGridsTaggingCriterion(const double dx, const int a_level, 
-            const double a_L, const std::array<double, CH_SPACEDIM> a_center)
-        : m_dx(dx), m_deriv(dx),
-          m_level(a_level), m_L(a_L), m_center(a_center){};
-=======
     FixedGridsTaggingCriterion(const double dx, const int a_level,
                                const double a_L,
                                const std::array<double, CH_SPACEDIM> a_center)
         : m_dx(dx), m_deriv(dx), m_level(a_level), m_L(a_L),
           m_center(a_center){};
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 
     template <class data_t> void compute(Cell<data_t> current_cell) const
     {
         double criterion = 0.0;
 
         // make sure the inner part is regridded around the horizon
-<<<<<<< HEAD
-        for(int i_level = 0 ; i_level < 10; i_level ++)
-        {
-            if (m_level == i_level)
-            {
-                // take L as the length of full grid, so tag inner 1/2
-                // of it, which means inner \pm L/4
-                double ratio = pow(2.0, -(i_level + 2.0));
-                const Coordinates<data_t> coords(current_cell, m_dx, m_center);
-                if (abs(coords.x) < m_L*ratio && 
-                    abs(coords.y) < m_L*ratio && 
-                    abs(coords.z) < m_L*ratio)
-                {
-                    criterion = 100;
-                }
-            }
-=======
         // take L as the length of full grid, so tag inner 1/2
         // of it, which means inner \pm L/4
         double ratio = pow(2.0, -(m_level + 2.0));
@@ -65,7 +41,6 @@ class FixedGridsTaggingCriterion
             abs(coords.z) < m_L * ratio)
         {
             criterion = 100;
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
         }
 
         // Write back into the flattened Chombo box

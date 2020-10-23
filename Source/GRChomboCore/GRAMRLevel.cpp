@@ -999,7 +999,6 @@ bool GRAMRLevel::at_level_timestep_multiple(int a_level) const
 }
 
 void GRAMRLevel::fillAllGhosts(const VariableType var_type)
-<<<<<<< HEAD
 {
     if (var_type == VariableType::evolution)
         fillAllEvolutionGhosts();
@@ -1009,17 +1008,6 @@ void GRAMRLevel::fillAllGhosts(const VariableType var_type)
 
 void GRAMRLevel::fillAllEvolutionGhosts()
 {
-=======
-{
-    if (var_type == VariableType::evolution)
-        fillAllEvolutionGhosts();
-    else if (var_type == VariableType::diagnostic)
-        fillAllDiagnosticsGhosts();
-}
-
-void GRAMRLevel::fillAllEvolutionGhosts()
-{
->>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
     CH_TIME("GRAMRLevel::fillAllEvolutionGhosts()");
     if (m_verbosity)
         pout() << "GRAMRLevel::fillAllEvolutionGhosts" << endl;
