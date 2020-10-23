@@ -14,8 +14,8 @@
 //! fixed to be in the z direction
 //! u = t, v = phi
 //! note that t (called the eccentric anomaly in astronomy) is NOT the angle of
-//! the point with the z-axis, but has a geometric meaning due to Philippe de La Hire
-//! (see wikipedia). It is however, measured relative to the z axis.
+//! the point with the z-axis, but has a geometric meaning due to Philippe de La
+//! Hire (see wikipedia). It is however, measured relative to the z axis.
 class SpheroidalGeometry
 {
   private:
@@ -64,11 +64,11 @@ class SpheroidalGeometry
         switch (a_dir)
         {
         case (0):
-            return m_center[0] + a_zaxis / m_zaxis_over_xaxis *
-                                     sin(a_t) * cos(a_phi);
+            return m_center[0] +
+                   a_zaxis / m_zaxis_over_xaxis * sin(a_t) * cos(a_phi);
         case (1):
-            return m_center[1] + a_zaxis / m_zaxis_over_xaxis *
-                                     sin(a_t) * sin(a_phi);
+            return m_center[1] +
+                   a_zaxis / m_zaxis_over_xaxis * sin(a_t) * sin(a_phi);
         case (2):
             return m_center[2] + a_zaxis * cos(a_t);
         default:
@@ -78,13 +78,12 @@ class SpheroidalGeometry
 
     //! returns the area element on a sphere with radius a_radius at the point
     //! (a_t, a_phi)
-    inline double area_element(double a_zaxis, double a_t,
-                               double a_phi) const
+    inline double area_element(double a_zaxis, double a_t, double a_phi) const
     {
         double a_z = a_zaxis;
         double a_x = a_zaxis / m_zaxis_over_xaxis;
-        double ds_dt = sqrt(a_x * a_x * cos(a_t) * cos(a_t) + 
-                         a_z * a_z * sin(a_t) * sin(a_t) );
+        double ds_dt = sqrt(a_x * a_x * cos(a_t) * cos(a_t) +
+                            a_z * a_z * sin(a_t) * sin(a_t));
         double ds_dphi = a_x * sin(a_t);
         return ds_dt * ds_dphi;
     }

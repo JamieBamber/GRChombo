@@ -16,24 +16,23 @@
 #include "UserVariables.hpp" //This files needs NUM_VARS - total number of components
 #include "simd.hpp"
 
-
 //! Class which computes the initial conditions per arXiv 1401.1548
 //! For a highly spinning BH in quasi isotropic coords
 class IsotropicKerrFixedBG
 {
   public:
-    //! Struct for the params of the BH
+    //! Struct for the params of the  BH
     struct params_t
     {
         double mass = 1.0;                      //!<< The mass of the BH
         std::array<double, CH_SPACEDIM> center; //!< The center of the BH
-        double spin = 0.0; //!< The dimensionless spin 'a/M' in the z direction
+        double spin = 0.0; //!< The spin 'a' in the z direction
     };
 
     template <class data_t> using Vars = ADMFixedBGVars::Vars<data_t>;
+    const params_t m_params;
 
   protected:
-    const params_t m_params;
     const double m_dx;
 
   public:
@@ -41,10 +40,10 @@ class IsotropicKerrFixedBG
         : m_params(a_params), m_dx(a_dx)
     {
         // check this spin param is sensible
-        if ((m_params.spin > 1.0) || (m_params.spin < -1.0))
+        if ((m_params.spin > m_params.mass) || (m_params.spin < -m_params.mass))
         {
             MayDay::Error(
-                "The dimensionless spin parameter a/M must be in the range "
+                "The dimensionless spin parameter must be in the range "
                 "-1.0 < spin < 1.0");
         }
     }
@@ -56,25 +55,27 @@ class IsotropicKerrFixedBG
         // get position and set vars
         const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
         Vars<data_t> metric_vars;
-        compute_metric_background(metric_vars, coords);
+        compute_metric_background(metric_vars, current_cell);
 
         // calculate and save chi
         data_t chi = TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
         chi = pow(chi, -1.0 / 3.0);
-	
-        current_cell.store_vars(chi, c_chi);
 
+        current_cell.store_vars(chi, c_chi);
     }
 
     /// Refer to Witek et al 1401.1548 for reference for
     /// Quasi Isotropic Kerr and variable conventions used here
     template <class data_t, template <typename> class vars_t>
     void compute_metric_background(vars_t<data_t> &vars,
-                                   const Coordinates<data_t> &coords) const
+                                   const Cell<data_t> &current_cell) const
     {
+        // where am i?
+        const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
+
         // black hole params - mass M and spin a
         const double M = m_params.mass;
-        const double a = M*m_params.spin;
+        const double a = m_params.spin;
         const double a2 = a * a;
 
         // work out where we are on the grid
@@ -273,13 +274,42 @@ class IsotropicKerrFixedBG
             vars.K_tensor[i][j] *= 0.5 / vars.lapse;
         }
         vars.K = compute_trace(vars.K_tensor, gamma_UU);
+
+        /*
+                // debug - optional
+                // as a check can also calculate K from analytic expression
+                using namespace InitialDataTools;
+                Tensor<2, data_t> spherical_K;
+                FOR2(i, j) { spherical_K[i][j] = 0.0; }
+                // K_R\phi
+                spherical_K[0][2] =
+                    a * M * sin_theta2 / (Sigma * sqrt(AA * Sigma)) *
+                    //(2.0 * r_BL2 * (r_BL2 + a2) + Sigma * (r_BL2 - a2)) *
+                    (3.0 * pow(r_BL, 4.0) + 2 * a * a * r_BL * r_BL -
+           pow(a, 4.0) - a * a * (r_BL * r_BL - a * a) * sin_theta2) * (1.0 +
+           0.25 * r_plus / R) / sqrt(R * r_BL - R * r_minus); spherical_K[2][0]
+           = spherical_K[0][2];
+                // K_\theta\phi
+                spherical_K[2][1] = -2.0 * a * a2 * M * r_BL * cos_theta *
+           sin_theta * sin_theta2 / (Sigma * sqrt(AA * Sigma)) * (R - 0.25 *
+           r_plus) * sqrt(r_BL / R - r_minus / R); spherical_K[1][2] =
+           spherical_K[2][1]; Tensor<2, data_t> cartesian_K; cartesian_K =
+           spherical_to_cartesian_LL(spherical_K, x, y, z); data_t TraceK =
+           compute_trace(cartesian_K, gamma_UU); data_t diff = cartesian_K[0][0]
+           - vars.K_tensor[0][0]; if ((y == m_dx * (0.0 + 0.5)) && (z == m_dx *
+           (0.0 + 0.5))) {pout() << "Diff: " << diff << ", x " << x << endl;}
+                // end debug
+        */
     }
 
   public:
     // used to decide when to excise - ie when within the horizon of the BH
     // note that this is not templated over data_t
-    double excise(const Coordinates<double> &coords) const
+    double excise(const Cell<double> &current_cell) const
     {
+        // where am i?
+        const Coordinates<double> coords(current_cell, m_dx, m_params.center);
+
         // black hole params - mass M and boost v
         // "boost" is the gamma factor for the boost
         const double M = m_params.mass;

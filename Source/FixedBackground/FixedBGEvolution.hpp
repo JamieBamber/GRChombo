@@ -20,7 +20,6 @@
 /*!
      The class calculates the RHS evolution for the matter variables.
      It assumes a fixed background metric, background_t.
-     As such it will ignore backreaction of the field onto the metric.
      It does not assume a specific form of matter but is templated over a matter
      class matter_t.
 */
@@ -32,7 +31,7 @@ template <class matter_t, class background_t> class FixedBGEvolution
     template <class data_t>
     using MatterVars = typename matter_t::template Vars<data_t>;
 
-    //  Should not need any d2 for the metric vars (true for Proca and SF)
+    //  Should not need any d2 for the metric vars (Proca and SF)
     template <class data_t>
     using MatterDiff2Vars = typename matter_t::template Diff2Vars<data_t>;
 
@@ -54,10 +53,9 @@ template <class matter_t, class background_t> class FixedBGEvolution
         // copy matter data from chombo gridpoint into local variable
         const auto matter_vars = current_cell.template load_vars<MatterVars>();
 
-        // compute the metric vars (calculated, not stored on grid)
+        // compute the other non grid vars
         MetricVars<data_t> metric_vars;
-        const Coordinates<data_t> coords(current_cell, m_dx, m_center);
-        m_background.compute_metric_background(metric_vars, coords);
+        m_background.compute_metric_background(metric_vars, current_cell);
 
         // compute derivs for matter grid vars
         const auto d1 = m_deriv.template diff1<MatterVars>(current_cell);

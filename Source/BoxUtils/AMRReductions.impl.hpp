@@ -21,7 +21,6 @@ AMRReductions<var_t>::AMRReductions(const GRAMR &a_gramr,
 {
     set_level_data_vect(a_gramr);
     set_ref_ratios_vect(a_gramr);
-    set_domain_volume();
 }
 
 template <VariableType var_t>
@@ -51,22 +50,6 @@ void AMRReductions<var_t>::set_ref_ratios_vect(const GRAMR &a_gramr)
     {
         m_ref_ratios[ilev] = gramrlevel_ptrs[ilev]->refRatio();
     }
-}
-
-template <VariableType var_t> void AMRReductions<var_t>::set_domain_volume()
-{
-    // first check if m_level_data_ptrs has been set
-    CH_assert((m_level_data_ptrs.size() > 0) &&
-              (m_level_data_ptrs[0] != nullptr));
-
-    // first calculate the volume assuming each cell on the coarsest level has
-    // unit length
-    int cell_volume =
-        m_level_data_ptrs[0]->disjointBoxLayout().physDomain().size().product();
-
-    // multiply by dx_coarsest to get real volume
-    m_domain_volume =
-        pow(m_coarsest_dx, CH_SPACEDIM) * static_cast<double>(cell_volume);
 }
 
 template <VariableType var_t>
@@ -99,27 +82,19 @@ Real AMRReductions<var_t>::max(const int a_var) const
 
 template <VariableType var_t>
 Real AMRReductions<var_t>::norm(const Interval &a_vars,
-                                const int a_norm_exponent,
-                                const bool a_normalize_by_volume) const
+                                const int a_norm_exponent) const
 {
     CH_assert(a_vars.begin() >= 0 && a_vars.end() < m_num_vars);
     CH_TIME("AMRReductions::norm");
-    Real norm = computeNorm(m_level_data_ptrs, m_ref_ratios, m_coarsest_dx,
-                            a_vars, a_norm_exponent, m_base_level);
-    if (a_normalize_by_volume)
-    {
-        norm /=
-            pow(m_domain_volume, 1.0 / static_cast<double>(a_norm_exponent));
-    }
-
-    return norm;
+    return computeNorm(m_level_data_ptrs, m_ref_ratios, m_coarsest_dx, a_vars,
+                       a_norm_exponent, m_base_level);
 }
 
 template <VariableType var_t>
-Real AMRReductions<var_t>::norm(const int a_var, const int a_norm_exponent,
-                                const bool a_normalize_by_volume) const
+Real AMRReductions<var_t>::norm(const int a_var,
+                                const int a_norm_exponent) const
 {
-    return norm(Interval(a_var, a_var), a_norm_exponent, a_normalize_by_volume);
+    return norm(Interval(a_var, a_var), a_norm_exponent);
 }
 
 template <VariableType var_t>
@@ -135,12 +110,6 @@ template <VariableType var_t>
 Real AMRReductions<var_t>::sum(const int a_var) const
 {
     return sum(Interval(a_var, a_var));
-}
-
-template <VariableType var_t>
-Real AMRReductions<var_t>::get_domain_volume() const
-{
-    return m_domain_volume;
 }
 
 #endif

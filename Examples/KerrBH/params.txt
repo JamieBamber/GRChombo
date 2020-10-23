@@ -8,7 +8,11 @@ plot_prefix = KerrBHp_
 # 'N' is the number of subdivisions in each direction of a cubic box
 # 'L' is the length of the longest side of the box, dx_coarsest = L/N
 # NB - If you use reflective BC and want to specify the subdivisions and side
+<<<<<<< HEAD
 # of the box were there are no symmetries, specify 'N_full' and 'L_full' instead
+=======
+# of the box were there no symmetries, specify 'N_full' and 'L_full' instead
+>>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 # NB - if you have a non-cubic grid, you can specify 'N1' or 'N1_full', 
 # 'N2' or 'N2_full' and 'N3' or 'N3_full' ( then dx_coarsest = L/N(max) )
 # NB - the N values need to be multiples of the block_factor

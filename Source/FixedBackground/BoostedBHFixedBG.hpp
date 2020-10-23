@@ -16,9 +16,7 @@
 #include "UserVariables.hpp" //This files needs NUM_VARS - total number of components
 #include "simd.hpp"
 
-//! Class which computes the initial conditions per arXiv gr-qc 9805023
-//! For a BH boosted in the x direction, with shift chosen so that it
-//! maintains a fixed coordinate position
+//! Class which computes the initial conditions per arXiv 1401.1548
 class BoostedBHFixedBG
 {
   public:
@@ -32,11 +30,9 @@ class BoostedBHFixedBG
 
     template <class data_t> using Vars = ADMFixedBGVars::Vars<data_t>;
 
-  protected:
     const params_t m_params;
     const double m_dx;
 
-  public:
     BoostedBHFixedBG(params_t a_params, double a_dx)
         : m_params(a_params), m_dx(a_dx)
     {
@@ -53,9 +49,9 @@ class BoostedBHFixedBG
     template <class data_t> void compute(Cell<data_t> current_cell) const
     {
         // get position and set vars
-        const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
+
         Vars<data_t> metric_vars;
-        compute_metric_background(metric_vars, coords);
+        compute_metric_background(metric_vars, current_cell);
 
         // calculate and save chi
         data_t chi = TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
@@ -65,14 +61,18 @@ class BoostedBHFixedBG
     }
 
     /// Schwarzschild boosted solution per gr-qc 9805023
-    /// We use x' = x - vt to prevent the movement of the BH
+    /// NB we use x' = x - vt to prevent the movement of the BH
     /// on the grid
-    /// but we are in the rest frame of the field being evolved (the BH is
-    /// boosted) (NB eqn 11 in arxiv ref is missing a squared under the sqrt)
+    /// x_p = gamma_boost * x'
+    /// but we are in the rest frame of the SF (the BH is boosted)
+    /// NB2 eqn 11 is missing a squared under the sqrt
     template <class data_t, template <typename> class vars_t>
     void compute_metric_background(vars_t<data_t> &vars,
-                                   const Coordinates<data_t> &coords) const
+                                   const Cell<data_t> &current_cell) const
     {
+        // where am i?
+        const Coordinates<data_t> coords(current_cell, m_dx, m_params.center);
+
         // black hole params - mass M and boost v
         // "boost" is the gamma factor for the boost
         const double M = m_params.mass;
@@ -82,10 +82,9 @@ class BoostedBHFixedBG
         // work out where we are on the grid including effect of boost
         // on x direction (length contraction)
         const data_t x = coords.x;
+        const data_t x_p = coords.x * boost;
         const double y = coords.y;
         const double z = coords.z;
-        // define x_p = gamma_boost * x'
-        const data_t x_p = coords.x * boost;
 
         // the Kerr Schild radius (boosted)
         const data_t r2 = x_p * x_p + y * y + z * z;
@@ -120,7 +119,6 @@ class BoostedBHFixedBG
             }
         }
         // this adjustment gives the shift which achieves x' = x - vt
-        // ie so as to keep the BH at a fixed grid position
         vars.shift[0] += v;
 
         // Calculate partial derivative of spatial metric
@@ -229,11 +227,12 @@ class BoostedBHFixedBG
 
   public:
     // used to decide when to excise - ie when within the horizon of the BH
-    // note that this is not templated over data_t, so need to disable_simd()
-    double excise(const Coordinates<double> &coords) const
+    // note that this is not templated over data_t
+    double excise(const Cell<double> &current_cell) const
     {
         // black hole params - mass M and boost v
         // "boost" is the gamma factor for the boost
+        const Coordinates<double> coords(current_cell, m_dx, m_params.center);
         const double M = m_params.mass;
         const double boost =
             pow(1.0 - m_params.velocity * m_params.velocity, -0.5);

@@ -30,10 +30,10 @@ template <class matter_t, class background_t> class FixedBGDensity
   protected:
     const FourthOrderDerivatives
         m_deriv; //!< An object for calculating derivatives of the variables
-    const matter_t m_matter;                        //!< The matter object
-    const double m_dx;                              //!< The grid spacing
-    const background_t m_background;                //!< The metric background
-    const std::array<double, CH_SPACEDIM> m_center; //!< The grid center
+    const matter_t m_matter;         //!< The matter object
+    const double m_dx;               //!< The matter object
+    const background_t m_background; //!< The matter object
+    const std::array<double, CH_SPACEDIM> m_center;
 
   public:
     FixedBGDensity(matter_t a_matter, background_t a_background, double a_dx,
@@ -45,14 +45,14 @@ template <class matter_t, class background_t> class FixedBGDensity
 
     template <class data_t> void compute(Cell<data_t> current_cell) const
     {
-        // copy data from chombo gridpoint into local variables, and derivs
+        // copy data from chombo gridpoint into local variables, and calc 1st
+        // derivs
         const auto vars = current_cell.template load_vars<MatterVars>();
         const auto d1 = m_deriv.template diff1<MatterVars>(current_cell);
 
-        // get the metric vars from the background
+        // get the metric vars
         MetricVars<data_t> metric_vars;
-        const Coordinates<data_t> coords(current_cell, m_dx, m_center);
-        m_background.compute_metric_background(metric_vars, coords);
+        m_background.compute_metric_background(metric_vars, current_cell);
 
         using namespace TensorAlgebra;
         const auto gamma_UU = compute_inverse_sym(metric_vars.gamma);
@@ -63,7 +63,6 @@ template <class matter_t, class background_t> class FixedBGDensity
 
         // assign values of density in output box
         current_cell.store_vars(emtensor.rho, c_rho);
-
     }
 };
 

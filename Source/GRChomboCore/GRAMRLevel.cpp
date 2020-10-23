@@ -143,6 +143,9 @@ Real GRAMRLevel::advance()
         t_coarser_old = t_coarser_new - coarser_gr_amr_level_ptr->m_dt;
     }
 
+    // Reset RK stage to zero
+    m_RK_stage = 0;
+
     if (m_finer_level_ptr != nullptr)
     {
         GRAMRLevel *fine_gr_amr_level_ptr = gr_cast(m_finer_level_ptr);
@@ -393,7 +396,7 @@ void GRAMRLevel::initialGrid(const Vector<Box> &a_new_grids)
 }
 
 // things to do after initialization
-void GRAMRLevel::postInitialize() { m_restart_time = 0.; }
+void GRAMRLevel::postInitialize() { m_restart_time = 0.0; }
 
 // compute dt
 Real GRAMRLevel::computeDt()
@@ -821,7 +824,6 @@ void GRAMRLevel::writePlotLevel(HDF5Handle &a_handle) const
                 }
             }
         }
-
         plot_data.exchange(plot_data.interval());
 
         // Write the data for this level
@@ -893,7 +895,6 @@ void GRAMRLevel::evalRHS(GRLevelData &rhs, GRLevelData &soln,
 
     if (oldCrseSoln.isDefined())
     {
-        // "time" falls between the old and the new coarse times
         Real alpha = (time - oldCrseTime) / (newCrseTime - oldCrseTime);
 
         // Assuming RK4, we know that there can only be 5 different alpha so fix
@@ -916,13 +917,19 @@ void GRAMRLevel::evalRHS(GRLevelData &rhs, GRLevelData &soln,
                 "Time interpolation coefficient is incompatible with RK4.");
         }
 
-        // Interpolate ghost cells from next coarser level in space and time
+        // We should perhaps use the RK4 stage data
+        CH_assert(m_RK_stage < 4);
+        // m_patcher.fillRK4Intermediate(soln, alpha, m_RK_stage, 0, 0,
+        // NUM_VARS);
+
+        // Old code - does not use difference in stages 1 and 2
         m_patcher.fillInterp(soln, alpha, 0, 0, NUM_VARS);
     }
 
     fillBdyGhosts(soln);
 
     specificEvalRHS(soln, rhs, time); // Call the problem specific rhs
+    m_RK_stage += 1;                  // Increment RK stage info
 
     // evolution of the boundaries according to conditions
     if (m_p.boundary_params.nonperiodic_boundaries_exist)
@@ -992,6 +999,7 @@ bool GRAMRLevel::at_level_timestep_multiple(int a_level) const
 }
 
 void GRAMRLevel::fillAllGhosts(const VariableType var_type)
+<<<<<<< HEAD
 {
     if (var_type == VariableType::evolution)
         fillAllEvolutionGhosts();
@@ -1001,6 +1009,17 @@ void GRAMRLevel::fillAllGhosts(const VariableType var_type)
 
 void GRAMRLevel::fillAllEvolutionGhosts()
 {
+=======
+{
+    if (var_type == VariableType::evolution)
+        fillAllEvolutionGhosts();
+    else if (var_type == VariableType::diagnostic)
+        fillAllDiagnosticsGhosts();
+}
+
+void GRAMRLevel::fillAllEvolutionGhosts()
+{
+>>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
     CH_TIME("GRAMRLevel::fillAllEvolutionGhosts()");
     if (m_verbosity)
         pout() << "GRAMRLevel::fillAllEvolutionGhosts" << endl;

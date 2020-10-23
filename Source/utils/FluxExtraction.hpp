@@ -22,23 +22,27 @@ class FluxExtraction : public SpheroidalExtraction
                    double a_time, bool a_first_step,
                    double a_restart_time = 0.0)
         : SpheroidalExtraction(a_params, a_dt, a_time, a_first_step,
-                              a_restart_time)
+                               a_restart_time)
     {
-        std::vector<int> vars = {c_Edot, c_Jdot};
-        add_vars(vars);
+        add_var(c_Edot, VariableType::diagnostic);
+        add_var(c_Jdot, VariableType::diagnostic);
     }
 
     //! The old constructor which assumes it is called in specificPostTimeStep
     //! so the first time step is when m_time == m_dt
     FluxExtraction(SpheroidalExtraction::params_t a_params, double a_dt,
                    double a_time, double a_restart_time = 0.0)
-        : SpheroidalExtraction(a_params, a_dt, a_time, (a_dt == a_time),
+        : FluxExtraction(a_params, a_dt, a_time, (a_dt == a_time),
                          a_restart_time)
     {
     }
 
     // the references of the vars as used in the integrator
-    enum M_VARS {m_Edot, m_Jdot};
+    enum M_VARS
+    {
+        m_Edot,
+        m_Jdot
+    };
 
     //! Execute the query
     void execute_query(AMRInterpolator<Lagrange<4>> *a_interpolator)
@@ -54,10 +58,10 @@ class FluxExtraction : public SpheroidalExtraction
 
         // Setup to integrate Edot and Jdot
         std::vector<std::vector<double>> flux_integrals(2);
-        add_var_integrand(m_Edot, flux_integrals[m_Edot], 
-                                  IntegrationMethod::simpson);
-        add_var_integrand(m_Jdot, flux_integrals[m_Jdot], 
-                                  IntegrationMethod::simpson);
+        add_var_integrand(m_Edot, flux_integrals[m_Edot],
+                          IntegrationMethod::simpson);
+        add_var_integrand(m_Jdot, flux_integrals[m_Jdot],
+                          IntegrationMethod::simpson);
 
         // do the integration over the surface
         integrate();

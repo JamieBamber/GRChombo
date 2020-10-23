@@ -7,7 +7,6 @@
 #define PUNCTURETRACKER_HPP_
 
 #include "AMRInterpolator.hpp"
-#include "AlwaysInline.hpp"
 #include "Lagrange.hpp"
 
 //!  The class tracks the puncture locations by integrating the shift at
@@ -37,20 +36,20 @@ class PunctureTracker
                        const std::string &a_checkpoint_prefix);
 
     //! set puncture locations on start (or restart)
-    void restart_punctures();
+    void set_interpolator(AMRInterpolator<Lagrange<4>> *a_interpolator);
 
     //! Execute the tracking and write out
     void execute_tracking(double a_time, double a_restart_time, double a_dt,
                           const bool write_punctures = true);
 
-    ALWAYS_INLINE void
-        set_interpolator(AMRInterpolator<Lagrange<4>> *a_interpolator)
+    inline void
+        change_interpolator(AMRInterpolator<Lagrange<4>> *a_interpolator)
     {
         m_interpolator = a_interpolator;
     }
 
     // function to get punctures
-    ALWAYS_INLINE const std::vector<std::array<double, CH_SPACEDIM>> &
+    inline const std::vector<std::array<double, CH_SPACEDIM>> &
     get_puncture_coords() const
     {
         return m_puncture_coords;

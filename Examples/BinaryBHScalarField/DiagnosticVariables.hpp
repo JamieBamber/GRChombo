@@ -9,9 +9,6 @@
 // assign an enum to each variable
 enum
 {
-    c_phi,
-    c_Pi,
-
     c_rho,
     c_rho_azimuth,
     c_J_R,
@@ -32,8 +29,6 @@ enum
 namespace DiagnosticVariables
 {
 static const std::array<std::string, NUM_DIAGNOSTIC_VARS> variable_names = {
-    "phi",	"Pi",
-
     "rho",	"rho_azimuth",  "J_R",  "J_azimuth_R",
 
     "Ham",

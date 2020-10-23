@@ -17,18 +17,18 @@
 #include "VarsTools.hpp"
 
 //!  Calculates the matter type specific elements such as the EMTensor and
-//   matter evolution, in the case of a fixed metric background
+//   matter evolution
 /*!
      This class is an example of a matter_t object which calculates the
      matter type specific elements for the RHS update and the evaluation
-     of the energy density etc. This includes the Energy Momentum Tensor, and
+     of the constraints. This includes the Energy Momentum Tensor, and
      the matter evolution terms. In this case, a scalar field,
      the matter elements are phi and (minus) its conjugate momentum, Pi.
      It is templated over a potential function potential_t which the
      user must specify in a class, although a default is provided which
      sets dVdphi and V_of_phi to zero.
-     Note that for this fixed background case the backreaction on the metric
-     of the field is ignored, so constraints are not satisfied.
+     It assumes minimal coupling of the field to gravity.
+     \sa MatterCCZ4(), ConstraintsMatter()
 */
 template <class potential_t = DefaultPotential> class FixedBGScalarField
 {
@@ -43,13 +43,6 @@ template <class potential_t = DefaultPotential> class FixedBGScalarField
         : my_potential(a_potential)
     {
     }
-
-    //! Structure containing the variables for the matter fields
-    template <class data_t> struct SFObject
-    {
-        data_t phi;
-        data_t Pi;
-    };
 
     //! Structure containing the rhs variables for the matter fields
     template <class data_t> struct Vars
@@ -106,10 +99,9 @@ template <class potential_t = DefaultPotential> class FixedBGScalarField
         emtensor_t<data_t> &out,    //!< the em tensor output
         const vars_t<data_t> &vars, //!< the value of the variables
         const MetricVars<data_t>
-            &metric_vars,                //!< the value of the metric variables
-        const SFObject<data_t> &vars_sf, //!< the value of the sf variables
-        const Tensor<1, data_t>
-            &d1_phi, //!< the value of the first deriv of phi
+            &metric_vars, //!< the value of the metric variables
+        const vars_t<Tensor<1, data_t>>
+            &d1, //!< the value of the first deriv of phi
         const Tensor<2, data_t>
             &gamma_UU, //!< the inverse metric (raised indices).
         const Tensor<3, data_t>
@@ -132,18 +124,17 @@ template <class potential_t = DefaultPotential> class FixedBGScalarField
 
     //! The function which calculates the RHS for the matter field vars
     //! excluding the potential
-    template <class data_t, template <typename> class vars_t>
+    template <class data_t, template <typename> class vars_t,
+              template <typename> class diff2_vars_t,
+              template <typename> class rhs_vars_t>
     static void matter_rhs_excl_potential(
-        SFObject<data_t>
-            &rhs_sf, //!< the value of the RHS terms for the sf vars
+        rhs_vars_t<data_t> &rhs, //!< the value of the RHS terms for the sf vars
         const vars_t<data_t> &vars, //!< the values of all the variables
         const MetricVars<data_t>
-            &metric_vars,                //!< the value of the metric variables
-        const SFObject<data_t> &vars_sf, //!< the value of the sf variables
-        const vars_t<Tensor<1, data_t>> &d1, //!< the value of the 1st derivs
-        const Tensor<1, data_t> &d1_phi, //!< the value of the 1st derivs of phi
-        const Tensor<2, data_t> &d2_phi, //!< the value of the 2nd derivs of phi
-        const SFObject<data_t> &advec_sf); //!< advection terms for the sf vars
+            &metric_vars, //!< the value of the metric variables
+        const vars_t<Tensor<1, data_t>> &d1,       //!< value of the 1st derivs
+        const diff2_vars_t<Tensor<2, data_t>> &d2, //!< value of the 2nd derivs
+        const vars_t<data_t> &advec);
 };
 
 #include "FixedBGScalarField.impl.hpp"

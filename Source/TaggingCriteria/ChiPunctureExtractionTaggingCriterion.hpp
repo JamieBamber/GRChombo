@@ -26,8 +26,11 @@ class ChiPunctureExtractionTaggingCriterion
     const bool m_track_punctures;
     const bool m_activate_extraction;
     const FourthOrderDerivatives m_deriv;
+<<<<<<< HEAD
     const SphericalExtraction::params_t m_params;
     const std::vector<double> m_puncture_masses;
+=======
+>>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
     const std::vector<std::array<double, CH_SPACEDIM>> &m_puncture_coords;
 
   public:
