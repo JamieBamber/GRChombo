@@ -1,22 +1,19 @@
 ### parameters file for Ylm integration
 
 #Params for runtime inputs
-N1 = 64
-N2 = 64
+N1 = NBASIC
+N2 = NBASIC
 N3 = NSPACE3
-L = 512
-max_level = 9 # There are (max_level+1) grids, so min is zero
+L = LSPACE
+max_level = 7 # There are (max_level+1) grids, so min is zero
 dt_multiplier = DTMULT
 
 # For read in of files
-data_rootdir = /hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/
+data_rootdir = /cosma6/data/dp174/dc-bamb1/GRChombo_data/BinaryBHSF/
 data_subdir = SUBDIR
-bh_spin = BHSPIN
-bh_mass = BHMASS
 
 # output directory 
-output_rootdir = /dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/data/flux_data/
-#/home/dc-bamb1/GRChombo/Analysis/data/SphericalPhiData
+output_rootdir = /cosma/home/dp174/dc-bamb1/GRChombo/Analysis/flux_data_BBH/
 
 # Files parameters
 chk_prefix = BinaryBHSFChk_
@@ -26,17 +23,18 @@ plot_interval = PLOTINTERVAL
 start_number = SNUMBER
 end_number = ENUMBER
 suffix = SUFFIX
+resume = RESUMEYN
 
 # integration parameters
 num_vars = 2
-# vars = chi phi Pi rho rho_azimuth J_R J_azimuth_R
+# vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
 var_indices = 5 6
 num_points_phi = NPHI
 num_points_theta = NTHETA
 theta_min = 0
 theta_max = THETAMAX
-integration_center = 256.0 256.0 CENTERZ
-center = 256.0 256.0 CENTERZ
+integration_center = CENTERX CENTERY CENTERZ
+center = CENTERX CENTERY CENTERZ
 
 # radius parameters
 num_integration_radii = 2
@@ -48,6 +46,6 @@ linear_or_log = LINLOG		#!< use linear or log spacing for radii array. Linear = 
 verbosity = 0
 nan_check = 0
 regrid_interval = 0 0 0 128 64 64 64 32 16 0
-max_grid_size = 16
-block_factor = 16
+max_grid_size = BOXSIZE
+block_factor = BOXSIZE
 isPeriodic = 0 0 0 

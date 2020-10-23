@@ -1,0 +1,52 @@
+### parameters file for Ylm integration
+
+#Params for runtime inputs
+N1 = 128
+N2 = 128
+N3 = 64
+L = 1024
+max_level = 7 # There are (max_level+1) grids, so min is zero
+dt_multiplier = 0.0625
+
+# For read in of files
+data_rootdir = /rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/
+data_subdir = run0012_l1_m1_a0.7_Al0_mu0.01_M1_IsoKerr
+bh_spin = 0.7
+bh_mass = 1
+
+# output directory 
+output_rootdir = /home/dc-bamb1/GRChombo/Analysis/data/flux_data/
+
+# Files parameters
+chk_prefix = KerrSF_
+plot_prefix = KerrSFp_
+# restart_file = KerrSFp_000000.3d.hdf5
+plot_interval = 10
+start_number = 0
+end_number = 20000
+suffix = _r_plus_to_500_nphi64_ntheta64_theta_max0.99
+
+# integration parameters
+num_vars = 2
+# vars = chi phi Pi rho rho_azimuth J_rKS J_azimuth_rKS J_R J_azimuth_R
+var_indices = 5 6
+num_points_phi = 64
+num_points_theta = 64
+theta_min = 0
+theta_max = 0.99
+integration_center = 512.0 512.0 0.0
+center = 512.0 512.0 0.0
+
+# radius parameters
+num_integration_radii = 2
+min_integration_radius = 1.71414 #!< r_plus = 1 + sqrt(1 - a**2)
+max_integration_radius = 500
+linear_or_log = 1		#!< use linear or log spacing for radii array. Linear = 1, Log = 0 
+
+# From here it is mostly dummy params
+verbosity = 0
+nan_check = 0
+regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
+max_grid_size = 16
+block_factor = 16
+isPeriodic = 0 0 0 

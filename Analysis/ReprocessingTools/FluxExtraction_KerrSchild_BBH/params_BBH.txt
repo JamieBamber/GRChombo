@@ -8,28 +8,28 @@ verbosity = 0
 nan_check = 0
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
-restart_file = DATADIR/BinaryBHChk_000200.3d.hdf5
+restart_file = DATADIR/BinaryBHSFChk_000600.3d.hdf5
 
 num_plot_vars = 7 
 plot_vars = chi phi Pi rho rho_azimuth J_R J_azimuth_R
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
-N1 = 64
-N2 = 64
-N3 = 32
+N1 = NBASIC
+N2 = NBASIC
+N3 = NSPACE3
 
 # scalar field parameters
 G_Newton = 0.0
-scalar_mass = 1.0
+scalar_mass = MUVAL
 field_amplitude = 1.0
-delay = 0.0
+delay = DELAYTIME
 
 # Length of the longest N side
 # (This sets dx in all directions)
 L = 512
-center = 256.0 256.0 0
-extraction_center = 256 256 0
+center = CENTERX CENTERY 0
+extraction_center = CENTERX CENTERY 0
 track_punctures = 1
 puncture_tracking_level = 5
 
@@ -87,8 +87,8 @@ num_extrapolating_vars = 2
 extrapolating_vars = phi Pi
 
 # Max and min box sizes
-max_grid_size = 16
-block_factor = 16
+max_grid_size = BOXSIZE
+block_factor = BOXSIZE
 
 # Set up time steps
 # dt will be dx*dt_multiplier on each grid level
@@ -97,7 +97,7 @@ block_factor = 16
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
 plot_interval = 5
-dt_multiplier = 0.125 # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
+dt_multiplier = DTMULT # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 2200.0
 ## dt_actual = 8*dt_multiplier = 3.2
 ## 2*pi / mu =~ 6 / 0.4 = 15
@@ -126,14 +126,14 @@ sigma = 1.0
 # extraction params
 # default of extraction_center is center, uncomment to change
 extraction_center = 256 256 0
-activate_extraction = 0 # this needs to be 1 otherwise it breaks.
+activate_extraction = 0 
 write_extraction = 0
 num_extraction_radii = 2
 extraction_radii = 50.0 100.0
 extraction_levels = 2 1
 num_points_phi = 24
 num_points_theta = 36
-num_modes = 1
+num_modes = 0
 modes = 2 0 # l m for spherical harmonics
         2 1
         2 2
