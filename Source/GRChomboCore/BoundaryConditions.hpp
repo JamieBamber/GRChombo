@@ -37,8 +37,7 @@ class BoundaryConditions
         SOMMERFELD_BC,
         REFLECTIVE_BC,
         EXTRAPOLATING_BC,
-        MIXED_BC,
-        FUDGE_BC
+        MIXED_BC
     };
 
     /// enum for possible parity states
@@ -118,14 +117,14 @@ class BoundaryConditions
     /// UserVariables.hpp The parity should be defined in the params file, and
     /// will be output to the pout files for checking at start/restart of
     /// simulation (It is only required for reflective boundary conditions.)
-    int get_vars_parity(
-        int a_comp, int a_dir,
-        const VariableType var_type = VariableType::evolution) const;
+    int
+    get_var_parity(int a_comp, int a_dir,
+                   const VariableType var_type = VariableType::evolution) const;
 
     /// static version used for initial output of boundary values
     static int
-    get_vars_parity(int a_comp, int a_dir, const params_t &a_params,
-                    const VariableType var_type = VariableType::evolution);
+    get_var_parity(int a_comp, int a_dir, const params_t &a_params,
+                   const VariableType var_type = VariableType::evolution);
 
     /// Fill the rhs boundary values appropriately based on the params set
     void fill_rhs_boundaries(const Side::LoHiSide a_side,
@@ -199,18 +198,6 @@ class BoundaryConditions
         FArrayBox &out_box, const IntVect iv, const Side::LoHiSide a_side,
         const int dir, const std::vector<int> &reflective_comps,
         const VariableType var_type = VariableType::evolution) const;
-
-    template <class T>
-    static void load_values_to_array(
-        GRParmParse &pp, const char *a_values_vector_string,
-        const std::vector<std::pair<int, VariableType>> &a_vars_vector,
-        std::array<double, NUM_VARS> &a_values_array, const T a_default_value);
-
-    static void load_vars_to_vector(
-        GRParmParse &pp, const char *a_vars_vector_string,
-        const char *a_vector_size_string,
-        std::vector<std::pair<int, VariableType>> &a_vars_vector,
-        int &a_vars_vector_size);
 };
 
 /// This derived class is used by expand_grids_to_boundaries to grow the

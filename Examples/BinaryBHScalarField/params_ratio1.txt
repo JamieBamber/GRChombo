@@ -4,7 +4,7 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 2
+verbosity = 1
 nan_check = 1
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_

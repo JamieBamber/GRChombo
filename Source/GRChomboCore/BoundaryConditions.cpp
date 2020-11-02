@@ -15,8 +15,8 @@
 BoundaryConditions::params_t::params_t()
 {
     // set defaults
-    hi_boundary = {STATIC_BC, STATIC_BC, STATIC_BC};
-    lo_boundary = {STATIC_BC, STATIC_BC, STATIC_BC};
+    hi_boundary.fill(STATIC_BC);
+    lo_boundary.fill(STATIC_BC);
     is_periodic.fill(true);
     nonperiodic_boundaries_exist = false;
     boundary_solution_enforced = false;
@@ -24,7 +24,7 @@ BoundaryConditions::params_t::params_t()
     reflective_boundaries_exist = false;
     sommerfeld_boundaries_exist = false;
     vars_parity.fill(BoundaryConditions::UNDEFINED);
-    vars_parity_diagnostic.fill(BoundaryConditions::UNDEFINED);
+    vars_parity_diagnostic.fill(BoundaryConditions::EXTRAPOLATING_BC);
     vars_asymptotic_values.fill(0.0);
     extrapolation_order = 1;
     mixed_bc_extrapolating_vars.clear();
@@ -44,10 +44,10 @@ void BoundaryConditions::params_t::set_is_periodic(
 void BoundaryConditions::params_t::set_hi_boundary(
     const std::array<int, CH_SPACEDIM> &a_hi_boundary)
 {
-    hi_boundary = a_hi_boundary;
     FOR1(idir)
     {
         if (!is_periodic[idir])
+            hi_boundary[idir] = a_hi_boundary[idir];
         {
             if (hi_boundary[idir] == REFLECTIVE_BC)
             {
@@ -74,22 +74,16 @@ void BoundaryConditions::params_t::set_hi_boundary(
                 extrapolating_boundaries_exist = true;
                 mixed_boundaries_exist = true;
             }
-            else if (hi_boundary[idir] == FUDGE_BC)
-            {
-                boundary_rhs_enforced = true;
-                boundary_solution_enforced = true;
-                extrapolating_boundaries_exist = true;
-            }
         }
     }
 }
 void BoundaryConditions::params_t::set_lo_boundary(
     const std::array<int, CH_SPACEDIM> &a_lo_boundary)
 {
-    lo_boundary = a_lo_boundary;
     FOR1(idir)
     {
         if (!is_periodic[idir])
+            lo_boundary[idir] = a_lo_boundary[idir];
         {
             if (lo_boundary[idir] == REFLECTIVE_BC)
             {
@@ -115,36 +109,31 @@ void BoundaryConditions::params_t::set_lo_boundary(
                 extrapolating_boundaries_exist = true;
                 mixed_boundaries_exist = true;
             }
-            else if (lo_boundary[idir] == FUDGE_BC)
-            {
-                boundary_rhs_enforced = true;
-                boundary_solution_enforced = true;
-                extrapolating_boundaries_exist = true;
-            }
         }
     }
 }
 
 void BoundaryConditions::params_t::read_params(GRParmParse &pp)
 {
+    using namespace UserVariables; // for loading the arrays
+
+    // still load even if not contained, to ensure printout saying parameters
+    // were set to their default values
+    std::array<bool, CH_SPACEDIM> isPeriodic;
+    pp.load("isPeriodic", isPeriodic, is_periodic);
     if (pp.contains("isPeriodic"))
-    {
-        std::array<bool, CH_SPACEDIM> isPeriodic;
-        pp.load("isPeriodic", isPeriodic);
         set_is_periodic(isPeriodic);
-    }
+
+    std::array<int, CH_SPACEDIM> hiBoundary;
+    pp.load("hi_boundary", hiBoundary, hi_boundary);
     if (pp.contains("hi_boundary"))
-    {
-        std::array<int, CH_SPACEDIM> hi_boundary;
-        pp.load("hi_boundary", hi_boundary);
-        set_hi_boundary(hi_boundary);
-    }
+        set_hi_boundary(hiBoundary);
+
+    std::array<int, CH_SPACEDIM> loBoundary;
+    pp.load("lo_boundary", loBoundary, lo_boundary);
     if (pp.contains("lo_boundary"))
-    {
-        std::array<int, CH_SPACEDIM> lo_boundary;
-        pp.load("lo_boundary", lo_boundary);
-        set_lo_boundary(lo_boundary);
-    }
+        set_lo_boundary(loBoundary);
+
     if (reflective_boundaries_exist)
     {
         pp.load("vars_parity", vars_parity);
@@ -153,19 +142,21 @@ void BoundaryConditions::params_t::read_params(GRParmParse &pp)
     }
     if (sommerfeld_boundaries_exist)
     {
-        int num_values = -1;
-        std::vector<std::pair<int, VariableType>> nonzero_asymptotic_vars;
-        load_vars_to_vector(pp, "nonzero_asymptotic_vars",
-                            "num_nonzero_asymptotic_vars",
-                            nonzero_asymptotic_vars, num_values);
-        const double default_value = 0.0;
-        load_values_to_array(pp, "nonzero_asymptotic_values",
-                             nonzero_asymptotic_vars, vars_asymptotic_values,
-                             default_value);
-
+        if (pp.contains("num_nonzero_asymptotic_vars"))
+        {
+            int num_values = 0;
+            std::vector<std::pair<int, VariableType>> nonzero_asymptotic_vars;
+            load_vars_to_vector(pp, "nonzero_asymptotic_vars",
+                                "num_nonzero_asymptotic_vars",
+                                nonzero_asymptotic_vars, num_values);
+            const double default_value = 0.0;
+            load_values_to_array(pp, "nonzero_asymptotic_values",
+                                 nonzero_asymptotic_vars,
+                                 vars_asymptotic_values, default_value);
+        }
         // for backwards compatibility, but above method should
-        // be preferred in future
-        if (num_values == -1)
+        // be preferred in future, as is less error prone
+        else
         {
             pp.load("vars_asymptotic_values", vars_asymptotic_values);
         }
@@ -250,7 +241,7 @@ void BoundaryConditions::write_reflective_conditions(int idir,
            << endl;
     for (int icomp = 0; icomp < NUM_VARS; icomp++)
     {
-        int parity = get_vars_parity(icomp, idir, a_params);
+        int parity = get_var_parity(icomp, idir, a_params);
         if (parity == -1)
         {
             pout() << UserVariables::variable_names[icomp] << "    ";
@@ -259,7 +250,7 @@ void BoundaryConditions::write_reflective_conditions(int idir,
     for (int icomp = 0; icomp < NUM_DIAGNOSTIC_VARS; icomp++)
     {
         int parity =
-            get_vars_parity(icomp, idir, a_params, VariableType::diagnostic);
+            get_var_parity(icomp, idir, a_params, VariableType::diagnostic);
         if (parity == -1)
         {
             pout() << DiagnosticVariables::variable_names[icomp] << "    ";
@@ -270,7 +261,9 @@ void BoundaryConditions::write_reflective_conditions(int idir,
 void BoundaryConditions::write_sommerfeld_conditions(int idir,
                                                      const params_t &a_params)
 {
-    pout() << "The non zero asymptotic values of the variables are : " << endl;
+    pout() << "The non zero asymptotic values of the variables "
+              "in this direction are : "
+           << endl;
     for (int icomp = 0; icomp < NUM_VARS; icomp++)
     {
         if (a_params.vars_asymptotic_values[icomp] != 0)
@@ -295,7 +288,6 @@ void BoundaryConditions::write_mixed_conditions(int idir,
     pout()
         << "The variables that use extrapolating bcs in this direction are : "
         << endl;
-
     for (int icomp = 0; icomp < NUM_VARS; icomp++)
     {
         std::vector<int> v = a_params.mixed_bc_extrapolating_vars;
@@ -321,8 +313,7 @@ void BoundaryConditions::write_boundary_conditions(const params_t &a_params)
                                            {SOMMERFELD_BC, "Sommerfeld"},
                                            {REFLECTIVE_BC, "Reflective"},
                                            {EXTRAPOLATING_BC, "Extrapolating"},
-                                           {MIXED_BC, "Mixed"},
-                                           {FUDGE_BC, "Fudge"}};
+                                           {MIXED_BC, "Mixed"}};
     FOR1(idir)
     {
         if (!a_params.is_periodic[idir])
@@ -369,18 +360,18 @@ void BoundaryConditions::write_boundary_conditions(const params_t &a_params)
 /// UserVariables.hpp The parity should be defined in the params file, and
 /// will be output to the pout files for checking at start/restart of
 /// simulation (It is only required for reflective boundary conditions.)
-int BoundaryConditions::get_vars_parity(int a_comp, int a_dir,
-                                        const VariableType var_type) const
+int BoundaryConditions::get_var_parity(int a_comp, int a_dir,
+                                       const VariableType var_type) const
 {
-    int vars_parity = get_vars_parity(a_comp, a_dir, m_params, var_type);
+    int var_parity = get_var_parity(a_comp, a_dir, m_params, var_type);
 
-    return vars_parity;
+    return var_parity;
 }
 
 /// static version used for initial output of boundary values
-int BoundaryConditions::get_vars_parity(int a_comp, int a_dir,
-                                        const params_t &a_params,
-                                        const VariableType var_type)
+int BoundaryConditions::get_var_parity(int a_comp, int a_dir,
+                                       const params_t &a_params,
+                                       const VariableType var_type)
 {
     int comp_parity = (var_type == VariableType::evolution
                            ? a_params.vars_parity[a_comp]
@@ -446,8 +437,7 @@ void BoundaryConditions::fill_solution_boundaries(const Side::LoHiSide a_side,
             // but tell it we are not filling the rhs for mixed condition
             if ((boundary_condition == REFLECTIVE_BC) ||
                 (boundary_condition == EXTRAPOLATING_BC) ||
-                (boundary_condition == MIXED_BC) ||
-                (boundary_condition == FUDGE_BC))
+                (boundary_condition == MIXED_BC))
             {
                 const bool filling_rhs = false;
                 fill_boundary_cells_dir(a_side, a_state, a_state, idir,
@@ -494,7 +484,7 @@ void BoundaryConditions::fill_boundary_cells_dir(
     const int dir, const int boundary_condition, const VariableType var_type,
     const bool filling_rhs)
 {
-    std::vector<int> a_comps =
+    const std::vector<int> &comps =
         (var_type == VariableType::evolution ? m_comps : m_diagnostic_comps);
 
     // iterate through the boxes, shared amongst threads
@@ -527,7 +517,7 @@ void BoundaryConditions::fill_boundary_cells_dir(
             // simplest case - boundary values are set to zero
             case STATIC_BC:
             {
-                for (int icomp : a_comps)
+                for (int icomp : comps)
                 {
                     out_box(iv, icomp) = 0.0;
                 }
@@ -536,19 +526,18 @@ void BoundaryConditions::fill_boundary_cells_dir(
             // Sommerfeld is outgoing radiation - only applies to rhs
             case SOMMERFELD_BC:
             {
-                fill_sommerfeld_cell(out_box, soln_box, iv, a_comps);
+                fill_sommerfeld_cell(out_box, soln_box, iv, comps);
                 break;
             }
             // Enforce a reflective symmetry in some direction
             case REFLECTIVE_BC:
             {
-                fill_reflective_cell(out_box, iv, a_side, dir, a_comps,
-                                     var_type);
+                fill_reflective_cell(out_box, iv, a_side, dir, comps, var_type);
                 break;
             }
             case EXTRAPOLATING_BC:
             {
-                fill_extrapolating_cell(out_box, iv, a_side, dir, a_comps,
+                fill_extrapolating_cell(out_box, iv, a_side, dir, comps,
                                         m_params.extrapolation_order);
                 break;
             }
@@ -561,28 +550,6 @@ void BoundaryConditions::fill_boundary_cells_dir(
                 {
                     fill_sommerfeld_cell(out_box, soln_box, iv,
                                          m_params.mixed_bc_sommerfeld_vars);
-                }
-                break;
-            }
-            case FUDGE_BC:
-            {
-                if (a_side == Side::Lo || !filling_rhs)
-                {
-                    fill_extrapolating_cell(out_box, iv, a_side, dir,
-                                        m_params.mixed_bc_extrapolating_vars,
-                                        m_params.extrapolation_order);
-                }
-                else if (a_side == Side::Hi && filling_rhs)
-                {
-                    RealVect loc(iv + 0.5 * RealVect::Unit);
-                    loc *= m_dx;
-                    loc -= m_center;
-                    double lapse = 1.0;
-                    double mass = 0.05;
-                    out_box(iv, 0) = lapse * soln_box(iv, 1); //phi_re
-                    out_box(iv, 1) = - lapse * lapse * mass * mass * soln_box(iv, 0); //Pi_re
-                    out_box(iv, 2) = lapse * soln_box(iv, 3); //phi_im
-                    out_box(iv, 3) = - lapse * lapse * mass * mass * soln_box(iv, 2); //Pi_im
                 }
                 break;
             }
@@ -687,7 +654,7 @@ void BoundaryConditions::fill_reflective_cell(
     // replace value at iv with value at iv_copy
     for (int icomp : reflective_comps)
     {
-        int parity = get_vars_parity(icomp, dir, var_type);
+        int parity = get_var_parity(icomp, dir, var_type);
         out_box(iv, icomp) = parity * out_box(iv_copy, icomp);
     }
 }
@@ -1080,9 +1047,7 @@ Box ExpandGridsToBoundaries::operator()(const Box &a_in_box)
             if ((m_boundaries.get_boundary_condition(Side::Lo, idir) ==
                      BoundaryConditions::SOMMERFELD_BC ||
                  m_boundaries.get_boundary_condition(Side::Lo, idir) ==
-                     BoundaryConditions::MIXED_BC ||
-                 m_boundaries.get_boundary_condition(Side::Lo, idir) ==
-                     BoundaryConditions::FUDGE_BC) &&
+                     BoundaryConditions::MIXED_BC) &&
                 offset_lo[idir] == 0)
             {
                 out_box.growLo(idir, m_boundaries.m_num_ghosts);
@@ -1090,9 +1055,7 @@ Box ExpandGridsToBoundaries::operator()(const Box &a_in_box)
             if ((m_boundaries.get_boundary_condition(Side::Hi, idir) ==
                      BoundaryConditions::SOMMERFELD_BC ||
                  m_boundaries.get_boundary_condition(Side::Hi, idir) ==
-                     BoundaryConditions::MIXED_BC ||
-                 m_boundaries.get_boundary_condition(Side::Hi, idir) ==
-                     BoundaryConditions::FUDGE_BC) &&
+                     BoundaryConditions::MIXED_BC) &&
                 offset_hi[idir] == 0)
             {
                 out_box.growHi(idir, m_boundaries.m_num_ghosts);
@@ -1122,14 +1085,12 @@ void BoundaryConditions::expand_grids_to_boundaries(
         if (!m_params.is_periodic[idir])
         {
             if ((get_boundary_condition(Side::Lo, idir) == SOMMERFELD_BC) ||
-                (get_boundary_condition(Side::Lo, idir) == MIXED_BC) ||
-                (get_boundary_condition(Side::Lo, idir) == FUDGE_BC))
+                (get_boundary_condition(Side::Lo, idir) == MIXED_BC))
             {
                 domain_with_boundaries.growLo(idir, m_num_ghosts);
             }
             if ((get_boundary_condition(Side::Hi, idir) == SOMMERFELD_BC) ||
-                (get_boundary_condition(Side::Hi, idir) == MIXED_BC) ||
-                (get_boundary_condition(Side::Hi, idir) == FUDGE_BC))
+                (get_boundary_condition(Side::Hi, idir) == MIXED_BC))
             {
                 domain_with_boundaries.growHi(idir, m_num_ghosts);
             }
@@ -1141,75 +1102,4 @@ void BoundaryConditions::expand_grids_to_boundaries(
     ExpandGridsToBoundaries expand_grids_to_boundaries(*this);
     a_out_grids.transform(expand_grids_to_boundaries);
     a_out_grids.close();
-}
-
-// where one has read in a subset of variables with some feature
-// this reads in a set of associated values and assigns it into a full
-// array of all NUM_VARS vars (setting other values to a default value)
-template <class T>
-void BoundaryConditions::load_values_to_array(
-    GRParmParse &pp, const char *a_values_vector_string,
-    const std::vector<std::pair<int, VariableType>> &a_vars_vector,
-    std::array<double, NUM_VARS> &a_values_array, const T a_default_value)
-{
-    // how many values do I need to get?
-    int num_values = a_vars_vector.size();
-    // make a container for them, and load
-    std::vector<T> vars_values(num_values, a_default_value);
-    pp.load(a_values_vector_string, vars_values, num_values, vars_values);
-
-    // populate the values_array for the NUM_VARS values with those read in
-    a_values_array.fill(a_default_value);
-    for (int i = 0; i < num_values; i++)
-    {
-        int icomp = a_vars_vector[i].first;
-        CH_assert(a_vars_vector[i].second == VariableType::evolution);
-        a_values_array[icomp] = vars_values[i];
-    }
-}
-
-// function to create a vector of enums of vars by reading in their
-// names as strings from the params file and converting it to the enums
-void BoundaryConditions::load_vars_to_vector(
-    GRParmParse &pp, const char *a_vars_vector_string,
-    const char *a_vector_size_string,
-    std::vector<std::pair<int, VariableType>> &a_vars_vector,
-    int &a_vars_vector_size)
-{
-    int num_values;
-    pp.load(a_vector_size_string, num_values, -1);
-    // only set a_vars_vector and a_var_vector_size if a_vector_size_string
-    // found
-    if (num_values >= 0)
-    {
-        std::vector<std::string> var_names(num_values, "");
-        pp.load(a_vars_vector_string, var_names, num_values, var_names);
-        for (std::string var_name : var_names)
-        {
-            // first assume plot_var is a normal evolution var
-            int var = UserVariables::variable_name_to_enum(var_name);
-            VariableType var_type = VariableType::evolution;
-            if (var < 0)
-            {
-                // if not an evolution var check if it's a diagnostic var
-                var = DiagnosticVariables::variable_name_to_enum(var_name);
-                if (var < 0)
-                {
-                    // it's neither :(
-                    pout() << "Variable with name " << var_name << " not found."
-                           << endl;
-                }
-                else
-                {
-                    var_type = VariableType::diagnostic;
-                }
-            }
-            if (var >= 0)
-            {
-                a_vars_vector.emplace_back(var, var_type);
-            }
-        }
-        // overwrites read in value if entries have been ignored
-        a_vars_vector_size = a_vars_vector.size();
-    }
 }
