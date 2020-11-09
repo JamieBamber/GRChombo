@@ -31,6 +31,7 @@ plot_interval=10
 L=512
 N1=64
 box_size=16
+reflect_z=1
 
 for run in "${run_list[@]}"
 do
@@ -43,7 +44,7 @@ do
         val="$run[4]"; ratio="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_v3
+        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_v7
         #_L${L}_N$N1
         echo ${new_dir}
         new_dir_path=${data_directory}/${new_dir}
@@ -67,8 +68,18 @@ do
         sed -i "s|MUVAL|${mu}|" ${new_dir_path}/params.txt
         sed -i "s|DELAYTIME|${delay}|" ${new_dir_path}/params.txt
         sed -i "s|NBASIC|${N1}|" ${new_dir_path}/params.txt
-	sed -i "s|NSPACE3|$(($N1/2))|" ${new_dir_path}/params.txt
         sed -i "s|PLOTINTERVAL|${plot_interval}|" ${new_dir_path}/params.txt
+	#
+	if [ $reflect_z==1 ]
+	    then
+		sed -i "s|NSPACE3|$((${N1}/2))|" ${new_dir_path}/params.txt
+		sed -i "s|CENTERZ|0|" ${new_dir_path}/params.txt
+		sed -i "s|ZBOUND|2|" ${new_dir_path}/params.txt
+	    else
+		sed -i "s|NSPACE3|${N1}|" ${new_dir_path}/params.txt
+                sed -i "s|CENTERZ|$(($L/2))|" ${new_dir_path}/params.txt
+                sed -i "s|ZBOUND|4|" ${new_dir_path}/params.txt
+	fi
 	#
 	mkdir -p outputs
         cd outputs

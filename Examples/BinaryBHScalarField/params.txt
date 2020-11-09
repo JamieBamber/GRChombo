@@ -60,7 +60,7 @@ isPeriodic = 0 0 0
 # 3 = extrapolating 4 = mixed
 # (see BoundaryConditions.hpp for details)
 hi_boundary = 4 4 4
-lo_boundary = 4 4 2
+lo_boundary = 4 4 4
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)

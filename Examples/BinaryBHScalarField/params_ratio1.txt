@@ -28,8 +28,8 @@ delay = DELAYTIME
 # Length of the longest N side
 # (This sets dx in all directions)
 L = 512
-center = CENTERX CENTERY 0
-extraction_center = CENTERX CENTERY 0
+center = CENTERX CENTERY CENTERZ
+extraction_center = CENTERX CENTERY CENTERZ
 track_punctures = 1
 puncture_tracking_level = 5
 
@@ -59,7 +59,7 @@ isPeriodic = 0 0 0
 # 3 = extrapolating 4 = mixed
 # (see BoundaryConditions.hpp for details)
 hi_boundary = 4 4 4
-lo_boundary = 4 4 2
+lo_boundary = 4 4 ZBOUND
 
 # if reflective boundaries selected, must set
 # parity of all vars (in order given by UserVariables.hpp)
@@ -85,6 +85,7 @@ nonzero_asymptotic_values = 1.0 1.0 1.0 1.0 1.0
 # (the rest are assumed to be all sommerfeld)
 num_extrapolating_vars = 2
 extrapolating_vars = phi Pi
+extrapolation_order = 0
 
 # Max and min box sizes
 max_grid_size = BOXSIZE
@@ -125,7 +126,6 @@ sigma = 1.0
 
 # extraction params
 # default of extraction_center is center, uncomment to change
-extraction_center = 256 256 0
 activate_extraction = 0 
 write_extraction = 0
 num_extraction_radii = 2
