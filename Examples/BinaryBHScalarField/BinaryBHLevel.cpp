@@ -231,11 +231,11 @@ void BinaryBHLevel::prePlotLevel()
         pout() << "BinaryBHLevel::prePlotLevel " << m_level << endl;   
 
     fillAllGhosts();
-    /*Potential potential(m_p.potential_params);
+    Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.center, m_p.final_a),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);*/
+                   m_state_new, m_state_diagnostics, EXCLUDE_GHOST_CELLS);
     
     // Check for nan's
     if (m_p.nan_check)

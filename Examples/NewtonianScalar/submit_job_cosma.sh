@@ -5,67 +5,75 @@
 
 # this copy is for COSMA6
 
-work_dir=/cosma/home/dp174/dc-bamb1/GRChombo/Examples/BinaryBHScalarField
+work_dir=/cosma/home/dp174/dc-bamb1/GRChombo/Examples/NewtonianScalar
 cd $work_dir
-data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/BinaryBHSF
+data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/NewtonianBinaryBHScalar
 
 # specify the input params for each run I want to submit
-# list for each is: mu, delay, dt, G, BH mass ratio
+# list for each is: M, d, mu, dt 
 
-run0001=(1 0 0.125 0 1)
-run0002=(1 10000 0.125 0 1)
-run0003=(0.08187607564 0 0.25 0 1)
-run0004=(1 0 0.125 0 2)
-run0005=(1 10000 0.125 0 2)
-run0006=(0.5 0 0.25 0 1)
-run0007=(0.5 10000 0.25 0 1)
-run0008=(0.5 0 0.25 0.000001 1)
+# original values were
+# note: M = 0.4885, d = 6.1, omega_binary = 0.06560735
+# period = 95.7695
+# dt = 2 * dt_multiplier
+
+run0001=(0.1 10 0.014142136 0.25)
+run0002=(0.1 10 0.005 0.25)
+run0003=(0.1 10 0.02 0.25)
+run0004=(0.1 10 0.1 0.25)
 
 params_file=params.txt
 
 run_list=(
 	run0001
+	run0002
+	run0003
+	run0004
 )
 
-plot_interval=10
-L=512
-N1=64
+plot_interval=50
+L=256
+N1=128
 box_size=16
 
 for run in "${run_list[@]}"
 do
   	cd $work_dir
         # extract parameters    
-        val="$run[0]"; mu="${!val}"
-        val="$run[1]"; delay="${!val}"
-        val="$run[2]"; dt_mult="${!val}"
-        val="$run[3]"; G="${!val}"
-        val="$run[4]"; ratio="${!val}"
+        val="$run[0]"; M="${!val}"
+        val="$run[1]"; d="${!val}"
+        val="$run[2]"; mu="${!val}"
+        val="$run[3]"; dt_mult="${!val}"
+	
+	omega_BH=$(awk "BEGIN {printf \"%.7f\n\", sqrt(2*${M}/(${d}*${d}*${d}))}")
+	#omega_BH=$(bc <<< "scale=6; sqrt(2*${M}/(${d}*${d}*${d}))")
+	echo "omega_BH = ${omega_BH}"
 
         # text_number=$(printf "%04d" ${run_number})
-        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_v2
-        #_L${L}_N$N1
+        new_dir=${run}_M${M}_d${d}_mu${mu}_dt_mult${dt_mult}
+
         echo ${new_dir}
         new_dir_path=${data_directory}/${new_dir}
         #
 	mkdir -p ${new_dir_path}
         cp slurm_submit_cosma ${new_dir_path}/slurm_submit
-	params_file=params_ratio${ratio}.txt
+	params_file=params.txt
         cp ${params_file} ${new_dir_path}/params.txt
-	cp BinaryBHLevel.cpp ${new_dir_path}/BinaryBHLevel.cpp.txt
 
 	cd ${new_dir_path}
         # add the input params to the input files
         sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
         sed -i "s|DATASUBDIR|${new_dir}|" ${new_dir_path}/params.txt
         sed -i "s|DTMULT|${dt_mult}|" ${new_dir_path}/params.txt
-        sed -i "s|JOBNAME|${run}BBH|" ${new_dir_path}/slurm_submit
+        sed -i "s|JOBNAME|${run}NS|" ${new_dir_path}/slurm_submit
         sed -i "s|BOXLENGTH|${L}|" ${new_dir_path}/params.txt
         sed -i "s|BOXSIZE|${box_size}|" ${new_dir_path}/params.txt
         sed -i "s|CENTERX|$(($L/2))|" ${new_dir_path}/params.txt
         sed -i "s|CENTERY|$(($L/2))|" ${new_dir_path}/params.txt
+        sed -i "s|BHMASS|${M}|" ${new_dir_path}/params.txt
+        sed -i "s|BHSEP|${d}|" ${new_dir_path}/params.txt
         sed -i "s|MUVAL|${mu}|" ${new_dir_path}/params.txt
-        sed -i "s|DELAYTIME|${delay}|" ${new_dir_path}/params.txt
+        sed -i "s|OMEGABH|${omega_BH}|" ${new_dir_path}/params.txt
         sed -i "s|NBASIC|${N1}|" ${new_dir_path}/params.txt
 	sed -i "s|NSPACE3|$(($N1/2))|" ${new_dir_path}/params.txt
         sed -i "s|PLOTINTERVAL|${plot_interval}|" ${new_dir_path}/params.txt
