@@ -43,7 +43,7 @@ do
         val="$run[4]"; ratio="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_v2
+        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_v3
         #_L${L}_N$N1
         echo ${new_dir}
         new_dir_path=${data_directory}/${new_dir}

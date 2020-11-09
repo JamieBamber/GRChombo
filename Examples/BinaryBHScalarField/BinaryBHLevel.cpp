@@ -75,7 +75,7 @@ void BinaryBHLevel::initialData()
    // Check for nan's
     if (m_p.nan_check)
         BoxLoops::loop(NanCheck("NaNCheck in initial data: "), m_state_new,
-                       m_state_new, INCLUDE_GHOST_CELLS, disable_simd());
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 
 }
 
@@ -115,12 +115,13 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
         scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
         m_p.G_Newton);
-    BoxLoops::loop(my_ccz4_matter, a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+    BoxLoops::loop(make_compute_pack(my_ccz4_matter,
+                          SetValue(0, Interval(c_rho, NUM_VARS - 1))), a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
 
     // Check for nan's
     if (m_p.nan_check)
         BoxLoops::loop(NanCheck("NaNCheck in specificEvalRHS: "), m_state_new,
-                       m_state_new, INCLUDE_GHOST_CELLS, disable_simd());
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 
 }
 
@@ -137,7 +138,7 @@ void BinaryBHLevel::specificUpdateODE(GRLevelData &a_soln,
     // Check for nan's
     if (m_p.nan_check)
         BoxLoops::loop(NanCheck("NaNCheck in specific update ODE: "), m_state_new,
-                       m_state_new, INCLUDE_GHOST_CELLS, disable_simd());
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
 // specify the cells to tag
@@ -172,7 +173,7 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     // Check for nan's
     if (m_p.nan_check)
         BoxLoops::loop(NanCheck("NaNCheck in compute Tagging Criterion: "), m_state_new,
-                       m_state_new, INCLUDE_GHOST_CELLS, disable_simd());
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
 void BinaryBHLevel::specificPostTimeStep()
@@ -220,7 +221,7 @@ void BinaryBHLevel::specificPostTimeStep()
     // Check for nan's
     if (m_p.nan_check)
         BoxLoops::loop(NanCheck("NaNCheck in specific PostTimeStep: "), m_state_new,
-                       m_state_new, INCLUDE_GHOST_CELLS, disable_simd());
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 
 }
 
@@ -240,6 +241,6 @@ void BinaryBHLevel::prePlotLevel()
     // Check for nan's
     if (m_p.nan_check)
         BoxLoops::loop(NanCheck("NaNCheck in prePlotLevel: "), m_state_new,
-                       m_state_new, INCLUDE_GHOST_CELLS, disable_simd());
+                       m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 
 }
