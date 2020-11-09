@@ -25,6 +25,17 @@ Nphi=64
 
 r_max = 120
 
+def time_average(x, n_chunk):
+	N = len(x)
+	no_chunks = int(np.ceil(N/n_chunk))
+	x_out = np.zeros(no_chunks)
+	for i in range(0, no_chunks-1):
+		x_out[i] = np.mean(x[i*n_chunk:(i+1)*n_chunk])
+	x_out[-1] = np.mean(x[-n_chunk:])
+	return x_out
+
+n_av = 100
+
 class data_dir:
 	def __init__(self, num, M, d, mu, dt):
 		self.num = num
@@ -36,26 +47,27 @@ class data_dir:
 	#
 	def load_data(self):
 		# load flux and mass data from csv files	
-		file_name = data_root_path + self.name + "/outputs/" + "RhoIntegral.dat"
-		data = np.genfromtxt(file_name, skip_header=1)
+		file_name = data_root_path + self.name + "/outputs/" + "Force_integrals.dat"
+		data = np.genfromtxt(file_name, skip_header=2)
 		print("loaded " + file_name)
-		self.time = data[:,0]
+		self.time = time_average(data[:,0],n_av)
 		mu = float(self.mu)
-		E0 = 0.5*(4*np.pi*(r_max**3)/3)*(phi0*mu)**2
-		self.rho_integral = (data[:,1] - data[0,1])/E0
-		self.rhoJ_integral = (data[:,2] - data[0,2])/E0
+		F0 = 4*np.pi*(r_max**2)*(phi0**2)*(mu**2)
+		self.Edot = time_average(data[:,1]/F0,n_av)
+		self.Jdot = time_average(data[:,2]/F0,n_av)
 				
 data_dirs = []
 def add_data_dir(num, M, d, mu, dt):
         x = data_dir(num, M, d, mu, dt)
         data_dirs.append(x)
 
+
 # choose datasets to compare
 
-add_data_dir(1, "0.1", "10", "0.014142136", "0.25")
-#add_data_dir(2, "0.1", "10", "0.005", "0.25")
-add_data_dir(3, "0.1", "10", "0.02", "0.25")
 add_data_dir(4, "0.1", "10", "0.1", "0.25")
+add_data_dir(3, "0.1", "10", "0.02", "0.25")
+add_data_dir(2, "0.1", "10", "0.005", "0.25")
+add_data_dir(1, "0.1", "10", "0.014142136", "0.25")
 
 def plot_graph():
 	# plot setup
@@ -75,14 +87,14 @@ def plot_graph():
 		dd.load_data()
 		mu = float(dd.mu)
 		label_ = "$\\mu$={:s}".format(dd.mu)
-		ax1.plot(dd.time,dd.rho_integral,colours[i]+"-", label=label_, linewidth=1)
+		ax1.plot(dd.time,dd.Edot,colours[i]+"-", label=label_, linewidth=1)
 		i = i + 1
 	ax1.set_xlabel("$t$", fontsize=label_size)
 	#ax1.set_xlim((0, 500))
-	ax1.set_ylim((-10, 10))
-	ax1.set_ylabel("change in $\\rho$ integral / $E_0$", fontsize=label_size)
-	ax1.set_title("Change in integrated density, $M=0.1,d=10$", wrap=True, fontsize=title_font_size)
-	save_path = home_path + "/plots/Newtonian_Scalar_change_in_rho_integral_vs_mu.png".format(R_max)
+	ax1.set_ylim((-2, 6))
+	ax1.set_ylabel("$\\rho$ flux / $F_0$", fontsize=label_size)
+	ax1.set_title("Density flux into $r=120$,$M=0.1,d=10$", wrap=True, fontsize=title_font_size)
+	save_path = home_path + "/plots/Newtonian_Scalar_rho_flux_vs_mu.png".format(R_max)
 	ax1.legend(loc='upper left', ncol=2, fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)

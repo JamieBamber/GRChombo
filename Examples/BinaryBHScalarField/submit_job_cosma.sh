@@ -31,7 +31,7 @@ plot_interval=10
 L=512
 N1=64
 box_size=16
-reflect_z=1
+reflect_z=0
 
 for run in "${run_list[@]}"
 do
@@ -44,7 +44,7 @@ do
         val="$run[4]"; ratio="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_v7
+        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_v6
         #_L${L}_N$N1
         echo ${new_dir}
         new_dir_path=${data_directory}/${new_dir}
