@@ -11,11 +11,20 @@ data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/KerrSF
 
 # specify the input params for each run I want to submit
 # list for each is: l, m, a, Al, mu, M, dt
-run0001=(0 0 0 0 1 0.48847892320123 0.0625)
+run0101=(0 0 0 0 1 0.48847892320123 0.0625)
+run0102=(0 0 0.7 0 1 0.9769585 0.0625)
+run0103=(0 0 0 0 1 0.3194742895317072 0.0625)
+run0104=(0 0 0 0 1 0.654181589210298 0.0625)
+run0105=(0 0 0 0 0.5 0.48847892320123 0.125)
+run0106=(0 0 0.7 0 0.5 0.9769585 0.125)
 
 # specify runs to submit
 run_list=(
-       run0001
+       run0102
+       run0103
+       run0104
+       run0105
+       run0106
 )
 
 params_file=params.txt

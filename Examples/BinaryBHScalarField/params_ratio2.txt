@@ -96,9 +96,9 @@ block_factor = BOXSIZE
 
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
-plot_interval = 5
+plot_interval = 10
 dt_multiplier = DTMULT # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
-stop_time = 2200.0
+stop_time = 10000.0
 ## dt_actual = 8*dt_multiplier = 3.2
 ## 2*pi / mu =~ 6 / 0.4 = 15
 ## 1 / mu = 2.5
