@@ -173,14 +173,17 @@ def fit_comb_solution(ax, dd, phi, time, p0_, colour):
 	def Stationary_sol_fit(r, A_in, A_out, phase):
 		phase_in = phase
 		phase_out = phase
-		print("testing A_in={:.2f} A_out={:.2f} phase={:.2f}".format(A_in, A_out, phase))
+		#print("testing A_in={:.2f} A_out={:.2f} phase={:.2f}".format(A_in, A_out, phase))
 		ingoing_phi = Stationary_sol(r, time, dd.a, dd.mu, dd.l, dd.m, True, A_in, phase)
 		outgoing_phi = Stationary_sol(r, time, dd.a, dd.mu, dd.l, dd.m, False, A_out, phase)
 		return ingoing_phi + outgoing_phi
 	cut_off=100
 	r_fit = dd.r[:cut_off]
 	phi_fit = phi[:cut_off]
-	popt, pconv = curve_fit(Stationary_sol_fit, r_fit, phi_fit, p0=p0_)
+	try:
+		popt, pconv = curve_fit(Stationary_sol_fit, r_fit, phi_fit, p0=p0_)
+	except:
+		popt=(0, 0, 0)
 	A_in = popt[0]
 	A_out = popt[1]
 	phase = popt[2]
@@ -226,7 +229,7 @@ def plot_graph():
 	# plot setup
 	dd = data_dirs[0]
 	dd.load_data()
-	for i in range(0, len(dd.time)):
+	for n in range(0, len(dd.time)):
 		ax1 = plt.axes()
 		fig = plt.gcf()
 		fig.set_size_inches(3.8,3)
@@ -237,8 +240,8 @@ def plot_graph():
 		rc('xtick',labelsize=font_size)
 		rc('ytick',labelsize=font_size)
 		#	
-		phi = dd.phi[i,:]
-		time = dd.time[i]
+		phi = dd.phi[n,:]
+		time = dd.time[n]
 		if (lin_or_log):
 			x = dd.r/M
 		else:
@@ -248,8 +251,7 @@ def plot_graph():
 		else:
 			y = phi
 		# plot fitted solution
-		if (dd.a < 0.9):
-			fit_comb_solution(ax1, dd, phi, time, (1, 0.2, 0.2), colours[2])
+		fit_comb_solution(ax1, dd, phi, time, (1, 0.2, 0.2), colours[2])
 		# find limit where dd.r > 10
 		n_cutoff = 0
 		cutoff = 0.25*dd.mu*time
@@ -285,9 +287,9 @@ def plot_graph():
 		title = "$\\varphi_{00}$" + " profile $M=1,\\mu=2.0,\\chi=0.7,l=m=0,t=${:.1f}".format(time) 
 		ax1.set_title(title, fontsize=title_font_size)
 		plt.tight_layout()
-		save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/run0021_phi_profile_fits_movie/frame_{:06d}.png".format(i)
+		save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/run0021_phi_profile_fits_movie/frame_{:06d}.png".format(n)
 		plt.savefig(save_name, transparent=False)
-		print("saved frame " + str(i) + " of " + str(len(dd.time)))
+		print("saved frame "+ str(n) + " of " + str(len(dd.time)))
 		plt.clf()
 		
 plot_graph()
