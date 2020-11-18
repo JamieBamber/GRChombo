@@ -136,7 +136,7 @@ AnnotationAtts.axes2D.yAxis.label.font.scale = tick_label_size
 AnnotationAtts.axes2D.yAxis.label.font.font = AnnotationAtts.axes2D.yAxis.label.font.Times  # Arial, Courier, Times
 AnnotationAtts.userInfoFlag = 0
 AnnotationAtts.databaseInfoFlag = 0
-AnnotationAtts.timeInfoFlag = 0
+AnnotationAtts.timeInfoFlag = 1
 SetAnnotationAttributes(AnnotationAtts)
 
 legend = GetAnnotationObject(GetPlotList().GetPlots(0).plotName)
