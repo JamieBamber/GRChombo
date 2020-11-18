@@ -1,6 +1,3 @@
-import yt
-from yt import derived_field
-from yt.units import cm
 import numpy as np
 import time
 import matplotlib.pyplot as plt
