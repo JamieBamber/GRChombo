@@ -8,7 +8,9 @@
    for the author of MATLAB code see below
 */
 
-/* Comments from original author of MATLAB script. That is available here: https://github.com/motygin/confluent_Heun_functions */
+/* Comments from original author of MATLAB script. That is available here: https://github.com/motygin/confluent_Heun_functions 
+The algorithm used to compute the confluent Heun function is described here: https://arxiv.org/abs/1804.01007
+*/
 
 // confluent Heun function, the first local solution of the equation
 // HeunC''(z)+(gamma/z+delta/(z-1)+epsilon)*HeunC'(z)+(alpha*z-q)/(z*(z-1))*HeunC(z) = 0
