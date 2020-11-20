@@ -196,7 +196,7 @@ def fit_comb_solution(ax, dd, phi, time, p0_, colour):
 		y = np.log10(phi_fitted)
 	else:
 		y = phi_fitted
-	ax.plot(x, y, colour + "--", label="fitted stationary sol.".format(dd.l, dd.m, dd.a), linewidth=1)
+	ax.plot(x, y, colour + "--", label="fitted stationary sol.".format(dd.l, dd.m, dd.a), linewidth=2)
 
 def impose_comb_solution(ax, dd, p0, colour):
 	def Stationary_sol_fit(r, A_in, A_out, phase):
@@ -232,11 +232,11 @@ def plot_graph():
 	for n in range(0, len(dd.time)):
 		ax1 = plt.axes()
 		fig = plt.gcf()
-		fig.set_size_inches(3.8,3)
-		font_size = 10
-		title_font_size = 10
-		label_size = 11
-		legend_font_size = 9
+		fig.set_size_inches(7.6,6)
+		font_size = 20
+		title_font_size = 20
+		label_size = 22
+		legend_font_size = 14
 		rc('xtick',labelsize=font_size)
 		rc('ytick',labelsize=font_size)
 		#	
@@ -260,8 +260,8 @@ def plot_graph():
 				n_cutoff = i
 				break
 		analytic_y = analytic_phi(time, dd.r[n_cutoff:], dd.a, dd.mu)
-		ax1.plot(x[n_cutoff:], analytic_y, colours[1] + "-.", label="perturbative sol.".format(dd.l, dd.m, dd.a), linewidth=1)
-		ax1.plot(x, y, colours[0] + "-", label="numerical sol.".format(dd.l, dd.m, dd.a), linewidth=1)
+		ax1.plot(x[n_cutoff:], analytic_y, colours[1] + "-.", label="perturbative sol.".format(dd.l, dd.m, dd.a), linewidth=2)
+		ax1.plot(x, y, colours[0] + "-", label="numerical sol.".format(dd.l, dd.m, dd.a), linewidth=2)
 		#impose_comb_solution(ax1, dd, (0, 1, 0.2), colours2[i])
 		#impose_solution(ax1, dd, (1, 0), colours2[i])
 		if log_y:
@@ -280,8 +280,8 @@ def plot_graph():
 		#	plt.xlim((r_plus_min, 100))
 		#else :
 		#	plt.xlim(left=np.log10(r_plus_min))
-		ax1.legend(loc="best", fontsize=legend_font_size)
-		plt.ylim((-4,4))
+		ax1.legend(loc="lower right", fontsize=legend_font_size)
+		plt.ylim((-5,5))
 		plt.xticks(fontsize=font_size)
 		plt.yticks(fontsize=font_size)
 		title = "$\\varphi_{00}$" + " profile $M=1,\\mu=2.0,\\chi=0.7,l=m=0,t=${:.1f}".format(time) 
