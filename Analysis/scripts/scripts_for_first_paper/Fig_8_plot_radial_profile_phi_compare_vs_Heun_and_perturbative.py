@@ -303,7 +303,7 @@ def plot_graph():
 	title = "$\\varphi_{00}$" + " profile $M=1,\\mu=2.0,\\chi=0.7,l=m=0,\\tau=${:.1f}".format(dd0.time*dd0.mu) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/Fig_8_IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_tau={:.1f}_maxR={:d}_plot_vs_Heun_v2.png".format(2.0, scale, dd0.time*dd0.mu, R_max)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/Fig_8_IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_tau={:.1f}_maxR={:d}_plot_vs_Heun_v2.pdf".format(2.0, scale, dd0.time*dd0.mu, R_max)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()

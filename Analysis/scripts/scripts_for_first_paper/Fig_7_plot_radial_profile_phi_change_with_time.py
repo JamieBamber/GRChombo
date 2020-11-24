@@ -306,7 +306,7 @@ def plot_graph():
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/"
-	save_name = "Fig_7_IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_Rmax={:d}_plot_vs_Heun_v4.png".format(2.0, scale, R_max)
+	save_name = "Fig_7_IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_Rmax={:d}_plot_vs_Heun_v4.pdf".format(2.0, scale, R_max)
 	print("saved " + save_root_path + save_name)
 	plt.savefig(save_root_path + save_name, transparent=False)
 	plt.clf()

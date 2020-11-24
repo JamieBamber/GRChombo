@@ -81,9 +81,9 @@ def V_eff(r, chi, l, m, mu, M=1):
 	return V
 
 # plot potential
-colours = ['b--', 'b-', 'b-.','r-', 'g-', 'c-', 'y-', 'r-.']
+colours = ['r-', 'r-.','b--', 'b-.', 'b-', 'g-', 'c-', 'y-']
 #almmu = [(0.99, 1, 1, 0.4), (0.99, 2, 2, 0.4), (0.99, 1, 1, 0.05), (0.99, 1, 1, 0.5), (0.99, 0, 0, 0.194), (0.99, 0, 0, 0.01), (0.99, 0, 0, 0.4)]
-almmu = [(a, 1, 1, 0.1), (a, 1, 1, 0.4), (a, 1, 1, 0.5), (a, 0, 0, 0.4), (a, 1, -1, 0.4), (0.99, 1, 1, 0.4), (0, 1, 1, 0.4)]
+almmu = [(a, 0, 0, 0.4), (a, 1, 1, 0.1), (a, 1, 1, 0.5),(a, 1, 1, 0.4), (a, 1, -1, 0.4), (0.99, 1, 1, 0.4), (0, 1, 1, 0.4)]
 # plot setup
 ax1 = plt.axes()
 fig = plt.gcf()
@@ -102,17 +102,17 @@ for i in range(0, len(almmu)):
 	r = r_plus + np.logspace(np.log10(0.001), np.log10(r_max), 500)
 	r_star = r + ((r_plus**2)*np.log(r - r_plus) - (r_minus**2)*np.log(r - r_minus))/(r_plus - r_minus)
 	y = V_eff(r, a, l, m, mu, M)
-	ax1.plot(r_star, y, colours[i], label="$\\chi=${:.2f} $l,m=${:d},{:d} $\\mu$={:.1f}".format(a, l, m, mu), linewidth=1)
+	ax1.plot(r_star, y, colours[i], label="$\\chi=${:.2f} $\\;l,m=${:d},{:d} $\\;\\mu$={:.1f}".format(a, l, m, mu), linewidth=1)
 	print("plotted V_eff for a={:.2f} l={:d} m={:d} $M\\mu$={:.2f}".format(a, l, m, mu))
 plt.ylabel("$V_{eff} - \\mu^2$", fontsize=label_size)
 plt.xlabel("$r_*$", fontsize=label_size)
-plt.legend(fontsize=legend_font_size)
+plt.legend(fontsize=legend_font_size, borderaxespad=0.1, handletextpad=0.2)
 plt.title("Quasi-effective potential for a Kerr Black Hole", fontsize=title_font_size)
 plt.xticks(fontsize=font_size)
 plt.yticks(fontsize=font_size)
 plt.tight_layout()
 plot_path = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/"
-save_name = "Fig_4_Effective_Kerr_potential.png"
+save_name = "Fig_4_Effective_Kerr_potential.pdf"
 save_path = plot_path + save_name
 plt.savefig(plot_path + save_name)
 print("saved plot as " + save_path)

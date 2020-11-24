@@ -229,7 +229,7 @@ def plot_graph():
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	save_root_path="/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/"
-	save_name="Fig_6_IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_tau={:.1f}_plot.png".format(0.4, scale, dd0.time*dd0.mu)
+	save_name="Fig_6_IsoKerr_mu{:.1f}_l=m=0_phi_{:s}_tau={:.1f}_plot.pdf".format(0.4, scale, dd0.time*dd0.mu)
 	print("saved " + save_root_path + save_name)
 	plt.savefig(save_root_path + save_name, transparent=False)
 	plt.clf()

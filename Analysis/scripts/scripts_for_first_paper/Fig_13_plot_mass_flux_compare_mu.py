@@ -252,15 +252,15 @@ def plot_graph():
 	if cumulative:
 		if not_E0:
 			ax1.set_ylabel("cumulative flux / $V_0 \\frac{1}{2} \\varphi^2_0$")
-			save_path = home_path + "plots/plots_for_first_paper/Fig_13_mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative.png".format(R_max)
+			save_path = home_path + "plots/plots_for_first_paper/Fig_13_mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative.pdf".format(R_max)
 		else:
 			ax1.set_ylabel("cumulative flux / $E_0$") # \\frac{1}{2} \\varphi^2_0$")
-			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative_vs_E0.png".format(R_max)
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_cumulative_vs_E0.pdf".format(R_max)
 		plt.title("Cumulative mass flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux, $M=1$, $a=0.7$, $l=m=1$", fontsize=title_font_size)
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_vs_t.png".format(R_max)
+		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_mu_vs_t.pdf".format(R_max)
 	ax1.legend(loc='upper left', ncol=2, fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)

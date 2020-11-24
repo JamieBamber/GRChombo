@@ -189,9 +189,9 @@ def plot_graph():
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/Fig_12_IsoKerr_rho_profile_{:s}_Rmax={:d}_tau={:.1f}_compare_lm_log_y.png".format(scale, R_max, tau)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/Fig_12_IsoKerr_rho_profile_{:s}_Rmax={:d}_tau={:.1f}_compare_lm_log_y.pdf".format(scale, R_max, tau)
 	else:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm.pdf".format(scale, R_max, num)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()

@@ -209,12 +209,12 @@ def plot_graph():
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 		plt.title("Cumulative mass flux $M=1,\\mu=0.05$,\n$\\chi=0,l=m=0$", fontsize=title_font_size)
-		save_path = home_path + "plots/plots_for_first_paper/Fig_21_mass_flux_Kerr_Schild_cumulative_compare_r_plus_to_500_agreement.png"
+		save_path = home_path + "plots/plots_for_first_paper/Fig_21_mass_flux_Kerr_Schild_cumulative_compare_r_plus_to_500_agreement.pdf"
 		ax1.legend(loc='best', handletextpad=1, fontsize=legend_font_size)
 	else:
 		ax1.set_ylabel("flux / $E_0$")
 		plt.title("Mass flux $a=0.7$, $\\mu=0.4$, $M=1$",fontsize=title_font_size)
-		save_path = home_path + "plots/mass_flux_Kerr_Schild_compare_lm_r_plus_to_500.png"
+		save_path = home_path + "plots/mass_flux_Kerr_Schild_compare_lm_r_plus_to_500.pdf"
 		ax1.legend(loc='lower left', bbox_to_anchor=(0.0,0.2), fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)

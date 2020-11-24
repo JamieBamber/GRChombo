@@ -253,7 +253,7 @@ def plot_graph():
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 		ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4$,\n$\\chi=0.7,l=m=1$", wrap=True, fontsize=title_font_size)
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_cumulative.png".format(R_max)
+		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_cumulative.pdf".format(R_max)
 	else:
 		if differential:
 			ax1.set_ylabel("$\\log_{10}(|(F_{num.}-F_{pert.})/F_{pert.}|)$", fontsize=label_size)
@@ -261,9 +261,9 @@ def plot_graph():
 			ax1.set_ylabel("flux / $E_0 \\times 10^{-4}$", fontsize=label_size)		
 		plt.title("Mass flux, $M=1,\\mu=2.0,\\chi=0.99,l=m=8$", wrap=True, fontsize=title_font_size)
 		if differential:
-			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_differential.png".format(R_max)
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_differential.pdf".format(R_max)
 		elif not differential:
-			save_path = home_path + "plots/plots_for_first_paper/Fig_24_mass_flux_in_R{:.0f}_IsoKerr_compare_N.png".format(R_max)
+			save_path = home_path + "plots/plots_for_first_paper/Fig_24_mass_flux_in_R{:.0f}_IsoKerr_compare_N.pdf".format(R_max)
 	ax1.legend(loc='best', fontsize=legend_font_size, ncol=3, labelspacing=0.2, handletextpad=0, borderaxespad=0.2, columnspacing=1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)

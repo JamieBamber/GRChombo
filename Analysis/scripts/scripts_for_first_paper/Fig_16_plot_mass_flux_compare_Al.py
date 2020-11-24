@@ -303,32 +303,32 @@ def plot_graph():
 			if log_y:
 				ax1.set_ylim((-5.0, 3.0))
 				ax1.set_ylabel("$\\log_{10}(|$diff. in cumulative flux$| \\times 10^{4} / E_0)$", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1_log_y.png".format(R_max)
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1_log_y.pdf".format(R_max)
 			else:
 				ax1.set_ylim((-0.5, 5.0))
 				ax1.set_ylabel("difference in cumulative flux $\\times 10^{4} / E_0$", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1.png".format(R_max)
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative_difference_from_Al0_m1.pdf".format(R_max)
 			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99$ \n $l=|m|=1$; diff from $\\alpha=0$", wrap=True, fontsize=title_font_size)
 		else:
 			ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99$,\n$l=|m|=1$", wrap=True, fontsize=title_font_size)			
-			save_path = home_path + "plots/plots_for_first_paper/Fig_16_mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.png".format(R_max)
+			save_path = home_path + "plots/plots_for_first_paper/Fig_16_mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.pdf".format(R_max)
 	else:
 		if diff_from_alpha0:
 			if log_y:
 				ax1.set_ylim((-6.0, 2.5))
 				ax1.set_ylabel("$\\log_{10}(|$diff. in flux$| \\times 10^{4} / E_0)$", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1_log_y.png".format(R_max)
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1_log_y.pdf".format(R_max)
 			else:
 				ax1.set_ylim((-0.05, 0.1))
 				ax1.set_ylabel("difference in flux $\\times 10^{4} / E_0 $", fontsize=label_size)
-				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1.png".format(R_max)			
+				save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_difference_from_Al0_m1.pdf".format(R_max)			
 			plt.title("Mass flux, $M=1,\\mu=0.4,\\chi=0.99$ \n$l=|m|=1$; diff. from $\\alpha=0$")
 
 		else:
 			plt.title("Mass flux, $M=1,\\mu=0.4,\\chi=0.99$, $l=|m|=1$")
 			ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
-			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al.png".format(R_max)			
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al.pdf".format(R_max)			
 	ax1.legend(loc='best', fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)

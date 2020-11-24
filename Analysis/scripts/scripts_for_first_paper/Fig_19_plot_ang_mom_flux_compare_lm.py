@@ -228,13 +228,13 @@ def plot_graph():
 	#ax1.set_ylim((-10, 2))
 	if cumulative:
 		ax1.set_ylabel("cumulative ang. mom. flux $/ E_0$", fontsize=label_size)
-		plt.title("Cumulative Angular momentum flux, \n$M=1,\\mu=0.4,\\chi=0.7$")
-		save_path = home_path + "plots/plots_for_first_paper/Fig_19_ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative.png".format(R_max)
+		plt.title("Cumulative angular momentum flux, \n$M=1,\\mu=0.4,\\chi=0.7$")
+		save_path = home_path + "plots/plots_for_first_paper/Fig_19_ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm_cumulative.pdf".format(R_max)
 	else:
 		ax1.set_ylabel("angular momentum flux $/ E_0$", fontsize=label_size)
 		plt.title("Angular momentum flux, \n$M=1,\\mu=0.4,\\chi=0.7$")
-		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
-	ax1.legend(loc='best', ncol=2, fontsize=legend_font_size, labelspacing=0.05, borderpad=0.1)
+		save_path = home_path + "plots/ang_mom_flux_in_R{:.0f}_IsoKerr_compare_lm.pdf".format(R_max)
+	ax1.legend(loc='best', ncol=2, fontsize=legend_font_size, labelspacing=0.05, borderpad=0.1, columnspacing=0.7, handletextpad=0.2)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()

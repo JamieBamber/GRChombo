@@ -70,13 +70,13 @@ for i in range(0,len(Mmu_list)):
 	Mmu = Mmu_list[i]
 	Lexp = field_Lz(q0, Mmu, a, 1)
 	ax1.plot(q0, Lexp, colours[i], label="$\\mu=${:.2f}".format(Mmu), linewidth=1) 
-plt.legend(fontsize=legend_font_size, ncol=2,labelspacing=0.2, handletextpad=0.1)
+plt.legend(fontsize=legend_font_size, ncol=2,labelspacing=0.2,handletextpad=0.2,columnspacing=0.5,borderaxespad=0.1)
 plt.xlabel("$r_{BL}/M$", fontsize=label_size)
 plt.ylabel("$L_z/M$", fontsize=label_size)
 plt.ylim((-1, 7.5))
 plt.title("Ang. mom. per unit mass, $\\chi=$ " + str(a), fontsize=title_font_size)
 save_path = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/"
-filename = "Fig_5_Kerr_circular_orbit_ang_mom.png"
+filename = "Fig_5_Kerr_circular_orbit_ang_mom.pdf"
 file_path = save_path + filename
 plt.xticks(fontsize=font_size)
 plt.yticks(fontsize=font_size)

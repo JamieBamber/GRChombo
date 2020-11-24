@@ -274,7 +274,7 @@ def plot_graph():
 	title = "$\\varphi_{11}$" + " profile $M=1,\\mu=0.4,l=m=1,\\tau=${:.1f}".format(tau) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
-	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/Fig_9_IsoKerr_mu{:.1f}_l=m=1_phi_{:s}_tau={:.1f}_plot_vs_Heun.png".format(0.4, scale, tau)
+	save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/Fig_9_IsoKerr_mu{:.1f}_l=m=1_phi_{:s}_tau={:.1f}_plot_vs_Heun.pdf".format(0.4, scale, tau)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
