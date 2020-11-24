@@ -9,13 +9,37 @@ import ctypes
 from scipy.optimize import curve_fit
 start_time = time.time()
 
+# 
+tex_fonts = {
+    # Use LaTeX to write all text
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": "Times",
+    "mathtext.fontset": "custom",
+    "mathtext.rm": "Times New Roman",
+    # "font.serif": "ntx-Regular-tlf-t1",
+    # Use 8pt font in plots, to match 8pt font in document
+    "axes.labelsize": 8,
+    "font.size": 8,
+    # Make the legend/label fonts a little smaller
+    "legend.fontsize": 7,
+    "xtick.labelsize": 7,
+    "ytick.labelsize": 7
+}
+
+#plt.rc("text.latex", preamble=r'''
+#       \usepackage{newtxmath}
+#       ''')
+
+plt.rcParams.update(tex_fonts)
+
 # set up parameters 
 phi0 = 0.1
 R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-num = 1010
+tau = 200
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -34,12 +58,12 @@ if (lin_or_log):
 else:
 	scale = "log"
 
-log_y = True
+log_y = False
 
 def fix_spikes(rho):
         out_rho = rho
         for i in range(1, len(rho)-1):
-                if ((np.abs(np.log(out_rho[i+1]/out_rho[i])) >= np.abs(np.log(0.9))) or (out_rho[i+1] < 0)):
+                if ((np.abs(out_rho[i+1]-out_rho[i]) >= 0.04) or (out_rho[i+1] < 0)):
                         out_rho[i+1] = out_rho[i] + 0.1*(out_rho[i] - out_rho[i-1])
                 else:
                      	pass
@@ -58,7 +82,7 @@ class data_dir:
 		self.Al = Al
 		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, Al, mu)
 	#
-	def load_data(self, number):
+	def load_data(self):
 		file_name = self.name+"_rho_Y00_integral_{:s}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:.1f}.dat".format(scale, R_max, self.nphi, self.ntheta, self.theta_max)
 		dataset_path = data_root_path + file_name
 		data = np.genfromtxt(dataset_path, skip_header=1)
@@ -66,11 +90,21 @@ class data_dir:
 		R = data[0,1:]
 		r_plus = M*(1 + np.sqrt(1 - self.a**2))
 		self.r = R*(1 + r_plus/(4*R))**2
-		row = int(number/plot_interval)
+		dt = data[2,0] - data[1,0]
+		row = int(tau/(self.mu*dt))
 		self.time = data[row,0]
 		rho = data[row,1:]
 		rho0 = 0.5*(phi0**2)*(self.mu)**2
-		self.rho = fix_spikes(rho/rho0)
+		self.rho = rho/rho0
+		#
+		file_name = self.name+"_rho_azimuth_Y00_integral_{:s}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:.1f}.dat".format(scale, R_max, self.nphi, self.ntheta, self.theta_max)
+		dataset_path = data_root_path + file_name
+		data = np.genfromtxt(dataset_path, skip_header=1)
+		print("loaded " + file_name)
+		self.time_azimuth = data[row,0]
+		rho_azimuth = data[row,1:]
+		self.rho_azimuth = rho_azimuth/rho0
+		self.j = fix_spikes((self.mu/self.m)*self.rho_azimuth/self.rho)
 		
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, Al="0", nphi=Nphi, ntheta=Ntheta, theta_max=Theta_max):
@@ -126,21 +160,21 @@ def plot_graph():
 	#	
 	for i in range(0, len(data_dirs)):
 		dd = data_dirs[i]
-		dd.load_data(num)
+		dd.load_data()
 		if (lin_or_log):
 			x = dd.r/M
 		else:
 	     		x = np.log10(dd.r/M)
 		if log_y:
-			y = np.log10(dd.rho)
+			y = np.log10(dd.j)
 		else:
-			y = dd.rho
+			y = dd.j
 		label_="$\\chi=${:.2f}".format(dd.a)
 		ax1.plot(x, y, colours[i] + "-", label=label_, linewidth=1)
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}(\\rho_E/\\rho_0)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}((\\mu/m)\\rho_J/\\rho_E)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$\\rho_E/\\rho_0$", fontsize=label_size)
+		ax1.set_ylabel("$(\\mu/m)\\rho_J/\\rho_E$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -153,18 +187,18 @@ def plot_graph():
 	#	plt.xlim((r_plus_min, 100))
 	#else :
 	#	plt.xlim(left=np.log10(r_plus_min))
-	#plt.ylim((-3, 3))
+	#plt.ylim((0, 2))
 	ax1.legend(loc="best", fontsize=legend_font_size, labelspacing=0.1, handletextpad=0.2, borderpad=0.4)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho_E$" + " profile $M=1,\\mu=0.4,l=m=1,\\tau=" + str(dd0.time*dd0.mu) + "$" 
+	title = "Ang. mom. per unit mass" + " profile \n$M=1,\\mu=0.4,l=m=1,\\tau=${:d}".format(tau) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_a_log_y.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_j_profile_compare_a_{:s}_Rmax={:d}_tau={:d}_log_y.png".format(scale, R_max, tau)
 	else:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_a.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/Fig_20_IsoKerr_j_profile_compare_a_{:s}_Rmax={:d}_tau={:d}.png".format(scale, R_max, tau)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()

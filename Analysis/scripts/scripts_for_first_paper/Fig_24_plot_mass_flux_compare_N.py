@@ -1,17 +1,34 @@
-import yt
 import numpy as np
 import math
-from yt import derived_field
-from yt.units import cm
 import time
 import sys
 from matplotlib import rc
 rc('text', usetex=True)
 from matplotlib import pyplot as plt
 
-#print("yt version = ",yt.__version__)
+# 
+tex_fonts = {
+    # Use LaTeX to write all text
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": "Times",
+    "mathtext.fontset": "custom",
+    "mathtext.rm": "Times New Roman",
+    # "font.serif": "ntx-Regular-tlf-t1",
+    # Use 8pt font in plots, to match 8pt font in document
+    "axes.labelsize": 8,
+    "font.size": 8,
+    # Make the legend/label fonts a little smaller
+    "legend.fontsize": 7,
+    "xtick.labelsize": 7,
+    "ytick.labelsize": 7
+}
 
-yt.enable_parallelism()
+#plt.rc("text.latex", preamble=r'''
+#       \usepackage{newtxmath}
+#       ''')
+
+plt.rcParams.update(tex_fonts)
 
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
@@ -203,33 +220,51 @@ def plot_graph():
         #dd0.load_data()
 	for dd in data_dirs:
 		dd.load_data()
-	for i in range(0, len(data_dirs)-1):
-		dd_HR = data_dirs[i+1] # higher resolution data
-		dd_LR = data_dirs[i] # lower resolution data
-		tau_LR = dd_LR.tflux*dd_LR.mu
-		tau_HR = dd_HR.tflux[0::2]*dd_HR.mu
-		flux_HR = dd_HR.outer_mass_flux[0::2]
-		flux_LR = dd_LR.outer_mass_flux
-		print("tau_LR.shape = ", tau_LR.shape)
-		print("tau_HR.shape = ", tau_HR.shape)
-		ds_length = min(tau_LR.size, tau_HR.size)
-		tau = tau_LR[:ds_length]
-		dflux = np.abs((flux_HR[:ds_length] - flux_LR[:ds_length]))
-		label_ = "$(N$={:d}-$N$={:d}$)$".format(dd_HR.N, dd_LR.N)
-		ax1.plot(tau,np.log(dflux)/np.log(2),colours[i]+"-", label=label_, linewidth=1)
+		mu = float(dd.mu)
+		#net_flux = outer_mass_flux - inner_mass_flux
+		#label_ = "$\\mu$={:.2f}".format(mu)
+		label_ = "$N$={:d}".format(dd.N)
+		#label_ = "$m$={:d} $\\alpha$={:.2f}".format(dd.m, dd.Al)
+		#ax1.plot(tflux,inner_mass_flux,colours[i]+"--", label="flux into R={:.1f} ".format(r_min)+label_)
+		#ax1.plot(tflux,outer_mass_flux,colours[i]+"-", label="flux into R={:.1f} ".format(r_max)+label_)
+		tau = dd.tflux*mu
+		if differential:
+			dflux = np.abs((dd.outer_mass_flux - dd.analytic_outer_flux)/dd.analytic_outer_flux)
+			ax1.plot(tau,np.log10(dflux),colours[i]+"-", label=label_, linewidth=1)
+		elif not differential:
+			ax1.plot(tau,(10**4)*dd.outer_mass_flux,colours[i]+"-", label=label_, linewidth=1)
+			if (dd.N==128):
+				ax1.plot(tau,(10**4)*dd.analytic_outer_flux,'k'+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=2)
+		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
+		if plot_mass:
+			if cumulative:
+				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+'-.', label="_change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
+			elif not cumulative:
+				ax1.plot(dd.tmass*mu,dd.dmass,colours[i]+'-.', label="_rate of change in mass $R_+<R<${:.1f} ".format(R_max)+label_, linewidth=1)
+		i = i + 1
 	ax1.set_xlabel("$\\tau$", fontsize=label_size)
 	ax1.set_xlim((0, 150))
-	ax1.set_ylim((-30, -15))
+	if differential:
+		#ax1.set_ylim((-0.001, 0.005))
+		pass
+	elif not differential:
+		ax1.set_ylim((-0.2, 0.175))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 		ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4$,\n$\\chi=0.7,l=m=1$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_cumulative.png".format(R_max)
 	else:
-		ax1.set_ylabel("$\\log_{2}(|f_{2N}-f_{N}|/E_0)$", fontsize=label_size)
-		plt.title("Difference in mass flux \n $M=1,\\mu=2.0,\\chi=0.99,l=m=8$", wrap=True, fontsize=title_font_size)
-		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_convergence.png".format(R_max)
-	ax1.legend(loc='best', fontsize=legend_font_size, ncol=1, labelspacing=0.2, handletextpad=0, columnspacing=1)
+		if differential:
+			ax1.set_ylabel("$\\log_{10}(|(F_{num.}-F_{pert.})/F_{pert.}|)$", fontsize=label_size)
+		elif not differential:
+			ax1.set_ylabel("flux / $E_0 \\times 10^{-4}$", fontsize=label_size)		
+		plt.title("Mass flux, $M=1,\\mu=2.0,\\chi=0.99,l=m=8$", wrap=True, fontsize=title_font_size)
+		if differential:
+			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_differential.png".format(R_max)
+		elif not differential:
+			save_path = home_path + "plots/plots_for_first_paper/Fig_24_mass_flux_in_R{:.0f}_IsoKerr_compare_N.png".format(R_max)
+	ax1.legend(loc='best', fontsize=legend_font_size, ncol=3, labelspacing=0.2, handletextpad=0, columnspacing=1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()

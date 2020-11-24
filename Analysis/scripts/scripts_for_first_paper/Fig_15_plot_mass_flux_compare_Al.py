@@ -6,6 +6,30 @@ from matplotlib import rc
 rc('text', usetex=True)
 from matplotlib import pyplot as plt
 
+# 
+tex_fonts = {
+    # Use LaTeX to write all text
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": "Times",
+    "mathtext.fontset": "custom",
+    "mathtext.rm": "Times New Roman",
+    # "font.serif": "ntx-Regular-tlf-t1",
+    # Use 8pt font in plots, to match 8pt font in document
+    "axes.labelsize": 8,
+    "font.size": 8,
+    # Make the legend/label fonts a little smaller
+    "legend.fontsize": 7,
+    "xtick.labelsize": 7,
+    "ytick.labelsize": 7
+}
+
+#plt.rc("text.latex", preamble=r'''
+#       \usepackage{newtxmath}
+#       ''')
+
+plt.rcParams.update(tex_fonts)
+
 # set up parameters
 data_root_path = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF"
 home_path="/home/dc-bamb1/GRChombo/Analysis/"
@@ -17,7 +41,7 @@ half_box = True
 KS_or_cartesian_r=True
 phi0 = 0.1
 R_min = 5
-R_max = 10
+R_max = 300
 average_time = False
 av_n = 1
 plot_mass=False
@@ -256,7 +280,7 @@ def plot_graph():
 		#	ax1.plot(tau,np.log10(np.abs(aflux)),colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		else:
 			ax1.plot(tau,flux,colours[i]+"-", label=label_, linewidth=1)
-			#ax1.plot(tau,aflux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
+			ax1.plot(tau,aflux,colours[i]+"--", label="_4th order t$\\mu$/r analytic flux into R={:.1f} ".format(R_max)+label_, linewidth=1)
 		#ax1.plot(tflux,net_flux,colours[i]+":", label="net flux " + label_)
 		#
 		if plot_mass:
@@ -288,7 +312,7 @@ def plot_graph():
 		else:
 			ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
 			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99,l=|m|=1$", wrap=True, fontsize=title_font_size)			
-			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.png".format(R_max)
+			save_path = home_path + "plots/plots_for_first_paper/Fig_15_mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.png".format(R_max)
 	else:
 		if diff_from_alpha0:
 			if log_y:

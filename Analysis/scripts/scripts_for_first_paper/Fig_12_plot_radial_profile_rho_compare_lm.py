@@ -9,13 +9,38 @@ import ctypes
 from scipy.optimize import curve_fit
 start_time = time.time()
 
+# 
+tex_fonts = {
+    # Use LaTeX to write all text
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": "Times",
+    "mathtext.fontset": "custom",
+    "mathtext.rm": "Times New Roman",
+    # "font.serif": "ntx-Regular-tlf-t1",
+    # Use 8pt font in plots, to match 8pt font in document
+    "axes.labelsize": 8,
+    "font.size": 8,
+    # Make the legend/label fonts a little smaller
+    "legend.fontsize": 7,
+    "xtick.labelsize": 7,
+    "ytick.labelsize": 7
+}
+
+#plt.rc("text.latex", preamble=r'''
+#       \usepackage{newtxmath}
+#       ''')
+
+plt.rcParams.update(tex_fonts)
+
 # set up parameters 
 phi0 = 0.1
 R_min = 5
 R_max = 500
 data_root_path = "/home/dc-bamb1/GRChombo/Analysis/data/Y00_integration_data/"
 lm_list = [(1, 1)]
-num = 1010
+tau = 100
+number = 1010
 plot_interval = 10
 M = 1
 phi0 = 0.1
@@ -39,7 +64,7 @@ log_y = True
 def fix_spikes(rho):
         out_rho = rho
         for i in range(1, len(rho)-1):
-                if ((np.abs(np.log(out_rho[i+1]/out_rho[i])) >= np.abs(np.log(0.9))) or (out_rho[i+1] < 0)):
+                if ((np.abs(np.log(out_rho[i+1]/out_rho[i])) >= np.abs(np.log(0.7))) or (out_rho[i+1] < 0)):
                         out_rho[i+1] = out_rho[i] + 0.1*(out_rho[i] - out_rho[i-1])
                 else:
                      	pass
@@ -55,10 +80,10 @@ class data_dir:
 		self.nphi = nphi
 		self.ntheta = ntheta
 		self.theta_max = float(theta_max)
-		self.Al = float(Al)
+		self.Al = Al
 		self.name = "run{:04d}_l{:d}_m{:d}_a{:s}_Al{:s}_mu{:s}_M1_IsoKerr".format(num, l, m, a, Al, mu)
 	#
-	def load_data(self, number):
+	def load_data(self):
 		file_name = self.name+"_rho_Y00_integral_{:s}_r_plus_to_{:d}_nphi{:d}_ntheta{:d}_theta_max{:.1f}.dat".format(scale, R_max, self.nphi, self.ntheta, self.theta_max)
 		dataset_path = data_root_path + file_name
 		data = np.genfromtxt(dataset_path, skip_header=1)
@@ -66,11 +91,14 @@ class data_dir:
 		R = data[0,1:]
 		r_plus = M*(1 + np.sqrt(1 - self.a**2))
 		self.r = R*(1 + r_plus/(4*R))**2
+		dt = data[2,0] - data[1,0]
+		#row = int(tau/(self.mu*dt*plot_interval))
 		row = int(number/plot_interval)
 		self.time = data[row,0]
 		rho = data[row,1:]
 		rho0 = 0.5*(phi0**2)*(self.mu)**2
 		self.rho = fix_spikes(rho/rho0)
+		#self.rho = rho/rho0
 		
 data_dirs = []
 def add_data_dir(num, l, m, a, mu, Al="0", nphi=Nphi, ntheta=Ntheta, theta_max=Theta_max):
@@ -96,33 +124,19 @@ run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr
 run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"""
 
 #add_data_dir(1, 0, 0, "0.0", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(2, 0, 0, "0.7", "0.4")
+add_data_dir(2, 0, 0, "0.7", "0.4")
 #add_data_dir(3, 0, 0, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
-#add_data_dir(4, 1, 1, "0.0", "0.4")
-#add_data_dir(5, 1, 1, "0.7", "0.4")
-#add_data_dir(7, 2, 2, "0.7", "0.4")
-#add_data_dir(8, 4, 4, "0.7", "0.4")
-#add_data_dir(10, 8, 8, "0.7", "0.4")
-#add_data_dir(9, 1, -1, "0.7", "0.4")
+add_data_dir(5, 1, 1, "0.7", "0.4")
+add_data_dir(7, 2, 2, "0.7", "0.4")
+add_data_dir(8, 4, 4, "0.7", "0.4")
+add_data_dir(10, 8, 8, "0.7", "0.4")
+add_data_dir(9, 1, -1, "0.7", "0.4")
 #add_data_dir(15, 1, 1, "0.7", "0.4", "0.5", 64, 64, "_theta_max0.99")
-add_data_dir(6, 1, 1, "0.99", "0.4", "0")
-add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64)
-add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64)
-add_data_dir(16, 1, -1, "0.99", "0.4", "0")
+#add_data_dir(6, 1, 1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
+#add_data_dir(16, 1, -1, "0.99", "0.4", "0", 64, 64, "_theta_max0.99")
+#add_data_dir(17, 1, 1, "0.99", "0.4", "0.5", 64, 64, "_theta_max0.99")
+#add_data_dir(18, 1, 1, "0.99", "0.4", "0.25", 64, 64, "_theta_max0.99")
 #add_data_dir(21, 0, 0, "0.7", "2.0", "0", 64, 18, "1.0")
-
-def alpha_text(m, alpha):
-        if m == 1:
-                if alpha == 0:
-                        return "0"
-                elif alpha == 0.25:
-                        return "\\pi/4"
-                elif alpha == 0.5:
-                        return "\\pi/2"
-                else:
-                     	return "nan"
-        elif m == -1:
-                return "\\pi"
 
 def plot_graph():
 	# plot setup
@@ -138,7 +152,7 @@ def plot_graph():
 	#	
 	for i in range(0, len(data_dirs)):
 		dd = data_dirs[i]
-		dd.load_data(num)
+		dd.load_data()
 		if (lin_or_log):
 			x = dd.r/M
 		else:
@@ -147,12 +161,12 @@ def plot_graph():
 			y = np.log10(dd.rho)
 		else:
 			y = dd.rho
-		label_="$\\alpha={:s}$".format(alpha_text(dd.m, dd.Al))
+		label_="$l=${:d} $m=${:d}".format(dd.l, dd.m)
 		ax1.plot(x, y, colours[i] + "-", label=label_, linewidth=1)
 	if log_y:
-		ax1.set_ylabel("$\\log_{10}(\\rho/\\rho_0)$", fontsize=label_size)
+		ax1.set_ylabel("$\\log_{10}(\\rho_E/\\rho_0)$", fontsize=label_size)
 	else:
-		ax1.set_ylabel("$\\rho/\\rho_0$", fontsize=label_size)
+		ax1.set_ylabel("$\\rho_E/\\rho_0$", fontsize=label_size)
 	if (lin_or_log):
 		xlabel_ = "$r_{BL}/M$"
 	else:
@@ -170,13 +184,14 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho$" + " profile $M=1,\\mu=0.4,l=|m|=1,\\chi=0.99,\\tau=" + str(dd0.time*dd0.mu) + "$" 
+	tau=dd0.time*dd0.mu
+	title = "$\\rho_E$" + " profile $M=1,\\mu=0.4,\\chi=0.7,\\tau=${:.1f}".format(tau) 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_Al_log_y.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/Fig_12_IsoKerr_rho_profile_{:s}_Rmax={:d}_tau={:.1f}_compare_lm_log_y.png".format(scale, R_max, tau)
 	else:
-			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_Al.png".format(scale, R_max, num)
+			save_name = "/home/dc-bamb1/GRChombo/Analysis/plots/IsoKerr_rho_profile_{:s}_Rmax={:d}_n={:d}_compare_lm.png".format(scale, R_max, num)
 	print("saved " + save_name)
 	plt.savefig(save_name, transparent=False)
 	plt.clf()
