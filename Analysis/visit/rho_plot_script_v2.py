@@ -9,20 +9,20 @@ from sys import exit
 print("starting visit run")
 
 # file settings
-data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/Binary_BH/BBH_run0005/"
-run_number = 5
-mu = "1"
-subdir = "run{:04d}_FlatScalar_mu{:s}_G0".format(run_number, mu)
-#data_root_dir = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField/"
-#subdir = "test0001"
-number = 2170
-width = 64
-L=512
-data_file_name = "BinaryBHSFPlot_%06d.3d.hdf5" % number
+root_plot_path = "/home/dc-bamb1/GRChombo/Analysis/plots/"
+data_root_dir = "/rds/user/dc-bamb1/rds-dirac-dp131/dc-bamb1/GRChombo_data/KerrSF/"
+#subdir = "run0011_l1_m1_a0.7_Al0_mu2.0_M1_IsoKerr"
+#subdir = "run0005_l1_m1_a0.7_Al0_mu0.4_M1_IsoKerr"
+#subdir = "run0006_l1_m1_a0.99_Al0_mu0.4_M1_IsoKerr"
+#subdir = "run0016_l1_m-1_a0.99_Al0_mu0.4_M1_IsoKerr"
+#subdir = "run0017_l1_m1_a0.99_Al0.5_mu0.4_M1_IsoKerr"
+subdir = "run0018_l1_m1_a0.99_Al0.25_mu0.4_M1_IsoKerr"
+number = 1600
+data_file_name = "KerrSFp_%06d.3d.hdf5" % number
+width = 256
+absmax = 0.4
 
 # open datafile(s)
-DeleteAllPlots()
 OpenDatabase(data_root_dir + subdir + "/" + data_file_name,0)
 
 # add plot
@@ -32,9 +32,9 @@ PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = 0.01
+PseudocolorAtts.min = 0.0001
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = 1000
+PseudocolorAtts.max = 15
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
 PseudocolorAtts.colorTableName = "inferno"
 PseudocolorAtts.invertColorTable = 0
@@ -48,6 +48,8 @@ PseudocolorAtts.pointSizePixels = 2
 PseudocolorAtts.lineStyle = PseudocolorAtts.SOLID  # SOLID, DASH, DOT, DOTDASH
 PseudocolorAtts.lineType = PseudocolorAtts.Line  # Line, Tube, Ribbon
 PseudocolorAtts.lineWidth = 0
+# turn off legend
+PseudocolorAtts.legendFlag = 1
 SetPlotOptions(PseudocolorAtts)
 
 # add operator 
@@ -55,7 +57,7 @@ AddOperator("Slice", 1)
 SliceAtts = SliceAttributes()
 SliceAtts.originType = SliceAtts.Intercept  # Point, Intercept, Percent, Zone, Node
 SliceAtts.originPoint = (0, 0, 0)
-SliceAtts.originIntercept = 0.001
+SliceAtts.originIntercept = 512.0
 SliceAtts.originPercent = 0
 SliceAtts.originZone = 0
 SliceAtts.originNode = 0
@@ -78,8 +80,9 @@ SetPlotSILRestriction(silr ,1)
 DrawPlots()
 
 # Annotation attributes
-tick_label_scale=2.5
-axes_label_scale=2
+ticks_label_scale = 2.5
+axes_label_size = 2.5
+axes_labels = 1
 AnnotationAtts = AnnotationAttributes()
 AnnotationAtts.axes2D.visible = 1
 AnnotationAtts.axes2D.autoSetTicks = 1
@@ -89,18 +92,18 @@ AnnotationAtts.axes2D.tickLocation = AnnotationAtts.axes2D.Outside  # Inside, Ou
 AnnotationAtts.axes2D.tickAxes = AnnotationAtts.axes2D.BottomLeft  # Off, Bottom, Left, BottomLeft, All
 AnnotationAtts.axes2D.xAxis.title.visible = 0
 AnnotationAtts.axes2D.xAxis.title.font.font = AnnotationAtts.axes2D.xAxis.title.font.Times  # Arial, Courier, Times
-AnnotationAtts.axes2D.xAxis.title.font.scale = axes_label_scale
+AnnotationAtts.axes2D.xAxis.title.font.scale = axes_label_size
 AnnotationAtts.axes2D.xAxis.title.font.useForegroundColor = 1
 AnnotationAtts.axes2D.xAxis.title.font.color = (0, 0, 0, 255)
 AnnotationAtts.axes2D.xAxis.title.font.bold = 0
 AnnotationAtts.axes2D.xAxis.title.font.italic = 0
-AnnotationAtts.axes2D.xAxis.title.userTitle = 0
+AnnotationAtts.axes2D.xAxis.title.userTitle = 1
 AnnotationAtts.axes2D.xAxis.title.userUnits = 0
-AnnotationAtts.axes2D.xAxis.title.title = "X-Axis"
+AnnotationAtts.axes2D.xAxis.title.title = "x"
 AnnotationAtts.axes2D.xAxis.title.units = ""
-AnnotationAtts.axes2D.xAxis.label.visible = 1
+AnnotationAtts.axes2D.xAxis.label.visible = 0
 AnnotationAtts.axes2D.xAxis.label.font.font = AnnotationAtts.axes2D.xAxis.label.font.Times  # Arial, Courier, Times
-AnnotationAtts.axes2D.xAxis.label.font.scale = tick_label_scale
+AnnotationAtts.axes2D.xAxis.label.font.scale = ticks_label_scale
 AnnotationAtts.axes2D.xAxis.label.font.useForegroundColor = 1
 AnnotationAtts.axes2D.xAxis.label.font.color = (0, 0, 0, 255)
 AnnotationAtts.axes2D.xAxis.label.font.bold = 0
@@ -112,18 +115,18 @@ AnnotationAtts.axes2D.xAxis.tickMarks.majorMaximum = 1
 AnnotationAtts.axes2D.xAxis.grid = 0
 AnnotationAtts.axes2D.yAxis.title.visible = 0
 AnnotationAtts.axes2D.yAxis.title.font.font = AnnotationAtts.axes2D.yAxis.title.font.Times  # Arial, Courier, Times
-AnnotationAtts.axes2D.yAxis.title.font.scale = axes_label_scale
+AnnotationAtts.axes2D.yAxis.title.font.scale = axes_label_size
 AnnotationAtts.axes2D.yAxis.title.font.useForegroundColor = 1
 AnnotationAtts.axes2D.yAxis.title.font.color = (0, 0, 0, 255)
 AnnotationAtts.axes2D.yAxis.title.font.bold = 0
 AnnotationAtts.axes2D.yAxis.title.font.italic = 0
-AnnotationAtts.axes2D.yAxis.title.userTitle = 0
+AnnotationAtts.axes2D.yAxis.title.userTitle = 1
 AnnotationAtts.axes2D.yAxis.title.userUnits = 0
 AnnotationAtts.axes2D.yAxis.label.font.bold = 0
-AnnotationAtts.axes2D.yAxis.title.title = "Y-Axis"
+AnnotationAtts.axes2D.yAxis.title.title = "y"
 AnnotationAtts.axes2D.yAxis.title.units = ""
-AnnotationAtts.axes2D.yAxis.label.visible = 1
-AnnotationAtts.axes2D.yAxis.label.font.scale = tick_label_scale
+AnnotationAtts.axes2D.yAxis.label.visible = 0
+AnnotationAtts.axes2D.yAxis.label.font.scale = ticks_label_scale
 AnnotationAtts.axes2D.yAxis.label.font.font = AnnotationAtts.axes2D.yAxis.label.font.Times  # Arial, Courier, Times
 AnnotationAtts.userInfoFlag = 0
 AnnotationAtts.databaseInfoFlag = 0
@@ -136,16 +139,25 @@ legend.yScale = 3.2
 legend.managePosition = 0
 legend.position = (0.82, 0.95)
 # the font.
+legend.numberFormat = "%.3f"
 legend.fontFamily = legend.Times
 legend.fontBold = 0
 legend.fontItalic = 0
 legend.drawTitle = 0
-legend.fontHeight = 0.035
+legend.fontHeight = 0.05
+legend.drawMinMax = 0
+# number format
+# turning off the labels.
+legend.drawLabels = 1
+legend.drawMinMax = 0
+ 
+# turning off the title.
+legend.drawTitle = 0
 
 # Set viewing attributes
 View2DAtts = View2DAttributes()
-View2DAtts.windowCoords = (0.5*(L-width), 0.5*(L+width), 0.5*(L-width), 0.5*(L+width))
-View2DAtts.viewportCoords = (0.15, 0.85, 0.12, 0.95)
+View2DAtts.windowCoords = (512-0.5*width, 512+0.5*width, 512-0.5*width, 512+0.5*width)
+View2DAtts.viewportCoords = (0.02+AnnotationAtts.axes2D.xAxis.title.visible, 0.9, 0.15, 1.0)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
 View2DAtts.xScale = View2DAtts.LINEAR  # LINEAR, LOG
@@ -154,7 +166,7 @@ View2DAtts.windowValid = 1
 SetView2D(View2DAtts)
 
 # save plot as png
-filename = "BBH_SF_rho_" + subdir + "_n%06d" % number 
+filename = "BBH_SF_rho_" + subdir + "_n%06d" % number + "_width%d" % width + "_v2"
 s = SaveWindowAttributes()
 s.family=0
 s.format = s.PNG

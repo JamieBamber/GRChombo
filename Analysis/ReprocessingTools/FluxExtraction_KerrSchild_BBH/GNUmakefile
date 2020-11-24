@@ -10,13 +10,14 @@ ebase := ReprocessingTool
 
 LibNames := AMRTimeDependent AMRTools BoxTools
 
-GRCHOMBO_SOURCE = /home/dc-bamb1/GRChombo/Source
+GRCHOMBO_SOURCE = /cosma/home/dp174/dc-bamb1/GRChombo/Source
 
 src_dirs := $(GRCHOMBO_SOURCE)/utils \
             $(GRCHOMBO_SOURCE)/simd  \
             $(GRCHOMBO_SOURCE)/BoxUtils  \
             $(GRCHOMBO_SOURCE)/CCZ4  \
             $(GRCHOMBO_SOURCE)/GRChomboCore  \
-            $(GRCHOMBO_SOURCE)/AMRInterpolator
+            $(GRCHOMBO_SOURCE)/AMRInterpolator \
+	    $(GRCHOMBO_SOURCE)/BlackHoles
 
 include $(CHOMBO_HOME)/mk/Make.test

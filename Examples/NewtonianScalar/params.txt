@@ -4,7 +4,6 @@ verbosity = 0
 integral_filename = RhoIntegral
 chk_prefix = DATADIR/Newton_chk
 plot_prefix = DATADIR/Newton_plt
-#restart_file = DATADIR/Newton_chk003125.3d.hdf5
 
 # Set up grid spacings and regrid params
 # NB - the N values need to be multiples of block_factor
@@ -44,7 +43,6 @@ isPeriodic = 0 0 0
 # (see BoundaryConditions.hpp for details)
 hi_boundary = 3 3 3
 lo_boundary = 3 3 2
-#center = 512.0 512.0 0.0
 
 # if reflective boundaries selected, must select 
 # parity values (in order given by UserVariables.hpp)

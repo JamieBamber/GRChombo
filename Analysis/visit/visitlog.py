@@ -1,26 +1,68 @@
-# Visit 3.1.0 log file
-ScriptVersion = "3.1.0"
+# Visit 2.13.3 log file
+ScriptVersion = "2.13.3"
 if ScriptVersion != Version():
     print "This script is for VisIt %s. It may not work with version %s" % (ScriptVersion, Version())
 ShowAllWindows()
-OpenDatabase("/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/run0005_FlatScalar_mu1_G0/BinaryBHSFPlot_000210.3d.hdf5", 0)
+SetActivePlots()
+DeleteActivePlots()
+OpenDatabase("/cosma6/data/dp174/dc-bamb1/GRChombo_data/NewtonianBinaryBHScalar/run0001_M0.1_d10_mu0.014142136_dt_mult0.25/Newton_plt016000.3d.hdf5", 0)
 # The UpdateDBPluginInfo RPC is not supported in the VisIt module so it will not be logged.
-AddPlot("Pseudocolor", "phi", 1, 1)
+DefineScalarExpression("operators/ConnectedComponents/Mesh", "cell_constant(<Mesh>, 0.)")
+DefineCurveExpression("operators/DataBinning/1D/Mesh", "cell_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/DataBinning/2D/Mesh", "cell_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/DataBinning/3D/Mesh", "cell_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/Flux/Mesh", "cell_constant(<Mesh>, 0.)")
+DefineCurveExpression("operators/Lineout/phi_Re", "cell_constant(<phi_Re>, 0.)")
+DefineCurveExpression("operators/Lineout/chi", "cell_constant(<chi>, 0.)")
+DefineCurveExpression("operators/Lineout/rho", "cell_constant(<rho>, 0.)")
+DefineCurveExpression("operators/Lineout/rhoJ", "cell_constant(<rhoJ>, 0.)")
+DefineCurveExpression("operators/Lineout/Edot", "cell_constant(<Edot>, 0.)")
+DefineScalarExpression("operators/ModelFit/model", "point_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/ModelFit/distance", "point_constant(<Mesh>, 0)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/phi_Re", "cell_constant(<phi_Re>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/rhoJ", "cell_constant(<rhoJ>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Sum/Edot", "cell_constant(<Edot>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/phi_Re", "cell_constant(<phi_Re>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/rhoJ", "cell_constant(<rhoJ>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Mean/Edot", "cell_constant(<Edot>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/phi_Re", "cell_constant(<phi_Re>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/rhoJ", "cell_constant(<rhoJ>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Variance/Edot", "cell_constant(<Edot>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./phi_Re", "cell_constant(<phi_Re>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./rhoJ", "cell_constant(<rhoJ>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Std. Dev./Edot", "cell_constant(<Edot>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/phi_Re", "cell_constant(<phi_Re>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/rhoJ", "cell_constant(<rhoJ>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Slope/Edot", "cell_constant(<Edot>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/phi_Re", "cell_constant(<phi_Re>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/chi", "cell_constant(<chi>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/rho", "cell_constant(<rho>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/rhoJ", "cell_constant(<rhoJ>, 0.)")
+DefineScalarExpression("operators/StatisticalTrends/Residuals/Edot", "cell_constant(<Edot>, 0.)")
+DefineVectorExpression("operators/SurfaceNormal/Mesh", "cell_constant(<Mesh>, 0.)")
+DefineScalarExpression("norm_rho", "rho/(0.5*(0.014142136*0.014142136))")
+AddPlot("Pseudocolor", "norm_rho", 1, 1)
 PseudocolorAtts = PseudocolorAttributes()
-PseudocolorAtts.scaling = PseudocolorAtts.Linear  # Linear, Log, Skew
+PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
 PseudocolorAtts.skewFactor = 1
 PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData  # OriginalData, CurrentPlot
 PseudocolorAtts.minFlag = 1
-PseudocolorAtts.min = -8
-PseudocolorAtts.useBelowMinColor = 0
-PseudocolorAtts.belowMinColor = (0, 0, 0, 255)
+PseudocolorAtts.min = 0.01
 PseudocolorAtts.maxFlag = 1
-PseudocolorAtts.max = 8
-PseudocolorAtts.useAboveMaxColor = 0
-PseudocolorAtts.aboveMaxColor = (0, 0, 0, 255)
+PseudocolorAtts.max = 1000
 PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-PseudocolorAtts.colorTableName = "RdBu"
-PseudocolorAtts.invertColorTable = 1
+PseudocolorAtts.colorTableName = "inferno"
+PseudocolorAtts.invertColorTable = 0
 PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 PseudocolorAtts.opacityVariable = ""
 PseudocolorAtts.opacity = 1
@@ -33,6 +75,7 @@ PseudocolorAtts.pointType = PseudocolorAtts.Point  # Box, Axis, Icosahedron, Oct
 PseudocolorAtts.pointSizeVarEnabled = 0
 PseudocolorAtts.pointSizeVar = "default"
 PseudocolorAtts.pointSizePixels = 2
+PseudocolorAtts.lineStyle = PseudocolorAtts.SOLID  # SOLID, DASH, DOT, DOTDASH
 PseudocolorAtts.lineType = PseudocolorAtts.Line  # Line, Tube, Ribbon
 PseudocolorAtts.lineWidth = 0
 PseudocolorAtts.tubeResolution = 10
@@ -81,7 +124,7 @@ SliceAtts.originNodeDomain = 0
 SliceAtts.meshName = "default"
 SliceAtts.theta = 0
 SliceAtts.phi = 0
-SetOperatorOptions(SliceAtts, 0, 1)
+SetOperatorOptions(SliceAtts, 1)
 SetActivePlots(0)
 silr = SILRestriction()
 silr.TurnOnAll()
@@ -94,7 +137,7 @@ AnnotationAtts.axes2D.autoSetScaling = 1
 AnnotationAtts.axes2D.lineWidth = 0
 AnnotationAtts.axes2D.tickLocation = AnnotationAtts.axes2D.Outside  # Inside, Outside, Both
 AnnotationAtts.axes2D.tickAxes = AnnotationAtts.axes2D.BottomLeft  # Off, Bottom, Left, BottomLeft, All
-AnnotationAtts.axes2D.xAxis.title.visible = 1
+AnnotationAtts.axes2D.xAxis.title.visible = 0
 AnnotationAtts.axes2D.xAxis.title.font.font = AnnotationAtts.axes2D.xAxis.title.font.Times  # Arial, Courier, Times
 AnnotationAtts.axes2D.xAxis.title.font.scale = 2
 AnnotationAtts.axes2D.xAxis.title.font.useForegroundColor = 1
@@ -107,7 +150,7 @@ AnnotationAtts.axes2D.xAxis.title.title = "X-Axis"
 AnnotationAtts.axes2D.xAxis.title.units = ""
 AnnotationAtts.axes2D.xAxis.label.visible = 1
 AnnotationAtts.axes2D.xAxis.label.font.font = AnnotationAtts.axes2D.xAxis.label.font.Times  # Arial, Courier, Times
-AnnotationAtts.axes2D.xAxis.label.font.scale = 1.7
+AnnotationAtts.axes2D.xAxis.label.font.scale = 2.5
 AnnotationAtts.axes2D.xAxis.label.font.useForegroundColor = 1
 AnnotationAtts.axes2D.xAxis.label.font.color = (0, 0, 0, 255)
 AnnotationAtts.axes2D.xAxis.label.font.bold = 0
@@ -119,7 +162,7 @@ AnnotationAtts.axes2D.xAxis.tickMarks.majorMaximum = 1
 AnnotationAtts.axes2D.xAxis.tickMarks.minorSpacing = 0.02
 AnnotationAtts.axes2D.xAxis.tickMarks.majorSpacing = 0.2
 AnnotationAtts.axes2D.xAxis.grid = 0
-AnnotationAtts.axes2D.yAxis.title.visible = 1
+AnnotationAtts.axes2D.yAxis.title.visible = 0
 AnnotationAtts.axes2D.yAxis.title.font.font = AnnotationAtts.axes2D.yAxis.title.font.Times  # Arial, Courier, Times
 AnnotationAtts.axes2D.yAxis.title.font.scale = 2
 AnnotationAtts.axes2D.yAxis.title.font.useForegroundColor = 1
@@ -132,7 +175,7 @@ AnnotationAtts.axes2D.yAxis.title.title = "Y-Axis"
 AnnotationAtts.axes2D.yAxis.title.units = ""
 AnnotationAtts.axes2D.yAxis.label.visible = 1
 AnnotationAtts.axes2D.yAxis.label.font.font = AnnotationAtts.axes2D.yAxis.label.font.Times  # Arial, Courier, Times
-AnnotationAtts.axes2D.yAxis.label.font.scale = 1.7
+AnnotationAtts.axes2D.yAxis.label.font.scale = 2.5
 AnnotationAtts.axes2D.yAxis.label.font.useForegroundColor = 1
 AnnotationAtts.axes2D.yAxis.label.font.color = (0, 0, 0, 255)
 AnnotationAtts.axes2D.yAxis.label.font.bold = 0
@@ -229,12 +272,6 @@ AnnotationAtts.axes3D.zAxis.tickMarks.majorSpacing = 0.2
 AnnotationAtts.axes3D.zAxis.grid = 0
 AnnotationAtts.axes3D.setBBoxLocation = 0
 AnnotationAtts.axes3D.bboxLocation = (0, 1, 0, 1, 0, 1)
-AnnotationAtts.axes3D.triadColor = (0, 0, 0)
-AnnotationAtts.axes3D.triadLineWidth = 1
-AnnotationAtts.axes3D.triadFont = 0
-AnnotationAtts.axes3D.triadBold = 1
-AnnotationAtts.axes3D.triadItalic = 1
-AnnotationAtts.axes3D.triadSetManually = 0
 AnnotationAtts.userInfoFlag = 0
 AnnotationAtts.userInfoFont.font = AnnotationAtts.userInfoFont.Arial  # Arial, Courier, Times
 AnnotationAtts.userInfoFont.scale = 1
@@ -305,7 +342,7 @@ SetAnnotationAttributes(AnnotationAtts)
 # Logging for SetAnnotationObjectOptions is not implemented yet.
 # Begin spontaneous state
 View2DAtts = View2DAttributes()
-View2DAtts.windowCoords = (224, 288, 224, 288)
+View2DAtts.windowCoords = (96, 160, 96, 160)
 View2DAtts.viewportCoords = (0.15, 0.85, 0.12, 0.95)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
@@ -316,7 +353,7 @@ SetView2D(View2DAtts)
 # End spontaneous state
 
 View2DAtts = View2DAttributes()
-View2DAtts.windowCoords = (224, 288, 224, 288)
+View2DAtts.windowCoords = (96, 160, 96, 160)
 View2DAtts.viewportCoords = (0.15, 0.85, 0.12, 0.95)
 View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 View2DAtts.fullFrameAutoThreshold = 100
@@ -327,9 +364,9 @@ SetView2D(View2DAtts)
 SaveWindowAtts = SaveWindowAttributes()
 SaveWindowAtts.outputToCurrentDirectory = 1
 SaveWindowAtts.outputDirectory = "."
-SaveWindowAtts.fileName = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/Binary_BH/BBH_run0005/BBH_SF_phi_run0005_FlatScalar_mu1_G0_n000210"
+SaveWindowAtts.fileName = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/Newtonian_Binary_BH/Newtonian_BBH_SF_rho_run0001_M0.1_d10_mu0.014142136_dt_mult0.25_n016000"
 SaveWindowAtts.family = 0
-SaveWindowAtts.format = SaveWindowAtts.PNG  # BMP, CURVE, JPEG, OBJ, PNG, POSTSCRIPT, POVRAY, PPM, RGB, STL, TIFF, ULTRA, VTK, PLY, EXR
+SaveWindowAtts.format = SaveWindowAtts.PNG  # BMP, CURVE, JPEG, OBJ, PNG, POSTSCRIPT, POVRAY, PPM, RGB, STL, TIFF, ULTRA, VTK, PLY
 SaveWindowAtts.width = 512
 SaveWindowAtts.height = 412
 SaveWindowAtts.screenCapture = 0
@@ -338,10 +375,9 @@ SaveWindowAtts.quality = 80
 SaveWindowAtts.progressive = 1
 SaveWindowAtts.binary = 0
 SaveWindowAtts.stereo = 0
-SaveWindowAtts.compression = SaveWindowAtts.None  # None, PackBits, Jpeg, Deflate, LZW
+SaveWindowAtts.compression = SaveWindowAtts.None  # None, PackBits, Jpeg, Deflate
 SaveWindowAtts.forceMerge = 0
 SaveWindowAtts.resConstraint = SaveWindowAtts.NoConstraint  # NoConstraint, EqualWidthHeight, ScreenProportions
-SaveWindowAtts.pixelData = 1
 SaveWindowAtts.advancedMultiWindowSave = 0
 SaveWindowAtts.subWindowAtts.win1.position = (0, 0)
 SaveWindowAtts.subWindowAtts.win1.size = (128, 128)
@@ -423,7 +459,5 @@ SaveWindowAtts.subWindowAtts.win16.size = (128, 128)
 SaveWindowAtts.subWindowAtts.win16.layer = 0
 SaveWindowAtts.subWindowAtts.win16.transparency = 0
 SaveWindowAtts.subWindowAtts.win16.omitWindow = 0
-SaveWindowAtts.opts.types = ()
-SaveWindowAtts.opts.help = ""
 SetSaveWindowAttributes(SaveWindowAtts)
 SaveWindow()

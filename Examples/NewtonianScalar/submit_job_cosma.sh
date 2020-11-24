@@ -17,21 +17,32 @@ data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/NewtonianBinaryBHScalar
 # period = 95.7695
 # dt = 2 * dt_multiplier
 
-run0001=(0.1 10 0.014142136 0.25)
-run0002=(0.1 10 0.005 0.25)
-run0003=(0.1 10 0.02 0.25)
-run0004=(0.1 10 0.1 0.25)
+# M = 0.1, d = 20 gives omega_binary = 0.005
+
+run0001=(0.1 20 0.014142136 0.25)
+run0002=(0.1 20 0.005 0.25)
+run0003=(0.1 20 0.02 0.25)
+run0004=(0.1 20 0.1 0.25)
+run0005=(0.1 20 0.01 0.25)
+run0006=(0.1 20 0.5 0.0625)
+#
+run0007=(0.2 10 0.02 0.5)
+run0008=(0.2 10 0.025 0.5)
+run0009=(0.2 10 0.015 0.5)
+run0010=(0.2 10 0.01 0.5)
+run0011=(0.2 10 0.03 0.5)
 
 params_file=params.txt
 
 run_list=(
-	run0001
-	run0002
-	run0003
-	run0004
+	run0007
+	run0008
+	run0009
+	run0010
+	run0011
 )
 
-plot_interval=50
+plot_interval=10
 L=256
 N1=128
 box_size=16

@@ -8,7 +8,7 @@ verbosity = 0
 nan_check = 0
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
-restart_file = DATADIR/BinaryBHSFChk_000600.3d.hdf5
+#restart_file = DATADIR/BinaryBHSFChk_000600.3d.hdf5
 
 num_plot_vars = 7 
 plot_vars = chi phi Pi rho rho_azimuth J_R J_azimuth_R

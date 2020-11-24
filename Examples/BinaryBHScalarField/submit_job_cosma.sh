@@ -12,19 +12,25 @@ data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/BinaryBHSF
 # specify the input params for each run I want to submit
 # list for each is: mu, delay, dt, G, BH mass ratio
 
-run0001=(1 0 0.125 0 1)
-run0002=(1 10000 0.125 0 1)
+run0011=(1 0 0.0625 0 1)
+run0012=(1 10000 0.0625 0 1)
 run0003=(0.08187607564 0 0.25 0 1)
-run0004=(1 0 0.125 0 2)
-run0005=(1 10000 0.125 0 2)
-run0006=(0.5 0 0.25 0 1)
-run0007=(0.5 10000 0.25 0 1)
-run0008=(0.5 0 0.25 0.000001 1)
+run0014=(1 0 0.0625 0 2)
+run0015=(1 10000 0.0625 0 2)
+run0016=(0.5 0 0.25 0 1)
+run0017=(0.5 10000 0.25 0 1)
+run0018=(0.5 0 0.25 0.000001 1)
 
 params_file=params.txt
 
 run_list=(
-	run0001
+	run0011
+	run0012
+	run0014
+	run0015
+	run0016
+	run0017
+	run0018
 )
 
 plot_interval=10
@@ -44,7 +50,7 @@ do
         val="$run[4]"; ratio="${!val}"
 
         # text_number=$(printf "%04d" ${run_number})
-        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_v8
+        new_dir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}
         #_L${L}_N$N1
         echo ${new_dir}
         new_dir_path=${data_directory}/${new_dir}

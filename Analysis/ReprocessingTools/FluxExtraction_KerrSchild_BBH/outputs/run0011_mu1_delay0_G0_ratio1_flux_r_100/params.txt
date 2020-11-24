@@ -1,0 +1,65 @@
+### parameters file for Ylm integration
+
+#Params for runtime inputs
+N1 = 64
+N2 = 64
+N3 = NSPACE3
+L = 512
+max_level = 7 # There are (max_level+1) grids, so min is zero
+dt_multiplier = 0.0625
+
+# For read in of files
+data_rootdir = /cosma6/data/dp174/dc-bamb1/GRChombo_data/BinaryBHSF/
+data_subdir = run0011_mu1_delay0_G0_ratio1
+
+# output directory 
+output_rootdir = /cosma/home/dp174/dc-bamb1/GRChombo/Analysis/flux_data_BBH/
+
+# Files parameters
+chk_prefix = BinaryBHSFChk_
+plot_prefix = BinaryBHSFPlot_
+# restart_file = KerrSFp_000000.3d.hdf5
+plot_interval = 50
+start_number = 0
+end_number = 200000
+suffix = _r_100
+resume = 0
+
+# integration parameters
+num_points_phi = 36
+num_points_theta = 24
+extraction_center = 256 256 0
+center = 256 256 0
+extraction_radius = 100
+extraction_level = 0
+num_modes = 1
+modes = 0 0
+num_points_phi = 36
+num_points_theta = 24
+
+# if not periodic, then specify the boundary type
+# 0 = static, 1 = sommerfeld, 2 = reflective, 3 = extrapolating
+# 4 = mixed, 5 = fudge
+# (see BoundaryConditions.hpp for details)
+hi_boundary = 4 4 4
+lo_boundary = 4 4 2
+
+# if reflective boundaries selected, must select
+# parity values (in order given by UserVariables.hpp)
+# 0 = even
+# 1,2,3 = odd x, y, z
+# 4,5,6 = odd xy, yz, xz
+vars_parity            = 0 0 0 0   #phi and Pi
+vars_parity_diagnostic = 0 0 0 0 0 0 0 0    #chi and rho rhoJ
+
+#
+theta_min = 0
+theta_max = THETAMAX
+
+# From here it is mostly dummy params
+verbosity = 0
+nan_check = 0
+regrid_interval = 0 0 0 128 64 64 64 32 16 0
+max_grid_size = 16
+block_factor = 16
+isPeriodic = 0 0 0 
