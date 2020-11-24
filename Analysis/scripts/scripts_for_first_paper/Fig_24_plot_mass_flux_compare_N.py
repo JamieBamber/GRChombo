@@ -264,7 +264,7 @@ def plot_graph():
 			save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_N_differential.png".format(R_max)
 		elif not differential:
 			save_path = home_path + "plots/plots_for_first_paper/Fig_24_mass_flux_in_R{:.0f}_IsoKerr_compare_N.png".format(R_max)
-	ax1.legend(loc='best', fontsize=legend_font_size, ncol=3, labelspacing=0.2, handletextpad=0, columnspacing=1)
+	ax1.legend(loc='best', fontsize=legend_font_size, ncol=3, labelspacing=0.2, handletextpad=0, borderaxespad=0.2, columnspacing=1)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()
