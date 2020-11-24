@@ -311,7 +311,7 @@ def plot_graph():
 			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99$ \n $l=|m|=1$; diff from $\\alpha=0$", wrap=True, fontsize=title_font_size)
 		else:
 			ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
-			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99,l=|m|=1$", wrap=True, fontsize=title_font_size)			
+			ax1.set_title("Cumulative mass flux, $M=1,\\mu=0.4,\\chi=0.99$,\n$l=|m|=1$", wrap=True, fontsize=title_font_size)			
 			save_path = home_path + "plots/plots_for_first_paper/Fig_16_mass_flux_in_R{:.0f}_IsoKerr_compare_Al_cumulative.png".format(R_max)
 	else:
 		if diff_from_alpha0:

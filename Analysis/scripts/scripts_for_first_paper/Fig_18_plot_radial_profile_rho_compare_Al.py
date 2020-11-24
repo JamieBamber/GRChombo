@@ -194,7 +194,7 @@ def plot_graph():
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	dd0 = data_dirs[0]
-	title = "$\\rho$" + " profile $M=1,\\mu=0.4,l=|m|=1,\\chi=0.99,\\tau=" + str(dd0.time*dd0.mu) + "$" 
+	title = "$\\rho$" + " profile $M=1,\\mu=0.4,l=|m|=1$,\n$\\chi=0.99,\\tau=" + str(dd0.time*dd0.mu) + "$" 
 	ax1.set_title(title, fontsize=title_font_size)
 	plt.tight_layout()
 	if log_y:
