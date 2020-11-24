@@ -202,7 +202,7 @@ def plot_graph():
 	# plot setup
 	ax1 = plt.axes()
 	fig = plt.gcf()
-	fig.set_size_inches(3.8,3)
+	fig.set_size_inches(3.375,3)
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
@@ -231,7 +231,7 @@ def plot_graph():
 	ax1.set_xlim((0, 150))
 	if cumulative:
 		ax1.set_ylabel("$\\log_{2}(|\\Delta M_{cloud} - $cumulative flux$|/E_0)$", fontsize=label_size)
-		ax1.set_title("Mass and flux agreement, $M=1,\\mu=0.4,\\chi=0.7,l=m=8$", wrap=True, fontsize=title_font_size)
+		ax1.set_title("Mass and flux agreement, $M=1,\\mu=0.4$,\n$\\chi=0.7,l=m=8$", wrap=True, fontsize=title_font_size)
 		save_path = home_path + "plots/plots_for_first_paper/Fig_22_mass_flux_in_R{:.0f}_IsoKerr_compare_N_with_mass_cumulative.png".format(R_max)
 	else:
 		ax1.set_ylabel("$\\log_{10}(|\\dot{M}_{cloud}-$flux$|/E_0)$", fontsize=label_size)

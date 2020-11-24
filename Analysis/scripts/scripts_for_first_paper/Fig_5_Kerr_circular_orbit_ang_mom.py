@@ -58,10 +58,10 @@ L = particle_Lz(q0, a)
 # plot setup
 ax1 = plt.axes()
 fig = plt.gcf()
-fig.set_size_inches(4,3.5)
+fig.set_size_inches(3.375,3)
 font_size = 10
 title_font_size = 10
-label_size = 11
+label_size = 10
 legend_font_size = 9
 rc('xtick',labelsize=font_size)
 rc('ytick',labelsize=font_size)
@@ -70,7 +70,7 @@ for i in range(0,len(Mmu_list)):
 	Mmu = Mmu_list[i]
 	Lexp = field_Lz(q0, Mmu, a, 1)
 	ax1.plot(q0, Lexp, colours[i], label="$\\mu=${:.2f}".format(Mmu), linewidth=1) 
-plt.legend(fontsize=legend_font_size, ncol=2)
+plt.legend(fontsize=legend_font_size, ncol=2,labelspacing=0.2, handletextpad=0.1)
 plt.xlabel("$r_{BL}/M$", fontsize=label_size)
 plt.ylabel("$L_z/M$", fontsize=label_size)
 plt.ylim((-1, 7.5))

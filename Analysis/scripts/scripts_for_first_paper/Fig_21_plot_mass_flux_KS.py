@@ -174,7 +174,7 @@ def plot_graph():
 	# plot setup
 	ax1 = plt.axes()
 	fig = plt.gcf()
-	fig.set_size_inches(3.8,3)
+	fig.set_size_inches(3.375,3)
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
@@ -208,7 +208,7 @@ def plot_graph():
         #ax1.set_ylim((0, 0.00001))
 	if cumulative:
 		ax1.set_ylabel("cumulative flux / $E_0$", fontsize=label_size)
-		plt.title("Cumulative mass flux $M=1,\\mu=0.05,\\chi=0,l=m=0$", fontsize=title_font_size)
+		plt.title("Cumulative mass flux $M=1,\\mu=0.05$,\n$\\chi=0,l=m=0$", fontsize=title_font_size)
 		save_path = home_path + "plots/plots_for_first_paper/Fig_21_mass_flux_Kerr_Schild_cumulative_compare_r_plus_to_500_agreement.png"
 		ax1.legend(loc='best', handletextpad=1, fontsize=legend_font_size)
 	else:

@@ -49,7 +49,7 @@ Theta_max="1.0"
 Ntheta=18
 Nphi=64
 tau_or_t=True
-not_E0=False
+not_E0=True
 
 # appropriate \int Ylm Ylm^* cos(2 theta) sin(theta) dtheta dphi factor for 0 <= l <= 10
 cos2theta_integrals = [[-(1/3)],[1/5,-(3/5)],[1/21,-(1/7),-(5/7)],\
@@ -206,7 +206,7 @@ def plot_graph():
 	# plot setup
 	ax1 = plt.axes()
 	fig = plt.gcf()
-	fig.set_size_inches(3.8,3)
+	fig.set_size_inches(3.375,3)
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
@@ -270,4 +270,5 @@ def plot_graph():
 	plt.clf()
 	
 plot_graph()
+
 

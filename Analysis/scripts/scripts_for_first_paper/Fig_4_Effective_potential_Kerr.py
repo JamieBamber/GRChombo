@@ -87,11 +87,11 @@ almmu = [(a, 1, 1, 0.1), (a, 1, 1, 0.4), (a, 1, 1, 0.5), (a, 0, 0, 0.4), (a, 1, 
 # plot setup
 ax1 = plt.axes()
 fig = plt.gcf()
-fig.set_size_inches(3.9,3.5)
+fig.set_size_inches(3.375,3)
 font_size = 10
 title_font_size = 10
-label_size = 11
-legend_font_size = 9
+label_size = 10
+legend_font_size = 8
 #rc('xtick',labelsize=font_size)
 #rc('ytick',labelsize=font_size)
 for i in range(0, len(almmu)):
@@ -108,6 +108,8 @@ plt.ylabel("$V_{eff} - \\mu^2$", fontsize=label_size)
 plt.xlabel("$r_*$", fontsize=label_size)
 plt.legend(fontsize=legend_font_size)
 plt.title("Quasi-effective potential for a Kerr Black Hole", fontsize=title_font_size)
+plt.xticks(fontsize=font_size)
+plt.yticks(fontsize=font_size)
 plt.tight_layout()
 plot_path = "/home/dc-bamb1/GRChombo/Analysis/plots/plots_for_first_paper/"
 save_name = "Fig_4_Effective_Kerr_potential.png"

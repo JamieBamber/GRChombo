@@ -86,10 +86,10 @@ almmu = [(0, 1, 1, 0.4), (0, 2, 2, 0.4), (0, 1, 1, 0.05), (0, 1, 1, 0.5), (0, 0,
 # plot setup
 ax1 = plt.axes()
 fig = plt.gcf()
-fig.set_size_inches(3.8,3.5)
+fig.set_size_inches(3.375,3.5)
 font_size = 10
 title_font_size = 10
-label_size = 11
+label_size = 10
 legend_font_size = 8
 #rc('xtick',labelsize=font_size)
 #rc('ytick',labelsize=font_size)

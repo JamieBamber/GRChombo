@@ -46,7 +46,7 @@ average_time=False
 av_n = 1
 plot_mass=False
 cumulative=False
-differential=True
+differential=False
 Theta_max="0.99"
 Ntheta=64
 Nphi=64
@@ -204,7 +204,7 @@ def plot_graph():
 	# plot setup
 	ax1 = plt.axes()
 	fig = plt.gcf()
-	fig.set_size_inches(3.8,3)
+	fig.set_size_inches(3.375,3)
 	font_size = 10
 	title_font_size = 10
 	label_size = 10

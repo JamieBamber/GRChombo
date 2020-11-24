@@ -195,11 +195,11 @@ def plot_graph():
 	# plot setup
 	ax1 = plt.axes()
 	fig = plt.gcf()
-	fig.set_size_inches(3.8,3)
+	fig.set_size_inches(3.375,3)
 	font_size = 10
 	title_font_size = 10
 	label_size = 10
-	legend_font_size = 8
+	legend_font_size = 9
 	rc('xtick',labelsize=font_size)
 	rc('ytick',labelsize=font_size)
 	#
@@ -239,7 +239,7 @@ def plot_graph():
 		ax1.set_ylabel("flux / $E_0$", fontsize=label_size)
 		plt.title("Mass flux, $M=1$, $\\mu=0.4$, $\\chi=0.7$")
 		save_path = home_path + "plots/mass_flux_in_R{:.0f}_IsoKerr_compare_lm.png".format(R_max)
-	ax1.legend(loc='upper left', ncol=2, fontsize=legend_font_size)
+	ax1.legend(loc='upper left', ncol=2, fontsize=legend_font_size, labelspacing=0.2, handletextpad=0.2)
 	plt.xticks(fontsize=font_size)
 	plt.yticks(fontsize=font_size)
 	plt.tight_layout()
