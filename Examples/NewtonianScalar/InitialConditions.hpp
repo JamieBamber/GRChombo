@@ -54,6 +54,7 @@ class InitialConditions
 //        const data_t det_gamma =
 //            TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
 
+
         data_t phi_Re = m_amplitude_re;
         data_t Pi_Im = m_amplitude_im * m_omega;
 

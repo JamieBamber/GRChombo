@@ -14,7 +14,7 @@ data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/BinaryBHSF
 
 run0011=(1 0 0.0625 0 1)
 run0012=(1 10000 0.0625 0 1)
-run0003=(0.08187607564 0 0.25 0 1)
+run0013=(0.08187607564 0 0.25 0 1)
 run0014=(1 0 0.0625 0 2)
 run0015=(1 10000 0.0625 0 2)
 run0016=(0.5 0 0.25 0 1)
@@ -24,8 +24,7 @@ run0018=(0.5 0 0.25 0.000001 1)
 params_file=params.txt
 
 run_list=(
-	run0011
-	run0012
+	run0013
 	run0014
 	run0015
 	run0016

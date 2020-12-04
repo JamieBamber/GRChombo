@@ -14,9 +14,6 @@
 enum
 {
     c_phi_Re, // matter field added
-    c_Pi_Re,  //(minus) conjugate momentum
-    c_phi_Im, // matter field added
-    c_Pi_Im,  //(minus) conjugate momentum
 
     NUM_VARS
 };
@@ -24,7 +21,7 @@ enum
 namespace UserVariables
 {
 static const std::array<std::string, NUM_VARS> variable_names = {
-    "phi_Re", "Pi_Re", "phi_Im", "Pi_Im"};
+    "phi_Re"};
 }
 
 #include "UserVariables.inc.hpp"

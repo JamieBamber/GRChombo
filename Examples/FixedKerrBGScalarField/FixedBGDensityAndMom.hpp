@@ -16,6 +16,7 @@
 #include "UserVariables.hpp" //This files needs NUM_VARS - total number of components
 #include "VarsTools.hpp"
 #include "simd.hpp"
+#include "parstream.H"
 
 //! Calculates the density rho with type matter_t and writes it to the grid
 template <class matter_t, class background_t> class FixedBGDensityAndMom
@@ -50,7 +51,7 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
         const auto vars = current_cell.template load_vars<MatterVars>();
         const auto d1 = m_deriv.template diff1<MatterVars>(current_cell);
 
-        // get the metric vars from the background
+	// get the metric vars from the background
         MetricVars<data_t> metric_vars;
         const Coordinates<data_t> coords(current_cell, m_dx, m_center);
         m_background.compute_metric_background(metric_vars, coords);
@@ -61,31 +62,58 @@ template <class matter_t, class background_t> class FixedBGDensityAndMom
             compute_christoffel(metric_vars.d1_gamma, gamma_UU);
         const emtensor_t<data_t> emtensor = m_matter.compute_emtensor(
             vars, metric_vars, d1, gamma_UU, chris_phys.ULL);
+	const data_t det_gamma = 
+            TensorAlgebra::compute_determinant_sym(metric_vars.gamma);
 
-	// find angular momentum in Kerr BH direction and the cloud spin direction
-	data_t x = coords.x;
+	// coordinates
+        data_t x = coords.x;
         double y = coords.y;
-        double z = coords.z;	
-        // perform rotation about x axis by the alignment angle
-        double cos_alignment = cos(m_alignment*M_PI);
-        double sin_alignment = sin(m_alignment*M_PI);
-        double y_prime = y * cos_alignment + z * sin_alignment;
+        double z = coords.z;    
+	data_t R = coords.get_radius();
 
-	// S_azimuth = x * S_y - y * S_z
-	// S_azimuth_prime = x(S_y cos(alignment) + S_z sin(alignment)) - yprime * S_x
-	data_t S_azimuth = x * emtensor.Si[1] - y * emtensor.Si[0];
-	data_t S_azimuth_prime = x*(cos_alignment*emtensor.Si[1] + sin_alignment*emtensor.Si[2]) - y_prime*emtensor.Si[0];
+        // conserved rho = -sqrt(-g)T^0_0 = sqrt(det_gamma)*(alpha*rho_3+1 - beta^i * S_i)
+        data_t rho = metric_vars.lapse*emtensor.rho;
+        FOR1(k){ rho += -metric_vars.shift[k]*emtensor.Si[k];   }
+        rho = rho*sqrt(det_gamma);
 
-	// fine the inward radial momentum (i.e. radial mass flux density)
-	// S_r = (x * S_x + y * S_y + z * S_z)/r
-	data_t r = coords.get_radius();
-	data_t S_r = -(x * emtensor.Si[0] + y * emtensor.Si[1] + z * emtensor.Si[2])/r;
+	// conserved j^i = -sqrt(-g)T^i_0 = det(gamma)*alpha*gamma^ij[ alpha * S_j - beta^k S_kj ] for the cartesian coordinates
+        Tensor<1, data_t> Sbeta; 
+        FOR2(i, j){ Sbeta[i] += metric_vars.shift[j]*emtensor.Sij[i][j]; }                      
+        Tensor<1, data_t> J; 
+        FOR2(i, j){ J[i] += sqrt(det_gamma)*metric_vars.lapse*( gamma_UU[i][j]*(metric_vars.lapse*emtensor.Si[j] - Sbeta[j]) ); }
+	FOR1(i) { J[i] += - metric_vars.shift[i] * rho; }
+	
+        // conserved rho_azimuth = |gamma|(x * S_y - y * S_z)
+        data_t rho_azimuth = (x * emtensor.Si[1] - y * emtensor.Si[0]) * sqrt(det_gamma);
+
+	// d x / d azimuth
+        Tensor<1, data_t> dxdaz;
+        dxdaz[0] = - y;
+        dxdaz[1] =   x;
+        dxdaz[2] = 0;
+	// outward radial vector (cartesian radius direction)
+        Tensor<1, data_t> NRi;
+        NRi[0] = x/R;
+        NRi[1] = y/R;
+        NRi[2] = z/R;
+
+	Tensor<1, data_t> Siaz;
+        FOR2(i,j) { Siaz[i] += emtensor.Sij[i][j]*dxdaz[j]; }
+        Tensor<1, data_t> J_azimuth;
+        FOR2(i, j) { J_azimuth[i] += sqrt(det_gamma)*metric_vars.lapse*gamma_UU[i][j]*Siaz[j]; } 
+        FOR1(i) { J_azimuth[i] += - metric_vars.shift[i] * rho_azimuth; } 
+
+	// cartesian projection of the 3-current momentum vectors in the R unit direction
+	data_t J_R = 0;
+	FOR1(j) { J_R += NRi[j]*J[j]; }
+	data_t J_azimuth_R = 0;
+        FOR1(i) { J_azimuth_R += J_azimuth[i] * NRi[i]; }
 
         // assign values of density in output box
-        current_cell.store_vars(emtensor.rho, c_rho);
-	current_cell.store_vars(S_azimuth, c_S_azimuth);
-	current_cell.store_vars(S_azimuth_prime, c_S_azimuth_prime);
-	current_cell.store_vars(S_r, c_S_r);
+        current_cell.store_vars(rho, c_rho);
+        current_cell.store_vars(rho_azimuth, c_rho_azimuth);
+        current_cell.store_vars(J_R, c_J_R);
+        current_cell.store_vars(J_azimuth_R, c_J_azimuth_R);
     }
 };
 

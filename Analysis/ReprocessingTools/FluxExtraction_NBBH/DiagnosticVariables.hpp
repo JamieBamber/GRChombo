@@ -13,7 +13,7 @@ enum
     c_rho,    // the energy density of the SF
     c_rhoJ,   // the energy density of the SF
     c_Edot,   // the energy density of the SF
-    c_Jdot,   // the energy density of the SF
+    //c_Jdot,   // the energy density of the SF
 
     NUM_DIAGNOSTIC_VARS
 };
@@ -21,7 +21,9 @@ enum
 namespace DiagnosticVariables
 {
 static const std::array<std::string, NUM_DIAGNOSTIC_VARS> variable_names = {
-    "chi", "rho", "rhoJ", "Edot", "Jdot"};
+    "chi", "rho", "rhoJ", "Edot"
+//"Jdot"
+};
 }
 
 #endif /* DIAGNOSTICVARIABLES_HPP */

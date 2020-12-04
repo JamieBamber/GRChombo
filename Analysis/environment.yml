@@ -3,7 +3,7 @@ dependencies:
   - setuptools 
   - numpy
   - scipy
-  - matplotlib
+  - matplotlib=3.2.2
   - yt
   - h5py
   - python=3.6

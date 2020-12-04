@@ -19,4 +19,4 @@ module load intel_comp/2019 intel_mpi/2019 parallel_hdf5/1.10.3
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 # Run the program
 export application=/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/ReprocessingTools/FluxExtraction_KerrSchild_BBH/ReprocessingTool3d.Linux.64.mpiicpc.ifort.OPTHIGH.MPI.OPENMPCC.ex
-mpirun -np $SLURM_NTASKS ${application} ../params.txt
+mpirun -np $SLURM_NTASKS ${application} params.txt

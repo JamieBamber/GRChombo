@@ -13,6 +13,7 @@
 // Problem specific includes:
 #include "NewtonianBHFixedBG.hpp"
 #include "ComplexScalarPotential.hpp"
+#include "ScalarRotatingCloud.hpp"
 
 class SimulationParameters : public FixedBGSimulationParametersBase
 {
@@ -38,16 +39,24 @@ class SimulationParameters : public FixedBGSimulationParametersBase
         pp.load("separation", separation, 0.0);
         bg_params1.center[0] += separation;
         bg_params2.center[0] -= separation;
-        pp.load("field_amplitude_re", field_amplitude_re);
-        pp.load("field_amplitude_im", field_amplitude_im);
+
+	pp.load("scalar_amplitude", initial_params.amplitude); 
+        pp.load("center", initial_params.center, center);
+        pp.load("scalar_omega", initial_params.omega);
+        pp.load("scalar_l", initial_params.l);
+        pp.load("scalar_m", initial_params.m);
+        pp.load("alignment", initial_params.alignment);
+
+        // pp.load("field_amplitude_im", field_amplitude_im);
         pp.load("scalar_mass", potential_params.scalar_mass);
         pp.load("inner_r", inner_r, 1.0);
         pp.load("outer_r", outer_r, L/2.0);
     }
 
     // Problem specific parameters
-    double field_amplitude_re, field_amplitude_im, regrid_length;
-    double proca_mass, proca_damping;
+    // double field_amplitude_re, field_amplitude_im, 
+    double regrid_length;
+    // double proca_mass, proca_damping;
     double inner_r, outer_r, omega_binary, separation;
     std::string integral_filename;
 
@@ -55,6 +64,7 @@ class SimulationParameters : public FixedBGSimulationParametersBase
     NewtonianBHFixedBG::params_t bg_params1;
     NewtonianBHFixedBG::params_t bg_params2;
     ComplexScalarPotential::params_t potential_params;
+    ScalarRotatingCloud::params_t initial_params;
 };
 
 #endif /* SIMULATIONPARAMETERS_HPP_ */

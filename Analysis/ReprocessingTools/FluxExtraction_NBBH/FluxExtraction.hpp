@@ -30,7 +30,7 @@ class FluxExtraction : public SphericalExtraction
 				m_output_root_dir(a_output_root_dir), m_data_subdir(a_data_subdir), m_suffix(a_suffix)
     {
         add_var(c_Edot, VariableType::diagnostic);
-        add_var(c_Jdot, VariableType::diagnostic);
+        // add_var(c_Jdot, VariableType::diagnostic);
     }
 
     //! The old constructor which assumes it is called in specificPostTimeStep
@@ -45,8 +45,8 @@ class FluxExtraction : public SphericalExtraction
     // the references of the vars as used in the integrator
     enum M_VARS
     {
-        m_Edot,
-        m_Jdot
+        m_Edot
+     //, m_Jdot
     };
 
     //! Execute the query
@@ -65,8 +65,8 @@ class FluxExtraction : public SphericalExtraction
         std::vector<std::vector<double>> force_integrals(2);
         add_var_integrand(m_Edot, force_integrals[m_Edot],
                           IntegrationMethod::simpson);
-        add_var_integrand(m_Jdot, force_integrals[m_Jdot],
-                          IntegrationMethod::simpson);
+        //add_var_integrand(m_Jdot, force_integrals[m_Jdot],
+        //                  IntegrationMethod::simpson);
 
         // do the integration over the surface
         integrate();
@@ -74,7 +74,7 @@ class FluxExtraction : public SphericalExtraction
         // write the integrals
         std::vector<std::string> labels(2);
         labels[m_Edot] = "Edot";
-        labels[m_Jdot] = "Jdot";
+        //labels[m_Jdot] = "Jdot";
         std::string filename = m_output_root_dir + m_data_subdir + "/outputs/" + "Flux_integrals" + m_suffix;
         write_integrals(filename, force_integrals, labels);
     }

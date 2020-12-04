@@ -1,0 +1,57 @@
+### parameters file for Flux extraction
+
+#Params for runtime inputs
+N1 = 128
+N2 = 128
+N3 = 64
+L = 256
+max_level = 3 # There are (max_level+1) grids, so min is zero
+dt_multiplier = 0.5
+
+# For read in of files
+data_rootdir = /cosma6/data/dp174/dc-bamb1/GRChombo_data/NewtonianBinaryBHScalar/
+data_subdir = run0010_M0.2_d10_mu0.01_dt_mult0.5
+
+# Files parameters
+chk_prefix = Newton_chk
+plot_prefix = Newton_plt
+plot_interval = 50
+start_number = 0
+end_number = 200000
+suffix = _r_50
+# resume = 0
+
+# integration parameters
+num_points_phi = 36
+num_points_theta = 24
+extraction_center = 128 128 0
+center = 128 128 0
+extraction_radius = 50
+extraction_level = 0
+num_modes = 1
+modes = 0 0
+num_points_phi = 36
+num_points_theta = 24
+
+# if not periodic, then specify the boundary type
+# 0 = static, 1 = sommerfeld, 2 = reflective, 3 = extrapolating
+# 4 = mixed, 5 = fudge
+# (see BoundaryConditions.hpp for details)
+hi_boundary = 3 3 3
+lo_boundary = 3 3 2
+
+# if reflective boundaries selected, must select
+# parity values (in order given by UserVariables.hpp)
+# 0 = even
+# 1,2,3 = odd x, y, z
+# 4,5,6 = odd xy, yz, xz
+vars_parity            = 0 0 0 0   #phi and Pi
+vars_parity_diagnostic = 0 0 0 0 0 0 0 0    #chi and rho rhoJ
+
+# From here it is mostly dummy params
+verbosity = 1
+nan_check = 0
+regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
+max_grid_size = 16
+block_factor = 16
+isPeriodic = 0 0 0 

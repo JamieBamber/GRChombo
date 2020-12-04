@@ -5,34 +5,57 @@ import matplotlib.pyplot as plt
 import math
 from sys import exit
 from os import makedirs
+import time
 
 yt.enable_parallelism()
 
 #
-data_root_dir = "/cosma6/data/dp174/dc-bamb1/GRChombo_data/NewtonianBinaryBHScalar"
-plots_dir = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/Newtonian_Binary_BH/"
-#
-BinaryBH_dir = "run0001_M0.1_d10_mu0.014142136_dt_mult0.25"
+data_root_path = "/cosma6/data/dp174/dc-bamb1/GRChombo_data/NewtonianBinaryBHScalar/"
+plots_dir = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/Newtonian_Binary_BH/"
+output_dir ="/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/data/Newtonian_Binary_BH_data"
 
-#movie_folder = "BBH_run0005/Compare_ray_profile_rho_v2_run0005_movie"
-#try:
-#        makedirs(plots_dir + movie_folder)
-#except:
-#        pass
+class data_dir:
+        def __init__(self, num, M, d, mu, dt_mult):
+                self.num = num
+                self.M = float(M)
+                self.d = float(d)
+                self.mu = float(mu)
+                self.dt_mult = dt_mult
+                self.name = "run{:04d}_M{:s}_d{:s}_mu{:s}_dt_mult{:s}".format(num, M, d, mu, dt_mult)
 
-### derived fields
-# weighting field = (cell_volume)^(2/3) / (2*pi * r * dr) 
+data_dirs = []
+def add_data_dir(num, M, d, mu, dt_mult):
+        x = data_dir(num, M, d, mu, dt_mult)
+        data_dirs.append(x)
 
-M = 0.1
-d = 20
-w_Binary = sqrt(2*M/d**3) 
+add_data_dir(7, "0.2", "10", "0.02", "0.5")
+add_data_dir(8, "0.2", "10", "0.025", "0.5")
+add_data_dir(9, "0.2", "10", "0.015", "0.5")
+add_data_dir(10, "0.2", "10", "0.01", "0.5")
+add_data_dir(11, "0.2", "10", "0.03", "0.5")
 
-@derived_field(name = "rho_eff")
+# Base parameters
+L = 256.0
+z_position = 0.001
+center = np.array([L/2, L/2, 0])
+
+"""@derived_field(name = "rho_eff")
 def _rho_E_eff(field, data):
-        return pow(data["chi"],-3.0/2)*data["rho"]
+        return pow(data["chi"],-3.0/2)*data["rho"]"""
 
-def get_puncture_data(BBHsubdir):
-	file_name = data_root_dir + "BinaryBHScalarField/" + BBHsubdir + "/BinaryBHSFChk_Punctures.dat"
+def get_puncture_data_BH_N(dd, t):
+	output = np.zeros(6)
+	omega = np.sqrt(2*dd.M/(dd.d**3))
+	output[0] = center[0] + dd.d*np.cos(omega*t)
+	output[1] = center[1] +	dd.d*np.sin(omega*t)
+	output[2] = center[2]
+	output[3] = center[0] -	dd.d*np.cos(omega*t)
+	output[4] = center[1] - dd.d*np.sin(omega*t)
+	output[5] = center[2]
+	return output
+	
+def get_puncture_data_BH_GR(BBHsubdir):
+	file_name = data_root_path + BBHsubdir + "/BinaryBHSFChk_Punctures.dat"
 	data = np.genfromtxt(file_name, skip_header=1)	
 	return data
 
@@ -52,87 +75,114 @@ def make_ray(ds, start, end, N, var):
 	ray = ds.r[start:end:N*1j]
 	return np.array(ray[var])
 
-#
-abmax=30
-z_position = 0.001
+# convert BBH slice to fixed resolution array
+width = 50
+N = 1024
+res = [N, N] # 1024 by 1024 box
+dx = width/N
 
-# load datasets
-BinaryBH_dataset_path = data_root_dir + "BinaryBHScalarField/" + BinaryBH_dir + "/BinaryBHSFPlot_*.3d.hdf5"
-KerrBH_dataset_path = data_root_dir + "KerrSF/" + KerrBH_dir + "/KerrSFp_*.3d.hdf5"
-dseriesB = yt.load(BinaryBH_dataset_path) 
-dseriesK = yt.load(KerrBH_dataset_path) 
-print("loaded " + BinaryBH_dataset_path)
-print("loaded " + KerrBH_dataset_path)
-print("BBH series length = ", len(dseriesB))
-print("KerrBH series length = ", len(dseriesK)/2)
-Nts = min(len(dseriesB), int(len(dseriesK)/2))
-if int(len(dseriesK)/2) < len(dseriesB):
-	dseriesB = dseriesB[275:Nts]
+def make_plot(arr, title, name, puncture_positions):
+	## plot the pseudocolor plot
+	x_pos = np.linspace(center[0]-0.5*width,center[0]+0.5*width,N)
+	y_pos = x_pos
+	cm = 'inferno'
+	puncture_x = np.array([puncture_positions[0], puncture_positions[3]])
+	puncture_y = np.array([puncture_positions[1], puncture_positions[4]])
+	fig, ax = plt.subplots()
+	val_max=np.max(arr)
+	val_min=np.min(arr)
+	print('max={:.2f} min={:.2f}'.format(val_max, val_min))
+	mesh = ax.pcolormesh(x_pos, y_pos, np.log10(arr),cmap=cm,vmin=-1,vmax=1)
+	fig.colorbar(mesh)
+	## add the BH locations
+	print("puncture_x, puncture_y = ", puncture_x, puncture_y)
+	ax.plot(puncture_x, puncture_y, 'yx', markersize=7, label="BH positions")
+	## add text
+	ax.text(0.02, 0.98, 'max={:.2f} min={:.2f}'.format(val_max, val_min), horizontalalignment='left',verticalalignment='top', transform=ax.transAxes, fontsize=12)
+	## add other bits
+	ax.legend(loc="lower left", fontsize=12)
+	ax.set_title(title)
+	fig.tight_layout()
+	save_path = plots_dir + name
+	plt.savefig(save_path, transparent=False)
+	print("saved " + save_path)
+	plt.clf()
+	
+def get_line_data(dd):
+	data_sub_dir = dd.name
+	start_time = time.time()
+	# load dataset time series
+	dataset_path = data_root_path + data_sub_dir + "/Newton_plt*.3d.hdf5"
+	ds = yt.load(dataset_path) # this loads a dataset time series
+	print("loaded data from ", dataset_path)
+	print("time = ", time.time() - start_time)
+	Nts = len(ds)	
+	rho0 = 0.5*dd.mu**2
+		
+	# output to file
+	filename = "{:s}_rho_profile.csv".format(dd.name)
+	output_path = output_dir + "/" + filename
+	# output header to file
+	f = open(output_path, "w+")
+	f.write("# t    position = ...  #\n")
+	# write header data
+	ray_pos = np.linspace(-width/2, width/2, N)
+	f.write("0	")	
+	for i in range(0, N):
+		f.write("{:.3f} ".format(ray_pos[i]))
+	f.write("\n")
 
-plot_interval_KerrBH = 10
-plot_interval_BinaryBH = 5
-dt_KerrBH = 0.25
-dt_BinaryBH = 1.0
+	data_storage = {}
+	# iterate through datasets (forcing each to go to a different processor)
+	#for sto, dsi in ds.piter(storage=data_storage):
+	for dsi in ds[1000:1001]:
+		#for n_BinaryBH in range(256, Nts):
+		#dsB = dseriesB[n_BinaryBH]	
+		t = dsi.current_time	
+		#n_BinaryBH = int(t/(dt_BinaryBH*plot_interval_BinaryBH))
+		
+		# get puncture position
+		puncture_positions = get_puncture_data_BH_N(dd, t)
+		p1 = puncture_positions[0:3]
+		p2 = puncture_positions[3:6]
+		#print("puncture 1 position = ", p1)
+		#print("puncture 2 position = ", p2)
+		
+		# positions of the ray endpoints
+		p = vecmag(p2 - p1)
+		BBHstart = center + (p1 - p2)*0.5*width/p
+		BBHend = center + (p2 - p1)*0.5*width/p
+		
+		# get ray data
+		ray_val = make_ray(dsi, BBHstart, BBHend, N, "rho")/rho0
+		print("made ray for t = ", t)
+		output = [t, ray_val]
+		#sto.result = output
+		#sto.result_id = str(dsi)
 
-puncture_data = get_puncture_data(BinaryBH_dir)
-print("loaded puncture data")
+		slice = dsi.slice(2, z_position)
+		frbB = slice.to_frb(width, res, center=center)
+		print("made BBH frb",flush=True)
+		arrB = np.array(frbB['rho'])*(1/rho0)
+		make_plot(arrB, "Newtonian Binary run{:04d} t={:.1f}".format(dd.num, t), dd.name + "_rho_2D_plot.png", puncture_positions)
+		
+	#if yt.is_root():
+	
+		# output data
+		#for key in sorted(data_storage.keys()):
+		#data = data_storage[key]
+		f.write("{:.3f} ".format(output[0]))
+		ray_val = output[1]
+		for i in range(0, len(ray_val)):
+        		f.write("{:.6f} ".format(ray_val[i]))
+		f.write("\n")
+	f.close()
+	print("saved data to file " + str(output_path))
 
-# iterate through dataseries
-for dsB in dseriesB.piter():
-	#for n_BinaryBH in range(256, Nts):
-	#dsB = dseriesB[n_BinaryBH]	
-	t = dsB.current_time	
-	n_BinaryBH = int(t/(dt_BinaryBH*plot_interval_BinaryBH))
+#for dd in data_dirs:	
+get_line_data(data_dirs[0])
 
-	# get puncture position
-	puncture_positions = puncture_data[n_BinaryBH*plot_interval_BinaryBH,1:]
-	p1 = puncture_positions[0:2]
-	p2 = puncture_positions[3:5]
-	print("puncture 1 position = ", p1)
-	print("puncture 2 position = ", p2)
-
-	# convert BBH slice to fixed resolution array
-	width = 100
-	N = 1024
-	dx = width/N
-	centerBBH = np.array([256.0, 256.0])
-	centerKBH = np.array([256.0, 256.0])
-	c1 = centerKBH + (centerBBH - p1)
-	c2 = centerKBH - (centerBBH - p1)
-	print("centerKBH 1 position = ", c1)
-	print("centerKBH 2 position = ", c2)
-	# 
-
-	# positions of the ray endpoints
-	p = vecmag(p2 - p1)
-	BBHstart = centerBBH + (p1 - p2)*0.5*width/p
-	BBHend = centerBBH + (p2 - p1)*0.5*width/p
-	BBHstart = np.append(BBHstart, z_position)
-	BBHend = np.append(BBHend, z_position)
-	d1 = vecmag(c1 - centerKBH)
-	d2 = vecmag(c2 - centerKBH)
-	Kstart1 = c1 - (c1 - centerKBH)*0.5*width/d1
-	Kend1 = c1 + (c1 - centerKBH)*0.5*width/d1
-	Kstart2 = c2 + (c2 - centerKBH)*0.5*width/d1
-	Kend2 = c2 - (c2 - centerKBH)*0.5*width/d1
-	Kstart1 = np.append(Kstart1, z_position)
-	Kend1 = np.append(Kend1, z_position)
-	Kstart2 = np.append(Kstart2, z_position)
-	Kend2 = np.append(Kend2, z_position)
-
-	# get ray data
-	arrK1 = make_ray(dsK, Kstart1, Kend1, N, "rho_eff")
-	arrK2 = make_ray(dsK, Kstart2, Kend2, N, "rho_eff")
-	arrB = make_ray(dsB, BBHstart, BBHend, N, "rho_eff")
-	print("made all rays")
-
-	# convert to numpy arrays
-	arrKmean = 0.5*(arrK1 + arrK2)
-	print("made numpy arrays",flush=True)
-	# combine
-	out_arr = arrB - arrKmean
-	print("made combined array",flush=True)
-
+def plot_graph():	
 	########### plot graph
 	print("plotting graph...",flush=True)
 	line_pos = np.linspace(-0.5*width,+0.5*width,N) 

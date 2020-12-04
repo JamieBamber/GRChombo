@@ -68,7 +68,7 @@ extrapolation_order = 1
 # HDF5files are written every dt = L/N*dt_multiplier*checkpoint_interval
 checkpoint_interval = 1000
 plot_interval = PLOTINTERVAL
-num_plot_vars = 5
+num_plot_vars = 6
 plot_vars = phi_Re chi rho rhoJ Edot Jdot
 dt_multiplier = DTMULT # 0.25
 stop_time = 100000.0
@@ -78,10 +78,15 @@ stop_time = 100000.0
 sigma = 1.0
 
 # SF Initial data
-field_amplitude_re = 1
-field_amplitude_im = 0 #0.1
+# field_amplitude_re = 1
+# field_amplitude_im = 0 #0.1
 scalar_mass = MUVAL #0.046
 omega_binary = OMEGABH # (The Newtonian value)
+scalar_amplitude = 1
+scalar_omega = MUVAL
+scalar_l = SCALARL
+scalar_m = SCALARM
+alignment = ALANGLE
 
 # Binary BH initial data
 bh_mass_1 = BHMASS
@@ -93,7 +98,10 @@ outer_r = 120.0
 # for extraction
 activate_extraction = 0
 write_extraction = 0
-extraction_radius = 120.0
+
+num_extraction_radii = 2
+extraction_radii = 50 120 
+# extraction_radius = 120.0
 extraction_level = 0
 num_modes = 1
 modes = 0 0

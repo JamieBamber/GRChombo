@@ -25,7 +25,8 @@
 #include "FixedBGEnergyAndAngularMomFlux.hpp"
 #include "FixedBGEvolution.hpp"
 #include "ForceExtraction.hpp"
-#include "InitialConditions.hpp"
+// #include "InitialConditions.hpp"
+#include "ScalarRotatingCloud.hpp"
 
 // Things to do at each advance step, after the RK4 is calculated
 void ScalarFieldLevel::specificAdvance()
@@ -52,10 +53,11 @@ void ScalarFieldLevel::initialData()
                    SKIP_GHOST_CELLS);
 
     // now set the fields to evolve
-    InitialConditions set_fields(m_p.field_amplitude_re, m_p.field_amplitude_im,
-                              m_p.potential_params.scalar_mass, m_p.center,
-                              m_dx);
-    BoxLoops::loop(set_fields, m_state_new, m_state_new, FILL_GHOST_CELLS);
+    ScalarRotatingCloud initial_sf(m_p.initial_params, m_dx);
+    //InitialConditions set_fields(m_p.field_amplitude_re, m_p.field_amplitude_im,
+    //                        m_p.potential_params.scalar_mass, m_p.center,
+    //                         m_dx);
+    BoxLoops::loop(initial_sf, m_state_new, m_state_new, FILL_GHOST_CELLS);
 
 }
 

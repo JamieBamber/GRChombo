@@ -16,7 +16,6 @@ phi0 = 0.1
 #R_min = 5
 R_max = 300
 average_time = False
-av_n = 1
 plot_mass=False
 cumulative=True
 Theta_max="1.0"
@@ -34,7 +33,7 @@ def time_average(x, n_chunk):
 	x_out[-1] = np.mean(x[-n_chunk:])
 	return x_out
 
-n_av = 100
+n_av = 500
 
 class data_dir:
 	def __init__(self, num, M, d, mu, dt):
@@ -64,10 +63,16 @@ def add_data_dir(num, M, d, mu, dt):
 
 # choose datasets to compare
 
-add_data_dir(4, "0.1", "10", "0.1", "0.25")
-add_data_dir(3, "0.1", "10", "0.02", "0.25")
-add_data_dir(2, "0.1", "10", "0.005", "0.25")
-add_data_dir(1, "0.1", "10", "0.014142136", "0.25")
+#add_data_dir(4, "0.1", "10", "0.1", "0.25")
+#add_data_dir(3, "0.1", "10", "0.02", "0.25")
+#add_data_dir(2, "0.1", "10", "0.005", "0.25")
+#add_data_dir(1, "0.1", "10", "0.014142136", "0.25")
+
+add_data_dir(7, "0.2", "10", "0.02", "0.5")
+add_data_dir(8, "0.2", "10", "0.025", "0.5")
+add_data_dir(9, "0.2", "10", "0.015", "0.5")
+add_data_dir(10, "0.2", "10", "0.01", "0.5")
+add_data_dir(11, "0.2", "10", "0.03", "0.5")
 
 def plot_graph():
 	# plot setup
@@ -93,7 +98,7 @@ def plot_graph():
 	#ax1.set_xlim((0, 500))
 	ax1.set_ylim((-2, 6))
 	ax1.set_ylabel("$\\rho$ flux / $F_0$", fontsize=label_size)
-	ax1.set_title("Density flux into $r=120$,$M=0.1,d=10$", wrap=True, fontsize=title_font_size)
+	ax1.set_title("Density flux into $r=120$,$M=0.2,d=10$", wrap=True, fontsize=title_font_size)
 	save_path = home_path + "/plots/Newtonian_Scalar_rho_flux_vs_mu.png".format(R_max)
 	ax1.legend(loc='upper left', ncol=2, fontsize=legend_font_size)
 	plt.xticks(fontsize=font_size)
