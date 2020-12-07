@@ -60,9 +60,9 @@ def make_rho_movie(dd):
 	PseudocolorAtts.skewFactor = 1
 	PseudocolorAtts.limitsMode = PseudocolorAtts.CurrentPlot  # OriginalData, CurrentPlot
 	PseudocolorAtts.minFlag = 1
-	PseudocolorAtts.min = 10
+	PseudocolorAtts.min = 0.05
 	PseudocolorAtts.maxFlag = 1
-	PseudocolorAtts.max = 16000
+	PseudocolorAtts.max = 50
 	PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
 	PseudocolorAtts.colorTableName = "inferno"
 	PseudocolorAtts.invertColorTable = 0
@@ -180,7 +180,7 @@ def make_rho_movie(dd):
 	
 	# Set viewing attributes
 	View2DAtts = View2DAttributes()
-	View2DAtts.windowCoords = (256-0.5*width, 256+0.5*width, 256-0.5*width, 256+0.5*width)
+	View2DAtts.windowCoords = (128-0.5*width, 128+0.5*width, 128-0.5*width, 128+0.5*width)
 	View2DAtts.viewportCoords = (0.15, 0.9, 0.15, 0.98)
 	View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
 	View2DAtts.fullFrameAutoThreshold = 100
@@ -195,7 +195,7 @@ def make_rho_movie(dd):
 	nts = TimeSliderGetNStates()
 	
 	# set basic save options
-	root_plot_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/Analysis/plots/Binary_BH"
+	root_plot_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/Binary_BH"
 	frame_dir = "/BBH_Newtonian_{:s}_rho_movie".format(dd.name)
 	try:
         	makedirs(root_plot_path)

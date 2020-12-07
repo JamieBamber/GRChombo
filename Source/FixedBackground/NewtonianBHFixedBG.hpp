@@ -163,9 +163,9 @@ class NewtonianBHFixedBG
         const double M = m_params.mass;
         std::array<double, CH_SPACEDIM> center_now;
         center_now[0] = m_params.center[0] -
-                        sign * m_separation * (1 - cos(m_omega * m_time));
+                        sign * 0.5 * m_separation * (1 - cos(m_omega * m_time));
         center_now[1] = m_params.center[1] +
-                        sign * m_separation * sin(m_omega * abs(m_time));
+                        sign * 0.5 * m_separation * sin(m_omega * abs(m_time));
         center_now[2] = m_params.center[2];
         const Coordinates<double> coords(current_cell, m_dx, center_now);
 

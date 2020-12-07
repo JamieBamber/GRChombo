@@ -197,7 +197,7 @@ def make_rho_movie(dd):
 	nts = TimeSliderGetNStates()
 	
 	# set basic save options
-	root_plot_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/Analysis/plots/Binary_BH"
+	root_plot_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/Binary_BH"
 	frame_dir = "/BBH_GR_{:s}_rho_movie".format(dd.name)
 	try:
         	makedirs(root_plot_path)
