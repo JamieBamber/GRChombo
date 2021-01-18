@@ -25,7 +25,7 @@ run0020=(0.5 0 0.25 0 1) # resume from stationary BH distribution
 run0021=(0.5 0 0.25 0.01 1)
 
 run_list=(
-    run0011
+#    run0011
 #    run0012
 #    run0013
 #    run0014
@@ -35,7 +35,7 @@ run_list=(
 #    run0018
 #     run0019
 #    run0020
-#    run0021
+    run0021
 )
 
 plot_interval=10
@@ -45,7 +45,7 @@ box_size=16
 reflect_z=0
 
 restart_hash=""
-restart_num="001600"
+restart_num="000800"
 
 #echo ${restart_hash}
 #echo ${restart_num}

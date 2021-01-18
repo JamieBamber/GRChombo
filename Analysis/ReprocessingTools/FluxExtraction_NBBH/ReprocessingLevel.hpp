@@ -38,7 +38,7 @@ class ReprocessingLevel : public GRAMRLevel
 	}
 	
 	// Do the extraction on the min integration level
-        if (m_level == 0)
+        if (m_level == 0 && m_first_step !=1)
         {
             // Now refresh the interpolator and do the interpolation
             m_gr_amr.m_interpolator->refresh();

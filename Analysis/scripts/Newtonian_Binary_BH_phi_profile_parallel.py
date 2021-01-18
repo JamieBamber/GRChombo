@@ -18,7 +18,7 @@ N1=256
 abmax=20
 z_position = 0.001
 width = 100
-N = 1024
+N = 256
 
 ############################
 
@@ -67,30 +67,31 @@ def ray_pos(t, M, d, width):
 	return data"""
 
 def make_ray(ds, start, end, N):
-	start_list = []
-	end_list = []
-	for i in range(0, 3):
-		start_list += start[i]
-		end_list += end[i]
-	print("making ray")
-	ray = ds.r[start:end:N*1j]
-	return np.array(ray["rho"])
+        print("making ray")
+        print("start = ",start)
+        print("end = ",end)
+        ray = ds.r[start:end:N*1j]
+        return np.array(ray["rho"])
 #
 def get_line_data(dd):
-        BinaryBH_dataset_path = data_root_dir + dd.name + "/BinaryBHSFPlot_*.3d.hdf5"
+        BinaryBH_dataset_path = data_root_dir + dd.name + "/Newton_plt*.3d.hdf5"
         ds = yt.load(BinaryBH_dataset_path)
         print("loaded data for " + dd.name)
         phi0 = 1
         rho0 = 0.5*(dd.mu*phi0)**2
+
+        Nsteps = len(ds)
         
         data_storage = {}
         for sto, dsi in ds.piter(storage=data_storage):
                 t = dsi.current_time
+                n = int(t/5.0)
                 start, end = ray_pos(t, dd.M, dd.d, width)
                 ray = make_ray(dsi, start, end, N)/rho0
                 output = [t, ray]
                 sto.result = output
                 sto.result_id = str(dsi)
+                print("done {:d} of {:d}".format(n, Nsteps))
                 
         if yt.is_root():
                 # output to file                                                                                                                                

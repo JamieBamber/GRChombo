@@ -47,7 +47,7 @@ data_file_name = "BinaryBHSFPlot_*.3d.hdf5 database"
 
 def make_rho_movie(dd):
 	width=64
-	start_frame = 87
+	start_frame = 0
 	
 	# open datafile(s)
 	OpenDatabase(data_root_dir + dd.name + "/" + data_file_name, 0)

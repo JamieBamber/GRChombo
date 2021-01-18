@@ -3,7 +3,123 @@
  * Please refer to LICENSE in GRChombo's root directory.
  */
 
+// Chombo includes
+#include "SPMD.H" // for Chombo_MPI
+
+// Other includes
 #include "SmallDataIO.hpp"
+#include <cmath>
+#include <random>
+// (MR): if it were up to me, I'd be using the C++17 filesystems library
+// instead of cstdio but I'm sure someone would tell me off for not maintaining
+// backwards compatability.
+#include <cstdio> // for std::rename and std::remove
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+
+// Chombo namespace
+#include "UsingNamespace.H"
+
+// ------------ Constructors -----------------
+
+// This has to be initialised outside the class declaration in C++14
+const std::string SmallDataIO::s_default_file_extension = ".dat";
+
+SmallDataIO::SmallDataIO(std::string a_filename_prefix, double a_dt,
+                         double a_time, double a_restart_time, Mode a_mode,
+                         bool a_first_step, std::string a_file_extension,
+                         int a_data_precision, int a_coords_precision,
+                         int a_filename_steps_width)
+    : m_filename(a_filename_prefix + a_file_extension), m_dt(a_dt),
+      m_time(a_time), m_restart_time(a_restart_time), m_mode(a_mode),
+      m_first_step(a_first_step), m_data_precision(a_data_precision),
+      // data columns need extra space for scientific notation
+      // compared to coords columns
+      m_data_width(m_data_precision + 10),
+      m_data_epsilon(std::pow(10.0, -a_data_precision)),
+      m_coords_precision(a_coords_precision),
+      m_coords_width(m_coords_precision + 5),
+      m_coords_epsilon(std::pow(10.0, -a_coords_precision))
+{
+#ifdef CH_MPI
+    MPI_Comm_rank(Chombo_MPI::comm, &m_rank);
+#else
+    m_rank = 0;
+#endif
+    if (m_rank == 0)
+    {
+        std::ios::openmode file_openmode;
+        if (m_mode == APPEND)
+        {
+            if (m_first_step)
+            {
+                // overwrite any existing file if this is the first step
+                file_openmode = std::ios::out;
+            }
+            else if (m_restart_time > 0. &&
+                     m_time < m_restart_time + m_dt + m_coords_epsilon)
+            {
+                // allow reading in the restart case so that duplicate time
+                // data may be removed
+                file_openmode = std::ios::app | std::ios::in;
+            }
+            else
+            {
+                // default mode is just appending to existing file
+                file_openmode = std::ios::app;
+            }
+        }
+        else if (m_mode == NEW)
+        {
+            file_openmode = std::ios::out;
+            m_filename =
+                get_new_filename(a_filename_prefix, m_dt, m_time,
+                                 a_file_extension, a_filename_steps_width);
+        }
+        else if (m_mode == READ)
+        {
+            file_openmode = std::ios::in;
+        }
+        else
+        {
+            MayDay::Error("SmallDataIO: mode not supported");
+        }
+        m_file.open(m_filename, file_openmode);
+        if (!m_file)
+        {
+            MayDay::Error("SmallDataIO::error opening file for writing");
+        }
+    }
+}
+
+SmallDataIO::SmallDataIO(std::string a_filename_prefix, double a_dt,
+                         double a_time, double a_restart_time, Mode a_mode,
+                         std::string a_file_extension, int a_data_precision,
+                         int a_coords_precision, int a_filename_steps_width)
+    : SmallDataIO(a_filename_prefix, a_dt, a_time, a_restart_time, a_mode,
+                  (a_time == a_dt), a_file_extension, a_data_precision,
+                  a_coords_precision, a_filename_steps_width)
+{
+}
+
+SmallDataIO::SmallDataIO(std::string a_filename_prefix,
+                         std::string a_file_extension, int a_data_precision,
+                         int a_coords_precision)
+    : SmallDataIO(a_filename_prefix, 0.0, 0.0, 0.0, READ, false,
+                  a_file_extension, a_data_precision, a_coords_precision, 0)
+{
+}
+
+//! Destructor (closes file)
+SmallDataIO::~SmallDataIO()
+{
+    if (m_rank == 0)
+    {
+        m_file.close();
+    }
+}
+>>>>>>> 669c4776d060da33d591eb11c7c877fd07a79482
 
 // ------------ Writing Functions ------------
 

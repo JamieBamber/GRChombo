@@ -14,7 +14,8 @@
 enum
 {
     c_phi_Re, // matter field added
-    c_chi,    // the conformal factor of the metric, not evolved                                                                                                
+    c_chi,    // the conformal factor of the metric, not evolved
+
     c_rho,    // the energy density of the SF                                                                                                                   
     c_rhoJ,   // the energy density of the SF                                                                                                                   
     c_Edot,   // the energy density of the SF                                                                                                                   

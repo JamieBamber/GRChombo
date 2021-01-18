@@ -8,11 +8,14 @@
 // This file incldues several functions that need to be called to
 // set up the runs but aren't very interesting for the normal user.
 
+// Chombo includes
+#include "AMRLevelFactory.H"
 #include "parstream.H" //Gives us pout()
+
+// Other includes
 #include <iostream>
 using std::cerr;
 using std::endl;
-#include "AMRLevelFactory.H"
 #include "ChomboParameters.hpp"
 #include "DerivativeSetup.hpp"
 #include "GRAMR.hpp"
@@ -28,6 +31,9 @@ using std::endl;
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+
+// Chombo namespace
+#include "UsingNamespace.H"
 
 /// This function calls MPI_Init, makes sure a parameter file is supplied etc...
 void mainSetup(int argc, char *argv[]);
@@ -117,17 +123,10 @@ void setupAMRObject(GRAMR &gr_amr, AMRLevelFactory &a_factory)
     gr_amr.define(chombo_params.max_level, chombo_params.ref_ratios, physdomain,
                   &a_factory);
 
-    // To preserve proper nesting we need to know the maximum ref_ratio, this
-    // is now hard coded to 2 in the base params
-    // The buffer is width of ghost cells + additional_grid_buffer
-    // and defines the minimum number of level l cells there have to be
+    // The buffer defines the minimum number of level l cells there have to be
     // between level l+1 and level l-1
-    const int max_ref_ratio = 2;
-    const int additional_grid_buffer = 3;
-    int grid_buffer_size =
-        std::ceil(((double)chombo_params.num_ghosts) / (double)max_ref_ratio) +
-        additional_grid_buffer;
-    gr_amr.gridBufferSize(grid_buffer_size);
+    // It needs to be at least ceil(num_ghosts/max_ref_ratio) for proper nesting
+    gr_amr.gridBufferSize(chombo_params.grid_buffer_size);
 
     // set checkpoint and plot intervals and prefixes
     gr_amr.checkpointInterval(chombo_params.checkpoint_interval);
