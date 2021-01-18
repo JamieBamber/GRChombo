@@ -526,10 +526,10 @@ void GRAMRLevel::readCheckpointHeader(HDF5Handle &a_handle)
     HDF5HeaderData header;
     header.readFromFile(a_handle);
 
-    if (m_verbosity)
-        pout() << "hdf5 header data:" << endl;
-    if (m_verbosity)
-        pout() << header << endl;
+    //if (m_verbosity)
+    //    pout() << "hdf5 header data:" << endl;
+    //if (m_verbosity)
+    //    pout() << header << endl;
 
     // read number of components
     if (header.m_int.find("num_components") == header.m_int.end())
@@ -540,6 +540,14 @@ void GRAMRLevel::readCheckpointHeader(HDF5Handle &a_handle)
     int num_comps = header.m_int["num_components"];
     if (num_comps != NUM_VARS)
     {
+      pout() << "NUM_VARS = " << NUM_VARS << endl;
+      pout() << "UserVariables::variable_names = " << endl;
+      for (int comp = 0; comp < NUM_VARS; ++comp){
+        pout() << UserVariables::variable_names[comp] << endl;
+      }
+      pout() << "header.m_int[num_components] = " << header.m_int["num_components"] << endl;
+      pout() << "hdf5 header data:" << endl;
+      pout() << header << endl;
         MayDay::Error("GRAMRLevel::readCheckpointHeader: num_components in "
                       "checkpoint file does not match solver");
     }
@@ -585,10 +593,10 @@ void GRAMRLevel::readCheckpointLevel(HDF5Handle &a_handle)
     HDF5HeaderData header;
     header.readFromFile(a_handle);
 
-    if (m_verbosity)
-        pout() << "hdf5 header data:" << endl;
-    if (m_verbosity)
-        pout() << header << endl;
+    //if (m_verbosity)
+      //   pout() << "hdf5 header data:" << endl;
+    //if (m_verbosity)
+      //    pout() << header << endl;
 
     // read refinement ratio
     if (header.m_int.find("ref_ratio") == header.m_int.end())

@@ -53,7 +53,7 @@ class ReprocessingLevel : public GRAMRLevel
     virtual void specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                                  const double a_time)
     {
-    };
+    }
 
 	//! Tell Chombo how to tag cells for regridding
     virtual void computeTaggingCriterion(FArrayBox &tagging_criterion,

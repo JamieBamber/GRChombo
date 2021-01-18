@@ -8,7 +8,7 @@ verbosity = 2
 nan_check = 1
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
-restart_file = DATADIR/BinaryBHSFChk_000600.3d.hdf5
+restart_file = DATADIR/BinaryBHSFChk_000900.3d.hdf5
 
 num_plot_vars = 2
 plot_vars = chi phi

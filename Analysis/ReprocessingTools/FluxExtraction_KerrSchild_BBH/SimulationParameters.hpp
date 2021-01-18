@@ -9,15 +9,15 @@
 // General includes
 #include "GRParmParse.hpp"
 #include "ChomboParameters.hpp"
-#include "FixedBGSimulationParametersBase.hpp"
+#include "SimulationParametersBase.hpp"
 
 // pout()
 #include "parstream.H" 
 
-class SimulationParameters : public FixedBGSimulationParametersBase
+class SimulationParameters : public SimulationParametersBase
 {
   public:
-    SimulationParameters(GRParmParse &pp) : FixedBGSimulationParametersBase(pp)
+    SimulationParameters(GRParmParse &pp) : SimulationParametersBase(pp)
     {
      	// read the problem specific params
         readParams(pp);

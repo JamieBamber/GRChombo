@@ -93,7 +93,7 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     // ---> With Scalar Field
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
-    /*if (a_time < m_p.delay){
+    if (a_time < m_p.delay){
             MatterOnly<ScalarFieldWithPotential> my_matter(
                 scalar_field, m_p.sigma, m_dx);
             BoxLoops::loop(SetValue(0.0),
@@ -109,13 +109,13 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
                 make_compute_pack(my_ccz4_matter,
                           SetValue(0, Interval(c_rho, NUM_VARS - 1))),
                  a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
-    }*/
+    }
 
     // Calculate CCZ4 right hand side
-    MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
+    /*MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
         scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
         m_p.G_Newton);
-    BoxLoops::loop(my_ccz4_matter, a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
+	BoxLoops::loop(my_ccz4_matter, a_soln, a_rhs, EXCLUDE_GHOST_CELLS);*/
 
     // Check for nan's
     if (m_p.nan_check)

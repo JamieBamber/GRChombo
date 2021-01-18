@@ -16,6 +16,8 @@ jobscript*
 *env
 *.core.*
 core
+**core*
+**.png
 machine.file*
 d
 o

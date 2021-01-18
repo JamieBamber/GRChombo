@@ -4,14 +4,15 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 0
+verbosity = 1
 nan_check = 0
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
-#restart_file = DATADIR/BinaryBHSFChk_000600.3d.hdf5
+RESTARTHASHrestart_file = DATADIR/BinaryBHSFChk_RESTARTNUM.3d.hdf5
 
 num_plot_vars = 7 
 plot_vars = chi phi Pi rho rho_azimuth J_R J_azimuth_R
+#c_Weyl4_Re c_Weyl4_Im
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
@@ -126,10 +127,10 @@ sigma = 1.0
 
 # extraction params
 # default of extraction_center is center, uncomment to change
-activate_extraction = 0 
+activate_extraction = 0
 write_extraction = 0
 num_extraction_radii = 2
-extraction_radii = 50.0 100.0
+extraction_radii = 50.0 200.0
 extraction_levels = 2 1
 num_points_phi = 24
 num_points_theta = 36
