@@ -11,14 +11,14 @@ yt.enable_parallelism()
 
 data_root_dir = "/p/scratch/pra116/bamber1/NewtonianBinaryScalar/"
 plots_dir = "/p/scratch/pra116/bamber1/plots/Newtonian_Binary_BH/"
-data_dir = "/p/home/jusers/bamber1/juwels/GRChombo/Analysis/data/Newtonian_Binary_BH_data/"
+output_data_dir = "/p/home/jusers/bamber1/juwels/GRChombo/Analysis/data/Newtonian_Binary_BH_data/"
 
 L=1024
 N1=256
 abmax=20
-z_position = 0.001
+z_position = 0.00
 width = 100
-N = 256
+N = 512
 
 ############################
 
@@ -28,7 +28,7 @@ class data_dir:
                 self.M = float(M)
                 self.d = float(d)
                 self.mu = float(mu)
-                self.dt_mult = dt_mult
+                self.dt_mult = float(dt_mult)
                 self.l = l
                 self.m = m
                 self.Al = float(Al)
@@ -39,23 +39,23 @@ def add_data_dir(num, M, d, mu, dt_mult, l, m, Al):
         x = data_dir(num, M, d, mu, dt_mult, l, m, Al)
         data_dirs.append(x)
                 
-#add_data_dir(7, "0.2", "10", "0.02", "0.5", 0, 0, "0")                                                                                                        
-#add_data_dir(8, "0.2", "10", "0.025", "0.5", 0, 0, "0")                                                                                                       
-#add_data_dir(9, "0.2", "10", "0.015", "0.5", 0, 0, "0")                                                                                                       
-#add_data_dir(10, "0.2", "10", "0.01", "0.5", 0, 0, "0")                                                                                                       
-#add_data_dir(11, "0.2", "10", "0.03", "0.5", 0, 0, "0")                                                                                                       
-#add_data_dir(12, "0.2", "10", "0.02", "0.5", 1, -1, "0")                                                                                                      
-#add_data_dir(13, "0.2", "10", "0.02", "0.5", 1, 1, "0")                                                                                                        
-add_data_dir(15, "0.48847892320123", "12.21358", "1", "0.0625", 0, 0, "0")
+#add_data_dir(7, "0.2", "10", "0.02", "0.5", 0, 0, "0")
+#add_data_dir(8, "0.2", "10", "0.025", "0.5", 0, 0, "0")
+#add_data_dir(9, "0.2", "10", "0.015", "0.5", 0, 0, "0")
+#add_data_dir(10, "0.2", "10", "0.01", "0.5", 0, 0, "0")
+#add_data_dir(11, "0.2", "10", "0.03", "0.5", 0, 0, "0")
+#add_data_dir(12, "0.2", "10", "0.02", "0.5", 1, -1, "0")
+#add_data_dir(13, "0.2", "10", "0.02", "0.5", 1, 1, "0")
+#add_data_dir(15, "0.48847892320123", "12.21358", "1", "0.0625", 0, 0, "0")
 #add_data_dir(16, "0.48847892320123", "12.21358", "1", "0.0625", 1, -1, "0")
 #add_data_dir(17, "0.48847892320123", "12.21358", "1", "0.0625", 1, 1, "0")
 #add_data_dir(18, "0.2", "10", "1", "0.0625", 0, 0, "0")
 #add_data_dir(19, "0.2", "10", "0.1", "0.125", 0, 0, "0")
-#add_data_dir(20, "0.2", "10", "0.5", "0.0625", 0, 0, "0")
+add_data_dir(20, "0.2", "10", "0.5", "0.0625", 0, 0, "0")
                 
 ############################
 
-def ray_pos(t, M, d, width):
+def ray_pos(t, M, d, width, z_position):
         omega_BBH = np.sqrt(2*M/d**3)
         start = [(L-width*np.cos(t*omega_BBH))/2,(L-width*np.sin(t*omega_BBH))/2,z_position]
         end = [(L+width*np.cos(t*omega_BBH))/2,(L+width*np.sin(t*omega_BBH))/2,z_position]
@@ -66,12 +66,70 @@ def ray_pos(t, M, d, width):
 	data = np.genfromtxt(file_name, skip_header=1)	
 	return data"""
 
-def make_ray(ds, start, end, N):
-        print("making ray")
-        print("start = ",start)
-        print("end = ",end)
-        ray = ds.r[start:end:N*1j]
-        return np.array(ray["rho"])
+def make_ray(dsi, start, end, N):
+        ray = dsi.r[start:end:N*1j]                                                                                          
+        result = np.array(ray["rho"])
+        #print("length = ", len(result))
+        return result
+
+def advanced_make_ray(dsi, t, M, d, width, z_position, N):
+        ### First make a ray between the two black holes
+        # dx = width / N
+        dx = width / N
+        exclusion_radius = M
+        # space between BH = d - 2*R_s
+        space_between_BH = d - 2*exclusion_radius
+        inner_num = int(np.floor(space_between_BH/(2*dx)))
+        num_between_BH = 2*inner_num   # assume N is even, make sure num_between_BH is also even
+        inner_ray_length = dx*num_between_BH
+        inner_start, inner_end = ray_pos(t, M, d, inner_ray_length, z_position)
+        inner_ray_raw = dsi.r[inner_start:inner_end:num_between_BH*1j]
+        inner_ray = np.array(inner_ray_raw["rho"])
+        ### Then make the ray bits either side of the black holes
+        outer_num = int(np.ceil((d/2+exclusion_radius)/dx))
+        outer_start, outer_end = ray_pos(t, M, d, 2*outer_num*dx, z_position)
+        edge_start, edge_end = ray_pos(t, M, d, width, z_position)
+        outer_ray_N = N/2 - outer_num
+        outer_ray_1 = np.array(dsi.r[edge_start:outer_start:outer_ray_N*1j]["rho"])
+        outer_ray_2 = np.array(dsi.r[outer_end:edge_end:outer_ray_N*1j]["rho"])
+        filler_array = np.zeros(outer_num - inner_num)
+        ###
+        #print("inner_num = ", inner_num)
+        #print("outer_num = ", outer_num)
+        total_ray = np.concatenate((outer_ray_1, filler_array, inner_ray, filler_array, outer_ray_2),axis=0)
+        #print("length of total ray = ", len(total_ray)) # this should be N
+        return total_ray
+        
+"""def make_ray(dsi, start, end, N):
+        try:
+                ray = dsi.r[start:end:N*1j]
+                result = np.array(ray["rho"])
+                #print("length = ", len(result))
+                return result
+        except Exception as excpt:
+                print(" ! ! ! ! ! Failed to make ray")
+                print("Error message = ")
+                print(excpt)
+                print("#")
+                print("start = ",start)
+                print("end = ",end)
+                print("#")
+                # Trying again
+                print("Trying again:")
+                try:
+                        ray = dsi.r[start:end:N*1j]
+                        result = np.array(ray["rho"])
+                        return result
+                except Exception as excpt:
+                        print(" ! ! ! ! ! Failed to make ray for second time")
+                        print("Error message = ")
+                        print(excpt)
+                        print("#")
+                        print("start = ",start)
+                        print("end = ",end)
+                        print("#")
+                        return np.nan * np.ones(N)"""
+
 #
 def get_line_data(dd):
         BinaryBH_dataset_path = data_root_dir + dd.name + "/Newton_plt*.3d.hdf5"
@@ -81,23 +139,30 @@ def get_line_data(dd):
         rho0 = 0.5*(dd.mu*phi0)**2
 
         Nsteps = len(ds)
-        
+
         data_storage = {}
         for sto, dsi in ds.piter(storage=data_storage):
                 t = dsi.current_time
-                n = int(t/5.0)
-                start, end = ray_pos(t, dd.M, dd.d, width)
-                ray = make_ray(dsi, start, end, N)/rho0
+                dt = 2 * dd.dt_mult * 40
+                n = int(t/dt)
+                try:
+                        ray = advanced_make_ray(dsi, t, dd.M, dd.d, width, z_position, N)/rho0
+                except Exception as excpt:
+                        print("! ! ! Failed to make ray, error message = ")
+                        print(excpt)
+                        ray = np.zeros(N)
                 output = [t, ray]
                 sto.result = output
                 sto.result_id = str(dsi)
                 print("done {:d} of {:d}".format(n, Nsteps))
                 
         if yt.is_root():
-                # output to file                                                                                                                                
+                # output to file
+                
                 filename = dd.name + "_rho_profile_along_binary.dat"
-                output_path = data_dir + filename
-                # output header to file                                                                                                                          
+                output_path = output_data_dir + filename
+                # output header to file
+                
                 f = open(output_path, "w+")
                 f.write("# t    rho at displacement = ...    #\n")
                 # r positions (relative to centre of binary)

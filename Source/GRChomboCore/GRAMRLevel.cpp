@@ -143,9 +143,6 @@ Real GRAMRLevel::advance()
         t_coarser_old = t_coarser_new - coarser_gr_amr_level_ptr->m_dt;
     }
 
-    // Reset RK stage to zero
-    m_RK_stage = 0;
-
     if (m_finer_level_ptr != nullptr)
     {
         GRAMRLevel *fine_gr_amr_level_ptr = gr_cast(m_finer_level_ptr);
@@ -397,7 +394,7 @@ void GRAMRLevel::initialGrid(const Vector<Box> &a_new_grids)
 }
 
 // things to do after initialization
-void GRAMRLevel::postInitialize() { m_restart_time = 0.0; }
+void GRAMRLevel::postInitialize() { m_restart_time = 0.; }
 
 // compute dt
 Real GRAMRLevel::computeDt()
@@ -526,10 +523,10 @@ void GRAMRLevel::readCheckpointHeader(HDF5Handle &a_handle)
     HDF5HeaderData header;
     header.readFromFile(a_handle);
 
-    //if (m_verbosity)
-    //    pout() << "hdf5 header data:" << endl;
-    //if (m_verbosity)
-    //    pout() << header << endl;
+    if (m_verbosity)
+        pout() << "hdf5 header data:" << endl;
+    if (m_verbosity)
+        pout() << header << endl;
 
     // read number of components
     if (header.m_int.find("num_components") == header.m_int.end())
@@ -540,14 +537,6 @@ void GRAMRLevel::readCheckpointHeader(HDF5Handle &a_handle)
     int num_comps = header.m_int["num_components"];
     if (num_comps != NUM_VARS)
     {
-      pout() << "NUM_VARS = " << NUM_VARS << endl;
-      pout() << "UserVariables::variable_names = " << endl;
-      for (int comp = 0; comp < NUM_VARS; ++comp){
-        pout() << UserVariables::variable_names[comp] << endl;
-      }
-      pout() << "header.m_int[num_components] = " << header.m_int["num_components"] << endl;
-      pout() << "hdf5 header data:" << endl;
-      pout() << header << endl;
         MayDay::Error("GRAMRLevel::readCheckpointHeader: num_components in "
                       "checkpoint file does not match solver");
     }
@@ -593,10 +582,10 @@ void GRAMRLevel::readCheckpointLevel(HDF5Handle &a_handle)
     HDF5HeaderData header;
     header.readFromFile(a_handle);
 
-    //if (m_verbosity)
-      //   pout() << "hdf5 header data:" << endl;
-    //if (m_verbosity)
-      //    pout() << header << endl;
+    if (m_verbosity)
+        pout() << "hdf5 header data:" << endl;
+    if (m_verbosity)
+        pout() << header << endl;
 
     // read refinement ratio
     if (header.m_int.find("ref_ratio") == header.m_int.end())
@@ -833,6 +822,7 @@ void GRAMRLevel::writePlotLevel(HDF5Handle &a_handle) const
                 }
             }
         }
+
         plot_data.exchange(plot_data.interval());
 
         // Write the data for this level
@@ -904,6 +894,7 @@ void GRAMRLevel::evalRHS(GRLevelData &rhs, GRLevelData &soln,
 
     if (oldCrseSoln.isDefined())
     {
+        // "time" falls between the old and the new coarse times
         Real alpha = (time - oldCrseTime) / (newCrseTime - oldCrseTime);
 
         // Assuming RK4, we know that there can only be 5 different alpha so fix
@@ -926,19 +917,13 @@ void GRAMRLevel::evalRHS(GRLevelData &rhs, GRLevelData &soln,
                 "Time interpolation coefficient is incompatible with RK4.");
         }
 
-        // We should perhaps use the RK4 stage data
-        CH_assert(m_RK_stage < 4);
-        // m_patcher.fillRK4Intermediate(soln, alpha, m_RK_stage, 0, 0,
-        // NUM_VARS);
-
-        // Old code - does not use difference in stages 1 and 2
+        // Interpolate ghost cells from next coarser level in space and time
         m_patcher.fillInterp(soln, alpha, 0, 0, NUM_VARS);
     }
 
     fillBdyGhosts(soln);
 
     specificEvalRHS(soln, rhs, time); // Call the problem specific rhs
-    m_RK_stage += 1;                  // Increment RK stage info
 
     // evolution of the boundaries according to conditions
     if (m_p.boundary_params.nonperiodic_boundaries_exist)

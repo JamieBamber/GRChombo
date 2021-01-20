@@ -119,7 +119,6 @@ SmallDataIO::~SmallDataIO()
         m_file.close();
     }
 }
->>>>>>> 669c4776d060da33d591eb11c7c877fd07a79482
 
 // ------------ Writing Functions ------------
 
@@ -206,14 +205,16 @@ void SmallDataIO::line_break()
 
 void SmallDataIO::remove_duplicate_time_data(const bool keep_m_time_data)
 {
-    constexpr double epsilon = 1.0e-8;
     if (m_rank == 0 && m_restart_time > 0. && m_mode == APPEND &&
-        m_time < m_restart_time + m_dt + epsilon)
+        m_time < m_restart_time + m_dt + m_coords_epsilon)
     {
         // copy lines with time < m_time into a temporary file
         m_file.seekg(0);
         std::string line;
-        std::string temp_filename = m_filename + ".temp";
+        // adding a random integer might make this a little more robust...
+        const int random_int = std::default_random_engine()();
+        std::string temp_filename =
+            m_filename + ".temp" + std::to_string(random_int);
         std::ofstream temp_file(temp_filename);
         int sign = -1;
         if (keep_m_time_data)
@@ -227,7 +228,7 @@ void SmallDataIO::remove_duplicate_time_data(const bool keep_m_time_data)
                 temp_file << line << "\n";
             }
             else if (std::stod(line.substr(0, m_coords_width)) <
-                     m_time + sign * epsilon)
+                     m_time + sign * m_coords_epsilon)
             {
                 temp_file << line << "\n";
             }
@@ -305,61 +306,45 @@ void SmallDataIO::get_specific_data_line(std::vector<double> &a_out_data,
     get_specific_data_line(a_out_data, coords);
 }
 
-// for read in of fixed size CH_SPACEDIM +1 - for spatial coords + var data)
-void SmallDataIO::get_data_array(
-    std::vector<std::array<double, CH_SPACEDIM + 1>> &a_out_data)
+// ------------ Other Functions --------------
+
+std::string SmallDataIO::get_new_filename(const std::string &a_file_prefix,
+                                          double a_dt, double a_time,
+                                          const std::string &a_file_extension,
+                                          int a_filename_steps_width)
 {
-    // need Vector formats for broadcast
-    Vector<double> x_Vect;
-    Vector<double> y_Vect;
-    Vector<double> z_Vect;
-    Vector<double> data_Vect;
+    CH_assert(a_dt > 0);
+    const int step = std::round(a_time / a_dt);
 
-    if (m_rank == 0)
+    // append step number to filename (pad to make it
+    // a_filename_steps_width digits).
+    std::string step_string = std::to_string(step);
+    if (a_filename_steps_width < step_string.length())
     {
-        // set the current position to the beginning of the file
-        m_file.seekg(0);
-        std::string line;
-        // loop through the lines
-        while (std::getline(m_file, line))
-        {
-            int data_width = line.size() / (CH_SPACEDIM + 1);
-            // first read in the coords
-            for (int icoord = 0; icoord < CH_SPACEDIM; icoord++)
-            {
-                double coord_value =
-                    std::stod(line.substr(icoord * data_width, data_width));
-                if (icoord == 0)
-                {
-                    x_Vect.push_back(coord_value);
-                }
-                else if (icoord == 1)
-                {
-                    y_Vect.push_back(coord_value);
-                }
-                else if (icoord == 2)
-                {
-                    z_Vect.push_back(coord_value);
-                }
-            }
-            // now the data value
-            double data_value =
-                std::stod(line.substr(CH_SPACEDIM * data_width, data_width));
-            data_Vect.push_back(data_value);
-        }
+        MayDay::Error("SmallDataIO: a_filename_steps_width too small "
+                      "for step number");
     }
-    // now broadcast the vector to all ranks using Chombo broadcast function
-    int broadcast_rank = 0;
-    broadcast(x_Vect, broadcast_rank);
-    broadcast(y_Vect, broadcast_rank);
-    broadcast(z_Vect, broadcast_rank);
-    broadcast(data_Vect, broadcast_rank);
+    std::string step_string_padded =
+        std::string(a_filename_steps_width - step_string.length(), '0') +
+        step_string;
+    // append step number to filename if in NEW mode
+    return a_file_prefix + step_string_padded + a_file_extension;
+}
 
-    // finally convert the Vector into the array format required
-    a_out_data.resize(data_Vect.size());
-    for (int iline = 0; iline < data_Vect.size(); iline++)
-    {
-        a_out_data[iline] = {x_Vect[iline], y_Vect[iline], z_Vect[iline],
-                             data_Vect[iline]};
-    }
+// returns m_data_epsilon
+double SmallDataIO::get_data_epsilon() const { return m_data_epsilon; }
+
+// returns the default data_epsilon
+double SmallDataIO::get_default_data_epsilon()
+{
+    return pow(10.0, -s_default_data_precision);
+}
+
+// returns m_coords_epsilon
+double SmallDataIO::get_coords_epsilon() const { return m_coords_epsilon; }
+
+// returns the default coords epsilon
+double SmallDataIO::get_default_coords_epsilon()
+{
+    return pow(10.0, -s_default_coords_precision);
 }

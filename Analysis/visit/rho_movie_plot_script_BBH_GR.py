@@ -37,7 +37,8 @@ def add_data_dir(num, mu, delay, G, ratio):
 #add_data_dir(17, "0.5", 10000, "0", 1)
 #add_data_dir(18, "0.5", 0, "0.000001", 1)
 #add_data_dir(19, "1", 1, "0", 1) # resume from stationary BH distribution                                                                            #add_data_#add_data_dir(20, "0.5", 0, "0", 1) # resume from stationary BH distribution                     
-add_data_dir(21, "0.5", 0, "0.01", 1)
+#add_data_dir(21, "0.5", 0, "0.01", 1)
+add_data_dir(22, "0.5", 0, "0", 1)
 
 # file settings
 data_root_dir = "/p/project/pra116/bamber1/BinaryBHScalarField/"

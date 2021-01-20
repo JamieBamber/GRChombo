@@ -567,24 +567,6 @@ void BoundaryConditions::fill_boundary_cells_dir(
                 }
                 break;
             }
-            case EXTRAPOLATING_BC:
-            {
-                fill_extrapolating_cell(out_box, iv, a_side, dir, comps,
-                                        m_params.extrapolation_order);
-                break;
-            }
-            case MIXED_BC:
-            {
-                fill_extrapolating_cell(out_box, iv, a_side, dir,
-                                        m_params.mixed_bc_extrapolating_vars,
-                                        m_params.extrapolation_order);
-                if (filling_rhs)
-                {
-                    fill_sommerfeld_cell(out_box, soln_box, iv,
-                                         m_params.mixed_bc_sommerfeld_vars);
-                }
-                break;
-            }
             default:
                 MayDay::Error(
                     "BoundaryCondition::Supplied boundary not supported.");
