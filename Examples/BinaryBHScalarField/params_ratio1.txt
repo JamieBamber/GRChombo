@@ -21,7 +21,7 @@ N2 = NBASIC
 N3 = NSPACE3
 
 # scalar field parameters
-G_Newton = 0.0
+G_Newton = GVALUE
 scalar_mass = MUVAL
 field_amplitude = 1.0
 delay = DELAYTIME

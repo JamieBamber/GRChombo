@@ -29,8 +29,8 @@ class FluxExtraction : public SphericalExtraction
                                a_restart_time), 
 				m_output_root_dir(a_output_root_dir), m_data_subdir(a_data_subdir), m_suffix(a_suffix)
     {
-        add_var(c_Edot, VariableType::diagnostic);
-        add_var(c_Jdot, VariableType::diagnostic);
+        add_var(c_Edot, VariableType::evolution);
+        add_var(c_Jdot, VariableType::evolution);
     }
 
     //! The old constructor which assumes it is called in specificPostTimeStep
