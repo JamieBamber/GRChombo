@@ -3,11 +3,15 @@
  * Please refer to LICENSE in GRChombo's root directory.
  */
 
+// Chombo includes
 #include "CH_Timer.H"
 #include "parstream.H" //Gives us pout()
+
+// System includes
 #include <chrono>
 #include <iostream>
 
+// Our includes
 #include "BHAMR.hpp"
 #include "DefaultLevelFactory.hpp"
 #include "GRParmParse.hpp"
@@ -17,6 +21,9 @@
 // Problem specific includes:
 #include "BinaryBHLevel.hpp"
 
+// Chombo namespace
+#include "UsingNamespace.H"
+
 int runGRChombo(int argc, char *argv[])
 {
     // Load the parameter file and construct the SimulationParameter class
@@ -25,11 +32,18 @@ int runGRChombo(int argc, char *argv[])
     GRParmParse pp(argc - 2, argv + 2, NULL, in_file);
     SimulationParameters sim_params(pp);
 
+    if (sim_params.just_check_params)
+        return 0;
+
     BHAMR bh_amr;
     // must be before 'setupAMRObject' to define punctures for tagging criteria
     if (sim_params.track_punctures)
     {
+<<<<<<< HEAD
+        bh_amr.m_puncture_tracker.initial_setup(
+=======
         bh_amr.puncture_tracker.initial_setup(
+>>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
             {sim_params.bh1_params.center, sim_params.bh2_params.center},
             sim_params.checkpoint_prefix);
     }
@@ -45,11 +59,20 @@ int runGRChombo(int argc, char *argv[])
     AMRInterpolator<Lagrange<4>> interpolator(
         bh_amr, sim_params.origin, sim_params.dx, sim_params.boundary_params,
         sim_params.verbosity);
+<<<<<<< HEAD
+    bh_amr.set_interpolator(
+        &interpolator); // also sets puncture_tracker interpolator
+
+    // must be after interpolator is set
+    if (sim_params.track_punctures)
+        bh_amr.m_puncture_tracker.restart_punctures();
+=======
     bh_amr.set_interpolator(&interpolator);
 
     // must be after interpolator is set
     if (sim_params.track_punctures)
         bh_amr.puncture_tracker.set_interpolator(&interpolator);
+>>>>>>> 77a58923cd6ac89f72ce0bf6241cd99248e160aa
 
     using Clock = std::chrono::steady_clock;
     using Minutes = std::chrono::duration<double, std::ratio<60, 1>>;
