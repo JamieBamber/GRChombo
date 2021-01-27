@@ -8,12 +8,11 @@
 
 // Chombo includes
 #include "AMR.H"
-#include "Interval.H"
 
 // Other includes
 #include "AMRInterpolator.hpp"
-#include "Lagrange.hpp"
 #include "VariableType.hpp"
+#include "Lagrange.hpp"
 #include <algorithm>
 #include <chrono>
 #include <ratio>
@@ -32,15 +31,15 @@
 // Forward declaration for get_gramrlevels function declarations
 class GRAMRLevel;
 
-// Forward declaration for AMRInterpolator
-template <typename InterpAlgo> class AMRInterpolator;
-
 class GRAMR : public AMR
 {
   private:
     using Clock = std::chrono::steady_clock;
     using Hours = std::chrono::duration<double, std::ratio<3600, 1>>;
     std::chrono::time_point<Clock> start_time = Clock::now();
+
+    // This is used by computeSum, computeNorm, etc.
+    Vector<LevelData<FArrayBox> *> getLevelDataPtrs();
 
   public:
     AMRInterpolator<Lagrange<4>> *m_interpolator; //!< The interpolator pointer
@@ -57,7 +56,7 @@ class GRAMR : public AMR
     }
 
     // Called after AMR object set up
-    virtual void set_interpolator(AMRInterpolator<Lagrange<4>> *a_interpolator);
+    void set_interpolator(AMRInterpolator<Lagrange<4>> *a_interpolator);
 
     // returs a std::vector of GRAMRLevel pointers
     // similar to AMR::getAMRLevels()
@@ -69,14 +68,7 @@ class GRAMR : public AMR
     // Fill ghosts on multiple levels
     void fill_multilevel_ghosts(
         const VariableType a_var_type,
-        const Interval &a_comps = Interval(0, std::numeric_limits<int>::max()),
-        const int a_min_level = 0,
-        const int a_max_level = std::numeric_limits<int>::max()) const;
-
-    // Fill ghosts on multiple levels                                                                                                                                      
-    void fill_multilevel_ghosts(
-        const VariableType a_var_type,
-        const Interval &a_comps = Interval(0, std::numeric_limits<int>::max()),
+	const Interval &a_comps = Interval(0, std::numeric_limits<int>::max()),
         const int a_min_level = 0,
         const int a_max_level = std::numeric_limits<int>::max()) const;
 
@@ -96,8 +88,7 @@ class GRAMR : public AMR
     // Returns the Infinity norm of an interval of grid variables
     // This function is a bit pointless because a_p = 0 in compute_norm does the
     // same
-    Real compute_inf_norm(const Interval a_comps);    
-  
+    Real compute_inf_norm(const Interval a_comps);
 };
 
 #endif /* GRAMR_HPP_ */
