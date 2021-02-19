@@ -40,8 +40,8 @@ data_root_path = "/p/project/pra116/bamber1/BinaryBHScalarField/"
 data_sub_dir = "run0019_mu1_delay1_G0_ratio1_restart"
 plots_root_path = "/p/scratch/pra116/bamber1/plots/GR_Binary_BH/"
 phi0 = 1
-mu = 1
-number = 1800
+mu = 0.5
+number = 0
 dsi = yt.load(data_root_path + data_sub_dir + "/BinaryBHSFPlot_{:06d}.3d.hdf5".format(number))
 
 ### derived fields

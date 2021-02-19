@@ -4,15 +4,14 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 1
-nan_check = 0
+verbosity = 0
+nan_check = 1
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
-RESTARTHASHrestart_file = DATADIR/BinaryBHSFChk_RESTARTNUM.3d.hdf5
+RESTARTHASHrestart_file = DATADIR/CHKFILE
 
-num_plot_vars = 7 
-plot_vars = chi phi Pi rho rho_azimuth J_R J_azimuth_R
-#c_Weyl4_Re c_Weyl4_Im
+num_plot_vars = 9
+plot_vars = chi phi Pi rho rho_azimuth J_R J_azimuth_R Weyl4_Re Weyl4_Im
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
@@ -24,11 +23,16 @@ N3 = NSPACE3
 G_Newton = GVALUE
 scalar_mass = MUVAL
 field_amplitude = 1.0
+scalar_l = SCALARL
+scalar_m = SCALARM
+alignment = ALANGLE
 delay = DELAYTIME
+phase = 0
 
 # Length of the longest N side
 # (This sets dx in all directions)
 L = 512
+scalar_center = CENTERX CENTERY CENTERZ
 center = CENTERX CENTERY CENTERZ
 extraction_center = CENTERX CENTERY CENTERZ
 track_punctures = 1
@@ -127,14 +131,14 @@ sigma = 1.0
 
 # extraction params
 # default of extraction_center is center, uncomment to change
-activate_extraction = 0
+activate_extraction = 1
 write_extraction = 0
 num_extraction_radii = 2
 extraction_radii = 50.0 200.0
 extraction_levels = 2 1
 num_points_phi = 24
 num_points_theta = 36
-num_modes = 0
+num_modes = 3
 modes = 2 0 # l m for spherical harmonics
         2 1
         2 2

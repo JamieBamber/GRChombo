@@ -47,7 +47,7 @@ class ReprocessingLevel : public GRAMRLevel
             m_state_new, m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());	
 	
 	// Do the extraction on the min integration level
-        if (m_level == 7)
+        if (m_level == 0)
         {
 	    // Now refresh the interpolator and perform the integration
             m_gr_amr.m_interpolator->refresh();

@@ -5,7 +5,7 @@
 
 # location / naming of output files (must give full path)
 verbosity = 0
-nan_check = 0
+nan_check = 1
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
 restart_file = DATADIR/BinaryBHSFChk_000800.3d.hdf5
@@ -24,6 +24,9 @@ N3 = NSPACE3
 G_Newton = GVALUE
 scalar_mass = MUVAL
 field_amplitude = 1.0
+scalar_l = SCALARL
+scalar_m = SCALARM
+alignment = ALANGLE
 delay = DELAYTIME
 
 # Length of the longest N side

@@ -35,14 +35,14 @@ class SimulationParameters : public FixedBGSimulationParametersBase
         pp.get("plot_interval", plot_interval);
 	pp.get("start_number", start_number);
 	pp.get("end_number", end_number);
-
+	
         // basic extraction params
         //dx.fill(coarsest_dx);
         //origin.fill(coarsest_dx / 2.0);
 	//pout() << "coarsest_dx = " << coarsest_dx << endl;
     }
 
-    int plot_interval, start_number, end_number;
+  int plot_interval, start_number, end_number, first_number;
   //std::array<double, CH_SPACEDIM> origin,
   //     dx; // location of coarsest origin and dx
     string data_rootdir, data_subdir, suffix, output_rootdir;

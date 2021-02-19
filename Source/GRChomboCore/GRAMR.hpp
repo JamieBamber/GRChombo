@@ -11,7 +11,6 @@
 #include "Interval.H"
 
 // Other includes
-#include "AMRInterpolator.hpp"
 #include "Lagrange.hpp"
 #include "VariableType.hpp"
 #include <algorithm>
@@ -42,6 +41,9 @@ class GRAMR : public AMR
     using Hours = std::chrono::duration<double, std::ratio<3600, 1>>;
     std::chrono::time_point<Clock> start_time = Clock::now();
 
+  // This is used by computeSum, computeNorm, etc.                                                                                                                       
+    Vector<LevelData<FArrayBox> *> getLevelDataPtrs();
+  
   public:
     AMRInterpolator<Lagrange<4>> *m_interpolator; //!< The interpolator pointer
 
@@ -67,13 +69,6 @@ class GRAMR : public AMR
     std::vector<const GRAMRLevel *> get_gramrlevels() const;
 
     // Fill ghosts on multiple levels
-    void fill_multilevel_ghosts(
-        const VariableType a_var_type,
-        const Interval &a_comps = Interval(0, std::numeric_limits<int>::max()),
-        const int a_min_level = 0,
-        const int a_max_level = std::numeric_limits<int>::max()) const;
-
-    // Fill ghosts on multiple levels                                                                                                                                      
     void fill_multilevel_ghosts(
         const VariableType a_var_type,
         const Interval &a_comps = Interval(0, std::numeric_limits<int>::max()),

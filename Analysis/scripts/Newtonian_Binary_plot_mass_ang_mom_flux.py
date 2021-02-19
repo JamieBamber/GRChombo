@@ -57,7 +57,11 @@ add_data_dir(11, "0.2", "10", "0.03", "0.5", 0, 0, "0")
 #add_data_dir(15, "0.48847892320123", "12.21358", "1", "0.0625", 0, 0, "0")
 #add_data_dir(16, "0.48847892320123", "12.21358", "1", "0.0625", 1, -1, "0")
 #add_data_dir(17, "0.48847892320123", "12.21358", "1", "0.0625", 1, 1, "0")
+add_data_dir(21, "0.2", "10", "0.05", "0.25", 0, 0, "0")
 add_data_dir(19, "0.2", "10", "0.1", "0.125", 0, 0, "0")
+add_data_dir(24, "0.2", "10", "0.15", "0.0625", 0, 0, "0")
+add_data_dir(22, "0.2", "10", "0.2", "0.0625", 0, 0, "0")
+add_data_dir(23, "0.2", "10", "0.3", "0.0625", 0, 0, "0")
 add_data_dir(20, "0.2", "10", "0.5", "0.0625", 0, 0, "0")
 add_data_dir(18, "0.2", "10", "1", "0.0625", 0, 0, "0")
 
@@ -72,7 +76,7 @@ def time_average(x, n):
 
 phi0=1
 average_time = True
-av_n = 20
+av_n = 5
 cumulative= False
 r_extract = 50
 
@@ -85,9 +89,9 @@ def load_data():
                 print("loaded data for " + dd.name)
         return data     
 
-def plot_graph():
+def plot_graph(mass_or_ang_mom):
         data = load_data()
-        colours = ['r', 'b', 'g', 'm', 'y', 'c', 'k', '0.5']
+        colours = ['r-', 'b-', 'g-', 'm-', 'y-', 'c-', 'k-', 'r--', 'b--', 'g--', 'm--', 'y--', 'c--']
         i = 0
         ### plot mass flux graph
         fig, ax1 = plt.subplots()
@@ -100,28 +104,37 @@ def plot_graph():
         #rc('ytick',labelsize=font_size)
         for dd in data_dirs:
                 line_data = data[dd.num]
-                t1 = dd.mu*line_data[:,0]
+                t1 = line_data[:,0]
                 mu = float(dd.mu)
                 E0 = 0.5*(phi0*mu)**2
                 F0 = 4*np.pi*(r_extract**2)*E0
-                mass_flux = -line_data[:,1]/F0
+                if mass_or_ang_mom:
+                        flux = -line_data[:,1]/F0
+                else:
+                        flux = -line_data[:,2]/(F0*mu)
                 if average_time:
                         t1 = time_average(t1, av_n)
-                        mass_flux = time_average(mass_flux, av_n)
+                        flux = time_average(flux, av_n)
                 if cumulative:
-                        mass_flux = np.cumsum(mass_flux)/(r_extract/3)
+                        flux = np.cumsum(flux)/(r_extract/3)
                 label_ = "$\\mu=${:.3f}".format(dd.mu)
-                ax1.plot(t1,mass_flux,linestyle="-", color=colours[i], label=label_)
+                ax1.plot(t1,flux,colours[i], label=label_)
                 i = i + 1
-        ax1.set_xlabel("$\\tau$", fontsize=font_size)
+        ax1.set_xlabel("$t$", fontsize=font_size)
+        ax1.set_xlim((0,5000))
         if cumulative:
                 ax1.set_ylabel("cumulative flux / $E_0$")
                 plt.title("Cumulative mass flux into $R=${:d}".format(r_extract))
                 save_path = plots_path + "Newtonian_BBH_mass_flux_cumulative.png"
         else:
-                ax1.set_ylabel("mass flux / $F_0$", fontsize=font_size)
-                plt.title("Mass flux into $R=${:d}".format(r_extract))
-                save_path = plots_path + "Newtonian_BBH_mass_flux.png"
+                if mass_or_ang_mom:
+                        ax1.set_ylabel("mass flux / $F_0 \\mu$", fontsize=font_size)
+                        plt.title("Mass flux into $R=${:d}, $M=0.2,d=10$".format(r_extract))
+                        save_path = plots_path + "Newtonian_BBH_mass_flux_vs_t_r{:d}.png".format(r_extract)
+                else:
+                        ax1.set_ylabel("ang. mom. flux / $F_0$", fontsize=font_size)
+                        plt.title("Ang. mom. flux into $R=${:d}, $M=0.2,d=10$".format(r_extract))
+                        save_path = plots_path + "Newtonian_BBH_ang_mom_flux_vs_t_r{:d}.png".format(r_extract)
         ax1.legend(loc='best', fontsize=legend_font_size)
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
@@ -130,5 +143,5 @@ def plot_graph():
         print("saved plot as " + str(save_path))
         plt.clf()
 
-plot_graph()
-
+plot_graph(True)
+plot_graph(False)

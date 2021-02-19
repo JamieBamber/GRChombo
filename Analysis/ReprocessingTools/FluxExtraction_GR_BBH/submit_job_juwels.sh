@@ -21,28 +21,40 @@ data_directory=/p/project/pra116/bamber1/BinaryBHScalarField
 # specify the input params for each run I want to submit
 # list for each is: mu, delay, dt, G, BH mass ratio
 
-# list for each is: mu, delay, dt, G, BH mass ratio                                                                                                                                                
+# list for each is: mu, delay, dt, G, BH mass ratio, l, m, Al
 
-run0011=(1 0 0.0625 0 1)
-run0012=(1 10000 0.0625 0 1)
-run0013=(0.08187607564 0 0.25 0 1)
-run0014=(1 0 0.0625 0 2)
-run0015=(1 10000 0.0625 0 2)
-run0016=(0.5 0 0.25 0 1)
-run0017=(0.5 10000 0.25 0 1)
-run0018=(0.5 0 0.25 0.000001 1)
+run0011=(1 0 0.0625 0 1 0 0 0)
+run0012=(1 10000 0.0625 0 1 0 0 0)
+run0013=(0.08187607564 0 0.25 0 1 0 0 0)
+run0014=(1 0 0.0625 0 2 0 0 0)
+run0015=(1 10000 0.0625 0 2 0 0 0)
+run0016=(0.5 0 0.25 0 1 0 0 0)
+run0017=(0.5 10000 0.25 0 1 0 0 0)
+run0018=(0.5 0 0.25 0.000001 1 0 0 0)
+run0019=(1 0 0.0625 0 1 0 0 0) # resume from stationary BH distribution
+run0020=(0.5 0 0.125 0 1 0 0 0) # resume from stationary BH distribution
+run0021=(0.5 0 0.25 0.01 1 0 0 0)
+run0022=(0.5 0 0.25 0 1 0 0 0) # this is a test, should be the same as 16
+run0023=(0.5 0 0.25 0.0000000001 1 0 0 0) # G = 10^{-10}
+run0024=(0.5 0 0.25 0.00000000000000000001 1 0 0 0) # G = 10^{-20}, restart as in run0020
+run0025=(0.5 0 0.25 0 1 1 1 0)
+run0026=(0.5 0 0.25 0.000000000000001 1 0 0 0) # G = 10^{-15}
+run0027=(0.5 0 0.25 0.00000000000000000001 1 0 0 0) # G = 10^{-20}
+run0028=(0.5 0 0.25 0.00000001 1 0 0 0) # G = 10^{-8}
+run0029=(1 0 0.0625 0.0000000001 1 0 0 0) # G = 10^{-10}
+run0030=(0.5 0 0.25 0 1 2 2 0)
 
 params_file=params.txt
 
 run_list=(
     run0011
 #    run0012
-#    run0013
-#    run0014
+    run0013
+    run0014
 #    run0015
-#    run0016
-#    run0017
-#    run0018
+    run0016
+#    run0025
+#    run0030
 )
 
 #subdir_list=(
@@ -65,9 +77,17 @@ do
         val="$run[2]"; dt_mult="${!val}"
         val="$run[3]"; G="${!val}"
         val="$run[4]"; ratio="${!val}"
-        # text_number=$(printf "%04d" ${run_number})                                                                                                                                              
-        subdir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}
-	
+	 val="$run[5]"; l="${!val}"
+        val="$run[6]"; m="${!val}"
+        val="$run[7]"; Al="${!val}"
+
+        if (( $l == 0 ))
+        then
+           subdir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}
+        else
+           subdir=${run}_mu${mu}_delay${delay}_G${G}_ratio${ratio}_l${l}_m${m}_Al${Al}
+        fi
+
         suffix=_r_${extraction_radius}
         name=${subdir}_flux${suffix}
         echo ${name} "flux extraction"

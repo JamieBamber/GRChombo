@@ -44,8 +44,9 @@ class SimulationParameters : public FixedBGSimulationParametersBase
         // Files setup
         pp.get("end_number", end_number);
         pp.get("start_number", start_number);
-        pp.get("input_plot_interval", input_plot_interval);
-
+        pp.get("plot_interval", plot_interval);
+	pp.get("first_number", first_number); // the first file number
+	
         // basic integration params
         dx.fill(coarsest_dx);
         origin.fill(coarsest_dx / 2.0);
@@ -69,7 +70,7 @@ class SimulationParameters : public FixedBGSimulationParametersBase
 
     bool half_box; // are we using a half box ?
 
-    int start_number, end_number, input_plot_interval;
+  int start_number, end_number, input_plot_interval, first_number;
     std::array<double, CH_SPACEDIM> origin,
         dx; // location of coarsest origin and dx
     std::string data_subdir;

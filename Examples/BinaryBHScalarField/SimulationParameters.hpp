@@ -14,7 +14,7 @@
 // Problem specific includes:
 #include "BoostedBH.hpp"
 #include "Potential.hpp"
-#include "FlatScalar.hpp"
+#include "ScalarRotatingCloud.hpp"
 
 class SimulationParameters : public SimulationParametersBase
 {
@@ -32,7 +32,14 @@ class SimulationParameters : public SimulationParametersBase
         pp.load("G_Newton", G_Newton, 0.0);
         pp.load("scalar_mass", potential_params.scalar_mass);
         pp.load("field_amplitude", initial_params.field_amplitude);
-    	
+
+	//
+	pp.load("scalar_l", initial_params.l);
+        pp.load("scalar_m", initial_params.m);
+	pp.load("scalar_center", initial_params.center, center);
+        pp.load("alignment", initial_params.alignment);
+        pp.load("phase", initial_params.phase);
+	
         // Initial data
         pp.load("massA", bh1_params.mass);
         pp.load("momentumA", bh1_params.momentum);
@@ -78,7 +85,7 @@ class SimulationParameters : public SimulationParametersBase
     double G_Newton;
     double delay;
     double final_a;
-    FlatScalar::params_t initial_params;
+    ScalarRotatingCloud::params_t initial_params;
     Potential::params_t potential_params;
     
     // Collection of parameters necessary for initial conditions

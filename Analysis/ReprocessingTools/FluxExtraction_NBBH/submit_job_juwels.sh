@@ -12,55 +12,55 @@ nphi=36
 ntheta=24
 extraction_radius=50
 
-plot_interval=20
+plot_interval=40
 L=1024
 N1=256
 box_size=32
 
 data_directory=/p/scratch/pra116/bamber1/NewtonianBinaryScalar
 
-# specify the input params for each run I want to submit
-# list for each is: M, d, mu, dt, l, m, Al  
+# specify the input params for each run I want to submit                                                                                                                                
+# list for each is: M, d, mu, dt, l, m, Al, plot_interval, first_number                                                                                                                 
 
-# original values were
-# note: M = 0.4885, d = 6.1, omega_binary = 0.06560735
-# period = 95.7695
-# dt = 2 * dt_multiplier
+# original values were                                                                                                                                                                  
+# note: M = 0.4885, d = 6.1, omega_binary = 0.06560735                                                                                                                                  
+# period = 95.7695                                                                                                                                                                      
+# dt = 2 * dt_multiplier                                                                                                                                                                
 
-run0001=(0.1 10 0.014142136 0.25 0 0 0)
-run0002=(0.1 10 0.005 0.25 0 0 0)
-run0003=(0.1 10 0.02 0.25 0 0 0)
-run0004=(0.1 10 0.1 0.25 0 0 0)
-
-run0007=(0.2 10 0.02 0.5 0 0 0)
-run0008=(0.2 10 0.025 0.5 0 0 0)
-run0009=(0.2 10 0.015 0.5 0 0 0)
-run0010=(0.2 10 0.01 0.5 0 0 0)
-run0011=(0.2 10 0.03 0.5 0 0 0)
-#                                                                                                                                                                                                  
-run0012=(0.2 10 0.02 0.5 1 -1 0)
-run0013=(0.2 10 0.02 0.5 1 1 0)
-run0015=(0.48847892320123 12.21358 1 0.0625 0 0 0)
-run0016=(0.48847892320123 12.21358 1 0.0625 1 -1 0)
-run0017=(0.48847892320123 12.21358 1 0.0625 1 1 0)
-run0018=(0.2 10 1 0.0625 0 0 0)
-run0019=(0.2 10 0.1 0.125 0 0 0)
-run0020=(0.2 10 0.5 0.0625 0 0 0)
+run0007=(0.2 10 0.02 0.5 0 0 0 80 0)
+run0008=(0.2 10 0.025 0.5 0 0 0 80 60)
+run0009=(0.2 10 0.015 0.5 0 0 0 80 60)
+run0010=(0.2 10 0.01 0.5 0 0 0 80 40)
+run0011=(0.2 10 0.03 0.5 0 0 0 80 40)
+#
+run0015=(0.48847892320123 12.21358 1 0.0625 0 0 0 40 20)
+run0016=(0.48847892320123 12.21358 1 0.0625 1 -1 0 40 0)
+run0017=(0.48847892320123 12.21358 1 0.0625 1 1 0 40 0)
+run0018=(0.2 10 1 0.0625 0 0 0 40 0)
+run0019=(0.2 10 0.1 0.125 0 0 0 80 0)
+run0020=(0.2 10 0.5 0.0625 0 0 0 40 20)
+run0021=(0.2 10 0.05 0.25 0 0 0 80 20)
+run0022=(0.2 10 0.2 0.0625 0 0 0 40 0)
+run0023=(0.2 10 0.3 0.0625 0 0 0 40 0)
+run0024=(0.2 10 0.15 0.0625 0 0 0 80 0)
 
 params_file=params.txt
 
 run_list=(
-	run0007
-        run0008
-        run0009
-        run0010
-        run0011
-	run0015
-	run0016
-	run0017
-	run0018
-	run0019
-	run0020
+#    run0007
+#    run0008
+#    run0009
+#    run0010
+#    run0011
+#    run0015
+#    run0016
+#    run0017
+#    run0018
+#    run0019
+    run0022
+#    run0021
+#    run0023
+#    run0024
 )
 
 for run in "${run_list[@]}"
@@ -74,6 +74,8 @@ do
          val="$run[4]"; l="${!val}"
         val="$run[5]"; m="${!val}"
         val="$run[6]"; Al="${!val}"
+	val="$run[7]"; plot_interval="${!val}"
+	val="$run[8]"; start_number="${!val}"
 	
        	omega_BH=$(awk "BEGIN {printf \"%.7f\n\", sqrt(2*${M}/(${d}*${d}*${d}))}")
         #omega_BH=$(bc <<< "scale=6; sqrt(2*${M}/(${d}*${d}*${d}))")

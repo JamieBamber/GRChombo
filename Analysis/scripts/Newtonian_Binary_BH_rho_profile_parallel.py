@@ -62,9 +62,9 @@ def ray_pos(t, M, d, width, z_position):
         return (start, end)
         
 """def get_puncture_data(BBHsubdir):
-	file_name = data_root_dir + BBHsubdir + "/BinaryBHSFChk_Punctures.dat"
-	data = np.genfromtxt(file_name, skip_header=1)	
-	return data"""
+        file_name = data_root_dir + BBHsubdir + "/BinaryBHSFChk_Punctures.dat"
+        data = np.genfromtxt(file_name, skip_header=1)  
+        return data"""
 
 def make_ray(dsi, start, end, N):
         ray = dsi.r[start:end:N*1j]                                                                                          
@@ -228,4 +228,70 @@ def plot_graph(time):
         print("saved " + save_path)
         plt.clf()
 
-plot_graph(1000)
+#plot_graph(1000)
+
+def plot_movie_frames(movie_title):
+        # load data
+        datasets = []
+        dts = []
+        maxts = []
+        for i in range(0, len(data_dirs)):
+                dd = data_dirs[i]
+                # load data                                                                                                                                               
+                file_name = output_data_dir + dd.name + "_rho_profile_along_binary.dat"
+                data = np.genfromtxt(file_name)
+                datasets.append(data)
+                print("loaded data for ", file_name)
+                dt = data[2,0] - data[1,0]
+                dts.append(dt)
+                maxts.append(data[-1,0])
+        #
+        max_dt = np.max(dts)
+        print("max dt = ", max_dt)
+        min_t = np.min(maxts)
+        print("min t length = ", min_t)
+        #
+        Nmax = int(np.floor(min_t/max_dt))
+        #
+        # make frames
+        try:
+                makedirs(plots_dir + movie_title)
+        except:
+                pass
+        #
+        for n in range(0, Nmax):
+                time = max_dt * n
+                fig, ax = plt.subplots()
+                line_positions = np.linspace(-width/2, width/2, N)
+                colours = ['r', 'g', 'b', 'm', 'y', 'k', '0.5']
+                font_size = 12
+                title_font_size = 10
+                label_size = 12
+                legend_font_size = 10
+                for j in range(0, len(data_dirs)):
+                        dd = data_dirs[j]
+                        data = datasets[j]
+                        line = int(time / dts[j])
+                        #print("t = ", data[line+1,0])
+                        rho_data = data[line+1,1:]
+                        label_="$\\mu$={:.2f}, l = {:d}, m = {:d}".format(dd.mu, dd.l, dd.m)
+                        ax.plot(line_positions, np.log10(rho_data), color=colours[j], linestyle='-', linewidth=1, label=label_)
+                title = "$\\rho$ profile along the line of the BHs, Newtonian binary M~0.5 d~12, t = {:.1f}".format(time)
+                ax.set_title(title, fontsize=title_font_size)
+                plt.legend(loc='best', fontsize=legend_font_size)
+                plt.xticks(fontsize=font_size)
+                plt.yticks(fontsize=font_size)
+                ax.minorticks_on()
+                ax.set_xlim(-width/2, width/2)
+                ax.set_ylim(-1, 4)
+                ax.set_xlabel('displacement from centre',fontsize=label_size, labelpad=0)
+                ax.set_ylabel('$\\log_{10}(\\rho/\\rho_0)$', fontsize=label_size, labelpad=0)
+                save_path = plots_dir + movie_title + "/frame_{:06d}.png".format(n)
+                fig.tight_layout()
+                ax.margins(2)
+                plt.savefig(save_path, transparent=False)
+                print("saved " + save_path)
+                plt.clf()
+        #
+
+plot_movie_frames("Newtonian_rho_profile_compare_lm_movie")

@@ -14,21 +14,32 @@ print("starting visit run")
 
 # class to store the run information
 class data_dir:
-        def __init__(self, num, mu, delay, G, ratio, suffix):
+        def __init__(self, num, mu, delay, G, ratio, restart, l, m, Al):
                 self.num = num
                 self.mu = float(mu)
 		self.delay = delay
                 self.G = G
 		self.ratio = ratio
-                self.name = "run{:04d}_mu{:s}_delay{:d}_G{:s}_ratio{:d}{:s}".format(num, mu, delay, G, ratio, suffix)
+                self.l = l
+                self.m = m
+                self.Al = Al
+                if restart:
+                        suffix = "_restart"
+                else:
+                        suffix = ""
+                if (l != 0):
+                        lm_suffix = "_l{:d}_m{:d}_Al{:s}".format(l, m, Al)
+                else:
+                        lm_suffix = ""
+                self.name = "run{:04d}_mu{:s}_delay{:d}_G{:s}_ratio{:d}{:s}{:s}".format(num, mu, delay, G, ratio, lm_suffix, suffix)
 #
 data_dirs = []
-def add_data_dir(num, mu, delay, G, ratio, restart=0):
+def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
         if restart:
                 suffix = "_restart"
         else:
                 suffix = ""
-        x = data_dir(num, mu, delay, G, ratio, suffix)
+        x = data_dir(num, mu, delay, G, ratio, restart, l, m, Al)
         data_dirs.append(x)
 #
 #add_data_dir(11, "1", 0, "0", 1)
@@ -38,11 +49,14 @@ def add_data_dir(num, mu, delay, G, ratio, restart=0):
 #add_data_dir(15, "1", 10000, "0", 2)
 #add_data_dir(16, "0.5", 0, "0", 1)
 #add_data_dir(17, "0.5", 10000, "0", 1)
-add_data_dir(18, "0.5", 0, "0.000001", 1)
+#add_data_dir(18, "0.5", 0, "0.000001", 1)
 #add_data_dir(19, "1", 0, "0", 1, 1) # resume from stationary BH distribution
-#add_data_dir(20, "0.5", 0, "0", 1, 1) # resume from stationary BH distribution
+add_data_dir(20, "0.5", 0, "0", 1, 1) # resume from stationary BH distribution
 #add_data_dir(21, "0.5", 0, "0.01", 1)
 #add_data_dir(22, "0.5", 0, "0", 1)
+#add_data_dir(23, "0.5", 0, "0.0000000001", 1)
+#add_data_dir(24, "0.5", 0, "0.00000000000000000001", 1, 1)
+#add_data_dir(25, "0.5", 0, "0", 1, 0, 1, 1)
 
 # file settings
 data_root_dir = "/p/project/pra116/bamber1/BinaryBHScalarField/"

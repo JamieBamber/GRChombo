@@ -23,7 +23,7 @@
 
 #include "MatterOnly.hpp"
 #include "DensityAndMom.hpp"
-#include "FlatScalar.hpp"
+#include "ScalarRotatingCloud.hpp"
 
 // Things to do during the advance step after RK4 steps
 void BinaryBHLevel::specificAdvance()
@@ -54,23 +54,23 @@ void BinaryBHLevel::initialData()
 
     
     // set the value of phi - constant over the grid
-    SetValue set_phi(m_p.initial_params.field_amplitude, Interval(c_phi, c_phi));
+    /* SetValue set_phi(m_p.initial_params.field_amplitude, Interval(c_phi, c_phi));
 
     // First set everything to zero (to avoid undefinded values)
     // then calculate initial data
     BoxLoops::loop(make_compute_pack(SetValue(0.), set_phi, binary),
-                   m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
+                   m_state_new, m_state_new, INCLUDE_GHOST_CELLS);*/
     
     
-    /*// First set everything to zero (to avoid undefinded values in constraints)
+    // First set everything to zero (to avoid undefinded values in constraints)
     // then calculate initial data
     BoxLoops::loop(make_compute_pack(SetValue(0.), binary), m_state_new,
                   m_state_new, INCLUDE_GHOST_CELLS);
 
     // scalar field compute class
-    FlatScalar initial_sf(m_p.initial_params, m_dx);
-   BoxLoops::loop(initial_sf, m_state_new,
-                   m_state_new, INCLUDE_GHOST_CELLS);*/
+    ScalarRotatingCloud initial_sf(m_p.initial_params, m_dx);
+    BoxLoops::loop(initial_sf, m_state_new,
+                   m_state_new, INCLUDE_GHOST_CELLS);
 
    // Check for nan's
     if (m_p.nan_check)
@@ -184,6 +184,8 @@ void BinaryBHLevel::specificPostTimeStep()
     if (m_verbosity)
         pout() << "BinaryBHLevel::specificPostTimeStep " << m_level << endl;
 
+    bool first_step = (m_time == 0.);
+    
     CH_TIME("BinaryBHLevel::specificPostTimeStep");
     if (m_p.activate_extraction == 1)
     {
@@ -196,17 +198,23 @@ void BinaryBHLevel::specificPostTimeStep()
             BoxLoops::loop(Weyl4(m_p.extraction_params.center, m_dx),
                            m_state_new, m_state_diagnostics,
                            EXCLUDE_GHOST_CELLS);
-        }
 
-        // Do the extraction on the min extraction level
-        if (m_level == m_p.extraction_params.min_extraction_level())
-        {
-            CH_TIME("WeylExtraction");
-            // Now refresh the interpolator and do the interpolation
-            m_gr_amr.m_interpolator->refresh();
-            WeylExtraction my_extraction(m_p.extraction_params, m_dt, m_time,
-                                         m_restart_time);
-            my_extraction.execute_query(m_gr_amr.m_interpolator);
+            // Do the extraction on the min extraction level
+            if (m_level == min_level)
+            {
+                CH_TIME("WeylExtraction");
+                // Now refresh the interpolator and do the interpolation
+                // fill ghosts manually to minimise communication
+                bool fill_ghosts = false;
+                m_gr_amr.m_interpolator->refresh(fill_ghosts);
+                m_gr_amr.fill_multilevel_ghosts(
+                    VariableType::diagnostic, Interval(c_Weyl4_Re, c_Weyl4_Im),
+                    min_level);
+                WeylExtraction my_extraction(m_p.extraction_params, m_dt,
+                                             m_time, first_step,
+                                             m_restart_time);
+                my_extraction.execute_query(m_gr_amr.m_interpolator);
+            }
         }
     }
 
@@ -240,6 +248,10 @@ void BinaryBHLevel::prePlotLevel()
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
                        scalar_field, m_dx, m_p.center, m_p.final_a),
                    m_state_new, m_state_diagnostics, EXCLUDE_GHOST_CELLS);
+    // Populate the Weyl Scalar values on the grid                                                                                                                              
+    BoxLoops::loop(Weyl4(m_p.center, m_dx),
+                           m_state_new, m_state_diagnostics,
+                           EXCLUDE_GHOST_CELLS);
     
     // Check for nan's
     if (m_p.nan_check)

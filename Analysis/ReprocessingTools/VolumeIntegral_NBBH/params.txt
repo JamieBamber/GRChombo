@@ -19,6 +19,7 @@ plot_prefix = Newton_plt
 plot_interval = PLOTINTERVAL
 start_number = SNUMBER
 end_number = ENUMBER
+first_number = FIRSTNUMBER
 suffix = SUFFIX
 # resume = RESUMEYN
 
@@ -55,3 +56,5 @@ regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
 max_grid_size = BOXSIZE
 block_factor = BOXSIZE
 isPeriodic = 0 0 0 
+
+half_box = 1
