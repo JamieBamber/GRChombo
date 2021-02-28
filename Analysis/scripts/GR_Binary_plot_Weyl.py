@@ -74,13 +74,16 @@ def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
 #add_data_dir(22, "0.5", 0, "0", 1)
 add_data_dir(25, "0.5", 0, "0", 1, 0, 1, 1)
 #add_data_dir(24, "0.5", 0, "0.00000000000000000001", 1, 1)
-add_data_dir(18, "0.5", 0, "0.000001", 1)
-add_data_dir(28, "0.5", 0, "0.00000001", 1)                         
-add_data_dir(23, "0.5", 0, "0.0000000001", 1)      
-add_data_dir(26, "0.5", 0, "0.000000000000001", 1) 
-add_data_dir(27, "0.5", 0, "0.00000000000000000001", 1)
-add_data_dir(31, "0.5", 0, "0.0000000000000000000000001", 1)
-add_data_dir(32, "0.5", 0, "0.000000000000000000000000000001", 1)
+#add_data_dir(18, "0.5", 0, "0.000001", 1)
+#add_data_dir(28, "0.5", 0, "0.00000001", 1)                         
+#add_data_dir(31, "0.5", 0, "0.0000000000000000000000001", 1) # 10^{-25}
+#add_data_dir(32, "0.5", 0, "0.000000000000000000000000000001", 1) # 10^{-30}
+add_data_dir(33, "0.5", 0, "0.000000001", 1) # 10^{-9}
+add_data_dir(23, "0.5", 0, "0.0000000001", 1) # 10^{-10}     
+#add_data_dir(34, "0.5", 0, "0.000000000001", 1) # 10^{-12}
+#add_data_dir(35, "0.5", 0, "0.00000000000001", 1) # 10^{-14}
+#add_data_dir(26, "0.5", 0, "0.000000000000001", 1) # 10^{-15}
+#add_data_dir(27, "0.5", 0, "0.00000000000000000001", 1) # 10^{-20}
 
 #add_data_dir(29, "1", 0, "0.0000000001", 1)
 
@@ -110,11 +113,11 @@ def load_data(l,m):
 
 def realign_data(t,W):
         # find maximum
-        print("t.shape = ", t.shape)
-        print("W.shape = ", W.shape)
+        #print("t.shape = ", t.shape)
+        #print("W.shape = ", W.shape)
         # add a stack of nans to the front of W
-        nmax = np.argmax(W)
-        print("nmax = ", nmax)
+        nmax = np.argmin(W)
+        #print("nmax = ", nmax)
         tmax = t[nmax]
         nextra = 1000
         W = np.concatenate((np.nan*np.ones(nextra),W))
@@ -122,12 +125,12 @@ def realign_data(t,W):
         W1 = W[nmax+nextra-1000:nmax+nextra+100]
         t1 = t[nmax+nextra-1000:nmax+nextra+100]
         t1 = t1 - tmax
-        print("t1.shape = ", t1.shape)
-        print("W1.shape = ", W1.shape)
+        #print("t1.shape = ", t1.shape)
+        #print("W1.shape = ", W1.shape)
         output = (t1, W1)
         return output
 
-def plot_graph():
+def plot_graph(align=False):
         data = load_data(2,2)
         colours = ['r-', 'b-', 'g-', 'm-', 'y-', 'c-', 'k-', 'r--', 'b--', 'g--', 'm--', 'y--', 'c--']
         i = 0
@@ -146,15 +149,25 @@ def plot_graph():
                 t = line_data[:,0] - r0
                 Weyl_Re = line_data[:,3]
                 Weyl_Im = line_data[:,4]
-                t1, W1 = realign_data(t,Weyl_Re)
+                if align:
+                        t1, W1 = realign_data(t,Weyl_Re)
+                else:
+                        t1 = t
+                        W1 = Weyl_Re
                 label_ = "$m=${:.1f} $G=${:.0g}".format(dd.mu, float(dd.G))
-                ax1.plot(t,Weyl_Re,colours[i], label=label_)
+                ax1.plot(t1,W1,colours[i], label=label_, linewidth=1)
                 i = i + 1
         ax1.set_xlabel("$t$", fontsize=font_size)
         ax1.set_ylabel("Re($\\Psi_4$) 22 mode")
-        #ax1.set_xlim((-1000, 100))
+        if align:
+                ax1.set_xlim((-1000, 200))
+        else:
+                ax1.set_xlim((0, 2200))
         plt.title("Weyl scalar at $R=${:d}".format(r_extract))
-        save_path = plots_path + "GR_BBH_Weyl_Re_22.png"
+        if align:
+                save_path = plots_path + "GR_BBH_Weyl_Re_22_aligned.png"
+        else:
+                save_path = plots_path + "GR_BBH_Weyl_Re_22.png"
         ax1.legend(loc='best', fontsize=legend_font_size)
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
@@ -213,5 +226,5 @@ def plot_diff_graph(use_log):
         print("saved plot as " + str(save_path))
         plt.clf()
         
-plot_graph()
-#plot_diff_graph(True)
+plot_graph(True)
+plot_diff_graph(False)

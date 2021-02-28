@@ -74,7 +74,7 @@ class FluxExtraction : public SphericalExtraction
         std::vector<std::string> labels(2);
         labels[m_Edot] = "Edot";
         labels[m_Jdot] = "Jdot";
-	std::string filename = m_output_root_dir + m_data_subdir + "_mass_ang_mom_flux" + m_suffix + ".dat";
+	std::string filename = m_output_root_dir + m_data_subdir + "_mass_ang_mom_flux" + m_suffix;
         write_integrals(filename, force_integrals, labels);
     }
 };

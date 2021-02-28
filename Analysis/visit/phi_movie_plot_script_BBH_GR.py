@@ -31,7 +31,7 @@ class data_dir:
                         lm_suffix = "_l{:d}_m{:d}_Al{:s}".format(l, m, Al)
                 else:
                         lm_suffix = ""
-                self.name = "run{:04d}test_mu{:s}_delay{:d}_G{:s}_ratio{:d}{:s}{:s}".format(num, mu, delay, G, ratio, lm_suffix, suffix)
+                self.name = "run{:04d}_mu{:s}_delay{:d}_G{:s}_ratio{:d}{:s}{:s}".format(num, mu, delay, G, ratio, lm_suffix, suffix)
 #
 data_dirs = []
 def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
@@ -56,7 +56,9 @@ def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
 #add_data_dir(22, "0.5", 0, "0", 1)
 #add_data_dir(23, "0.5", 0, "0.0000000001", 1)
 #add_data_dir(24, "0.5", 0, "0.00000000000000000001", 1, 1)
-add_data_dir(25, "0.5", 0, "0", 1, 0, 2, 2)
+add_data_dir(25, "0.5", 0, "0", 1, 0, 1, 1)
+add_data_dir(30, "0.5", 0, "0", 1, 0, 2, 2)
+add_data_dir(36, "0.5", 0, "0", 1, 0, 1, -1)
 
 # file settings
 data_root_dir = "/p/project/pra116/bamber1/BinaryBHScalarField/"

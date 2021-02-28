@@ -31,7 +31,7 @@ class data_dir:
                         lm_suffix = "_l{:d}_m{:d}_Al{:s}".format(l, m, Al)
                 else:
                         lm_suffix = ""
-                self.name = "run{:04d}_mu{:s}_delay{:d}_G{:s}_ratio{:d}{:s}{:s}".format(num, mu, delay, G, ratio, lm_suffix, suffix)
+                self.name = "run{:04d}v2_mu{:s}_delay{:d}_G{:s}_ratio{:d}{:s}{:s}".format(num, mu, delay, G, ratio, lm_suffix, suffix)
 #
 data_dirs = []
 def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
@@ -54,45 +54,43 @@ def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
 #add_data_dir(20, "0.5", 0, "0", 1, 1) # resume from stationary BH distribution
 #add_data_dir(21, "0.5", 0, "0.01", 1)
 #add_data_dir(22, "0.5", 0, "0", 1)
-#add_data_dir(23, "0.5", 0, "0.0000000001", 1)
+add_data_dir(23, "0.5", 0, "0.0000000001", 1)
 #add_data_dir(24, "0.5", 0, "0.00000000000000000001", 1, 1)
-add_data_dir(25, "0.5", 0, "0", 1, 0, 1, 1)
-add_data_dir(30, "0.5", 0, "0", 1, 0, 2, 2)
-add_data_dir(36, "0.5", 0, "0", 1, 0, 1, -1)
+#add_data_dir(25, "0.5", 0, "0", 1, 0, 1, 1)
+#add_data_dir(30, "0.5", 0, "0", 1, 0, 2, 2)
+#add_data_dir(36, "0.5", 0, "0", 1, 0, 1, -1)
 
 # file settings
 data_root_dir = "/p/project/pra116/bamber1/BinaryBHScalarField/"
 root_plot_path = "/p/scratch/pra116/bamber1/plots/GR_Binary_BH/"
 
-data_file_name = "BinaryBHSFPlot_*.3d.hdf5 database"
-
-def make_rho_movie(dd):
-	width=64
+def make_plot(dd):
+	width=256
 	start_frame = 0
 	
 	# open datafile(s)
-	OpenDatabase(data_root_dir + dd.name + "/" + data_file_name, 0)
-	print( "loaded database " + data_root_dir + dd.name + "/" + data_file_name)
+	OpenDatabase(data_root_dir + dd.name + "/" "run{:04d}_InitialConditionsFinal.3d.hdf5".format(dd.num), 0)
+	print( "loaded database " + data_root_dir + dd.name + "/" "run{:04d}_InitialConditionsFinal.3d.hdf5".format(dd.num))
 
 	# normalise
 	# rho0 = 0.5*(0.4**2)*(0.1**2)
-	DefineScalarExpression("norm_rho","rho/{:.6f}".format(0.5*(dd.mu**2)))
+	# DefineScalarExpression("norm_rho","rho/{:.6f}".format(0.5*(dd.mu**2)))
 	
 	# add plot
-	AddPlot("Pseudocolor", "norm_rho")
+	AddPlot("Pseudocolor", "Ham")
 	AddOperator("Slice", 1)
 	DrawPlots()
 	PseudocolorAtts = PseudocolorAttributes()
-	PseudocolorAtts.scaling = PseudocolorAtts.Log  # Linear, Log, Skew
+	PseudocolorAtts.scaling = PseudocolorAtts.Linear  # Linear, Log, Skew
 	PseudocolorAtts.skewFactor = 1
 	PseudocolorAtts.limitsMode = PseudocolorAtts.CurrentPlot  # OriginalData, CurrentPlot
 	PseudocolorAtts.minFlag = 1
-	PseudocolorAtts.min = 0.1
+	PseudocolorAtts.min = -0.0000000001
 	PseudocolorAtts.maxFlag = 1
-	PseudocolorAtts.max = 10000
+	PseudocolorAtts.max = 0.0000000001
 	PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-	PseudocolorAtts.colorTableName = "inferno"
-	PseudocolorAtts.invertColorTable = 0
+	PseudocolorAtts.colorTableName = "RdBu"
+	PseudocolorAtts.invertColorTable = 1
 	PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
 	PseudocolorAtts.opacity = 1
 	PseudocolorAtts.pointSize = 0.05
@@ -210,17 +208,16 @@ def make_rho_movie(dd):
 	legend.managePosition = 0
 	legend.position = (0.8, 0.95)
 	# the font.
-	legend.numberFormat = "%.1f"
+	legend.numberFormat = "%.4g"
 	legend.fontFamily = legend.Times
 	legend.fontBold = 0
 	legend.fontItalic = 0
 	legend.drawTitle = 0
-	legend.fontHeight = 0.05
-	legend.drawMinMax = 0
+	legend.fontHeight = 0.04
 	# number format
 	# turning off the labels.
 	legend.drawLabels = 1
-	legend.drawMinMax = 0
+	legend.drawMinMax = 1
 	
 	# turning off the title.
 	legend.drawTitle = 0
@@ -239,18 +236,18 @@ def make_rho_movie(dd):
 	print("made first plot")
 	
 	# get the number of timesteps
-	nts = TimeSliderGetNStates()
+	#nts = TimeSliderGetNStates()
 	
 	# set basic save options
-	frame_dir = "BBH_GR_{:s}_rho_movie".format(dd.name)
-	try:
-        	makedirs(root_plot_path)
-	except:
-        	pass
-	try:
-		makedirs(root_plot_path + frame_dir)
-	except:
-		pass
+	#frame_dir = "BBH_GR_{:s}_rho_movie".format(dd.name)
+	#try:
+        #	makedirs(root_plot_path)
+	#except:
+        #	pass
+	#try:
+	#	makedirs(root_plot_path + frame_dir)
+	#except:
+	#	pass
 	# The 'family' option controls if visit automatically adds a frame number to 
 	# the rendered files. 
 	swatts = SaveWindowAttributes()
@@ -262,21 +259,17 @@ def make_rho_movie(dd):
 	swatts.format = swatts.PNG
 	swatts.progressive = 1
 	
-	frame_step=1
-	Nframes=int(nts/frame_step)
+	#frame_step=1
+	#Nframes=int(nts/frame_step)
 	
-	# make movie frames
-	print("starting with frame ", start_frame)
-	for ts in range(start_frame, Nframes):
-		# Change to the next timestep
-		TimeSliderSetState(ts*frame_step)
-		swatts.fileName = root_plot_path + frame_dir + "/frame_%06d.png" % ts
-		SetPlotOptions(PseudocolorAtts)
-		SetSaveWindowAttributes(swatts)
-		DrawPlots()
-		# render the image to a PNG file
-		SaveWindow()
-		print("made frame %d of %d" % (ts, Nframes))
+	# make plots
+	swatts.fileName = root_plot_path + "/run{:04d}_InitialConditionsFinal_Ham.png".format(dd.num)
+	SetPlotOptions(PseudocolorAtts)
+	SetSaveWindowAttributes(swatts)
+	DrawPlots()
+	# render the image to a PNG file
+	SaveWindow()
+        print("saved plot as " + swatts.fileName)
 	
 	# make movie
 	# root_movie_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/movies/"
@@ -289,7 +282,7 @@ def make_rho_movie(dd):
 	DeleteAllPlots()
 
 for dd in data_dirs:
-        make_rho_movie(dd)
+        make_plot(dd)
 
 exit()
 
