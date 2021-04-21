@@ -92,8 +92,8 @@ alignment = ALANGLE
 bh_mass_1 = BHMASS
 bh_mass_2 = BHMASS
 separation = BHSEP
-inner_r = 1.0
-outer_r = 120.0
+inner_r = 0.0
+outer_r = 5.0
 
 # for extraction
 activate_extraction = 0
