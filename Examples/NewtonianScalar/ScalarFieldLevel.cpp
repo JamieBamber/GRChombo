@@ -21,12 +21,13 @@
 #include "ExcisionDiagnostics.hpp"
 #include "ExcisionEvolution.hpp"
 #include "FixedBGComplexScalarField.hpp"
-#include "FixedBGDensityAndAngularMom.hpp"
+#include "DensityAndAngularMomAndSourceTerm.hpp"
 #include "FixedBGEnergyAndAngularMomFlux.hpp"
 #include "FixedBGEvolution.hpp"
 #include "ForceExtraction.hpp"
 // #include "InitialConditions.hpp"
 #include "ScalarRotatingCloud.hpp"
+#include "BoundedDensities.hpp"
 
 // Things to do at each advance step, after the RK4 is calculated
 void ScalarFieldLevel::specificAdvance()
@@ -62,7 +63,22 @@ void ScalarFieldLevel::initialData()
 }
 
 // Things to do before outputting a plot file
-void ScalarFieldLevel::prePlotLevel() {}
+void ScalarFieldLevel::prePlotLevel()
+{
+        // re-calculate the densities and fluxes before we output the plot files
+        /*fillAllGhosts();
+        ComplexScalarPotential potential(m_p.potential_params);
+        ScalarFieldWithPotential scalar_field(potential);
+        BinaryNewtonFixedBG binary_newton(m_p.bg_params1, m_p.bg_params2, m_dx,
+                                    m_p.center, m_time, m_p.separation, m_p.omega_binary);
+        DensityAndAngularMomAndSourceTerm<ScalarFieldWithPotential, BinaryNewtonFixedBG>
+            densities(scalar_field, binary_newton, m_dx, m_p.center);
+        FixedBGEnergyAndAngularMomFlux<ScalarFieldWithPotential,
+                                       BinaryNewtonFixedBG>
+            energy_fluxes(scalar_field, binary_newton, m_dx, m_p.center);
+        BoxLoops::loop(make_compute_pack(densities, energy_fluxes, binary_newton),
+	m_state_new, m_state_diagnostics, SKIP_GHOST_CELLS);*/
+}
 
 // Things to do in RHS update, at each RK4 step
 void ScalarFieldLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
@@ -91,13 +107,13 @@ void ScalarFieldLevel::specificPostTimeStep()
     const double remainder = fmod(m_time, coarsest_dt);
     if (min(abs(remainder), abs(remainder - coarsest_dt)) < 1.0e-8)
     {
-        // calculate the density of the PF, but excise the BH region completely
+        // calculate the densities and fluxes
         fillAllGhosts();
         ComplexScalarPotential potential(m_p.potential_params);
         ScalarFieldWithPotential scalar_field(potential);
         BinaryNewtonFixedBG binary_newton(m_p.bg_params1, m_p.bg_params2, m_dx,
                                     m_p.center, m_time, m_p.separation, m_p.omega_binary);
-        FixedBGDensityAndAngularMom<ScalarFieldWithPotential, BinaryNewtonFixedBG>
+        DensityAndAngularMomAndSourceTerm<ScalarFieldWithPotential, BinaryNewtonFixedBG>
             densities(scalar_field, binary_newton, m_dx, m_p.center);
         FixedBGEnergyAndAngularMomFlux<ScalarFieldWithPotential,
                                        BinaryNewtonFixedBG>
@@ -110,28 +126,36 @@ void ScalarFieldLevel::specificPostTimeStep()
                 m_dx, m_p.center, binary_newton, m_p.inner_r, m_p.outer_r),
             m_state_diagnostics, m_state_diagnostics, SKIP_GHOST_CELLS,
             disable_simd());
+	
+        // set densities to zero outside the integration region (this includes inside the effective horizon)
+        BoxLoops::loop(
+                       BoundedDensities(m_p.integration_params, m_dx, m_p.center, m_time),
+		       m_state_diagnostics, m_state_diagnostics, INCLUDE_GHOST_CELLS, disable_simd());
     }
-
+    
     // write out the integral after each coarse timestep
     if (m_level == 0)
     {
         bool first_step = (m_time == m_dt);
 
         // integrate the densities and write to a file
+	// need to change this to integrating over the correct volume
+	
         AMRReductions<VariableType::diagnostic> amr_reductions(m_gr_amr);
         double rho_sum = amr_reductions.sum(c_rho);
         double rhoJ_sum = amr_reductions.sum(c_rhoJ);
-
+	double Cphi_sum = amr_reductions.sum(c_Cphi);
+	
         SmallDataIO integral_file(m_p.integral_filename, m_dt, m_time,
                                   m_restart_time, SmallDataIO::APPEND,
                                   first_step);
         // remove any duplicate data if this is post restart
         integral_file.remove_duplicate_time_data();
-        std::vector<double> data_for_writing = {rho_sum, rhoJ_sum};
+        std::vector<double> data_for_writing = {rho_sum, rhoJ_sum, Cphi_sum};
         // write data
         if (first_step)
         {
-            integral_file.write_header_line({"rho", "rhoJ"});
+	  integral_file.write_header_line({"rho", "rhoJ", "Cphi"});
         }
         integral_file.write_time_data_line(data_for_writing);
 

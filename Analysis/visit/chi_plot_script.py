@@ -9,15 +9,14 @@ from sys import exit
 print("starting visit run")
 
 # file settings
-data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-run_number = 1
-mu = "1"
-subdir = "run{:04d}_FlatScalar_mu{:s}_G0".format(run_number, mu)
+data_root_dir = "/p/project/pra116/bamber1/BinaryBHScalarField/"
+#data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
+subdir = "run0023v2_mu0.5_delay0_G0.0000000001_ratio1"
 #data_root_dir = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField/"
 #subdir = "test0001"
-number = 900
-width = 32
-data_file_name = "BinaryBHSFPlot_%06d.3d.hdf5" % number
+number = 0
+width = 512
+data_file_name = "BinaryBHSFChk_%06d.3d.hdf5" % number
 
 # open datafile(s)
 DeleteAllPlots()
@@ -89,8 +88,9 @@ View2DAtts.windowValid = 1
 SetView2D(View2DAtts)
 
 # save plot as png
-root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
-filename = "BBH_SF_chi_" + subdir + "_n%06d" % number 
+#root_plot_path = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Analysis/plots/"
+root_plot_path = "/p/scratch/pra116/bamber1/plots/GR_Binary_BH/"
+filename = subdir + "chi_Chk_n%06d" % number 
 s = SaveWindowAttributes()
 s.family = 0
 s.format = s.PNG

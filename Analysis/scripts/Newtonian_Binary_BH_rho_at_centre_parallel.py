@@ -38,11 +38,13 @@ data_dirs = []
 def add_data_dir(num, M, d, mu, dt_mult, l, m, Al):
         x = data_dir(num, M, d, mu, dt_mult, l, m, Al)
         data_dirs.append(x)
-                
+
+add_data_dir(5, "0.2", "10", "0.002", "0.5", 0, 0, "0")
+#add_data_dir(6, "0.2", "10", "0.005", "0.5", 0, 0, "0")
 add_data_dir(10, "0.2", "10", "0.01", "0.5", 0, 0, "0")
-add_data_dir(9, "0.2", "10", "0.015", "0.5", 0, 0, "0")
+#add_data_dir(9, "0.2", "10", "0.015", "0.5", 0, 0, "0")
 add_data_dir(7, "0.2", "10", "0.02", "0.5", 0, 0, "0")
-add_data_dir(8, "0.2", "10", "0.025", "0.5", 0, 0, "0")
+#add_data_dir(8, "0.2", "10", "0.025", "0.5", 0, 0, "0")
 add_data_dir(11, "0.2", "10", "0.03", "0.5", 0, 0, "0")
 #add_data_dir(12, "0.2", "10", "0.02", "0.5", 1, -1, "0")
 #add_data_dir(13, "0.2", "10", "0.02", "0.5", 1, 1, "0")
@@ -53,9 +55,12 @@ add_data_dir(21, "0.2", "10", "0.05", "0.25", 0, 0, "0")
 add_data_dir(19, "0.2", "10", "0.1", "0.125", 0, 0, "0")
 add_data_dir(24, "0.2", "10", "0.15", "0.0625", 0, 0, "0")
 add_data_dir(22, "0.2", "10", "0.2", "0.0625", 0, 0, "0")
-add_data_dir(23, "0.2", "10", "0.3", "0.0625", 0, 0, "0")
-add_data_dir(20, "0.2", "10", "0.5", "0.0625", 0, 0, "0")
-add_data_dir(18, "0.2", "10", "1", "0.0625", 0, 0, "0")
+#add_data_dir(25, "0.2", "10", "0.25", "0.0625", 0, 0, "0")
+#add_data_dir(23, "0.2", "10", "0.3", "0.0625", 0, 0, "0")
+#add_data_dir(20, "0.2", "10", "0.5", "0.0625", 0, 0, "0")
+#add_data_dir(18, "0.2", "10", "1", "0.03125", 0, 0, "0")
+#add_data_dir(26, "0.2", "10", "2", "0.03125", 0, 0, "0")
+#add_data_dir(27, "0.2", "10", "5", "0.015625", 0, 0, "0")
 
 ############################
 
@@ -108,31 +113,33 @@ def plot_graph():
         print("plotting graph ... ")
         fig, ax = plt.subplots()
         line_positions = np.linspace(-width/2, width/2, N)
-        colours = ['r', 'g', 'b', 'm', 'c', 'y', 'k', 'r--', 'g--', 'b--', 'm--', 'c--']
+        #colours = ['r', 'g', 'b', 'm', 'c', 'y', 'k', 'r--', 'g--', 'b--', 'm--', 'c--', 'y--']
+        colours = ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
         font_size = 12
         title_font_size = 10
         label_size = 12
-        legend_font_size = 6
+        legend_font_size = 12
         for i in range(0, len(data_dirs)):
                 dd = data_dirs[i]
                 # load data
+                omega_BH = np.sqrt(2*dd.M/(dd.d**3))
                 file_name = output_data_dir + dd.name + "_rho_at_centre.dat"
                 data = np.genfromtxt(file_name, skip_header=1)
                 t = data[:,0]
                 rho = data[:,1]
                 print("loaded data for ", file_name)
-                ax.plot(t, np.log10(rho), colours[i], linewidth=1, label="$\\mu$={:.2f}".format(dd.mu, dd.l, dd.m))
+                ax.plot(t, np.log10(rho), colours[i], linewidth=1, label="$\\mu/\\omega_B$={:.2f}".format(dd.mu/omega_BH))
         title = "$\\rho$ at centre between BHs, Newtonian binary $M=0.2,d=10$"
         ax.set_title(title, fontsize=title_font_size)
         plt.legend(loc='best', fontsize=legend_font_size)
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
         ax.minorticks_on()
-        ax.set_xlim((0, 8000))
-        ax.set_ylim((-0.5, 4))
+        ax.set_xlim((0, 10000))
+        ax.set_ylim((0, 2))
         ax.set_xlabel('t',fontsize=label_size, labelpad=0)
         ax.set_ylabel('$\\log_{10}(\\rho/\\rho_0)$', fontsize=label_size, labelpad=0)
-        save_path = plots_dir + "Newtonian_BH_rho_centre_compare_mu_plot.png"
+        save_path = plots_dir + "Newtonian_BH_rho_centre_L{:d}_N{:d}_compare_mu_plot_v2.png".format(L, N1)
         fig.tight_layout()
         ax.margins(2)
         plt.savefig(save_path, transparent=False)

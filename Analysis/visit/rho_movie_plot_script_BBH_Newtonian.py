@@ -20,20 +20,24 @@ data_root_dir = "/p/scratch/pra116/bamber1/NewtonianBinaryScalar/"
 root_plot_path = "/p/scratch/pra116/bamber1/plots/Newtonian_Binary_BH/"
 
 class data_dir:
-        def __init__(self, num, M, d, mu, dt_mult, l, m, Al):
+        def __init__(self, num, M1, M2, d, mu, dt_mult, l, m, Al):
                 self.num = num
-                self.M = float(M)
+                self.M1 = float(M1)
+                self.M2 = float(M2)
                 self.d = float(d)
                 self.mu = float(mu)
                 self.dt_mult = dt_mult
                 self.l = l
                 self.m = m
                 self.Al = float(Al)
-                self.name = "run{:04d}_M{:s}_d{:s}_mu{:s}_dt_mult{:s}_l{:d}_m{:d}_Al{:s}_L{:d}_N{:d}".format(num, M, d, mu, dt_mult, l, m, Al, L, N)
-
+                if (M1 == M2):
+                        self.name = "run{:04d}_M{:s}_d{:s}_mu{:s}_dt_mult{:s}_l{:d}_m{:d}_Al{:s}_L{:d}_N{:d}_from_origin".format(num, M1, d, mu, dt_mult, l, m, Al, L, N)
+                else:
+                        self.name = "run{:04d}_M1{:s}_M2{:s}_d{:s}_mu{:s}_dt_mult{:s}_l{:d}_m{:d}_Al{:s}_L{:d}_N{:d}".format(num, M1, M2, d, mu, dt_mult, l, m, Al, L, N)
+                        
 data_dirs = []
-def add_data_dir(num, M, d, mu, dt_mult, l, m, Al):
-        x = data_dir(num, M, d, mu, dt_mult, l, m, Al)
+def add_data_dir(num, M1, M2, d, mu, dt_mult, l, m, Al):
+        x = data_dir(num, M1, M2, d, mu, dt_mult, l, m, Al)
         data_dirs.append(x)
 
 #add_data_dir(7, "0.2", "10", "0.02", "0.5", 0, 0, "0")
@@ -43,12 +47,15 @@ def add_data_dir(num, M, d, mu, dt_mult, l, m, Al):
 #add_data_dir(11, "0.2", "10", "0.03", "0.5", 0, 0, "0")
 #add_data_dir(12, "0.2", "10", "0.02", "0.5", 1, -1, "0")
 #add_data_dir(13, "0.2", "10", "0.02", "0.5", 1, 1, "0")
-add_data_dir(15, "0.48847892320123", "12.21358", "1", "0.0625", 0, 0, "0")
-add_data_dir(16, "0.48847892320123", "12.21358", "1", "0.0625", 1, -1, "0")
-add_data_dir(17, "0.48847892320123", "12.21358", "1", "0.0625", 1, 1, "0")
-add_data_dir(18, "0.2", "10", "1", "0.0625", 0, 0, "0")
-add_data_dir(19, "0.2", "10", "0.1", "0.125", 0, 0, "0")
-add_data_dir(20, "0.2", "10", "0.5", "0.0625", 0, 0, "0")
+#add_data_dir(15, "0.48847892320123", "0.48847892320123", "12.21358", "1", "0.03125", 0, 0, "0")
+#add_data_dir(16, "0.48847892320123", "0.48847892320123", "12.21358", "1", "0.03125", 1, -1, "0")
+#add_data_dir(17, "0.48847892320123", "0.48847892320123", "12.21358", "1", "0.03125", 1, 1, "0")
+#add_data_dir(18, "0.2", "0.2", "10", "1", "0.0625", 0, 0, "0")
+#add_data_dir(19, "0.2", "0.2", "10", "0.1", "0.125", 0, 0, "0")
+#add_data_dir(20, "0.2", "0.2", "10", "0.5", "0.0625", 0, 0, "0")
+add_data_dir(115, "0.48847892320123", "0.48847892320123", "12.21358", "1", "0.0625", 0, 0, "0")
+#add_data_dir(115, "0.5", "0.5", "12", "1", "0.03125", 0, 0, "0")
+#add_data_dir(215, "0.3194742895317072", "0.654181589210298", "10.0", "1", "0.03125", 0, 0, "0")
 
 # file settings
 data_file_name = "Newton_plt*.3d.hdf5 database"

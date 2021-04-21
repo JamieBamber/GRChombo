@@ -312,6 +312,7 @@ compute_christoffel(const Tensor<2, Tensor<1, data_t>> &d1_metric,
     return out;
 }
 
+// computes the 3D christoffel symbol ?
 template <class data_t>
 Tensor<3, data_t> compute_phys_chris(const Tensor<1, data_t> &d1_chi,
                                      const data_t &vars_chi,
@@ -334,6 +335,17 @@ Tensor<3, data_t> compute_phys_chris(const Tensor<1, data_t> &d1_chi,
     }
     return chris_phys;
 }
+
+// computes the 4D christoffel symbol
+/*template <class data_t>
+Tensor<3, data_t, 4> compute_4D_chris(const Tensor<1, data_t> &d1_chi,
+                                     const data_t &vars_chi,
+                                     const Tensor<2, data_t> &vars_h,
+                                     const Tensor<2, data_t> &h_UU,
+                                     const Tensor<3, data_t> &chris_ULL)
+{
+  Tensor<3, data_t, 4> chris_4D;
+  chris_4D[0][0][0] = */
 } // namespace TensorAlgebra
 
 #endif /* TENSORALGEBRA_HPP_ */

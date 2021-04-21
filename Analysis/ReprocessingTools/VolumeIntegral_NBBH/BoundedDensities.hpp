@@ -23,9 +23,10 @@ class BoundedDensities
     const integration_params_t m_params;
     const double m_dx;                              //!< The grid spacing
     const std::array<double, CH_SPACEDIM> m_center; //!< The grid center
+    double m_time;
   public:
-    BoundedDensities(integration_params_t a_params, double a_dx, std::array<double, CH_SPACEDIM> a_center)
-        : m_dx(a_dx), m_center(a_center), m_params(a_params) 
+  BoundedDensities(integration_params_t a_params, double a_dx, std::array<double, CH_SPACEDIM> a_center, double a_time)
+    : m_dx(a_dx), m_center(a_center), m_params(a_params), m_time(a_time) 
     {
     }
 
@@ -44,9 +45,18 @@ class BoundedDensities
 	rho = current_cell.load_vars(c_rho);
 	rho_azimuth = current_cell.load_vars(c_rhoJ);
 
+	// work out bh_positions
+	double omega = sqrt(2 * m_params.M / (m_params.d*m_params.d*m_params.d) );
+	double bh_x = 0.5 * m_params.d * (cos(omega * m_time) - 2);
+        double bh_y = 0.5 * m_params.d * sin(omega * abs(m_time));
+	data_t r_1 = sqrt( pow(x - m_center[0] - bh_x,2)+pow(y - m_center[1] - bh_y,2)+pow(z - m_center[2],2));
+	data_t r_2 = sqrt( pow(x - m_center[0] + bh_x,2)+pow(y - m_center[1] + bh_y,2)+pow(z - m_center[2],2));
+	r_1 = simd_max(r_1, 0.0001); // avoid divergences
+	r_1 = simd_max(r_2, 0.0001); 
+	data_t Phi = 2*m_params.M*( 1.0/r_1 + 1.0/r_2);
 	//
 	// data_t inside = simd_compare_lt(r,m_params.max_integration_radius)*simd_compare_gt(r,m_params.min_integration_radius);
-	data_t inside = (R < m_params.max_integration_radius) && (R > m_params.min_integration_radius);
+	data_t inside = ((R < m_params.max_integration_radius) && (R > m_params.min_integration_radius)) && (Phi < 1);
 	
         // assign values of density in output box
         current_cell.store_vars(inside*rho, c_rho);

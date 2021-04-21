@@ -15,6 +15,22 @@
 #include "ComplexScalarPotential.hpp"
 #include "ScalarRotatingCloud.hpp"
 
+struct integration_params_t
+{
+    double min_integration_radius = 0;
+    double max_integration_radius;
+    // int &num_integration_radii;
+  
+    // std::vector<double> &integration_radii;
+  
+    std::array<double, CH_SPACEDIM> integration_center;
+    std::vector<int> integration_levels;
+    int min_integration_level;
+    double M;   // BH masses                                                                                                                                                                                                                        
+    double d;   // BH separation
+  
+};
+
 class SimulationParameters : public FixedBGSimulationParametersBase
 {
   public:
@@ -51,6 +67,20 @@ class SimulationParameters : public FixedBGSimulationParametersBase
         pp.load("scalar_mass", potential_params.scalar_mass);
         pp.load("inner_r", inner_r, 1.0);
         pp.load("outer_r", outer_r, L/2.0);
+
+	// Integration parameters                                                                                                                                                                                                                    
+        integration_params.min_integration_radius = inner_r;
+        integration_params.max_integration_radius = outer_r;
+
+        /*if (pp.contains("integration_radii"))                                                                                                                                                                                                      
+        {                                                                                                                                                                                                                                            
+            pp.load("integration_radii", integration_params.integration_radii,                                                                                                                                                                       
+                    integration_params.num_integration_radii);                                                                                                                                                                                       
+        }*/
+
+        pp.load("integration_level", integration_params.integration_levels, 1,0);
+        integration_params.M = bg_params1.mass;
+        integration_params.d = separation;
     }
 
     // Problem specific parameters
@@ -65,6 +95,7 @@ class SimulationParameters : public FixedBGSimulationParametersBase
     NewtonianBHFixedBG::params_t bg_params2;
     ComplexScalarPotential::params_t potential_params;
     ScalarRotatingCloud::params_t initial_params;
+    integration_params_t integration_params;
 };
 
 #endif /* SIMULATIONPARAMETERS_HPP_ */

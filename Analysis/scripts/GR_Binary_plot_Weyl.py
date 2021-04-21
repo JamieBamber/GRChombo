@@ -74,14 +74,14 @@ def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
 #add_data_dir(22, "0.5", 0, "0", 1)
 add_data_dir(25, "0.5", 0, "0", 1, 0, 1, 1)
 #add_data_dir(24, "0.5", 0, "0.00000000000000000001", 1, 1)
-#add_data_dir(18, "0.5", 0, "0.000001", 1)
-#add_data_dir(28, "0.5", 0, "0.00000001", 1)                         
+add_data_dir(18, "0.5", 0, "0.000001", 1)
+add_data_dir(28, "0.5", 0, "0.00000001", 1)                         
 #add_data_dir(31, "0.5", 0, "0.0000000000000000000000001", 1) # 10^{-25}
 #add_data_dir(32, "0.5", 0, "0.000000000000000000000000000001", 1) # 10^{-30}
-add_data_dir(33, "0.5", 0, "0.000000001", 1) # 10^{-9}
+#add_data_dir(33, "0.5", 0, "0.000000001", 1) # 10^{-9}
 add_data_dir(23, "0.5", 0, "0.0000000001", 1) # 10^{-10}     
-#add_data_dir(34, "0.5", 0, "0.000000000001", 1) # 10^{-12}
-#add_data_dir(35, "0.5", 0, "0.00000000000001", 1) # 10^{-14}
+add_data_dir(34, "0.5", 0, "0.000000000001", 1) # 10^{-12}
+add_data_dir(35, "0.5", 0, "0.00000000000001", 1) # 10^{-14}
 #add_data_dir(26, "0.5", 0, "0.000000000000001", 1) # 10^{-15}
 #add_data_dir(27, "0.5", 0, "0.00000000000000000001", 1) # 10^{-20}
 
@@ -132,7 +132,8 @@ def realign_data(t,W):
 
 def plot_graph(align=False):
         data = load_data(2,2)
-        colours = ['r-', 'b-', 'g-', 'm-', 'y-', 'c-', 'k-', 'r--', 'b--', 'g--', 'm--', 'y--', 'c--']
+        #colours = ['r-', 'b-', 'g-', 'm-', 'y-', 'c-', 'k-', 'r--', 'b--', 'g--', 'm--', 'y--', 'c--']
+        colours = ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6']
         i = 0
         ### plot mass flux graph
         fig, ax1 = plt.subplots()
@@ -178,15 +179,16 @@ def plot_graph(align=False):
 
 def plot_diff_graph(use_log):
         data = load_data(2,2)
-        colours = ['r-', 'b-', 'g-', 'm-', 'y-', 'c-', 'k-', 'r--', 'b--', 'g--', 'm--', 'y--', 'c--']
+        #colours = ['r-', 'b-', 'g-', 'm-', 'y-', 'c-', 'k-', 'r--', 'b--', 'g--', 'm--', 'y--', 'c--']
+        colours = ['C0', 'C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6']
         i = 0
         ### plot mass flux graph                                                                                                                                                    
         fig, ax1 = plt.subplots()
-        fig.set_size_inches(6.5,6)
-        font_size = 10
-        title_font_size = 10
-        label_size = 10
-        legend_font_size = 12
+        fig.set_size_inches(5.5,6)
+        font_size = 14
+        title_font_size = 14
+        label_size = 14
+        legend_font_size = 14
         #rc('xtick',labelsize=font_size)                                                                                                                                            
         #rc('ytick',labelsize=font_size)
         # get G = 0 data
@@ -194,6 +196,8 @@ def plot_diff_graph(use_log):
         t = line_data[:,0]
         Weyl_Re = line_data[:,3]
         t0, W0 = realign_data(t,Weyl_Re)
+        W0_max = np.max(np.abs(W0))
+        print("W0_max = ", W0_max)
         print("t0.shape = ", t0.shape)
         print("W0.shape = ", W0.shape)
         for dd in data_dirs[1:]:
@@ -203,21 +207,21 @@ def plot_diff_graph(use_log):
                 Weyl_Re = line_data[:,3]
                 Weyl_Im = line_data[:,4]
                 t1, W1 = realign_data(t,Weyl_Re)
-                label_ = "$m=${:.1f} $G=${:.0g}".format(dd.mu, float(dd.G))
+                label_ = "$\\tilde{G}=$" + "{:.0g}".format(float(dd.G))
                 if use_log:
-                        ax1.plot(t1,np.log10(np.abs(W1-W0)),colours[i+1], label=label_)
+                        ax1.plot(t1,np.log10(np.abs(W1-W0)/W0_max),colours[i+1], label=label_)
                 else:
-                        ax1.plot(t1,W1-W0,colours[i+1], label=label_)
+                        ax1.plot(t1,(W1-W0)/W0_max,colours[i+1], label=label_)
                 i = i + 1
-        ax1.set_xlabel("$t$", fontsize=font_size)
+        ax1.set_xlabel("$t$", fontsize=label_size)
         if use_log:
-                ax1.set_ylabel("$\\log_{10}$($\\Delta$ Re($\\Psi_4$) 22 mode)")
+                ax1.set_ylabel("$\\log_{10}$($\\Delta$ Re($\\Psi_4$) 22 mode / $\\tilde{G}=0$ amplitude)", fontsize=label_size)
                 save_path = plots_path + "GR_BBH_Weyl_Re_22_G_diff_log.png"
         else:
-                ax1.set_ylabel("$\\Delta$ Re($\\Psi_4$) 22 mode")
+                ax1.set_ylabel("$\\Delta$ Re($\\Psi_4$) 22 mode / $\\tilde{G}=0$ amplitude", fontsize=label_size)
                 save_path = plots_path + "GR_BBH_Weyl_Re_22_G_diff.png"
         ax1.set_xlim((-1000, 100))
-        plt.title("change in Weyl scalar at $R=${:d} vs $G=0$".format(r_extract))
+        plt.title("change in Weyl scalar at $R=${:d}".format(r_extract)+ " vs $\\tilde{G}=0$, $\\mu=0.5$")
         ax1.legend(loc='best', fontsize=legend_font_size)
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
@@ -226,5 +230,7 @@ def plot_diff_graph(use_log):
         print("saved plot as " + str(save_path))
         plt.clf()
         
-plot_graph(True)
-plot_diff_graph(False)
+#plot_graph(True)
+#plot_graph(False)
+#plot_diff_graph(False)
+plot_diff_graph(True)

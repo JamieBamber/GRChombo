@@ -42,7 +42,7 @@ def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
         x = data_dir(num, mu, delay, G, ratio, restart, l, m, Al)
         data_dirs.append(x)
 #
-#add_data_dir(11, "1", 0, "0", 1)
+add_data_dir(11, "1", 0, "0", 1)
 #add_data_dir(12, "1", 10000, "0", 1)
 #add_data_dir(13, "0.08187607564", 0, "0", 1)
 #add_data_dir(14, "1", 0, "0", 2)
@@ -56,9 +56,9 @@ def add_data_dir(num, mu, delay, G, ratio, restart=0, l=0, m=0, Al="0"):
 #add_data_dir(22, "0.5", 0, "0", 1)
 #add_data_dir(23, "0.5", 0, "0.0000000001", 1)
 #add_data_dir(24, "0.5", 0, "0.00000000000000000001", 1, 1)
-add_data_dir(25, "0.5", 0, "0", 1, 0, 1, 1)
-add_data_dir(30, "0.5", 0, "0", 1, 0, 2, 2)
-add_data_dir(36, "0.5", 0, "0", 1, 0, 1, -1)
+#add_data_dir(25, "0.5", 0, "0", 1, 0, 1, 1)
+#add_data_dir(30, "0.5", 0, "0", 1, 0, 2, 2)
+#add_data_dir(36, "0.5", 0, "0", 1, 0, 1, -1)
 
 # file settings
 data_root_dir = "/p/project/pra116/bamber1/BinaryBHScalarField/"
@@ -67,7 +67,7 @@ root_plot_path = "/p/scratch/pra116/bamber1/plots/GR_Binary_BH/"
 data_file_name = "BinaryBHSFPlot_*.3d.hdf5 database"
 
 def make_rho_movie(dd):
-	width=64
+	width=100
 	start_frame = 0
 	
 	# open datafile(s)
@@ -89,7 +89,7 @@ def make_rho_movie(dd):
 	PseudocolorAtts.minFlag = 1
 	PseudocolorAtts.min = 0.1
 	PseudocolorAtts.maxFlag = 1
-	PseudocolorAtts.max = 10000
+	PseudocolorAtts.max = 1000
 	PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
 	PseudocolorAtts.colorTableName = "inferno"
 	PseudocolorAtts.invertColorTable = 0
@@ -220,7 +220,7 @@ def make_rho_movie(dd):
 	# number format
 	# turning off the labels.
 	legend.drawLabels = 1
-	legend.drawMinMax = 0
+	legend.drawMinMax = 1
 	
 	# turning off the title.
 	legend.drawTitle = 0
@@ -242,7 +242,7 @@ def make_rho_movie(dd):
 	nts = TimeSliderGetNStates()
 	
 	# set basic save options
-	frame_dir = "BBH_GR_{:s}_rho_movie".format(dd.name)
+	frame_dir = "BBH_GR_{:s}_rho_movie_v2".format(dd.name)
 	try:
         	makedirs(root_plot_path)
 	except:
