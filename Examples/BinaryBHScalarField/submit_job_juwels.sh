@@ -42,6 +42,8 @@ run0035=(0.5 0 0.25 0.00000000000001 1 0 0 0) # G = 10^{-14}
 run0035ICS=(0.5 0 0.25 0.00000000000001 1 0 0 0) # G = 10^{-14}
 run0036=(0.5 0 0.25 0 1 1 -1 0)
 
+run_Katy_test_v3=(1 0 0.0625 0.0000000001 1 0 0 0) # G = 10^{-10}
+
 run_list=(
 #    run0011
 #    run0012
@@ -55,6 +57,7 @@ run_list=(
 #    run0020
 #    run0025
     run0023ICS
+#    run_Katy_test_v3
 #    run0024
 #    run0026
 #    run0027
@@ -65,7 +68,7 @@ run_list=(
 #    run0036
 )
 
-plot_interval=10
+plot_interval=1
 L=512
 N1=64
 box_size=16
@@ -113,9 +116,12 @@ do
 	echo $chk_file
 	#
 	cd ${work_dir}
-        cp slurm_submit_juwels_test ${new_dir_path}/slurm_submit
+        cp slurm_submit_juwels ${new_dir_path}/slurm_submit
+
 	params_file=params_ratio${ratio}.txt
-        cp ${params_file} ${new_dir_path}/params.txt
+	#params_file=params_evolution_Katy_test_v3.txt
+	
+	cp ${params_file} ${new_dir_path}/params.txt
 	cp BinaryBHLevel.cpp ${new_dir_path}/BinaryBHLevel.cpp.txt
 	cd ${new_dir_path}
         # add the input params to the input files

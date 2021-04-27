@@ -5,7 +5,7 @@
 
 # this copy is for COSMA6
 
-work_dir=/p/home/jusers/bamber1/juwels/GRChombo/Examples/NewtonianScalar
+work_dir=/p/home/jusers/bamber1/juwels/GRChombo/Examples/NewtonianScalar_v2
 cd $work_dir
 data_directory=/p/scratch/pra116/bamber1/NewtonianBinaryScalar
 #data_directory=/p/project/pra116/bamber1/NewtonianBinaryBHScalar
@@ -39,7 +39,7 @@ run0011=(0.2 0.2 10 0.03 0.5 0 0 0)
 #
 #run0012=(0.2 10 0.02 0.5 1 -1 0)
 #run0013=(0.2 10 0.02 0.5 1 1 0)
-run0115=(0.5 0.5 12 1 0.03125 0 0 0 1.0)
+run0115=(0.48847892320123 0.48847892320123 12.21358 1 0.0625 0 0 0 1.0)
 run0015=(0.48847892320123 0.48847892320123 12.21358 1 0.03125 0 0 0)
 run0215=(0.3194742895317072 0.654181589210298 10.0 1 0.03125 0 0 0 2.0)
 run0016=(0.48847892320123 0.48847892320123 12.21358 1 0.03125 1 -1 0)
@@ -113,9 +113,9 @@ do
         # text_number=$(printf "%04d" ${run_number})
 	if [[ $M1 == $M2 ]]
 	then
-	   new_dir=${run}_M${M1}_d${d}_mu${mu}_dt_mult${dt_mult}_l${l}_m${m}_Al${Al}_L${L}_N${N1}
+	   new_dir=${run}_M${M1}_d${d}_mu${mu}_dt_mult${dt_mult}_l${l}_m${m}_Al${Al}_L${L}_N${N1}_v2
 	else
-           new_dir=${run}_M1${M1}_M2${M2}_d${d}_mu${mu}_dt_mult${dt_mult}_l${l}_m${m}_Al${Al}_L${L}_N${N1}
+           new_dir=${run}_M1${M1}_M2${M2}_d${d}_mu${mu}_dt_mult${dt_mult}_l${l}_m${m}_Al${Al}_L${L}_N${N1}_v2
 	fi
         echo ${new_dir}
         new_dir_path=${data_directory}/${new_dir}

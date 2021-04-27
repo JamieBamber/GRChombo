@@ -25,7 +25,7 @@ class NewtonianBHFixedBG
     {
         double mass = 1.0;                      //!<< The mass of the star
         std::array<double, CH_SPACEDIM> center; //!< The center of the star
-        double displacement;
+        const double displacement;
     };
 
     template <class data_t> using Vars = ADMFixedBGVars::Vars<data_t>;
@@ -68,11 +68,11 @@ class NewtonianBHFixedBG
         std::array<double, CH_SPACEDIM> center_now;
         if (m_time != 0.0)
         {
-	    // pout() << "BH displament = " << m_params.displacement << endl; 
+	  // pout() << "BH displament = " << m_params.displacement << endl; 
             double sign = m_time / abs(m_time);
             center_now[0] =
                 m_params.center[0] +
-	      sign * m_params.displacement * (cos(m_omega * m_time));
+	      sign * m_params.displacement * (cos(m_omega * m_time) - 2);
             center_now[1] = m_params.center[1] +
 	      sign * m_params.displacement * sin(m_omega * abs(m_time));
             center_now[2] = m_params.center[2];
@@ -162,7 +162,7 @@ class NewtonianBHFixedBG
         const double M = m_params.mass;
         std::array<double, CH_SPACEDIM> center_now;
 	center_now[0] = m_params.center[0] +
-	  sign * m_params.displacement * (cos(m_omega * m_time));
+	  sign * m_params.displacement * (cos(m_omega * m_time) - 2);
         center_now[1] = m_params.center[1] +
 	  sign * m_params.displacement * sin(m_omega * abs(m_time));
         center_now[2] = m_params.center[2];

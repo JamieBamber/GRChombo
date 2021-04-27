@@ -37,13 +37,14 @@ momentumB =  0.05 0.0 0.0
 
 # Scalar params
 scalar_mass = 1.0
-amplitude_scalar = 1.0
-G_Newton = 0.0
+field_amplitude = 1.0
+G_Newton = 0.0000000001
+delay = 0
 
 # regridding control, specify frequency on each level
 # so need max_level + 1 entries for interval
 regrid_threshold = 0.05
-max_level = 9
+max_level = 6
 regrid_interval = 0 0 0 64 64 64 64 64 64 0
 
 # Max and min box sizes

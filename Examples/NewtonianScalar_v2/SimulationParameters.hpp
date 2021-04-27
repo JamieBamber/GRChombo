@@ -24,8 +24,9 @@ struct integration_params_t
     std::array<double, CH_SPACEDIM> integration_center;
     std::vector<int> integration_levels;
     int min_integration_level;
-    double M;   // BH masses 
-    double d;   // BH separation                                                                                             
+    double M1, M2;   // BH masses 
+    double d;   // BH separation
+    double disp1, disp2;
 };
 
 class SimulationParameters : public FixedBGSimulationParametersBase
@@ -50,8 +51,12 @@ class SimulationParameters : public FixedBGSimulationParametersBase
         pp.load("bh_center_2", bg_params2.center, center);
         pp.load("omega_binary", omega_binary);
         pp.load("separation", separation, 0.0);
-	bg_params1.center[0] += 0.5 * separation;
-        bg_params2.center[0] -= 0.5 * separation;
+	double disp_ratio;
+	pp.load("disp_ratio", disp_ratio, 1.0); // This sets the ratio of the displacements of bh_1 and bh_2 from the centre of mass
+	bg_params1.displacement = separation * disp_ratio / (disp_ratio + 1.0);
+	bg_params2.displacement	= separation * 1.0 / (disp_ratio + 1.0);
+	bg_params1.center[0] += bg_params1.displacement;
+        bg_params2.center[0] -= bg_params2.displacement;
 
 	pp.load("scalar_amplitude", initial_params.amplitude); 
         pp.load("center", initial_params.center, center);
@@ -76,8 +81,11 @@ class SimulationParameters : public FixedBGSimulationParametersBase
 	}*/
 	
 	pp.load("integration_level", integration_params.integration_levels, 1,0);
-        integration_params.M = bg_params1.mass;
+        integration_params.M1 = bg_params1.mass;
+	integration_params.M2 = bg_params2.mass;
 	integration_params.d = separation;
+	integration_params.disp1 = bg_params1.displacement;
+	integration_params.disp2 = bg_params2.displacement;
     }
 
     // Problem specific parameters

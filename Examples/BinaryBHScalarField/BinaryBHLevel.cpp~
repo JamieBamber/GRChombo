@@ -83,19 +83,19 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
     // ---> With Scalar Field
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
-    if (m_time < m_p.delay){
+    /*if (m_time < m_p.delay){
             MatterOnly<ScalarFieldWithPotential> my_matter(
                 scalar_field, m_p.sigma, m_dx);
             BoxLoops::loop(SetValue(0.0),
                 a_soln, a_rhs, INCLUDE_GHOST_CELLS);
             BoxLoops::loop(my_matter,
-	    a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
-    } else {
+	    a_soln, a_rhs, EXCLUDE_GHOST_CELLS);*/
+    //} else {
            MatterCCZ4<ScalarFieldWithPotential> my_ccz4_matter(
            scalar_field, m_p.ccz4_params, m_dx, m_p.sigma, m_p.formulation,
            m_p.G_Newton);
            BoxLoops::loop(my_ccz4_matter, a_soln, a_rhs, EXCLUDE_GHOST_CELLS);
-    }
+    //}
 
     // Check for nan's
     if (m_p.nan_check)
@@ -221,7 +221,7 @@ void BinaryBHLevel::prePlotLevel()
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(
-                       scalar_field, m_dx, m_p.center, 0),
+                       scalar_field, m_dx, m_p.center, m_p.final_a),
                    m_state_new, m_state_diagnostics, EXCLUDE_GHOST_CELLS);
     // Populate the Weyl Scalar values on the grid                                                                                                                              
     BoxLoops::loop(Weyl4(m_p.center, m_dx),

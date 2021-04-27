@@ -1,12 +1,12 @@
 #!/bin/bash -x
 #SBATCH --account=pra116
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=12
+#SBATCH --nodes=8
+#SBATCH --ntasks-per-node=8
 #SBATCH -J JOBNAME                                                                                                                            
 #SBATCH --exclusive
 
 # if keyword omitted: Max. 96 tasks per node
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=12
 
 # for OpenMP/hybrid jobs only
 #SBATCH --output=std_out.txt

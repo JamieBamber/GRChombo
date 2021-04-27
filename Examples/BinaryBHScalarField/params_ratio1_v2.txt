@@ -52,9 +52,9 @@ final_a = 0.0
 
 # regridding control, specify frequency on each level
 # so need max_level + 1 entries for interval
-regrid_threshold = 0.1 # set to 0.1 to match the ICS, old value was 0.05
-max_level = 9
-regrid_interval = 0 0 0 128 64 64 64 32 16 0
+regrid_threshold = 0.05 # set to 0.1 to match the ICS, old value was 0.05
+max_level = 6
+regrid_interval = 0 0 0 64 64 64 64 64 64 0
 
 # boundaries and periodicity of grid
 # Periodic directions - 0 = false, 1 = true
@@ -102,7 +102,7 @@ block_factor = BOXSIZE
 
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
-plot_interval = 20
+plot_interval = 10
 dt_multiplier = DTMULT # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 10000.0
 ## dt_actual = 8*dt_multiplier = 3.2
@@ -133,8 +133,8 @@ sigma = 1.0
 # default of extraction_center is center, uncomment to change
 activate_extraction = 1
 write_extraction = 0
-num_extraction_radii = 3
-extraction_radii = 50.0 100.0 200.0
+num_extraction_radii = 2
+extraction_radii = 50.0 200.0
 extraction_levels = 2 1
 num_points_phi = 24
 num_points_theta = 36

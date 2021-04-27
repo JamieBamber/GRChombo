@@ -31,7 +31,7 @@ class data_dir:
                 self.m = m
                 self.Al = float(Al)
                 if (M1 == M2):
-                        self.name = "run{:04d}_M{:s}_d{:s}_mu{:s}_dt_mult{:s}_l{:d}_m{:d}_Al{:s}_L{:d}_N{:d}_from_origin".format(num, M1, d, mu, dt_mult, l, m, Al, L, N)
+                        self.name = "run{:04d}_M{:s}_d{:s}_mu{:s}_dt_mult{:s}_l{:d}_m{:d}_Al{:s}_L{:d}_N{:d}_v2".format(num, M1, d, mu, dt_mult, l, m, Al, L, N)
                 else:
                         self.name = "run{:04d}_M1{:s}_M2{:s}_d{:s}_mu{:s}_dt_mult{:s}_l{:d}_m{:d}_Al{:s}_L{:d}_N{:d}".format(num, M1, M2, d, mu, dt_mult, l, m, Al, L, N)
                         

@@ -52,8 +52,8 @@ final_a = 0.0
 
 # regridding control, specify frequency on each level
 # so need max_level + 1 entries for interval
-regrid_threshold = 0.1 # set to 0.1 to match the ICS, old value was 0.05
-max_level = 9
+regrid_threshold = 0.05 # set to 0.1 to match the ICS, old value was 0.05
+max_level = 6
 regrid_interval = 0 0 0 128 64 64 64 32 16 0
 
 # boundaries and periodicity of grid
@@ -94,7 +94,7 @@ extrapolation_order = 0
 
 # Max and min box sizes
 max_grid_size = BOXSIZE
-block_factor = 8 # BOXSIZE
+block_factor = BOXSIZE
 
 # Set up time steps
 # dt will be dx*dt_multiplier on each grid level

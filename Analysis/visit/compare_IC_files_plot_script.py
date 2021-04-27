@@ -15,7 +15,9 @@ subdir = "run0023v2_mu0.5_delay0_G0.0000000001_ratio1"
 #data_root_dir = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField/"
 #subdir = "test0001"
 number = 0
-width = 512
+width = 8
+
+L = 512
 
 type = "Chk"
 
@@ -34,11 +36,11 @@ def plot_graph(subdir, var):
     PseudocolorAtts.skewFactor = 1
     PseudocolorAtts.limitsMode = PseudocolorAtts.OriginalData # OriginalData, CurrentPlot
     PseudocolorAtts.minFlag = 1
-    PseudocolorAtts.min = -2
+    PseudocolorAtts.min = 0.0
     PseudocolorAtts.maxFlag = 1
-    PseudocolorAtts.max = 2
+    PseudocolorAtts.max = 1
     PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
-    PseudocolorAtts.colorTableName = "RdBu"
+    PseudocolorAtts.colorTableName = "Reds"
     PseudocolorAtts.invertColorTable = 0
     PseudocolorAtts.opacityType = PseudocolorAtts.FullyOpaque  # ColorTable, FullyOpaque, Constant, Ramp, VariableRange
     PseudocolorAtts.opacity = 1
@@ -57,7 +59,7 @@ def plot_graph(subdir, var):
     SliceAtts = SliceAttributes()
     SliceAtts.originType = SliceAtts.Intercept  # Point, Intercept, Percent, Zone, Node
     SliceAtts.originPoint = (0, 0, 0)
-    SliceAtts.originIntercept = 0.001
+    SliceAtts.originIntercept = L/2
     SliceAtts.originPercent = 0
     SliceAtts.originZone = 0
     SliceAtts.originNode = 0
@@ -73,6 +75,10 @@ def plot_graph(subdir, var):
     SliceAtts.phi = 90
     SetOperatorOptions(SliceAtts, 1)
 
+    # Add mesh plot
+    AddPlot("Mesh", "Mesh", 1, 1)
+    DrawPlots()
+    
     # include all levels
     silr = SILRestriction()
     silr.TurnOnAll()
@@ -81,8 +87,8 @@ def plot_graph(subdir, var):
 
     # Set viewing attributes
     View2DAtts = View2DAttributes()
-    View2DAtts.windowCoords = (256-0.5*width, 256+0.5*width, 
-    256-0.5*width,256+0.5*width)
+    View2DAtts.windowCoords = (0.5*(L-width), 0.5*(L+width), 
+                               0.5*(L-width)-6.10679,0.5*(L+width)-6.10679)
     View2DAtts.viewportCoords = (0.2, 0.95, 0.15, 0.95)
     View2DAtts.fullFrameActivationMode = View2DAtts.Auto  # On, Off, Auto
     View2DAtts.fullFrameAutoThreshold = 100
@@ -107,11 +113,13 @@ def plot_graph(subdir, var):
 
 fields = ["chi","h11","h12","h13","h22", "h23", "h33","K","A11","A12","A13","A22", "A23", "A33","Theta","Gamma1", "Gamma2", "Gamma3","lapse","shift1", "shift2", "shift3","B1","B2","B3","phi","Pi"]
     
-plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "h11")
-plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "A22")
-plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "Theta")
-plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "Gamma1")
-plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "B1")
+#plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "h11")
+#plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "A22")
+#plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "Theta")
+#plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "Gamma1")
+#plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "B1")
 #plot_graph("run0023_InitialConditionsSolver", "lapse")
 
+#plot_graph("run_Katy_test_v3_mu1_delay0_G0.0000000001_ratio1", "chi")
+plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "chi")
 exit()

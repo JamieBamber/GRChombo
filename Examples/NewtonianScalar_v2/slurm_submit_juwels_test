@@ -22,6 +22,6 @@ ulimit -c 0
 # Note: The current working directory at this point is
 # the directory where sbatch was executed.
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
-srun /p/home/jusers/bamber1/juwels/GRChombo/Examples/NewtonianScalar/Main_ScalarField3d.Linux.64.mpiicpc.ifort.OPT.MPI.OPENMPCC.PETSC.ex ../params.txt
+srun /p/home/jusers/bamber1/juwels/GRChombo/Examples/NewtonianScalar_v2/Main_ScalarField3d.Linux.64.mpiicpc.ifort.OPT.MPI.OPENMPCC.PETSC.ex ../params.txt
 
 

@@ -120,8 +120,8 @@ do
 	cd ${work_dir}
         cp slurm_submit_juwels_test ${new_dir_path}/slurm_submit
 
-	params_file=params_evolution_Katy_test.txt
-	# params_file=params_ratio${ratio}.txt
+	# params_file=params_evolution_Katy_test.txt
+	params_file=params_ratio${ratio}.txt
 	
         cp ${params_file} ${new_dir_path}/params.txt
 	cp BinaryBHLevel.cpp ${new_dir_path}/BinaryBHLevel.cpp.txt

@@ -112,7 +112,7 @@ void ScalarFieldLevel::specificPostTimeStep()
         ComplexScalarPotential potential(m_p.potential_params);
         ScalarFieldWithPotential scalar_field(potential);
         BinaryNewtonFixedBG binary_newton(m_p.bg_params1, m_p.bg_params2, m_dx,
-                                    m_p.center, m_time, m_p.omega_binary);
+                                    m_p.center, m_time, m_p.separation, m_p.omega_binary);
         DensityAndAngularMomAndSourceTerm<ScalarFieldWithPotential, BinaryNewtonFixedBG>
             densities(scalar_field, binary_newton, m_dx, m_p.center);
         FixedBGEnergyAndAngularMomFlux<ScalarFieldWithPotential,
@@ -123,14 +123,14 @@ void ScalarFieldLevel::specificPostTimeStep()
         // excise within horizon
         BoxLoops::loop(
             ExcisionDiagnostics<ScalarFieldWithPotential, BinaryNewtonFixedBG>(
-                m_dx, m_p.center, binary_newton, m_p.integration_params.min_integration_radius, m_p.integration_params.max_integration_radius),
+                m_dx, m_p.center, binary_newton, m_p.inner_r, m_p.outer_r),
             m_state_diagnostics, m_state_diagnostics, SKIP_GHOST_CELLS,
             disable_simd());
 	
         // set densities to zero outside the integration region (this includes inside the effective horizon)
-        /*BoxLoops::loop(
+        BoxLoops::loop(
                        BoundedDensities(m_p.integration_params, m_dx, m_p.center, m_time),
-		       m_state_diagnostics, m_state_diagnostics, INCLUDE_GHOST_CELLS, disable_simd());*/
+		       m_state_diagnostics, m_state_diagnostics, INCLUDE_GHOST_CELLS, disable_simd());
     }
     
     // write out the integral after each coarse timestep
