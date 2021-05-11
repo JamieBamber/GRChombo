@@ -65,14 +65,14 @@ run_list=(
 #    run0036
 )
 
-plot_interval=1
+plot_interval=10
 L=512
 N1=64
-box_size=16
+box_size=32
 reflect_z=0
 
 restart_hash=""
-restart_num="000000"
+restart_num="000100"
 
 echo ${restart_hash}
 echo ${restart_num}
@@ -113,7 +113,7 @@ do
 	echo $chk_file
 	#
 	cd ${work_dir}
-        cp slurm_submit_cosma7_test ${new_dir_path}/slurm_submit
+        cp slurm_submit_cosma7 ${new_dir_path}/slurm_submit
 
 	params_file=params_ratio${ratio}.txt
 	#params_file=params_evolution_Katy_test_v3.txt

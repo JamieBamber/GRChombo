@@ -9,13 +9,13 @@ from sys import exit
 print("starting visit run")
 
 # file settings
-data_root_dir = "/p/project/pra116/bamber1/BinaryBHScalarField/"
+#data_root_dir = "/p/project/pra116/bamber1/BinaryBHScalarField/"
 #data_root_dir = "/hppfs/work/pn34tu/di76bej/GRChombo_data/BinaryBHScalarField/"
-subdir = "run0023v2_mu0.5_delay0_G0.0000000001_ratio1"
+data_root_dir = "/cosma6/data/dp174/dc-bamb1/GRChombo_data/BinaryBHSF/"
 #data_root_dir = "/dss/dsshome1/04/di76bej/GRChombo/GRChombo/Examples/BinaryBHScalarField/"
 #subdir = "test0001"
 number = 0
-width = 8
+width = 32
 
 L = 512
 
@@ -76,8 +76,8 @@ def plot_graph(subdir, var):
     SetOperatorOptions(SliceAtts, 1)
 
     # Add mesh plot
-    AddPlot("Mesh", "Mesh", 1, 1)
-    DrawPlots()
+    #AddPlot("Mesh", "Mesh", 1, 1)
+    #DrawPlots()
     
     # include all levels
     silr = SILRestriction()
@@ -121,5 +121,5 @@ fields = ["chi","h11","h12","h13","h22", "h23", "h33","K","A11","A12","A13","A22
 #plot_graph("run0023_InitialConditionsSolver", "lapse")
 
 #plot_graph("run_Katy_test_v3_mu1_delay0_G0.0000000001_ratio1", "chi")
-plot_graph("run0023_mu0.5_delay0_G0.0000000001_ratio1", "chi")
+plot_graph("run0023ICS_mu0.5_delay0_G0.0000000001_ratio1", "chi")
 exit()
