@@ -60,14 +60,14 @@ run_list=(
 #    run0024
 #    run0026
 #    run0027
-#   run0028ICS
+   run0028ICS
 #    run0029
-#   run0034ICS
-#   run0035ICS
+   run0034ICS
+   run0035ICS
 #    run0036
 )
 
-plot_interval=5
+plot_interval=10
 L=512
 N1=64
 box_size=32

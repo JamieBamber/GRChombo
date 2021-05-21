@@ -79,10 +79,10 @@ def make_rho_movie(dd):
 
 	# normalise
 	# rho0 = 0.5*(0.4**2)*(0.1**2)
-	DefineScalarExpression("norm_rho","rho/{:.6f}".format(0.5*(dd.mu**2)))
+	#DefineScalarExpression("norm_rho","rho/{:.6f}".format(0.5*(dd.mu**2)))
 	
 	# add plot
-	AddPlot("Pseudocolor", "norm_rho")
+	AddPlot("Pseudocolor", "chi")
 	AddOperator("Slice", 1)
 	DrawPlots()
 	PseudocolorAtts = PseudocolorAttributes()
@@ -90,9 +90,9 @@ def make_rho_movie(dd):
 	PseudocolorAtts.skewFactor = 1
 	PseudocolorAtts.limitsMode = PseudocolorAtts.CurrentPlot  # OriginalData, CurrentPlot
 	PseudocolorAtts.minFlag = 1
-	PseudocolorAtts.min = 0.1
+	PseudocolorAtts.min = 0
 	PseudocolorAtts.maxFlag = 1
-	PseudocolorAtts.max = 1000
+	PseudocolorAtts.max = 1
 	PseudocolorAtts.centering = PseudocolorAtts.Natural  # Natural, Nodal, Zonal
 	PseudocolorAtts.colorTableName = "inferno"
 	PseudocolorAtts.invertColorTable = 0
@@ -111,7 +111,7 @@ def make_rho_movie(dd):
 	SliceAtts = SliceAttributes()
 	SliceAtts.originType = SliceAtts.Intercept  # Point, Intercept, Percent, Zone, Node
 	SliceAtts.originPoint = (0, 0, 0)
-	SliceAtts.originIntercept = 0.001
+	SliceAtts.originIntercept = 256
 	SliceAtts.originPercent = 0
 	SliceAtts.originZone = 0
 	SliceAtts.originNode = 0
@@ -245,7 +245,7 @@ def make_rho_movie(dd):
 	nts = TimeSliderGetNStates()
 	
 	# set basic save options
-	frame_dir = "BBH_GR_{:s}_rho_movie_v2".format(dd.name)
+	frame_dir = "BBH_GR_{:s}_chi_movie".format(dd.name)
 	try:
         	makedirs(root_plot_path)
 	except:

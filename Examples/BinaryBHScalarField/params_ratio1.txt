@@ -4,7 +4,7 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 0
+verbosity = 1
 nan_check = 1
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
@@ -52,7 +52,7 @@ final_a = 0.0
 
 # regridding control, specify frequency on each level
 # so need max_level + 1 entries for interval
-regrid_threshold = 0.1 # set to 0.1 to match the ICS, old value was 0.05
+regrid_threshold = 0.05 # set to 0.1 to match the ICS, old value was 0.05
 max_level = 9
 regrid_interval = 0 0 0 128 64 64 64 32 16 0
 
@@ -102,7 +102,7 @@ block_factor = BOXSIZE
 
 checkpoint_interval = 100
 # set to zero to turn off plot files, comps defined in BinaryBHLevel.cpp
-plot_interval = 20
+plot_interval = 5
 dt_multiplier = DTMULT # 0.0625 = 1/16, 0.03125 = 1/32, 0.015625 = 1 / 64
 stop_time = 10000.0
 ## dt_actual = 8*dt_multiplier = 3.2
