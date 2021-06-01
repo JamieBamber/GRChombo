@@ -21,6 +21,9 @@
 #include "Weyl4.hpp"
 #include "WeylExtraction.hpp"
 
+#include "Constraints.hpp"
+#include "AMRReductions.hpp"
+
 #include "MatterOnly.hpp"
 #include "DensityAndMom.hpp"
 #include "ScalarRotatingCloud.hpp"
@@ -160,6 +163,28 @@ void BinaryBHLevel::specificPostTimeStep()
         pout() << "BinaryBHLevel::specificPostTimeStep " << m_level << endl;
 
     bool first_step = (m_time == 0.);
+
+    if (m_p.calculate_constraints)
+    {
+        fillAllGhosts();
+        BoxLoops::loop(Constraints(m_dx), m_state_new, m_state_diagnostics,
+                       EXCLUDE_GHOST_CELLS);
+        if (m_level == 0 && m_p.calculate_constraint_norms)
+        {
+            AMRReductions<VariableType::diagnostic> amr_reductions(m_gr_amr);
+            double L2_Ham = amr_reductions.norm(c_Ham);
+            double L2_Mom = amr_reductions.norm(Interval(c_Mom1, c_Mom3));
+            SmallDataIO constraints_file("constraint_norms", m_dt, m_time,
+                                         m_restart_time, SmallDataIO::APPEND,
+                                         first_step);
+            constraints_file.remove_duplicate_time_data();
+            if (first_step)
+            {
+                constraints_file.write_header_line({"L^2_Ham", "L^2_Mom"});
+            }
+            constraints_file.write_time_data_line({L2_Ham, L2_Mom});
+        }
+    }
     
     CH_TIME("BinaryBHLevel::specificPostTimeStep");
     if (m_p.activate_extraction == 1)
@@ -218,6 +243,10 @@ void BinaryBHLevel::prePlotLevel()
         pout() << "BinaryBHLevel::prePlotLevel " << m_level << endl;   
 
     fillAllGhosts();
+    if (m_p.calculate_constraints) {
+	BoxLoops::loop(Constraints(m_dx), m_state_new, m_state_diagnostics,
+                       EXCLUDE_GHOST_CELLS);
+    }
     Potential potential(m_p.potential_params);
     ScalarFieldWithPotential scalar_field(potential);
     BoxLoops::loop(DensityAndMom<ScalarFieldWithPotential>(

@@ -42,7 +42,8 @@ run0034=(0.5 0 0.25 0.000000000001 1 0 0 0) # G = 10^{-12}
 run0034ICS=(0.5 0 0.25 0.000000000001 1 0 0 0) # G = 10^{-12}
 run0035=(0.5 0 0.25 0.00000000000001 1 0 0 0) # G = 10^{-14}
 run0035ICS=(0.5 0 0.25 0.00000000000001 1 0 0 0) # G = 10^{-14}
-run0036=(0.5 0 0.25 0 1 1 -1 0)
+
+run0036=(0.5 0 0.25 0 1 0 0 0)
 
 run_list=(
 #    run0011
@@ -56,7 +57,7 @@ run_list=(
 #     run0019
 #    run0020
 #    run0025
-    run0023ICS
+#    run0023
 #    run0024
 #    run0026
 #    run0027
@@ -64,7 +65,7 @@ run_list=(
 #    run0029
 #   run0034ICS
 #   run0035ICS
-#    run0036
+    run0036
 )
 
 plot_interval=5
@@ -73,7 +74,7 @@ N1=64
 box_size=32
 reflect_z=0
 
-restart_hash=""
+restart_hash="#"
 restart_num="000000"
 
 echo ${restart_hash}

@@ -10,8 +10,8 @@ chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
 RESTARTHASHrestart_file = DATADIR/CHKFILE
 
-num_plot_vars = 9
-plot_vars = chi phi Pi rho rho_azimuth J_R J_azimuth_R Weyl4_Re Weyl4_Im
+num_plot_vars = 11
+plot_vars = chi phi Pi rho rho_azimuth J_R J_azimuth_R Weyl4_Re Weyl4_Im Ham Mom1
 
 # Set up coarsest level number of grid points in each dir
 # NB - the values need to be multiples of block_factor
@@ -28,6 +28,9 @@ scalar_m = SCALARM
 alignment = ALANGLE
 delay = DELAYTIME
 phase = 0
+
+calculate_constraints = 1
+calculate_constraint_norms = 1
 
 # Length of the longest N side
 # (This sets dx in all directions)
