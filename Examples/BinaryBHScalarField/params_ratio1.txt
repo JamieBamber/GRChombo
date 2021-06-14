@@ -4,7 +4,7 @@
 # https://github.com/GRChombo/GRChombo/wiki/Running-the-BBH-example
 
 # location / naming of output files (must give full path)
-verbosity = 1
+verbosity = 0
 nan_check = 1
 chk_prefix = DATADIR/BinaryBHSFChk_
 plot_prefix = DATADIR/BinaryBHSFPlot_
@@ -48,14 +48,14 @@ momentumA = -0.0841746 -0.000510846 0.0
 
 massB = 0.48847892320123
 offsetB = 0.0 -6.10679 0.0
-momentumB =  0.0841746  0.000510846 0.0
+momentumB =  0.0841746 0.000510846 0.0
 
 # final black hole dimensionful spin
 final_a = 0.0
 
 # regridding control, specify frequency on each level
 # so need max_level + 1 entries for interval
-regrid_threshold = 0.05 # set to 0.1 to match the ICS, old value was 0.05
+regrid_threshold = 0.1 # set to 0.1 to match the ICS, old value was 0.05
 max_level = 9
 regrid_interval = 0 0 0 128 64 64 64 32 16 0
 

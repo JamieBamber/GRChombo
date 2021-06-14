@@ -68,10 +68,10 @@ def add_data_dir(num, mu, delay, G, ratio, ICSsuffix='', restart=0, l=0, m=0, Al
         data_dirs.append(x)
 #                                                  
 add_data_dir(23, "0.5", 0, "0.0000000001", 1) # 10^{-10}     
-#add_data_dir(23, "0.5", 0, "0.0000000001", 1, "ICS") # 10^{-10}     
+add_data_dir(23, "0.5", 0, "0.0000000001", 1, "ICS") # 10^{-10}     
 #add_data_dir(35, "0.5", 0, "0.00000000000001", 1, "ICS") # 10^{-14}
 #add_data_dir(34, "0.5", 0, "0.000000000001", 1, "ICS") # 10^{-12}
-add_data_dir(36, "0.5", 0, "0", 1, "v2ICS") # 0
+add_data_dir(36, "0.5", 0, "0", 1, "ICS") # 0
 
 def time_average(x, n):
         N = len(x)

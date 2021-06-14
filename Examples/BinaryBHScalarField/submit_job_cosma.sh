@@ -43,7 +43,7 @@ run0034ICS=(0.5 0 0.25 0.000000000001 1 0 0 0) # G = 10^{-12}
 run0035=(0.5 0 0.25 0.00000000000001 1 0 0 0) # G = 10^{-14}
 run0035ICS=(0.5 0 0.25 0.00000000000001 1 0 0 0) # G = 10^{-14}
 
-run0036=(0.5 0 0.25 0 1 0 0 0)
+run0036ICS=(0.5 0 0.25 0 1 0 0 0)
 
 run_list=(
 #    run0011
@@ -61,11 +61,11 @@ run_list=(
 #    run0024
 #    run0026
 #    run0027
-#   run0028ICS
+   run0023ICS
 #    run0029
 #   run0034ICS
 #   run0035ICS
-    run0036
+#    run0036ICS
 )
 
 plot_interval=5
@@ -74,8 +74,8 @@ N1=64
 box_size=32
 reflect_z=0
 
-restart_hash="#"
-restart_num="000000"
+restart_hash=""
+restart_num="000100"
 
 echo ${restart_hash}
 echo ${restart_num}
@@ -108,11 +108,11 @@ do
 	mkdir -p ${new_dir_path}
 	# get latest checkpoint file
         cd ${new_dir_path}
-	#chk_file=BinaryBHSFChk_${restart_num}.3d.hdf5
-	for chk in BinaryBHSFChk_*.hdf5
-	do
-	    chk_file=$chk
-	done
+	chk_file=BinaryBHSFChk_${restart_num}.3d.hdf5
+	#for chk in BinaryBHSFChk_*.hdf5
+	#do
+	#    chk_file=$chk
+	#done
 	echo $chk_file
 	#
 	cd ${work_dir}
