@@ -36,7 +36,7 @@ void BinaryBHLevel::specificAdvance()
 
     // Enforce the trace free A_ij condition and positive chi and alpha
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
-                   m_state_new, m_state_new, EXCLUDE_GHOST_CELLS);
+                   m_state_new, m_state_new, INCLUDE_GHOST_CELLS);
 
     // Check for nan's
     if (m_p.nan_check)
@@ -81,7 +81,7 @@ void BinaryBHLevel::specificEvalRHS(GRLevelData &a_soln, GRLevelData &a_rhs,
  
     // Enforce positive chi and alpha and trace free A
     BoxLoops::loop(make_compute_pack(TraceARemoval(), PositiveChiAndAlpha()),
-                   a_soln, a_soln, EXCLUDE_GHOST_CELLS);
+                   a_soln, a_soln, INCLUDE_GHOST_CELLS);
 
     // ---> With Scalar Field
     Potential potential(m_p.potential_params);
@@ -122,6 +122,12 @@ void BinaryBHLevel::specificUpdateODE(GRLevelData &a_soln,
                        m_state_new, EXCLUDE_GHOST_CELLS, disable_simd());
 }
 
+void BinaryBHLevel::preTagCells()
+{
+    // We only use chi in the tagging criterion so only fill the ghosts for chi
+    fillAllGhosts(VariableType::evolution, Interval(c_chi, c_chi));
+}
+
 // specify the cells to tag
 void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
                                             const FArrayBox &current_state)
@@ -147,7 +153,7 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     {
         BoxLoops::loop(ChiExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
-                           m_p.activate_extraction),
+                           activate_extraction),
                        current_state, tagging_criterion);
     }
 
@@ -219,7 +225,7 @@ void BinaryBHLevel::specificPostTimeStep()
     }
 
     // do puncture tracking on requested level
-    if (m_p.track_punctures == 1 && m_level == m_p.puncture_tracking_level)
+    if (m_p.track_punctures && m_level == m_p.puncture_tracking_level)
     {
         CH_TIME("PunctureTracking");
         // only do the write out for every coarsest level timestep
