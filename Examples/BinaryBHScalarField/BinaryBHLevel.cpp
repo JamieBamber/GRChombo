@@ -151,6 +151,7 @@ void BinaryBHLevel::computeTaggingCriterion(FArrayBox &tagging_criterion,
     }
     else
     {
+        const bool activate_extraction = true;
         BoxLoops::loop(ChiExtractionTaggingCriterion(
                            m_dx, m_level, m_p.max_level, m_p.extraction_params,
                            activate_extraction),
