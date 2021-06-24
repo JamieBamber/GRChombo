@@ -92,7 +92,8 @@ public:
 			sgn = -1;
 		}
 		const double small = 0.0001;
-		const std::complex<double> H0 = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
+		const std::complex<double> H0 = 1.0;
+		// HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
 		std::complex<double> zfactor;
 		std::complex<double> dzfactor_z;
 		HeunCspace::HeunCvars HC_result = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z);

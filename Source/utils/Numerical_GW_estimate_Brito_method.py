@@ -20,10 +20,12 @@ Kerrlib = ctypes.cdll.LoadLibrary('/cosma/home/dp174/dc-bamb1/GRChombo/Source/ut
 # double *d_Rfunc_dr_Re, double *d_Rfunc_dr_Im, double *dd_Rfunc_ddr_Re, double *dd_Rfunc_ddr_Im
 Kerrlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool, ctypes.c_bool, ctypes.c_double, ctypes.c_double,\
 ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double)]
-Kerrlib.Rfunc.restype = Nonw
+Kerrlib.Rfunc.restype = None
 #
-Heunlib = ctypes.cdll.LoadLibrary('/cosma/home/dp174/dc-bamb1/GRChombo/Source/utils/
-
+Heunlib = ctypes.cdll.LoadLibrary('/cosma/home/dp174/dc-bamb1/GRChombo/Source/utils/HeunC_function_test.so')
+# extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, int s, bool ingoing, double r){
+Heunlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool, ctypes.c_double]
+Heunlib.Rfunc.restype = ctypes.c_double
 
 # class to hold the output data
 class Rfunc_data:
@@ -32,10 +34,6 @@ class Rfunc_data:
 		# self.Rfunc_Re
 		# self.Rfunc_Im
 
-r_plus = M*(1 + np.sqrt(1 - a**2))
-
-ln_r = np.linspace(-2, 10)
-r_BL = np.exp(ln_r) + r_plus
 
 # 
 def Rfunc(M, mu, omega, a, l, m, s, ingoing, t, r):
@@ -55,17 +53,27 @@ def Rfunc(M, mu, omega, a, l, m, s, ingoing, t, r):
 		dd_R_ddr_Im = ctypes.c_double()
 		Kerrlib.Rfunc(M, mu, omega, a, l, m, s, ingoing, False, t, r[i],\
 		ctypes.byref(R_Re),ctypes.byref(R_Im),ctypes.byref(d_R_dr_Re),ctypes.byref(d_R_dr_Im),ctypes.byref(dd_R_ddr_Re),ctypes.byref(dd_R_ddr_Im))
-		result.Rfunc_Re[i] = R_Re
-		result.Rfunc_Im[i] = R_Im
-		result.d_Rfunc_dr_Re[i] = d_R_dr_Re
-		result.d_Rfunc_dr_Im[i] = d_R_dr_Im
-		result.dd_Rfunc_ddr_Re[i] = dd_R_ddr_Re
-		result.dd_Rfunc_ddr_Im[i] = dd_R_ddr_Im		
+		result.Rfunc_Re[i] = R_Re.value
+		result.Rfunc_Im[i] = R_Im.value
+		result.d_Rfunc_dr_Re[i] = d_R_dr_Re.value
+		result.d_Rfunc_dr_Im[i] = d_R_dr_Im.value
+		result.dd_Rfunc_ddr_Re[i] = dd_R_ddr_Re.value
+		result.dd_Rfunc_ddr_Im[i] = dd_R_ddr_Im.value		
 	return result
+
+# define Heun func solution without the prefactors
+def HeunC_func(M, mu, omega, a, l, m, s, ingoing, r):
+	result = np.zeros(r.size)
+	for i in range(0, r.size):
+		result[i] = Heunlib.Rfunc(M, mu, omega, a, l, m, s, ingoing, r[i])
+	return result
+
+r_test = np.array([4.0, 5.0, 6.0])
+print("HeunC_func(1.0, 0, 1.0, 0, 1, 1, -2, True, [4.0,	5.0, 6.0]) = ", HeunC_func(1.0, 0, 1.0, 0, 1, 1, -2, True, r_test))
 
 # Define hydrogen radial wavefunction
 def hydrogen_Rfunc(M, mu, n, l, r):
-	r0 = M/(M*(M*mu)**2)
+	r0 = M/(2*(M*mu)**2)
 	rtilde = r/(r0*(n+l+1))
 	Anl = (n+l+1)**(-3/2)*(factorial(n)/(2*(n+l+1)*factorial(n+2*l+1)))**(1/2)
 	result = Anl * rtilde**l * np.exp(-rtilde/2.0) * special.genlaguerre(n,2*l+1,rtilde)
@@ -73,9 +81,10 @@ def hydrogen_Rfunc(M, mu, n, l, r):
 
 # Define bessel function approximation for the marginally bound radial function
 def Bessel_marginal_Rfunc(M, mu, omega, l, r):
-	r0 = M/(M*(M*mu)**2)
+	r0 = M/(2*(M*mu)**2)
 	rtilde = r/r0
-	Bnl = np.sqrt(2/np.pi) * factorial(2*l+1)
+	Bnl = np.sqrt(np.pi) * r0**(-3/4)
+	#factorial(2*l+1)
 	result = Bnl * rtilde**(-1/2) * special.jv(2*l+1,2*np.sqrt(rtilde)) 
 	return result
 
@@ -85,7 +94,7 @@ def bessel_RH_function(M, omega, l, r):
 	return result
 
 def scalar_Rfunc(M, mu, omega, l, r):
-	R = Rfunc(M, mu, mu, 0, l, l, 0, ingoing, 0, r)
+	R = Rfunc(M, mu, omega, 0, l, l, 0, True, 0, r)
 	return R
 
 # Define the Teukolsky source function
@@ -95,17 +104,22 @@ def Teukolsky_22w_source_function(M, omegaR1, omegaR2, Rfunc1, Rfunc2, r):
 	result = (1/np.sqrt(5))*2*np.pi**(3/2)*(R1.Rfunc_Im(r)*(R2.Rfunc_Im(r)*(8*M**2+2*M*r*(-4-3*1j*r*(omegaR1-omegaR2))+r**2*(r**2*(-omegaR1**2+2*omegaR1*omegaR2+omegaR2**2)+2*1j*r*(omegaR1-omegaR2)+2))-1j*R2.Rfunc_Re(r)*(8*M**2+2*M*r*(-4-3*1j*r*(omegaR1-omegaR2))+r**2*(r**2*(-omegaR1**2+2*omegaR1*omegaR2+omegaR2**2)+2*1j*r*(omegaR1-omegaR2)+2))-r*(2*M-r)*(R2.d_Rfunc_dr_Im(r)*(4*M-2*1j*r**2*(omegaR1+omegaR2)-2*r)-r*(r-2*M)*(R2.dd_Rfunc_ddr_Im(r)-1j*R2.dd_Rfunc_ddr_Re(r))+R2.d_Rfunc_dr_Re(r)*(-4*1j*M-2*r*(r*(omegaR1+omegaR2)-I))))+R1.Rfunc_Re(r)*(-1j*R2.Rfunc_Im(r)*(8*M**2+2*M*r*(-4-3*1j*r*(omegaR1-omegaR2))+r**2*(r**2*(-omegaR1**2+2*omegaR1*omegaR2+omegaR2**2)+2*1j*r*(omegaR1-omegaR2)+2))-R2.Rfunc_Re(r)*(8*M**2+2*M*r*(-4-3*1j*r*(omegaR1-omegaR2))+r**2*(r**2*(-omegaR1**2+2*omegaR1*omegaR2+omegaR2**2)+2*1j*r*(omegaR1-omegaR2)+2))+r*(2*M-r)*(R2.d_Rfunc_dr_Re(r)*(4*M-2*1j*r**2*(omegaR1+omegaR2)-2*r)+r*(2*M-r)*(R2.dd_Rfunc_ddr_Re(r)+1j*R2.dd_Rfunc_ddr_Im(r))+2*R2.d_Rfunc_dr_Im(r)*(2*1j*M+r*(r*(omegaR1+omegaR2)-I))))+r*(2*M-r)*(R2.Rfunc_Im(r)*(R1.d_Rfunc_dr_Im(r)*(4*M-2*1j*r**2*(omegaR1-omegaR2)-2*r)+r*(2*M-r)*(R1.dd_Rfunc_ddr_Im(r)-1j*R1.dd_Rfunc_ddr_Re(r))+2*R1.d_Rfunc_dr_Re(r)*(r*(r*(omegaR2-omegaR1)+I)-2*1j*M))+R2.Rfunc_Re(r)*(2*R1.d_Rfunc_dr_Re(r)*(-2*M+1j*r**2*(omegaR1-omegaR2)+r)-1j*r*(2*M-r)*(R1.dd_Rfunc_ddr_Im(r)-1j*R1.dd_Rfunc_ddr_Re(r))+2*R1.d_Rfunc_dr_Im(r)*(r*(-r*omegaR1+r*omegaR2+I)-2*1j*M))-2*r*(2*M-r)*(R1.d_Rfunc_dr_Im(r)-1j*R1.d_Rfunc_dr_Re(r))*(R2.d_Rfunc_dr_Im(r)-1j*R2.d_Rfunc_dr_Re(r))))
 	return result
 
-plt.plot(ln_r, H1real, "r-", label="1st stationary solution (real part)")
-plt.plot(ln_r, H2real, "b-", label="2nd stationary solution (real part)")
-plt.plot(ln_r, H1imag, "g--", label="1st stationary solution (imag part)")
-plt.plot(ln_r, H2imag, "c--", label="2nd stationary solution (imag part)")
+## compare the HeunC and bessel function approximations for the marginally bound state
+r_plus = M*(1 + np.sqrt(1 - a**2))
+ln_r = np.linspace(-2, 8, 512)
+r_BL = np.exp(ln_r) + r_plus
+y_Heun = scalar_Rfunc(M, mu, mu, 1, r_BL).Rfunc_Re
+y_bessel = Bessel_marginal_Rfunc(M, mu, mu, 1, r_BL)
+plt.plot(ln_r, y_Heun * r_BL**(3/4), "r-", label="Heun sol (real part)")
+plt.plot(ln_r, y_bessel * r_BL**(3/4), "b-", label="Bessel sol (real part)")
 plt.title("$\\mu=${:.1f} $\\omega=${:.1f} a={:.1f} l={:d} m={:d}".format(mu, omega, a, l, m))
 plt.xlabel("$\\ln(r_{BL} - r_+)$")
-plt.ylabel("true stationary solutions")
-plt.ylim((-2, 2))
+plt.ylabel("marginally bound Rfunc sol * r^(3/4)")
+#plt.ylim((-4, 4))
 plt.legend()
-save_root_path = "/home/dc-bamb1/GRChombo/Analysis/plots/"
-save_name = "test_KerrBH_Rfunc.png"
+save_root_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/"
+save_name = "test_KerrBH_Rfunc_general_s.png"
 plt.savefig(save_root_path + save_name)
 print("saved plot as " + save_root_path + save_name)
 plt.clf()
+

@@ -46,11 +46,11 @@ public:
         	gamma = std::sqrt(static_cast<std::complex<double>>(1 - C)) - s;
         	delta = -(B + D) - s * alpha;
         	eta = 0.5 + 2*B + 0.5 * s*s + 2*ComplexI*s*omega*r_plus;
-		std::cout << "alpha = " << alpha << std::endl;
+		/*std::cout << "alpha = " << alpha << std::endl;
 		std::cout << "beta = " << beta << std::endl;
 		std::cout << "gamma = " << gamma << std::endl;
 		std::cout << "delta = " << delta << std::endl;
-		std::cout << "eta = " << eta << std::endl;
+		std::cout << "eta = " << eta << std::endl;*/
 	}
 
 	double compute(double r, bool ingoing){

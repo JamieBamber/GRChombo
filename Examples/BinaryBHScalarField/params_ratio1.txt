@@ -96,8 +96,8 @@ extrapolating_vars = phi Pi
 extrapolation_order = 0
 
 # Max and min box sizes
-max_grid_size = BOXSIZE
-block_factor = BOXSIZE
+max_grid_size = 32 #BOXSIZE
+block_factor = 32 #BOXSIZE
 
 # Set up time steps
 # dt will be dx*dt_multiplier on each grid level
