@@ -1,0 +1,9 @@
+#include "KerrBH_Rfunc_general_s.hpp"
+
+extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, int s, bool ingoing, bool KS_or_BL, double t, double r){
+	KerrBH_Rfunc Rfunc(M, mu, omega, a, l, m, s);
+	double result = Rfunc.compute(r, t, ingoing, KS_or_BL);
+	return result;
+}
+
+

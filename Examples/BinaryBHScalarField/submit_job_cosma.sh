@@ -75,7 +75,7 @@ box_size=32
 reflect_z=0
 
 restart_hash=""
-restart_num="000100"
+restart_num="000000"
 
 echo ${restart_hash}
 echo ${restart_num}

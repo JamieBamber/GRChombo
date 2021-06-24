@@ -9,7 +9,7 @@
 #SBATCH -o output_file.%J.out
 #SBATCH -e error_file.%J.err
 #
-#SBATCH -t 48:00:00
+#SBATCH -t 6:00:00
 #SBATCH -J JOBNAME
 #SBATCH --exclusive
 #SBATCH --mail-type=NONE             # notifications for job done & fail

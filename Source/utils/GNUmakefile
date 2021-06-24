@@ -19,5 +19,8 @@ include_dirs := -I$(GRCHOMBO_SOURCE)/utils \
             -I$(GRCHOMBO_SOURCE)/InitialConditions/ScalarFields  \
             -I$(GRCHOMBO_SOURCE)/FixedBackground
 
-KerrBH_Rfunc :
-	icpc -shared -c -fPIC KerrBH_Rfunc.cpp -o KerrBH_Rfunc.o ${include_dirs} -I$(CHOMBO_HOME)/include -std=c++14
+KerrBH_Rfunc_general_s :
+	icpc -shared -c -fPIC KerrBH_Rfunc_general_s.cpp -o KerrBH_Rfunc_general_s.o ${include_dirs} -I$(CHOMBO_HOME)/include -std=c++14
+
+HeunC_function_test :
+	icpc -shared -c -fPIC HeunC_function_test.cpp -o HeunC_function_test.o ${include_dirs} -I$(CHOMBO_HOME)/include -std=c++14
