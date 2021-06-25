@@ -62,9 +62,9 @@ run_list=(
 #    run0026
 #    run0027
    run0023ICS
-#    run0029
-#   run0034ICS
-#   run0035ICS
+   run0028ICS
+   run0034ICS
+   run0035ICS
 #    run0036ICS
 )
 
