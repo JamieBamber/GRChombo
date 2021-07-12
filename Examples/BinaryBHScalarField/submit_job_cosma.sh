@@ -109,10 +109,10 @@ do
 	# get latest checkpoint file
         cd ${new_dir_path}
 	chk_file=BinaryBHSFChk_${restart_num}.3d.hdf5
-	#for chk in BinaryBHSFChk_*.hdf5
-	#do
-	#    chk_file=$chk
-	#done
+	for chk in BinaryBHSFChk_*.hdf5
+	do
+	    chk_file=$chk
+	done
 	echo $chk_file
 	#
 	cd ${work_dir}

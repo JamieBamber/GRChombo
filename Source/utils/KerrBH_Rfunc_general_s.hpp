@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include "HeunC.hpp"
+#include <iostream>
 
 struct Rfunc_with_deriv {
 	double Rfunc_Re;
@@ -53,10 +54,15 @@ public:
         	double D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
                         	+2*(d*d)*(std::pow((omega*a*M),2) + lambda) + d*d)/(2*d*d);
         	alpha = 4*d*M*std::sqrt(static_cast<std::complex<double>>(mu*mu - std::pow(omega,2)));
-        	beta = std::sqrt(static_cast<std::complex<double>>(1 - A)) - s;
-        	gamma = std::sqrt(static_cast<std::complex<double>>(1 - C)) - s;
+        	beta = -std::sqrt(static_cast<std::complex<double>>(1 - A)) - s;
+        	gamma = -std::sqrt(static_cast<std::complex<double>>(1 - C)) - s;
         	delta = -(B + D) - s * alpha;
         	eta = 0.5 + 2*B + 0.5 * s*s + 2*ComplexI*s*omega*r_plus;
+		/*std::cout << "alpha = " << alpha << std::endl;
+		std::cout << "beta = " << beta << std::endl;
+		std::cout << "gamma = " << gamma << std::endl;
+		std::cout << "delta = " << delta << std::endl;
+		std::cout << "eta = " << eta << std::endl;*/
 	}
 
 	double compute(double r, double t, bool ingoing, bool KS_or_BL){
@@ -70,7 +76,7 @@ public:
 		// const std::complex<double> H0 = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
 		const double H0 = 1.0;
 		double z = (r_plus - r)/(r_plus - r_minus);
-		std::complex<double> H = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, z).val/H0;
+		std::complex<double> H = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z).val/H0;
 		std::complex<double> zfactor;
 		// Kerr Schild correction
                 if (KS_or_BL) {
@@ -97,10 +103,10 @@ public:
 		// HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
 		std::complex<double> zfactor;
 		std::complex<double> dzfactor_z;
-		HeunCspace::HeunCvars HC_result = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, z);
+		HeunCspace::HeunCvars HC_result = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z);
 		// Kerr Schild correction
                 if (KS_or_BL) {
-			zfactor = std::polar(1.0, -2*m*std::atan2(a, r))*std::pow(-(z-1),gamma)*std::pow(-z,0.5*(sgn-1)*beta);
+			zfactor = std::polar(1.0, -2*m*std::atan2(a, r))*std::pow(-(z-1),gamma-0.5*s)*std::pow(-z,0.5*(sgn-1)*beta-0.5*s);
 			dzfactor_z = (r_minus - r_plus)*2*ComplexI*m*a*M/(r*r + (a*M)*(a*M)) + gamma/(z-1) + 0.5*(sgn-1)*beta/z;
 		} else {
 			zfactor = std::pow(-(z-1),0.5*gamma-0.5*s)*std::pow(-z,0.5*sgn*beta-0.5*s);

@@ -5,7 +5,7 @@
 
 # this copy is for COSMA6
 
-work_dir=/cosma/home/dp174/dc-bamb1/GRChombo/Examples/NewtonianScalar
+work_dir=/cosma/home/dp174/dc-bamb1/GRChombo/Examples/NewtonianScalar_equal_mass
 cd $work_dir
 data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/NewtonianBinaryBHScalar
 
@@ -35,23 +35,18 @@ run0011=(0.2 10 0.03 0.5 0 0 0)
 run0012=(0.2 10 0.02 0.5 1 1 0)
 run0012=(0.2 10 0.02 0.5 1 -1 0)
 run0015=(0.48847892320123 12.21358 1 0.0625 0 0 0)
+run0020=(0.2 10 0.5 0.0625 0 0 0)
 
 params_file=params.txt
 
 run_list=(
-	run0007
-	run0008
-	run0009
-	run0010
-	run0011
-	run0012
-	run0013
+	run0020
 )
 
-plot_interval=10
-L=256
-N1=128
-box_size=16
+plot_interval=5
+L=1024
+N1=256
+box_size=32
 
 for run in "${run_list[@]}"
 do
@@ -64,23 +59,23 @@ do
         val="$run[4]"; l="${!val}"
         val="$run[5]"; m="${!val}"
         val="$run[6]"; Al="${!val}"
-	
-	omega_BH=$(awk "BEGIN {printf \"%.7f\n\", sqrt(2*${M}/(${d}*${d}*${d}))}")
-	#omega_BH=$(bc <<< "scale=6; sqrt(2*${M}/(${d}*${d}*${d}))")
-	echo "omega_BH = ${omega_BH}"
+        
+       	omega_BH=$(awk "BEGIN {printf \"%.7f\n\", sqrt(2*${M}/(${d}*${d}*${d}))}")
+        #omega_BH=$(bc <<< "scale=6; sqrt(2*${M}/(${d}*${d}*${d}))")
+        echo "omega_BH = ${omega_BH}"
 
         # text_number=$(printf "%04d" ${run_number})
-        new_dir=${run}_M${M}_d${d}_mu${mu}_dt_mult${dt_mult}_l${l}_m${m}_Al${Al}
+        new_dir=${run}_M${M}_d${d}_mu${mu}_dt_mult${dt_mult}_l${l}_m${m}_Al${Al}_L${L}_N${N1}
 
         echo ${new_dir}
         new_dir_path=${data_directory}/${new_dir}
         #
 	mkdir -p ${new_dir_path}
         cp slurm_submit_cosma ${new_dir_path}/slurm_submit
-	params_file=params.txt
+        params_file=params.txt
         cp ${params_file} ${new_dir_path}/params.txt
 
-	cd ${new_dir_path}
+        cd ${new_dir_path}
         # add the input params to the input files
         sed -i "s|DATADIR|${new_dir_path}|" ${new_dir_path}/params.txt
         sed -i "s|DATASUBDIR|${new_dir}|" ${new_dir_path}/params.txt
@@ -96,9 +91,9 @@ do
         sed -i "s|SCALARL|${l}|" ${new_dir_path}/params.txt
         sed -i "s|SCALARM|${m}|" ${new_dir_path}/params.txt
         sed -i "s|ALANGLE|${Al}|" ${new_dir_path}/params.txt
-	sed -i "s|OMEGABH|${omega_BH}|" ${new_dir_path}/params.txt
+        sed -i "s|OMEGABH|${omega_BH}|" ${new_dir_path}/params.txt
         sed -i "s|NBASIC|${N1}|" ${new_dir_path}/params.txt
-	sed -i "s|NSPACE3|$(($N1/2))|" ${new_dir_path}/params.txt
+        sed -i "s|NSPACE3|$(($N1/2))|" ${new_dir_path}/params.txt
         sed -i "s|PLOTINTERVAL|${plot_interval}|" ${new_dir_path}/params.txt
 	#
 	mkdir -p outputs

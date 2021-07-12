@@ -1,0 +1,61 @@
+### parameters file for Flux extraction
+
+#Params for runtime inputs
+N1 = NBASIC
+N2 = NBASIC
+N3 = NSPACE3
+L = LSPACE
+max_level = 4 # There are (max_level+1) grids, so min is zero
+dt_multiplier = DTMULT
+
+# For read in of files
+data_rootdir =/p/scratch/pra116/bamber1/NewtonianBinaryScalar/
+data_subdir = SUBDIR
+output_rootdir = /p/home/jusers/bamber1/juwels/GRChombo/Analysis/data/Newtonian_Binary_BH_data/
+
+# Files parameters
+chk_prefix = Newton_chk
+plot_prefix = Newton_plt
+plot_interval = PLOTINTERVAL
+start_number = SNUMBER
+end_number = ENUMBER
+suffix = SUFFIX
+# resume = RESUMEYN
+
+# integration parameters
+num_points_phi = NPHI
+num_points_theta = NTHETA
+extraction_center = CENTERX CENTERY CENTERZ
+center = CENTERX CENTERY CENTERZ
+# extraction_radius = REXTRACT
+num_integration_radii = 8
+max_integration_radius = 400
+min_integration_rafius = 50
+extraction_level = 0
+num_modes = 1
+modes = 0 0 1 0 1 1 2 0 2 1 2 2 3 0 3 1 3 2 3 3 4 0 4 1 4 2 4 3 4 4 6 0 6 1 6 2 6 3 6 4 6 5 6 6 
+num_points_phi = 64
+num_points_theta = 32
+
+# if not periodic, then specify the boundary type
+# 0 = static, 1 = sommerfeld, 2 = reflective, 3 = extrapolating
+# 4 = mixed, 5 = fudge
+# (see BoundaryConditions.hpp for details)
+hi_boundary = 3 3 3
+lo_boundary = 3 3 2
+
+# if reflective boundaries selected, must select
+# parity values (in order given by UserVariables.hpp)
+# 0 = even
+# 1,2,3 = odd x, y, z
+# 4,5,6 = odd xy, yz, xz
+vars_parity            = 0 0 0 0 0 0  # phi chi rho rhoJ Edot Jdot 
+vars_parity_diagnostic = 0 0 0 0     # 
+
+# From here it is mostly dummy params
+verbosity = 0
+nan_check = 0
+regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
+max_grid_size = BOXSIZE
+block_factor = BOXSIZE
+isPeriodic = 0 0 0 

@@ -6,6 +6,10 @@ extern "C" void Rfunc(double M, double mu, double omega, double a, int l, int m,
 	Rfunc_with_deriv result = Rfunc.compute_with_deriv(r, t, ingoing, KS_or_BL);
 	*Rfunc_Re = result.Rfunc_Re;
 	*Rfunc_Im = result.Rfunc_Im;
+	*d_Rfunc_dr_Re = result.d_Rfunc_dr_Re;
+	*d_Rfunc_dr_Im = result.d_Rfunc_dr_Im;
+	*dd_Rfunc_ddr_Re = result.dd_Rfunc_ddr_Re;
+	*dd_Rfunc_ddr_Im = result.dd_Rfunc_ddr_Im;	
 }
 
 
