@@ -20,14 +20,14 @@ class HeunC_Rfunc {
 public:
 	double M;
 	double mu;
-	double omega;
+	std::complex<double> omega;
 	double a; 
 	double r_plus, r_minus;
 	int l, m, s;
 	std::complex<double> alpha, beta, gamma, delta, eta;
 	
 	//constructor
-	HeunC_Rfunc(const double M_, const double mu_, const double omega_, double a_, int l_, int m_, int s_)
+	HeunC_Rfunc(const double M_, const double mu_, const std::complex<double> omega_, double a_, int l_, int m_, int s_)
 	: ComplexI(0.0, 1.0)
 	{
 		if (std::abs(m_)>l_){
@@ -43,12 +43,12 @@ public:
 		r_plus = M*(1 + std::sqrt(1 - a*a));
         	r_minus = M*(1 - std::sqrt(1 - a*a)); 
         	double d = std::sqrt(1 - a*a);
-        	double lambda = Lambda_func(l,m,(a*a)*(std::pow(omega,2) - mu*mu));
-        	double A = (std::pow((m*a),2) - 4*a*omega*m*r_plus + 4*std::pow((omega*r_plus),2) + d*d)/d*d;
-        	double B = (-std::pow((m*a),2) + 4*a*M*omega*m + 4*(2*d - 1)*std::pow((omega*r_plus),2) - 2*std::pow((mu*d*r_plus),2)
+        	std::complex<double> lambda = Lambda_func(l,m,(a*a)*(std::pow(omega,2) - mu*mu));
+        	std::complex<double> A = (std::pow((m*a),2) - 4*a*omega*m*r_plus + 4*std::pow((omega*r_plus),2) + d*d)/d*d;
+        	std::complex<double> B = (-std::pow((m*a),2) + 4*a*M*omega*m + 4*(2*d - 1)*std::pow((omega*r_plus),2) - 2*std::pow((mu*d*r_plus),2)
                         	-2*(d*d)*(std::pow((omega*a*M),2) + lambda) - d*d)/(2*d*d);
-        	double C = (std::pow((m*a),2) - 4*a*omega*m*r_minus + 4*std::pow((omega*r_minus),2) + d*d)/(d*d);
-        	double D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
+        	std::complex<double> C = (std::pow((m*a),2) - 4*a*omega*m*r_minus + 4*std::pow((omega*r_minus),2) + d*d)/(d*d);
+        	std::complex<double> D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
                         	+2*(d*d)*(std::pow((omega*a*M),2) + lambda) + d*d)/(2*d*d);
         	alpha = 4*d*M*std::sqrt(static_cast<std::complex<double>>(mu*mu - std::pow(omega,2)));
         	beta = -std::sqrt(static_cast<std::complex<double>>(1 - A)) - s;
@@ -63,45 +63,56 @@ public:
 	}
 
 	double compute(double r, bool ingoing){
-		int sgn;
+		int sgn_alpha, sgn_beta;
 		if (ingoing==true){
-			sgn = 1;
-		} else if (ingoing==false){
-			sgn = -1;
-		}
+                        sgn_beta = 1;
+                } else if (ingoing==false){
+                        sgn_beta = -1;
+                } 
+                if (std::real(alpha)>0){
+                        sgn_alpha = -sgn_beta;
+                } else if (std::real(alpha)<=0){
+                        sgn_alpha = sgn_beta;
+                }
 		const double small = 0.0001;
 		// const std::complex<double> H0 = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
 		double z = (r_plus - r)/(r_plus - r_minus);
-		std::complex<double> H = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z).val;
+		std::complex<double> H = HC.compute(sgn_alpha*alpha, sgn_beta*beta, gamma, delta, eta, z).val;
 		return std::real(H);
 	}
 
-	Rfunc_with_deriv compute_with_deriv(double r, bool ingoing){
-	int sgn;
-                if (ingoing==true){
-                        sgn = 1;
+	Rfunc_with_deriv compute_with_deriv(double r, int sgn_alpha, int sgn_beta){
+		/*int sgn_alpha, sgn_beta;
+		if (ingoing==true){
+                        sgn_beta = 1;
                 } else if (ingoing==false){
-                        sgn = -1;
-                }
+                        sgn_beta = -1;
+                } 
+                if (std::real(alpha)>0){
+                        sgn_alpha = -sgn_beta;
+                } else if (std::real(alpha)<=0){
+                        sgn_alpha = sgn_beta;
+                }*/
                 const double small = 0.0001;
                 // const std::complex<double> H0 = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
                 double z = (r_plus - r)/(r_plus - r_minus);
-                HeunCspace::HeunCvars HC_result = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z);
+                HeunCspace::HeunCvars HC_result = HC.compute(sgn_alpha*alpha, sgn_beta*beta, gamma, delta, eta, z);
 		std::complex<double> H = HC_result.val;
 		std::complex<double> dH_dr = HC_result.dval*(-1)/(r_plus - r_minus);
 		// Compute the second derivative of the Heun function using the confluent Heun equation
-                std::complex<double> muvar = - eta + sgn*alpha*(sgn*beta+1)*0.5 - (sgn*beta + gamma + sgn*beta*gamma)*0.5;
-                std::complex<double> nu = delta - muvar + sgn*alpha*(sgn*beta + gamma + 2)*0.5;
-                std::complex<double> HC_ddval = -(sgn*alpha + (sgn*beta+1)/z + (gamma+1)/(z-1))*HC_result.dval - (muvar/z + nu/(z-1))*HC_result.val;
+                std::complex<double> muvar = - eta + sgn_alpha*alpha*(sgn_beta*beta+1)*0.5 - (sgn_beta*beta + gamma + sgn_beta*beta*gamma)*0.5;
+                std::complex<double> nu = delta - muvar + sgn_alpha*alpha*(sgn_beta*beta + gamma + 2)*0.5;
+                std::complex<double> dd_H_ddr = (-(sgn_alpha*alpha + (sgn_beta*beta+1)/z + (gamma+1)/(z-1))*HC_result.dval - (muvar/z + nu/(z-1))*HC_result.val)*std::pow((r_plus - r_minus),-2);
 		// output struct 
                 Rfunc_with_deriv output;
-                output.Rfunc_Re = std::real(Rfunc);
-                output.Rfunc_Im = std::imag(Rfunc);
-                output.d_Rfunc_dr_Re = std::real(d_Rfunc_dr);
-                output.d_Rfunc_dr_Im = std::imag(d_Rfunc_dr);
-                output.dd_Rfunc_ddr_Re = std::real(dd_Rfunc_ddr);
-                output.dd_Rfunc_ddr_Im = std::imag(dd_Rfunc_ddr);
+                output.Rfunc_Re = std::real(H);
+                output.Rfunc_Im = std::imag(H);
+                output.d_Rfunc_dr_Re = std::real(dH_dr);
+                output.d_Rfunc_dr_Im = std::imag(dH_dr);
+                output.dd_Rfunc_ddr_Re = std::real(dd_H_ddr);
+                output.dd_Rfunc_ddr_Im = std::imag(dd_H_ddr);
                 return output;
+	}
 
 private:		
 	// complex i
@@ -112,7 +123,7 @@ private:
 		double h_ = (l*l - m*m)*l/(2*(l*l - 0.25));
         	return h_;
 	}	
-	double Lambda_func(int l,int m,double c2=0){
+	std::complex<double> Lambda_func(int l,int m,std::complex<double> c2=0){
         	if (c2==0){
                 	return l*(l+1);
 		}

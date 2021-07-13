@@ -24,7 +24,7 @@ Kerrlib.Rfunc.restype = None
 #
 Heunlib = ctypes.cdll.LoadLibrary('/cosma/home/dp174/dc-bamb1/GRChombo/Source/utils/HeunC_function_test.so')
 # extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, int s, bool ingoing, double r){
-Heunlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool, ctypes.c_double,\
+Heunlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_double,\
 ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double)]
 Heunlib.Rfunc.restype = None
 #ctypes.c_double
@@ -78,34 +78,34 @@ def Rfunc(M, mu, omega, a, l, m, s, ingoing, KS_or_BL, t, r):
 		result[i] = Heunlib.Rfunc(M, mu, omega, a, l, m, s, ingoing, r[i])
 	return result"""
 
-def HeunC_func(M, mu, omega, a, l, m, s, ingoing, r):
-        result = np.zeros(r.size)
-        result = Rfunc_data()
-        result.Rfunc_Re = np.zeros(r.size)
-        result.Rfunc_Im = np.zeros(r.size)
-        result.d_Rfunc_dr_Re = np.zeros(r.size)
-        result.d_Rfunc_dr_Im = np.zeros(r.size)
-        result.dd_Rfunc_ddr_Re = np.zeros(r.size)
-        result.dd_Rfunc_ddr_Im = np.zeros(r.size)
+def HeunC_func(M, mu, omega, a, l, m, s, sgn_alpha, sgn_beta, r):
+	result = np.zeros(r.size)
+	result = Rfunc_data()
+	result.Rfunc_Re = np.zeros(r.size)
+	result.Rfunc_Im = np.zeros(r.size)
+	result.d_Rfunc_dr_Re = np.zeros(r.size)
+	result.d_Rfunc_dr_Im = np.zeros(r.size)
+	result.dd_Rfunc_ddr_Re = np.zeros(r.size)
+	result.dd_Rfunc_ddr_Im = np.zeros(r.size)
 	for i in range(0, r.size):
 		R_Re = ctypes.c_double()
-                R_Im = ctypes.c_double()
-                d_R_dr_Re = ctypes.c_double()
-                d_R_dr_Im = ctypes.c_double()
-                dd_R_ddr_Re = ctypes.c_double()
-                dd_R_ddr_Im = ctypes.c_double()
-                Heunlib.Rfunc(M, mu, omega, a, l, m, s, ingoing, r[i],\
-                        ctypes.byref(R_Re),ctypes.byref(R_Im),ctypes.byref(d_R_dr_Re),ctypes.byref(d_R_dr_Im),ctypes.byref(dd_R_ddr_Re),ctypes.byref(dd_R_ddr_Im))
-        	result.Rfunc_Re[i] = R_Re.value
-                result.Rfunc_Im[i] = R_Im.value
-                result.d_Rfunc_dr_Re[i] = d_R_dr_Re.value
-                result.d_Rfunc_dr_Im[i] = d_R_dr_Im.value
-                result.dd_Rfunc_ddr_Re[i] = dd_R_ddr_Re.value
-                result.dd_Rfunc_ddr_Im[i] = dd_R_ddr_Im.value
+		R_Im = ctypes.c_double()
+		d_R_dr_Re = ctypes.c_double()
+		d_R_dr_Im = ctypes.c_double()
+		dd_R_ddr_Re = ctypes.c_double()
+		dd_R_ddr_Im = ctypes.c_double()
+		Heunlib.Rfunc(M, mu, np.real(omega), np.imag(omega), a, l, m, s, sgn_alpha, sgn_beta, r[i],\
+        		ctypes.byref(R_Re),ctypes.byref(R_Im),ctypes.byref(d_R_dr_Re),ctypes.byref(d_R_dr_Im),ctypes.byref(dd_R_ddr_Re),ctypes.byref(dd_R_ddr_Im))
+		result.Rfunc_Re[i] = R_Re.value
+		result.Rfunc_Im[i] = R_Im.value
+		result.d_Rfunc_dr_Re[i] = d_R_dr_Re.value
+		result.d_Rfunc_dr_Im[i] = d_R_dr_Im.value
+		result.dd_Rfunc_ddr_Re[i] = dd_R_ddr_Re.value
+		result.dd_Rfunc_ddr_Im[i] = dd_R_ddr_Im.value
 	return result.Rfunc_Re + 1j*result.Rfunc_Im
-
+		
 r_test = np.array([2.0001, 5.0, 20.0])
-print("HeunC_func(1.0, 0, 1.0, 0, 1, 1, -2, True, [2.01,	5.0, 6.0]) = ", HeunC_func(1.0, 0, 2*mu, 0, 1, 1, -2, True, r_test))
+print("HeunC_func(1.0, 0, 1.0, 0, 1, 1, -2, True, [2.01,	5.0, 6.0]) = ", HeunC_func(1.0, 0, 2*mu, 0, 1, 1, -2, 1, 1, r_test))
 
 # Define hydrogen radial wavefunction
 def hydrogen_Rfunc(M, mu, omega, n, l, m, r):
@@ -217,7 +217,7 @@ factor = factor_func(r_BL)
 #	print("r = ", r_BL[i])
 #	print("Rfunc_outgoing = ", Rfunc(M, 0, omega, 0, 1, 1, -2, False, True, 0, np.array([r_BL[i]])).Rfunc_Re)
 
-Heun_R = HeunC_func(M, 0, omega, 0, 1, 1, -2, True, r_BL)
+"""Heun_R = HeunC_func(M, 0, omega, 0, 1, 1, -2, True, r_BL)
 RH_ingoing_R = Rfunc(M, 0, omega, 0, 1, 1, -2, True, False, 0, r_BL)
 RH_ingoing_R_KS = Rfunc(M, 0, omega, 0, 1, 1, -2, True, True, 0, r_BL)
 #RH_outgoing_R = Rfunc(M, 0, omega, 0, 1, 1, -2, False, True, 0, r_BL)
@@ -253,25 +253,27 @@ save_root_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/"
 save_name = "test_KerrBH_marginal_Rfunc_general_s_KS.png"
 plt.savefig(save_root_path + save_name)
 print("saved plot as " + save_root_path + save_name)
-plt.clf()
+plt.clf()"""
 
 ## compare the approximations for the n=0 state
 r_star_m_r = 2*M*np.log(r_BL/(2*M) - 1)
 omega_nlm_011 = omega_estimate(M, mu, 0, 1, 1, 0)
 omega_nlm_011_real = np.real(omega_estimate(M, mu, 0, 1, 1, 0))
 KS_factor = np.exp(1j*omega_nlm_011_real*r_star_m_r)
-y_Heun_func = HeunC_func(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL)
+y_Heun_func_alpha_beta_11 = HeunC_func(M, mu, omega_nlm_011, 0, 1, 1, 0, 1, 1, r_BL)
+y_Heun_func_alpha_beta_m11 = HeunC_func(M, mu, omega_nlm_011, 0, 1, 1, 0, -1, 1, r_BL)
 y_Heun_R = scalar_Rfunc(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL)
 y_hydrogen_R = hydrogen_Rfunc(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL)
 y_Heun = y_Heun_R.Rfunc_Re + 1j*y_Heun_R.Rfunc_Im
 y_hydrogen = y_hydrogen_R.Rfunc_Re + 1j*y_hydrogen_R.Rfunc_Im
-plt.plot(ln_r, np.abs(y_Heun*KS_factor), "r-", label="Heun sol (mag)")
-plt.plot(ln_r, np.abs(y_hydrogen), "b-", label="hydrogen sol (mag)")
-plt.plot(ln_r, np.abs(y_Heun_func*KS_factor), "g-", label="Heun function part (mag)")
+plt.plot(ln_r, np.log(np.abs(y_Heun*KS_factor)), "r-", label="Heun sol (mag)")
+plt.plot(ln_r, np.log(np.abs(y_hydrogen)), "b-", label="hydrogen sol (mag)")
+plt.plot(ln_r, np.log(np.abs(y_Heun_func_alpha_beta_11)), "g-", label="Heun function (sgn_alpha=1) part (mag)")
+plt.plot(ln_r, np.log(np.abs(y_Heun_func_alpha_beta_m11)), "m-", label="Heun function (sgn_alpha=-1) part (mag)")
 plt.title("$\\mu=${:.1f} $\\omega=${:.1f} a={:.1f} l={:d} m={:d}".format(mu, omega, a, l, m))
 plt.xlabel("$\\ln(r_{BL}/r_+ - 1)$")
 plt.ylabel("n=0 bound Rfunc sol")
-plt.ylim((0, 10))
+plt.ylim((-2, 10))
 plt.legend()
 save_root_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/"
 save_name = "test_KerrBH_n0_Rfunc_general_s_KS.png"
@@ -280,7 +282,7 @@ print("saved plot as " + save_root_path + save_name)
 plt.clf()
 
 ## compare the RH functions
-omega = 0.01*2*mu
+"""omega = 0.01*2*mu
 RH_Heun = Heun_RH_function(M, omega, 1, r_BL)
 RH_bessel = bessel_RH_function(M, omega, 1, r_BL)
 plt.plot(ln_r, np.log(np.abs(RH_Heun*r_BL**2/factor)), "r-", label="Heun sol (magnitude part)")
@@ -372,7 +374,7 @@ print("saved plot as " + save_root_path + save_name)
 plt.clf()
 
 ## Compare the source functions for a Schwarzschild background and the marginally bound l=m=1 annihilation case
-"""source_bessel = Teukolsky_22w_source_function(M, 0, 1, 1, mu, mu, mu, Bessel_marginal_Rfunc, Bessel_marginal_Rfunc, r_BL)
+source_bessel = Teukolsky_22w_source_function(M, 0, 1, 1, mu, mu, mu, Bessel_marginal_Rfunc, Bessel_marginal_Rfunc, r_BL)
 source_Heun = Teukolsky_22w_source_function(M, 0, 1, 1, mu, mu, mu, scalar_Rfunc, scalar_Rfunc, r_BL)
 RH_Heun = Heun_RH_function(M, 2*mu, 1, r_BL)
 RH_bessel = bessel_RH_function(M, 2*mu, 1, r_BL)

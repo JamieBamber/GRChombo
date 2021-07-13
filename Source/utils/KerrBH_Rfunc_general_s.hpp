@@ -58,33 +58,38 @@ public:
         	gamma = -std::sqrt(static_cast<std::complex<double>>(1 - C)) - s;
         	delta = -(B + D) - s * alpha;
         	eta = 0.5 + 2*B + 0.5 * s*s + 2*ComplexI*s*omega*r_plus;
-		/*std::cout << "alpha = " << alpha << std::endl;
+		std::cout << "alpha = " << alpha << std::endl;
 		std::cout << "beta = " << beta << std::endl;
 		std::cout << "gamma = " << gamma << std::endl;
 		std::cout << "delta = " << delta << std::endl;
-		std::cout << "eta = " << eta << std::endl;*/
+		std::cout << "eta = " << eta << std::endl;
 	}
 
 	double compute(double r, double t, bool ingoing, bool KS_or_BL){
-		int sgn;
+		int sgn_alpha, sgn_beta;
 		if (ingoing==true){
-			sgn = 1;
-		} else if (ingoing==false){
-			sgn = -1;
-		}
+                        sgn_beta = 1;
+                } else if (ingoing==false){
+                        sgn_beta = -1;
+                } 
+                if (std::real(alpha)>0){
+                        sgn_alpha = -sgn_beta;
+                } else if (std::real(alpha)<=0){
+                        sgn_alpha = sgn_beta;
+                }
 		const double small = 0.0001;
-		// const std::complex<double> H0 = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
+		// const std::complex<double> H0 = HC.compute(-sgn_alpha*alpha, sgn_beta*beta, gamma, delta, eta, -small).val;
 		const double H0 = 1.0;
 		double z = (r_plus - r)/(r_plus - r_minus);
-		std::complex<double> H = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z).val/H0;
+		std::complex<double> H = HC.compute(sgn_alpha*alpha, sgn_beta*beta, gamma, delta, eta, z).val/H0;
 		std::complex<double> zfactor;
 		// Kerr Schild correction
                 if (KS_or_BL) {
-			zfactor = std::polar(1.0, -2*m*std::atan2(a, r))*std::pow(-(z-1),gamma)*std::pow(-z,0.5*(sgn-1)*beta);
+			zfactor = std::polar(1.0, -2*m*std::atan2(a, r))*std::pow(-(z-1),gamma)*std::pow(-z,0.5*(sgn_beta-1)*beta);
 		} else {
-			zfactor = std::pow(-(z-1),0.5*gamma-0.5*s)*std::pow(-z,0.5*sgn*beta-0.5*s);
+			zfactor = std::pow(-(z-1),0.5*gamma-0.5*s)*std::pow(-z,0.5*sgn_beta*beta-0.5*s);
 		}
-		std::complex<double> Rfunc = std::polar(1.0, -omega*t)*std::exp(sgn*0.5*alpha*z)*zfactor*H;		
+		std::complex<double> Rfunc = std::polar(1.0, -omega*t)*std::exp(sgn_alpha*0.5*alpha*z)*zfactor*H;		
 		return std::real(Rfunc);
 	}
 
@@ -92,38 +97,44 @@ public:
 		// assuming R(r, t) = exp(- i omega t) * HeunC solution
 		double z = (r_plus - r)/(r_plus - r_minus);
 		std::complex<double> Delta = static_cast<std::complex<double>>((r - r_plus)*(r - r_minus));
-		int sgn;
-		if (ingoing==true){
-			sgn = 1;
-		} else if (ingoing==false){
-			sgn = -1;
-		}
+		int sgn_alpha, sgn_beta;
+                if (ingoing==true){
+                        sgn_beta = 1;
+                } else if (ingoing==false){
+                        sgn_beta = -1;
+                }
+                if (std::real(alpha)>0){
+                        sgn_alpha = -sgn_beta;
+                } else if (std::real(alpha)<=0){
+                        sgn_alpha = sgn_beta;
+                } 
+		std::cout << "sgn_alpha, sgn_beta = " << sgn_alpha << ", " << sgn_beta << std::endl;
 		const double small = 0.0001;
 		const std::complex<double> H0 = 1.0;
-		// HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
+		// HC.compute(sgn_alpha*alpha, sgn_beta*beta, gamma, delta, eta, -small).val;
 		std::complex<double> zfactor;
 		std::complex<double> dzfactor_z;
-		HeunCspace::HeunCvars HC_result = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z);
+		HeunCspace::HeunCvars HC_result = HC.compute(sgn_alpha*alpha, sgn_beta*beta, gamma, delta, eta, z);
 		// Kerr Schild correction
                 if (KS_or_BL) {
-			zfactor = std::polar(1.0, -2*m*std::atan2(a, r))*std::pow(-(z-1),gamma-0.5*s)*std::pow(-z,0.5*(sgn-1)*beta-0.5*s);
-			dzfactor_z = (r_minus - r_plus)*2*ComplexI*m*a*M/(r*r + (a*M)*(a*M)) + gamma/(z-1) + 0.5*(sgn-1)*beta/z;
+			zfactor = std::polar(1.0, -2*m*std::atan2(a, r))*std::pow(-(z-1),gamma-0.5*s)*std::pow(-z,0.5*(sgn_beta-1)*beta-0.5*s);
+			dzfactor_z = (r_minus - r_plus)*2*ComplexI*m*a*M/(r*r + (a*M)*(a*M)) + gamma/(z-1) + 0.5*(sgn_beta-1)*beta/z;
 		} else {
-			zfactor = std::pow(-(z-1),0.5*gamma-0.5*s)*std::pow(-z,0.5*sgn*beta-0.5*s);
-			dzfactor_z = (0.5*gamma-0.5*s)/(z-1) + (0.5*sgn*beta-0.5*s)/z;
+			zfactor = std::pow(-(z-1),0.5*gamma-0.5*s)*std::pow(-z,0.5*sgn_beta*beta-0.5*s);
+			dzfactor_z = (0.5*gamma-0.5*s)/(z-1) + (0.5*sgn_beta*beta-0.5*s)/z;
 		}
 		//std::cout << "HC_result.val = " << HC_result.val << std::endl;
-		std::complex<double> prefactor = std::polar(1.0, -omega*t) * std::exp(0.5*sgn*alpha*z);
+		std::complex<double> prefactor = std::polar(1.0, -omega*t) * std::exp(0.5*sgn_alpha*alpha*z);
 		std::complex<double> Rfunc = prefactor * zfactor * HC_result.val/H0;
 		std::complex<double> d_Rfunc_dt = -omega * ComplexI * Rfunc;
-		std::complex<double> d_Rfunc_dr = (-1.0/(r_plus - r_minus))*prefactor*zfactor*( (0.5*sgn*alpha + dzfactor_z)*HC_result.val/H0 
+		std::complex<double> d_Rfunc_dr = (-1.0/(r_plus - r_minus))*prefactor*zfactor*( (0.5*sgn_alpha*alpha + dzfactor_z)*HC_result.val/H0 
 							+ HC_result.dval/H0);
 		// Compute the second derivative of the Heun function using the confluent Heun equation
-		std::complex<double> muvar = - eta + sgn*alpha*(sgn*beta+1)*0.5 - (sgn*beta + gamma + sgn*beta*gamma)*0.5;
-		std::complex<double> nu = delta - muvar + sgn*alpha*(sgn*beta + gamma + 2)*0.5;
-		std::complex<double> HC_ddval = -(sgn*alpha + (sgn*beta+1)/z + (gamma+1)/(z-1))*HC_result.dval - (muvar/z + nu/(z-1))*HC_result.val;
-		std::complex<double> dd_Rfunc_ddr = std::pow(-1.0/(r_plus - r_minus),2)*prefactor*zfactor*( HC_ddval/H0 + 2*(0.5*sgn*alpha + dzfactor_z)*HC_result.dval/H0 
-							+ (std::pow(0.5*sgn*alpha+dzfactor_z,2) - (0.5*sgn*beta-0.5*s)/(z*z) - (0.5*gamma-0.5*s)/((z-1)*(z-1)))*HC_result.val/H0 );
+		std::complex<double> muvar = - eta + sgn_alpha*alpha*(sgn_beta*beta+1)*0.5 - (sgn_beta*beta + gamma + sgn_beta*beta*gamma)*0.5;
+		std::complex<double> nu = delta - muvar + sgn_alpha*alpha*(sgn_beta*beta + gamma + 2)*0.5;
+		std::complex<double> HC_ddval = -(sgn_alpha*alpha + (sgn_beta*beta+1)/z + (gamma+1)/(z-1))*HC_result.dval - (muvar/z + nu/(z-1))*HC_result.val;
+		std::complex<double> dd_Rfunc_ddr = std::pow(-1.0/(r_plus - r_minus),2)*prefactor*zfactor*( HC_ddval/H0 + 2*(0.5*sgn_alpha*alpha + dzfactor_z)*HC_result.dval/H0 
+							+ (std::pow(0.5*sgn_alpha*alpha+dzfactor_z,2) - (0.5*sgn_beta*beta-0.5*s)/(z*z) - (0.5*gamma-0.5*s)/((z-1)*(z-1)))*HC_result.val/H0 );
 		// output struct 
 		Rfunc_with_deriv output;
 		output.Rfunc_Re = std::real(Rfunc);
