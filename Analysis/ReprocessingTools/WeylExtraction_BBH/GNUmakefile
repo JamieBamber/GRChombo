@@ -10,7 +10,7 @@ ebase := ReprocessingTool
 
 LibNames := AMRTimeDependent AMRTools BoxTools
 
-GRCHOMBO_SOURCE = /p/home/jusers/bamber1/juwels/GRChombo/Source
+GRCHOMBO_SOURCE = ../../../Source
 
 src_dirs := $(GRCHOMBO_SOURCE)/utils \
             $(GRCHOMBO_SOURCE)/simd  \

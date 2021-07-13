@@ -24,8 +24,10 @@ Kerrlib.Rfunc.restype = None
 #
 Heunlib = ctypes.cdll.LoadLibrary('/cosma/home/dp174/dc-bamb1/GRChombo/Source/utils/HeunC_function_test.so')
 # extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, int s, bool ingoing, double r){
-Heunlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool, ctypes.c_double]
-Heunlib.Rfunc.restype = ctypes.c_double
+Heunlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool, ctypes.c_double,\
+ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double)]
+Heunlib.Rfunc.restype = None
+#ctypes.c_double
 
 # class to hold the output data
 class Rfunc_data:
@@ -70,11 +72,37 @@ def Rfunc(M, mu, omega, a, l, m, s, ingoing, KS_or_BL, t, r):
 	return result
 
 # define Heun func solution without the prefactors
-def HeunC_func(M, mu, omega, a, l, m, s, ingoing, r):
+"""def HeunC_func(M, mu, omega, a, l, m, s, ingoing, r):
 	result = np.zeros(r.size)
 	for i in range(0, r.size):
 		result[i] = Heunlib.Rfunc(M, mu, omega, a, l, m, s, ingoing, r[i])
-	return result
+	return result"""
+
+def HeunC_func(M, mu, omega, a, l, m, s, ingoing, r):
+        result = np.zeros(r.size)
+        result = Rfunc_data()
+        result.Rfunc_Re = np.zeros(r.size)
+        result.Rfunc_Im = np.zeros(r.size)
+        result.d_Rfunc_dr_Re = np.zeros(r.size)
+        result.d_Rfunc_dr_Im = np.zeros(r.size)
+        result.dd_Rfunc_ddr_Re = np.zeros(r.size)
+        result.dd_Rfunc_ddr_Im = np.zeros(r.size)
+	for i in range(0, r.size):
+		R_Re = ctypes.c_double()
+                R_Im = ctypes.c_double()
+                d_R_dr_Re = ctypes.c_double()
+                d_R_dr_Im = ctypes.c_double()
+                dd_R_ddr_Re = ctypes.c_double()
+                dd_R_ddr_Im = ctypes.c_double()
+                Heunlib.Rfunc(M, mu, omega, a, l, m, s, ingoing, r[i],\
+                        ctypes.byref(R_Re),ctypes.byref(R_Im),ctypes.byref(d_R_dr_Re),ctypes.byref(d_R_dr_Im),ctypes.byref(dd_R_ddr_Re),ctypes.byref(dd_R_ddr_Im))
+        	result.Rfunc_Re[i] = R_Re.value
+                result.Rfunc_Im[i] = R_Im.value
+                result.d_Rfunc_dr_Re[i] = d_R_dr_Re.value
+                result.d_Rfunc_dr_Im[i] = d_R_dr_Im.value
+                result.dd_Rfunc_ddr_Re[i] = dd_R_ddr_Re.value
+                result.dd_Rfunc_ddr_Im[i] = dd_R_ddr_Im.value
+	return result.Rfunc_Re + 1j*result.Rfunc_Im
 
 r_test = np.array([2.0001, 5.0, 20.0])
 print("HeunC_func(1.0, 0, 1.0, 0, 1, 1, -2, True, [2.01,	5.0, 6.0]) = ", HeunC_func(1.0, 0, 2*mu, 0, 1, 1, -2, True, r_test))
@@ -197,7 +225,7 @@ RH_ingoing = RH_ingoing_R.Rfunc_Re + 1j*RH_ingoing_R.Rfunc_Im
 RH_ingoing_KS = RH_ingoing_R_KS.Rfunc_Re + 1j*RH_ingoing_R_KS.Rfunc_Im
 #RH_outgoing = RH_outgoing_R.Rfunc_Re + 1j*RH_outgoing_R.Rfunc_Im
 r_star = r_BL + r_plus*np.log(r_BL/r_plus - 1)
-plt.plot(ln_r, Heun_R, "g-", "Heun function")
+plt.plot(ln_r, np.real(Heun_R), "g-", "Heun function")
 plt.plot(ln_r, np.real(np.exp(1j*omega*r_star)*RH_ingoing*20/(Heun_R*factor)), "r-", label="np.real(e^iwr_star * RH_ingoing*20/(Heun_R*factor))")
 plt.plot(ln_r, np.real(RH_ingoing*20/(Heun_R*factor)), "b-", label="np.real(RH_ingoing*20/(Heun_R*factor))")
 #plt.plot(ln_r, np.real(RH_outgoing*0.05), "b-", label="np.imag(RH_ingoing*20/(Heun_R*factor))")
@@ -232,14 +260,18 @@ r_star_m_r = 2*M*np.log(r_BL/(2*M) - 1)
 omega_nlm_011 = omega_estimate(M, mu, 0, 1, 1, 0)
 omega_nlm_011_real = np.real(omega_estimate(M, mu, 0, 1, 1, 0))
 KS_factor = np.exp(1j*omega_nlm_011_real*r_star_m_r)
-y_Heun = scalar_Rfunc(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL).Rfunc_Re
-y_hydrogen = hydrogen_Rfunc(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL).Rfunc_Re
-plt.plot(ln_r, y_Heun, "r-", label="Heun sol (real part)")
-plt.plot(ln_r, y_hydrogen, "b-", label="hydrogen sol (real part)")
+y_Heun_func = HeunC_func(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL)
+y_Heun_R = scalar_Rfunc(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL)
+y_hydrogen_R = hydrogen_Rfunc(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL)
+y_Heun = y_Heun_R.Rfunc_Re + 1j*y_Heun_R.Rfunc_Im
+y_hydrogen = y_hydrogen_R.Rfunc_Re + 1j*y_hydrogen_R.Rfunc_Im
+plt.plot(ln_r, np.abs(y_Heun*KS_factor), "r-", label="Heun sol (mag)")
+plt.plot(ln_r, np.abs(y_hydrogen), "b-", label="hydrogen sol (mag)")
+plt.plot(ln_r, np.abs(y_Heun_func*KS_factor), "g-", label="Heun function part (mag)")
 plt.title("$\\mu=${:.1f} $\\omega=${:.1f} a={:.1f} l={:d} m={:d}".format(mu, omega, a, l, m))
 plt.xlabel("$\\ln(r_{BL}/r_+ - 1)$")
 plt.ylabel("n=0 bound Rfunc sol")
-#plt.ylim((-4, 4))
+plt.ylim((0, 10))
 plt.legend()
 save_root_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/"
 save_name = "test_KerrBH_n0_Rfunc_general_s_KS.png"

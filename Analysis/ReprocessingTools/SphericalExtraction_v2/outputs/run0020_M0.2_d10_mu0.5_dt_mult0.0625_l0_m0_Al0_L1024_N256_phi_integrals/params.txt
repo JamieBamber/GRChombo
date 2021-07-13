@@ -1,33 +1,33 @@
 ### parameters file for Flux extraction
 
 #Params for runtime inputs
-N1 = NBASIC
-N2 = NBASIC
+N1 = 256
+N2 = 256
 N3 = NSPACE3
-L = LSPACE
+L = 1024
 max_level = 4 # There are (max_level+1) grids, so min is zero
-dt_multiplier = DTMULT
+dt_multiplier = 0.0625
 
 # For read in of files
 data_rootdir =/p/scratch/pra116/bamber1/NewtonianBinaryScalar/
-data_subdir = SUBDIR
+data_subdir = run0020_M0.2_d10_mu0.5_dt_mult0.0625_l0_m0_Al0_L1024_N256
 output_rootdir = /p/home/jusers/bamber1/juwels/GRChombo/Analysis/data/Newtonian_Binary_BH_data/
 
 # Files parameters
 chk_prefix = Newton_chk
 plot_prefix = Newton_plt
-plot_interval = PLOTINTERVAL
-start_number = SNUMBER
-end_number = ENUMBER
-# suffix = SUFFIX
-# resume = RESUMEYN
+plot_interval = 5
+start_number = 0
+end_number = 200000
+# suffix = 
+# resume = 0
 
 # integration parameters
-num_points_phi = NPHI
-num_points_theta = NTHETA
-extraction_center = CENTERX CENTERY CENTERZ
-center = CENTERX CENTERY CENTERZ
-# extraction_radius = REXTRACT
+num_points_phi = 64
+num_points_theta = 32
+extraction_center = 512 512 0
+center = 512 512 0
+# extraction_radius = 
 num_integration_radii = 8
 max_integration_radius = 400
 min_integration_rafius = 50
@@ -56,6 +56,6 @@ vars_parity_diagnostic = 0 0 0 0     #
 verbosity = 0
 nan_check = 0
 regrid_interval = 0 0 0 0 0 0 0 0 0 0 0 0 0
-max_grid_size = BOXSIZE
-block_factor = BOXSIZE
+max_grid_size = 32
+block_factor = 32
 isPeriodic = 0 0 0 

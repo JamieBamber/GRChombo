@@ -8,7 +8,7 @@
 
 #include "parstream.H" // gives us pout()
 #include "GRAMRLevel.hpp"
-#include "FluxExtraction.hpp"
+#include "PhiExtraction.hpp"
 
 class ReprocessingLevel : public GRAMRLevel
 {

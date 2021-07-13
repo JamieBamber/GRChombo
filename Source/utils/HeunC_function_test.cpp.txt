@@ -1,9 +1,15 @@
 #include "HeunC_function_test.hpp"
 
-extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, int s, bool ingoing, double r){
+extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, int s, bool ingoing, double r,
+	double *Rfunc_Re, double *Rfunc_Im, double *d_Rfunc_dr_Re, double *d_Rfunc_dr_Im, double *dd_Rfunc_ddr_Re, double *dd_Rfunc_ddr_Im){
 	HeunC_Rfunc Rfunc(M, mu, omega, a, l, m, s);
-	double result = Rfunc.compute(r, ingoing);
-	return result;
+	Rfunc_with_deriv result = Rfunc.compute_with_deriv(r, ingoing);
+	*Rfunc_Re = result.Rfunc_Re;
+        *Rfunc_Im = result.Rfunc_Im;
+        *d_Rfunc_dr_Re = result.d_Rfunc_dr_Re;
+        *d_Rfunc_dr_Im = result.d_Rfunc_dr_Im;
+        *dd_Rfunc_ddr_Re = result.dd_Rfunc_ddr_Re;
+        *dd_Rfunc_ddr_Im = result.dd_Rfunc_ddr_Im;
 }
 
 

@@ -26,19 +26,20 @@ data_directory=/cosma6/data/dp174/dc-bamb1/GRChombo_data/NewtonianBinaryBHScalar
 # period = 95.7695
 # dt = 2 * dt_multiplier
 
-run0011=(0.2 10 0.03 0.5)
+run0020=(0.2 10 0.5 0.0625 0 0 0)
 
 params_file=params.txt
 
 run_list=(
 	run0020
-}
+)
 
 for run in "${run_list[@]}"
 do
   	cd $work_dir
-        # extract parameters    
-        val="$run[0]"; M="${!val}"
+        # extract parameters
+	val="$run[0]"; M="${!val}"
+	echo "M="$M
         val="$run[1]"; d="${!val}"
         val="$run[2]"; mu="${!val}"
         val="$run[3]"; dt_mult="${!val}"
@@ -46,9 +47,9 @@ do
         val="$run[5]"; m="${!val}"
         val="$run[6]"; Al="${!val}"
         
-       	omega_BH=$(awk "BEGIN {printf \"%.7f\n\", sqrt(2*${M}/(${d}*${d}*${d}))}")
-        #omega_BH=$(bc <<< "scale=6; sqrt(2*${M}/(${d}*${d}*${d}))")
-        echo "omega_BH = ${omega_BH}"
+       	##omega_BH=$(awk "BEGIN {printf \"%.7f\n\", sqrt(2*${M}/(${d}*${d}*${d}))}")
+        ##omega_BH=$(bc <<< "scale=6; sqrt(2*${M}/(${d}*${d}*${d}))")
+        ##echo "omega_BH = ${omega_BH}"
 
         # text_number=$(printf "%04d" ${run_number})
         subdir=${run}_M${M}_d${d}_mu${mu}_dt_mult${dt_mult}_l${l}_m${m}_Al${Al}_L${L}_N${N1}
@@ -87,4 +88,4 @@ do
 	sbatch slurm_submit
 	#
 	cd ${work_dir}
-done	
+done

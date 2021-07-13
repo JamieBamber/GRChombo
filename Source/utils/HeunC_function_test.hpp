@@ -7,6 +7,15 @@
 #include <cmath>
 #include "HeunC.hpp"
 
+struct Rfunc_with_deriv {
+        double Rfunc_Re;
+        double Rfunc_Im;
+        double d_Rfunc_dr_Re;
+        double d_Rfunc_dr_Im;
+        double dd_Rfunc_ddr_Re;
+        double dd_Rfunc_ddr_Im;
+};
+
 class HeunC_Rfunc {
 public:
 	double M;
@@ -42,8 +51,8 @@ public:
         	double D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
                         	+2*(d*d)*(std::pow((omega*a*M),2) + lambda) + d*d)/(2*d*d);
         	alpha = 4*d*M*std::sqrt(static_cast<std::complex<double>>(mu*mu - std::pow(omega,2)));
-        	beta = std::sqrt(static_cast<std::complex<double>>(1 - A)) - s;
-        	gamma = std::sqrt(static_cast<std::complex<double>>(1 - C)) - s;
+        	beta = -std::sqrt(static_cast<std::complex<double>>(1 - A)) - s;
+        	gamma = -std::sqrt(static_cast<std::complex<double>>(1 - C)) - s;
         	delta = -(B + D) - s * alpha;
         	eta = 0.5 + 2*B + 0.5 * s*s + 2*ComplexI*s*omega*r_plus;
 		/*std::cout << "alpha = " << alpha << std::endl;
@@ -63,9 +72,36 @@ public:
 		const double small = 0.0001;
 		// const std::complex<double> H0 = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
 		double z = (r_plus - r)/(r_plus - r_minus);
-		std::complex<double> H = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, z).val;
+		std::complex<double> H = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z).val;
 		return std::real(H);
 	}
+
+	Rfunc_with_deriv compute_with_deriv(double r, bool ingoing){
+	int sgn;
+                if (ingoing==true){
+                        sgn = 1;
+                } else if (ingoing==false){
+                        sgn = -1;
+                }
+                const double small = 0.0001;
+                // const std::complex<double> H0 = HC.compute(-sgn*alpha, sgn*beta, gamma, delta, eta, -small).val;
+                double z = (r_plus - r)/(r_plus - r_minus);
+                HeunCspace::HeunCvars HC_result = HC.compute(sgn*alpha, sgn*beta, gamma, delta, eta, z);
+		std::complex<double> H = HC_result.val;
+		std::complex<double> dH_dr = HC_result.dval*(-1)/(r_plus - r_minus);
+		// Compute the second derivative of the Heun function using the confluent Heun equation
+                std::complex<double> muvar = - eta + sgn*alpha*(sgn*beta+1)*0.5 - (sgn*beta + gamma + sgn*beta*gamma)*0.5;
+                std::complex<double> nu = delta - muvar + sgn*alpha*(sgn*beta + gamma + 2)*0.5;
+                std::complex<double> HC_ddval = -(sgn*alpha + (sgn*beta+1)/z + (gamma+1)/(z-1))*HC_result.dval - (muvar/z + nu/(z-1))*HC_result.val;
+		// output struct 
+                Rfunc_with_deriv output;
+                output.Rfunc_Re = std::real(Rfunc);
+                output.Rfunc_Im = std::imag(Rfunc);
+                output.d_Rfunc_dr_Re = std::real(d_Rfunc_dr);
+                output.d_Rfunc_dr_Im = std::imag(d_Rfunc_dr);
+                output.dd_Rfunc_ddr_Re = std::real(dd_Rfunc_ddr);
+                output.dd_Rfunc_ddr_Im = std::imag(dd_Rfunc_ddr);
+                return output;
 
 private:		
 	// complex i

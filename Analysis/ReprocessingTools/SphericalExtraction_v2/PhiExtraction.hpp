@@ -32,7 +32,7 @@ class PhiExtraction : public SphericalExtraction
                                a_restart_time), 
                                 m_output_root_dir(a_output_root_dir), m_data_subdir(a_data_subdir), m_suffix(a_suffix)
     {
-	add_var(c_phi, VariableType::evolution);
+	add_var(c_phi_Re, VariableType::evolution);
     }
 
 //! The old constructor which assumes it is called in specificPostTimeStep
@@ -56,15 +56,25 @@ class PhiExtraction : public SphericalExtraction
         }
 
 	// now calculate and write the requested spherical harmonic modes
-        std::vector<std::double> mode_integrals(m_num_modes);
+	// now calculate and write the requested spherical harmonic modes
+        std::vector<std::pair<std::vector<double>, std::vector<double>>>
+            mode_integrals(m_num_modes);
+
+	// slightly pointless step
+        const SphericalExtraction::complex_function_t phi_complex = [](std::vector<double> phi_re,
+                                           double r, double, double) {
+            // here the std::vector<double> passed will just have
+            // the real phi as its only component
+            return std::make_pair(phi_re[0], phi_re[0]);
+        };	
 
 	// add the modes that will be integrated
         for (int imode = 0; imode < m_num_modes; ++imode)
         {
             const auto &mode = m_modes[imode];
-            constexpr int es = -2;
+            constexpr int es = 0;
             add_mode_integrand(es, mode.first, mode.second,
-                               normalised_Weyl4_complex, mode_integrals[imode]);
+                               phi_complex, mode_integrals[imode]);
         }
 
 	// do the integration over the surface
@@ -78,8 +88,8 @@ class PhiExtraction : public SphericalExtraction
                                              std::to_string(mode.first) +
                                              std::to_string(mode.second) + m_suffix;
             std::vector<std::vector<double>> integrals_for_writing = {
-                std::move(mode_integrals[imode])};
-            std::vector<std::string> labels = {"integral"};
+                std::move(mode_integrals[imode].first)};
+            std::vector<std::string> labels = {"phi integral"};
             write_integrals(integrals_filename, integrals_for_writing, labels);
         }
     }

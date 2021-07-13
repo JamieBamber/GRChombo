@@ -1,0 +1,9 @@
+#include "HeunC_function_test.hpp"
+
+extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, int s, bool ingoing, double r){
+	HeunC_Rfunc Rfunc(M, mu, omega, a, l, m, s);
+	double result = Rfunc.compute(r, ingoing);
+	return result;
+}
+
+

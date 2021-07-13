@@ -119,8 +119,8 @@ public:
 		std::complex<double> d_Rfunc_dr = (-1.0/(r_plus - r_minus))*prefactor*zfactor*( (0.5*sgn*alpha + dzfactor_z)*HC_result.val/H0 
 							+ HC_result.dval/H0);
 		// Compute the second derivative of the Heun function using the confluent Heun equation
-		std::complex<double> muvar = - eta + alpha*(beta+1)*0.5 - (beta + gamma + beta*gamma)*0.5;
-		std::complex<double> nu = delta - muvar + alpha*(beta + gamma + 2)*0.5;
+		std::complex<double> muvar = - eta + sgn*alpha*(sgn*beta+1)*0.5 - (sgn*beta + gamma + sgn*beta*gamma)*0.5;
+		std::complex<double> nu = delta - muvar + sgn*alpha*(sgn*beta + gamma + 2)*0.5;
 		std::complex<double> HC_ddval = -(sgn*alpha + (sgn*beta+1)/z + (gamma+1)/(z-1))*HC_result.dval - (muvar/z + nu/(z-1))*HC_result.val;
 		std::complex<double> dd_Rfunc_ddr = std::pow(-1.0/(r_plus - r_minus),2)*prefactor*zfactor*( HC_ddval/H0 + 2*(0.5*sgn*alpha + dzfactor_z)*HC_result.dval/H0 
 							+ (std::pow(0.5*sgn*alpha+dzfactor_z,2) - (0.5*sgn*beta-0.5*s)/(z*z) - (0.5*gamma-0.5*s)/((z-1)*(z-1)))*HC_result.val/H0 );

@@ -40,23 +40,23 @@ class SimulationParameters : public FixedBGSimulationParametersBase
         pp.get("end_number", end_number);
         
        	// basic extraction params
-        //dx.fill(coarsest_dx);
-        //origin.fill(coarsest_dx / 2.0);
+        dx.fill(coarsest_dx);
+        origin.fill(coarsest_dx / 2.0);
         //pout() << "coarsest_dx = " << coarsest_dx << endl;
 
 	// -- make integration radius array
 	if (pp.contains("min_integration_radius") && pp.contains("max_integration_radius")) {
-		pp.load("linear_or_log", extraction_params.linear_or_log, true);
+		pp.load("linear_or_log", linear_or_log, true);
 		pp.load("min_integration_radius", min_integration_radius);
 		pp.load("max_integration_radius", max_integration_radius);
 		if (linear_or_log) {
-			extraction_params.integration_radii = 
-			NumpyTools::linspace(min_integration_radius, max_integration_radius, extraction_params.num_integration_radii);
+			extraction_params.extraction_radii = 
+			NumpyTools::linspace(min_integration_radius, max_integration_radius, extraction_params.num_extraction_radii);
 		} else {
-			extraction_params.integration_radii = 
-                        NumpyTools::logspace(min_integration_radius, max_integration_radius, extraction_params.num_integration_radii);
-			pout() << "extraction_params.integration_radii = " << std::endl;
-			for(std::vector<double>::const_iterator i = extraction_params.integration_radii.begin(); i != extraction_params.integration_radii.end(); ++i){
+			extraction_params.extraction_radii = 
+                        NumpyTools::logspace(min_integration_radius, max_integration_radius, extraction_params.num_extraction_radii);
+			pout() << "extraction_params.extraction_radii = " << std::endl;
+			for(std::vector<double>::const_iterator i = extraction_params.extraction_radii.begin(); i != extraction_params.extraction_radii.end(); ++i){
 				pout() << std::to_string(*i) << std::endl;
 			}
 			pout() << "end of radii list" << std::endl;
@@ -64,7 +64,7 @@ class SimulationParameters : public FixedBGSimulationParametersBase
 	}
 	if (pp.contains("integration_radius"))
 	{
-            pp.load("integration_radius", extraction_params.integration_radii, 1,
+            pp.load("integration_radius", extraction_params.extraction_radii, 1,
                     0.1);
         }
 	
@@ -84,5 +84,6 @@ class SimulationParameters : public FixedBGSimulationParametersBase
   string data_rootdir, data_subdir, suffix, output_rootdir;
   double min_integration_radius, max_integration_radius;
   bool linear_or_log;
+};
 
 #endif /* SIMULATIONPARAMETERS_HPP_ */
