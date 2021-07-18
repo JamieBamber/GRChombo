@@ -1,4 +1,4 @@
-/* C++ implementation of the radial part of the general solutions to the spin=0 Teucolsky equation
+/* C++ implementation of the radial part of the general solutions to the Teucolsky equation
 */
 
 #ifndef KERRBH_RFUNC_HPP_
@@ -23,14 +23,14 @@ class KerrBH_Rfunc {
 public:
 	double M;
 	double mu;
-	double omega;
+	std::complex<double> omega;
 	double a; 
 	double r_plus, r_minus;
 	int l, m, s;
 	std::complex<double> alpha, beta, gamma, delta, eta;
 	
 	//constructor
-	KerrBH_Rfunc(const double M_, const double mu_, const double omega_, double a_, int l_, int m_, int s_)
+	KerrBH_Rfunc(const double M_, const double mu_, const std::complex<double> omega_, double a_, int l_, int m_, int s_)
 	: ComplexI(0.0, 1.0)
 	{
 		if (std::abs(m_)>l_){
@@ -46,27 +46,27 @@ public:
 		r_plus = M*(1 + std::sqrt(1 - a*a));
         	r_minus = M*(1 - std::sqrt(1 - a*a)); 
         	double d = std::sqrt(1 - a*a);
-        	double lambda = Lambda_func(l,m,(a*a)*(std::pow(omega,2) - mu*mu));
-        	double A = (std::pow((m*a),2) - 4*a*omega*m*r_plus + 4*std::pow((omega*r_plus),2) + d*d)/d*d;
-        	double B = (-std::pow((m*a),2) + 4*a*M*omega*m + 4*(2*d - 1)*std::pow((omega*r_plus),2) - 2*std::pow((mu*d*r_plus),2)
+        	std::complex<double> lambda = Lambda_func(l,m,(a*a)*(std::pow(omega,2) - mu*mu));
+        	std::complex<double> A = (std::pow((m*a),2) - 4*a*omega*m*r_plus + 4*std::pow((omega*r_plus),2) + d*d)/d*d;
+        	std::complex<double> B = (-std::pow((m*a),2) + 4*a*M*omega*m + 4*(2*d - 1)*std::pow((omega*r_plus),2) - 2*std::pow((mu*d*r_plus),2)
                         	-2*(d*d)*(std::pow((omega*a*M),2) + lambda) - d*d)/(2*d*d);
-        	double C = (std::pow((m*a),2) - 4*a*omega*m*r_minus + 4*std::pow((omega*r_minus),2) + d*d)/(d*d);
-        	double D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
+        	std::complex<double> C = (std::pow((m*a),2) - 4*a*omega*m*r_minus + 4*std::pow((omega*r_minus),2) + d*d)/(d*d);
+        	std::complex<double> D = (std::pow((m*a),2) - 4*a*M*omega*m + 4*(2*d + 1)*std::pow((omega*r_minus),2) + 2*std::pow((mu*d*r_minus),2) 
                         	+2*(d*d)*(std::pow((omega*a*M),2) + lambda) + d*d)/(2*d*d);
         	alpha = 4*d*M*std::sqrt(static_cast<std::complex<double>>(mu*mu - std::pow(omega,2)));
         	beta = -std::sqrt(static_cast<std::complex<double>>(1 - A)) - s;
         	gamma = -std::sqrt(static_cast<std::complex<double>>(1 - C)) - s;
         	delta = -(B + D) - s * alpha;
         	eta = 0.5 + 2*B + 0.5 * s*s + 2*ComplexI*s*omega*r_plus;
-		std::cout << "alpha = " << alpha << std::endl;
+		/*std::cout << "alpha = " << alpha << std::endl;
 		std::cout << "beta = " << beta << std::endl;
 		std::cout << "gamma = " << gamma << std::endl;
 		std::cout << "delta = " << delta << std::endl;
-		std::cout << "eta = " << eta << std::endl;
+		std::cout << "eta = " << eta << std::endl;*/
 	}
 
-	double compute(double r, double t, bool ingoing, bool KS_or_BL){
-		int sgn_alpha, sgn_beta;
+	double compute(double r, double t, int sgn_alpha, int sgn_beta, bool KS_or_BL){
+		/*int sgn_alpha, sgn_beta;
 		if (ingoing==true){
                         sgn_beta = 1;
                 } else if (ingoing==false){
@@ -76,7 +76,7 @@ public:
                         sgn_alpha = -sgn_beta;
                 } else if (std::real(alpha)<=0){
                         sgn_alpha = sgn_beta;
-                }
+                }*/
 		const double small = 0.0001;
 		// const std::complex<double> H0 = HC.compute(-sgn_alpha*alpha, sgn_beta*beta, gamma, delta, eta, -small).val;
 		const double H0 = 1.0;
@@ -89,15 +89,15 @@ public:
 		} else {
 			zfactor = std::pow(-(z-1),0.5*gamma-0.5*s)*std::pow(-z,0.5*sgn_beta*beta-0.5*s);
 		}
-		std::complex<double> Rfunc = std::polar(1.0, -omega*t)*std::exp(sgn_alpha*0.5*alpha*z)*zfactor*H;		
+		std::complex<double> Rfunc = std::exp(-ComplexI*omega*t)*std::exp(sgn_alpha*0.5*alpha*z)*zfactor*H;		
 		return std::real(Rfunc);
 	}
 
-	Rfunc_with_deriv compute_with_deriv(double r, double t, bool ingoing, bool KS_or_BL){
+	Rfunc_with_deriv compute_with_deriv(double r, double t, int sgn_alpha, int sgn_beta, bool KS_or_BL){
 		// assuming R(r, t) = exp(- i omega t) * HeunC solution
 		double z = (r_plus - r)/(r_plus - r_minus);
 		std::complex<double> Delta = static_cast<std::complex<double>>((r - r_plus)*(r - r_minus));
-		int sgn_alpha, sgn_beta;
+		/*int sgn_alpha, sgn_beta;
                 if (ingoing==true){
                         sgn_beta = 1;
                 } else if (ingoing==false){
@@ -107,8 +107,7 @@ public:
                         sgn_alpha = -sgn_beta;
                 } else if (std::real(alpha)<=0){
                         sgn_alpha = sgn_beta;
-                } 
-		std::cout << "sgn_alpha, sgn_beta = " << sgn_alpha << ", " << sgn_beta << std::endl;
+                }*/
 		const double small = 0.0001;
 		const std::complex<double> H0 = 1.0;
 		// HC.compute(sgn_alpha*alpha, sgn_beta*beta, gamma, delta, eta, -small).val;
@@ -124,7 +123,7 @@ public:
 			dzfactor_z = (0.5*gamma-0.5*s)/(z-1) + (0.5*sgn_beta*beta-0.5*s)/z;
 		}
 		//std::cout << "HC_result.val = " << HC_result.val << std::endl;
-		std::complex<double> prefactor = std::polar(1.0, -omega*t) * std::exp(0.5*sgn_alpha*alpha*z);
+		std::complex<double> prefactor = std::exp(-ComplexI*omega*t) * std::exp(0.5*sgn_alpha*alpha*z);
 		std::complex<double> Rfunc = prefactor * zfactor * HC_result.val/H0;
 		std::complex<double> d_Rfunc_dt = -omega * ComplexI * Rfunc;
 		std::complex<double> d_Rfunc_dr = (-1.0/(r_plus - r_minus))*prefactor*zfactor*( (0.5*sgn_alpha*alpha + dzfactor_z)*HC_result.val/H0 
@@ -157,7 +156,7 @@ private:
 		double h_ = (l*l - m*m)*l/(2*(l*l - 0.25));
         	return h_;
 	}	
-	double Lambda_func(int l,int m,double c2=0){
+	std::complex<double> Lambda_func(int l,int m,std::complex<double> c2=0){
         	if (c2==0){
                 	return l*(l+1);
 		}

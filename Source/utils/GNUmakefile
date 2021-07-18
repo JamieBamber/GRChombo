@@ -24,3 +24,6 @@ KerrBH_Rfunc_general_s :
 
 HeunC_function_test :
 	icpc -shared -c -fPIC HeunC_function_test.cpp -o HeunC_function_test.o ${include_dirs} -I$(CHOMBO_HOME)/include -std=c++14
+
+omega_QNM_continued_fraction :
+	icpc -shared -c -fPIC omega_QNM_continued_fraction.cpp -o omega_QNM_continued_fraction.o ${include_dirs} -I$(CHOMBO_HOME)/include -std=c++14

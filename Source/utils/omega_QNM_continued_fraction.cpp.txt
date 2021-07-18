@@ -1,0 +1,17 @@
+#include "omega_QNM_continued_fraction.hpp"
+
+extern "C" void find_omega(double M, double mu, double omega0_Re, double omega0_Im, double a, int n, int l, int m, int s, int N, double epsilon, int n_max,
+		 double* omega_Re, double* omega_Im, double* f_val, int* n_step){
+	QNM_cf Q(M, mu, a, l, m, s);
+	std::complex<double> omega0(omega0_Re, omega0_Im);
+	Q.compute_omega(N, omega0_Re, omega0_Im, epsilon, n_max, omega_Re, omega_Im, n_step, f_val);
+}
+
+extern "C" double F_func(double M, double mu, double a, int l, int m, int s, int N, double omega_Re, double omega_Im){
+	QNM_cf Q(M, mu, a, l, m, s);
+	std::complex<double> omega(omega_Re, omega_Im);
+	double result = std::abs(Q.F(N, omega));
+	return result;
+}
+
+

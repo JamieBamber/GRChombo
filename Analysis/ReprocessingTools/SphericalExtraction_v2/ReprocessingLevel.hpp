@@ -26,25 +26,26 @@ class ReprocessingLevel : public GRAMRLevel
         //pout() << "The time is " << m_time << " on level " << m_level 
         //       << ". Your wish is my command." << endl;
 
-	bool m_first_step;
+	//bool m_first_step;
 	double m_true_restart_time = 0;
 	// m_p.coarsest_dx * m_p.dt_multiplier * m_p.start_number; 	
 	pout() << "m_time = " << m_time << std::endl;
         pout() << "m_true_restart_time = " << m_true_restart_time << std::endl;
-        if (m_time == m_true_restart_time){
-		m_first_step = 1;
+        /*if (m_time == m_true_restart_time){
+		m_initialise = 1;
 	} else {
-		m_first_step = 0;
-	}
+		m_initialise = 0;
+	}*/
 	
 	// Do the extraction on the min integration level
-        if (m_level == 0 && m_first_step !=1)
+        if ((m_level == 0) && (m_time != m_true_restart_time))
         {
             // Now refresh the interpolator and do the interpolation
             m_gr_amr.m_interpolator->refresh();
-	    PhiExtraction phi_extraction(m_p.extraction_params, m_p.output_rootdir, m_p.data_subdir, m_p.suffix, m_dt, m_time, m_first_step);
+	    PhiExtraction phi_extraction(m_p.extraction_params, m_p.output_rootdir, m_p.data_subdir, m_p.suffix, m_dt, m_time, m_p.first_step);
             phi_extraction.execute_query(m_gr_amr.m_interpolator); //! <--- This routine includes performing the integration and writing the output to a file
-        }		
+     	    m_p.first_step = 0;
+	}		
 
     }
 

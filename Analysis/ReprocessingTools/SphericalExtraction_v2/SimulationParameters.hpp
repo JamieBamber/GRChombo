@@ -28,11 +28,13 @@ class SimulationParameters : public FixedBGSimulationParametersBase
 
     void readParams(GRParmParse &pp)
     {
+	// steup first step
+	first_step = 1;
+
      	// get directories
         pp.get("data_rootdir", data_rootdir);
         pp.get("data_subdir", data_subdir);
         pp.get("output_rootdir", output_rootdir);
-        pp.get("suffix", suffix);
 
         // Files setup
         pp.get("plot_interval", plot_interval);
@@ -43,6 +45,8 @@ class SimulationParameters : public FixedBGSimulationParametersBase
         dx.fill(coarsest_dx);
         origin.fill(coarsest_dx / 2.0);
         //pout() << "coarsest_dx = " << coarsest_dx << endl;
+
+	pp.get("num_extraction_radii", extraction_params.num_extraction_radii);
 
 	// -- make integration radius array
 	if (pp.contains("min_integration_radius") && pp.contains("max_integration_radius")) {
@@ -55,12 +59,12 @@ class SimulationParameters : public FixedBGSimulationParametersBase
 		} else {
 			extraction_params.extraction_radii = 
                         NumpyTools::logspace(min_integration_radius, max_integration_radius, extraction_params.num_extraction_radii);
-			pout() << "extraction_params.extraction_radii = " << std::endl;
+		}	
+		pout() << "extraction_params.extraction_radii = " << std::endl;
 			for(std::vector<double>::const_iterator i = extraction_params.extraction_radii.begin(); i != extraction_params.extraction_radii.end(); ++i){
 				pout() << std::to_string(*i) << std::endl;
 			}
-			pout() << "end of radii list" << std::endl;
-		}	
+		pout() << "end of radii list" << std::endl;
 	}
 	if (pp.contains("integration_radius"))
 	{
@@ -83,7 +87,7 @@ class SimulationParameters : public FixedBGSimulationParametersBase
   //     dx; // location of coarsest origin and dx
   string data_rootdir, data_subdir, suffix, output_rootdir;
   double min_integration_radius, max_integration_radius;
-  bool linear_or_log;
+  bool linear_or_log, first_step;
 };
 
 #endif /* SIMULATIONPARAMETERS_HPP_ */

@@ -73,6 +73,7 @@ do
 	sed -i "s|SUBDIR|${subdir}|" params.txt
 	sed -i "s|LSPACE|${L}|" params.txt
 	sed -i "s|NBASIC|${N1}|" params.txt
+	sed -i "s|NSPACE3|$(($N1/2))|" params.txt
 	sed -i "s|BOXSIZE|${box_size}|" params.txt
 	sed -i "s|CENTERX|$(($L/2))|" params.txt
 	sed -i "s|CENTERY|$(($L/2))|" params.txt

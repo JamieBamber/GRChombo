@@ -7,8 +7,8 @@ from math import factorial
 
 # define true radial solution function
 M = 1
-mu = 0.5
-omega = 0.5
+mu = 0.51
+omega = 0.4
 a = 0
 l = 1
 m = 1
@@ -18,7 +18,7 @@ Kerrlib = ctypes.cdll.LoadLibrary('/cosma/home/dp174/dc-bamb1/GRChombo/Source/ut
 # extern "C" double Rfunc(double M, double mu, double omega, double a, int l, int m, int s, bool ingoing, bool KS_or_BL, double t, double r)
 # double *Rfunc_Re, double *Rfunc_Im){
 # double *d_Rfunc_dr_Re, double *d_Rfunc_dr_Im, double *dd_Rfunc_ddr_Re, double *dd_Rfunc_ddr_Im
-Kerrlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool, ctypes.c_bool, ctypes.c_double, ctypes.c_double,\
+Kerrlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool, ctypes.c_double, ctypes.c_double,\
 ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double)]
 Kerrlib.Rfunc.restype = None
 #
@@ -28,6 +28,10 @@ Heunlib.Rfunc.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, cty
 ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double)]
 Heunlib.Rfunc.restype = None
 #ctypes.c_double
+#
+compute_omega_CFlib = ctypes.cdll.LoadLibrary('/cosma/home/dp174/dc-bamb1/GRChombo/Source/utils/omega_QNM_continued_fraction.so')
+compute_omega_CFlib.F_func.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_double, ctypes.c_double]
+compute_omega_CFlib.F_func.restype = ctypes.c_double
 
 # class to hold the output data
 class Rfunc_data:
@@ -37,7 +41,7 @@ class Rfunc_data:
 		# self.Rfunc_Im
 
 # 
-def Rfunc(M, mu, omega, a, l, m, s, ingoing, KS_or_BL, t, r):
+def Rfunc(M, mu, omega, a, l, m, s, sgn_alpha, sgn_beta, KS_or_BL, t, r):
 	result = Rfunc_data()
 	result.Rfunc_Re = np.zeros(r.size)
 	result.Rfunc_Im = np.zeros(r.size)
@@ -53,7 +57,7 @@ def Rfunc(M, mu, omega, a, l, m, s, ingoing, KS_or_BL, t, r):
 		dd_R_ddr_Re = ctypes.c_double()
 		dd_R_ddr_Im = ctypes.c_double()
 		try:	
-			Kerrlib.Rfunc(M, mu, omega, a, l, m, s, ingoing, KS_or_BL, t, r[i],\
+			Kerrlib.Rfunc(M, mu, np.real(omega), np.imag(omega), a, l, m, s, sgn_alpha, sgn_beta, KS_or_BL, t, r[i],\
 			ctypes.byref(R_Re),ctypes.byref(R_Im),ctypes.byref(d_R_dr_Re),ctypes.byref(d_R_dr_Im),ctypes.byref(dd_R_ddr_Re),ctypes.byref(dd_R_ddr_Im))
 		except:
 			print("Rfunc error")
@@ -173,8 +177,8 @@ def bessel_RH_function(M, omega, l, r):
 	result = omega*((2*1j*r**2*omega*((l+2)*r-(2*l+5)*M)+(l+1)*(l+2)*(r-2*M)**2-2*r**2*omega**2*(2*M**2-2*M*r+r**2))*special.spherical_jn(l,r*omega)+2*r*omega*(r-2*M)*(2*M+r*(-1-1j*r*omega))*special.spherical_jn(l+1,omega*r))
 	return result
 
-def scalar_Rfunc(M, mu, omega, n, l, m, r):
-	R = Rfunc(M, mu, omega, 0, l, l, 0, True, False, 0, r)
+def scalar_Rfunc(M, mu, omega, n, l, m, sgn_alpha, sgn_beta, r):
+	R = Rfunc(M, mu, omega, 0, l, l, 0, sgn_alpha, sgn_beta, False, 0, r)
 	return R
 
 def Cnl(n, l, m, mu, M, a):
@@ -259,14 +263,18 @@ plt.clf()"""
 r_star_m_r = 2*M*np.log(r_BL/(2*M) - 1)
 omega_nlm_011 = omega_estimate(M, mu, 0, 1, 1, 0)
 omega_nlm_011_real = np.real(omega_estimate(M, mu, 0, 1, 1, 0))
+print("omega_nlm_011 = ", omega_nlm_011)
 KS_factor = np.exp(1j*omega_nlm_011_real*r_star_m_r)
 y_Heun_func_alpha_beta_11 = HeunC_func(M, mu, omega_nlm_011, 0, 1, 1, 0, 1, 1, r_BL)
 y_Heun_func_alpha_beta_m11 = HeunC_func(M, mu, omega_nlm_011, 0, 1, 1, 0, -1, 1, r_BL)
-y_Heun_R = scalar_Rfunc(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL)
+y_Heun_R_alpha_beta_11 = scalar_Rfunc(M, mu, omega_nlm_011, 0, 1, 1, 1, 1, r_BL)
+y_Heun_R_alpha_beta_m11 = scalar_Rfunc(M, mu, omega_nlm_011, 0, 1, 1, -1, 1, r_BL)
 y_hydrogen_R = hydrogen_Rfunc(M, mu, omega_nlm_011_real, 0, 1, 1, r_BL)
-y_Heun = y_Heun_R.Rfunc_Re + 1j*y_Heun_R.Rfunc_Im
+y_Heun_alpha_beta_11 = y_Heun_R_alpha_beta_11.Rfunc_Re + 1j*y_Heun_R_alpha_beta_11.Rfunc_Im
+y_Heun_alpha_beta_m11 = y_Heun_R_alpha_beta_m11.Rfunc_Re + 1j*y_Heun_R_alpha_beta_m11.Rfunc_Im
 y_hydrogen = y_hydrogen_R.Rfunc_Re + 1j*y_hydrogen_R.Rfunc_Im
-plt.plot(ln_r, np.log(np.abs(y_Heun*KS_factor)), "r-", label="Heun sol (mag)")
+plt.plot(ln_r, np.log(np.abs(y_Heun_alpha_beta_11*KS_factor)), "r-", label="Heun sol (sgn_alpha=1) (mag)")
+plt.plot(ln_r, np.log(np.abs(y_Heun_alpha_beta_m11*KS_factor)), "y--", label="Heun sol (sgn_alpha=-1) (mag)")
 plt.plot(ln_r, np.log(np.abs(y_hydrogen)), "b-", label="hydrogen sol (mag)")
 plt.plot(ln_r, np.log(np.abs(y_Heun_func_alpha_beta_11)), "g-", label="Heun function (sgn_alpha=1) part (mag)")
 plt.plot(ln_r, np.log(np.abs(y_Heun_func_alpha_beta_m11)), "m-", label="Heun function (sgn_alpha=-1) part (mag)")
@@ -277,6 +285,81 @@ plt.ylim((-2, 10))
 plt.legend()
 save_root_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/"
 save_name = "test_KerrBH_n0_Rfunc_general_s_KS.png"
+plt.savefig(save_root_path + save_name)
+print("saved plot as " + save_root_path + save_name)
+plt.clf()
+
+## check if we can find solutions where the ingoing Heun solution at the horizon also goes to zero at infinity 
+## i.e. for the quasinormal modes we should have B_in = 0
+# set the real part of the frequency to omega_nlm_011_real
+r_test = np.array([2*M*200])
+x = np.linspace(-2, 2,256)
+omega_list = omega_nlm_011_real*(1 + 0.001*x*1j)
+true_ratio = np.imag(omega_nlm_011)/np.real(omega_nlm_011)*1.0/0.001
+y_abs = np.zeros(len(omega_list))
+for i in range(0, len(omega_list)):
+	R = scalar_Rfunc(M, mu, omega_list[i], 0, 1, 1, -1, 1, r_test)
+	y_abs[i] = np.log10(np.abs(R.Rfunc_Re[0] + 1j*R.Rfunc_Im[0])) 
+plt.plot(x, y_abs, "r-", label="r = {:.0f}".format(r_test[0]))
+plt.vlines([-true_ratio, true_ratio], min(y_abs), max(y_abs), linestyles ="dashed", colors ="k", label="QNM ratio. est")
+plt.xlabel("$10^3\\omega_I/\\omega_R$")
+plt.ylabel("$\\log_{10}(|R_{in}(r_{test})|)$")
+plt.legend()
+save_root_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/"
+save_name = "test_KerrBH_n0_Rfunc_QNM_frequencies.png"
+plt.savefig(save_root_path + save_name)
+print("saved plot as " + save_root_path + save_name)
+plt.clf()
+
+### now try covering the complex plane (for real part > 0)
+omega_re_max = mu
+N_re = 256
+N_im = 256
+# estimate QNM frequencies using Brito formula
+N = 10
+omega_est_l0 = []
+omega_est_l1 = []
+for n in range(0, 10):
+	omega_est_l0.append(omega_estimate(M, mu, n, 0, 0, 0))
+	omega_est_l1.append(omega_estimate(M, mu, n, 1, 1, 0))
+omega_re_min = np.min(np.real(omega_est_l1))
+omega_im_max = np.max(np.concatenate((np.abs(np.imag(omega_est_l0)),np.abs(np.imag(omega_est_l1)))))
+y_min = 1 - 1.01*(mu - omega_re_min)/mu
+x_max = omega_im_max*1.01/(mu*0.001)
+print("y_min = ", y_min)
+print("x_max = ", x_max)
+x = np.linspace(-x_max, x_max,N_im)
+y = np.linspace(y_min, 1, N_re)
+y_abs = np.zeros((N_im, N_re))
+for i in range(0, N_im):
+	for j in range(0, N_re):
+		omega = mu*y[j] + 1j*mu*0.001*x[i]
+		#print("x,y = {:f},{:f}".format(x[i],y[j]))
+		try:
+			R = scalar_Rfunc(M, mu, omega, 0, 1, 1, -1, 1, r_test)
+		except:
+			y_abs[j,i] = nan
+		else:
+			y_abs[j,i] = np.log10(np.abs(R.Rfunc_Re[0] + 1j*R.Rfunc_Im[0]))
+ax1 = plt.axes()
+fig = plt.gcf()
+cm = 'inferno'
+rho_max=np.max(y_abs)
+rho_min=np.min(y_abs)
+#print('max={:.2f} min={:.2f}'.format(phi_max, phi_min))
+zmin=0
+zmax=1
+mesh = ax1.pcolormesh(x, y,y_abs,cmap=cm)
+fig.colorbar(mesh, pad=0.01)
+ax1.scatter(np.imag(omega_est_l0)/(mu*0.001), np.real(omega_est_l0)/mu, s=20, c="g", marker="+", label="QNM estimate l=m=0")
+ax1.scatter(np.imag(omega_est_l1)/(mu*0.001), np.real(omega_est_l1)/mu, s=20, c="c", marker="x", label="QNM estimate l=m=1")
+plt.ylim((y_min, 1))
+plt.legend(loc="best")
+plt.xlabel("$10^3\\omega_I/\\mu$")
+plt.ylabel("$\\omega_R/\\mu$")
+plt.title("$\\log_{10}(|R_{in}(r_{test}=$" + "{:.0f}".format(r_test[0]) + "$)|)$ " + "$\\mu = $" + str(mu))
+save_root_path = "/cosma/home/dp174/dc-bamb1/GRChombo/Analysis/plots/"
+save_name = "test_KerrBH_n0_Rfunc_QNM_frequencies_complex_plane_mu{:.2f}.png".format(mu)
 plt.savefig(save_root_path + save_name)
 print("saved plot as " + save_root_path + save_name)
 plt.clf()
